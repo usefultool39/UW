@@ -11,7 +11,8 @@ import {
   ZOOM_MIN,
   ZOOM_WHEEL
 } from './worldMapDrawing.js'
-import { AGENTS, WORLD_ASSETS, getAgentConfig } from './gameContentConfig.js'
+import { AGENTS, getAgentConfig } from './gameContentConfig.js'
+import { DEFAULT_MAP_ID, getWorldBackgroundAsset } from './sceneRegistry.js'
 
 function distance(a, b) {
   const dx = a.x - b.x
@@ -185,11 +186,14 @@ export function createWorldFieldSceneClass(Phaser, deps) {
     }
 
     preload() {
-      if (WORLD_ASSETS.background) {
-        this.load.image('world_village_bg', WORLD_ASSETS.background)
+      const mapId = getMap()?.id || DEFAULT_MAP_ID
+      this._worldBackgroundKey = `world_bg_${String(mapId).replace(/[^a-zA-Z0-9_-]/g, '_')}`
+      const background = getWorldBackgroundAsset(mapId)
+      if (background && !this.textures.exists(this._worldBackgroundKey)) {
+        this.load.image(this._worldBackgroundKey, background)
       }
       for (const cfg of Object.values(AGENTS)) {
-        if (cfg.asset) this.load.image(cfg.textureKey, cfg.asset)
+        if (cfg.asset && !this.textures.exists(cfg.textureKey)) this.load.image(cfg.textureKey, cfg.asset)
       }
     }
 
@@ -220,6 +224,12 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       const vp = this._miniViewport
       if (!L || !vp) return
       const c = this.cameras.main
+      const fixedScale = 1 / Math.max(0.001, c.zoom)
+      for (const obj of this._miniFixedObjects || []) {
+        const baseScaleX = obj._miniBaseScaleX ?? 1
+        const baseScaleY = obj._miniBaseScaleY ?? baseScaleX
+        obj.setScale?.(baseScaleX * fixedScale, baseScaleY * fixedScale)
+      }
       const wv = c.worldView
       const sx = L.dispW / L.mapW
       const sy = L.dispH / L.mapH
@@ -281,9 +291,10 @@ export function createWorldFieldSceneClass(Phaser, deps) {
 
       const mapW = W * ts
       const mapH = H * ts
-      const hasWorldBg = this.textures.exists('world_village_bg')
+      const bgKey = this._worldBackgroundKey || 'world_bg_novice_open'
+      const hasWorldBg = this.textures.exists(bgKey)
       if (hasWorldBg) {
-        const bg = this.add.image(mapW / 2, mapH / 2, 'world_village_bg').setDepth(-5)
+        const bg = this.add.image(mapW / 2, mapH / 2, bgKey).setDepth(-5)
         const bgScale = Math.max(mapW / Math.max(1, bg.width), mapH / Math.max(1, bg.height))
         bg.setScale(bgScale)
         bg.setAlpha(0.96)
@@ -299,10 +310,10 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         }
       }
       g.setDepth(0)
-      g.setAlpha(hasWorldBg ? 0.42 : 1)
-      drawTerrainOverlays(this, map, ts).setAlpha(hasWorldBg ? 0.55 : 0.82)
-      drawLandmarkArt(this, map, ts).setAlpha(hasWorldBg ? 0.82 : 0.92)
-      drawExplorationAtmosphere(this, map, ts).setAlpha(hasWorldBg ? 1 : 0.82)
+      g.setAlpha(hasWorldBg ? 0.1 : 1)
+      drawTerrainOverlays(this, map, ts).setAlpha(hasWorldBg ? 0.12 : 0.82)
+      drawLandmarkArt(this, map, ts).setAlpha(hasWorldBg ? 0.08 : 0.92)
+      drawExplorationAtmosphere(this, map, ts).setAlpha(hasWorldBg ? 0.2 : 0.82)
       this._pathG = this.add.graphics().setDepth(3)
 
       for (const zl of sceneZoneLabels(map)) {
@@ -650,13 +661,17 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         .setName('minimapImg')
 
       this._miniViewport = this.add.graphics().setScrollFactor(0).setDepth(53)
-      this._miniLayout = { ox, oy, dispW, dispH, mapW, mapH }
-      this._miniHit = {
-        x: ox - 8,
-        y: oy - 28,
-        w: dispW + 24,
-        h: dispH + 58
+      this._miniFixedObjects = this.children.list.filter((obj) => obj.depth >= 50 && obj.depth <= 53)
+      for (const obj of this._miniFixedObjects) {
+        obj._miniBaseX = obj.x || 0
+        obj._miniBaseY = obj.y || 0
+        obj._miniBaseScaleX = obj.scaleX || 1
+        obj._miniBaseScaleY = obj.scaleY || 1
+        obj.setVisible(false)
       }
+      this._miniViewport = null
+      this._miniLayout = null
+      this._miniHit = { x: -9999, y: -9999, w: 0, h: 0 }
       this._miniImgBounds = {
         left: cx - dispW / 2,
         right: cx + dispW / 2,
@@ -721,6 +736,10 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       const centerCamFromNorm = (u, v) => {
         cam.stopFollow()
         cam.centerOn(Phaser.Math.Clamp(u, 0, 1) * mapW, Phaser.Math.Clamp(v, 0, 1) * mapH)
+      }
+      this.centerCameraOnTile = (tx, ty) => {
+        cam.stopFollow()
+        cam.centerOn((Number(tx) + 0.5) * ts, (Number(ty) + 0.5) * ts)
       }
 
       const hitsWorldInteractButton = (sx, sy) => {

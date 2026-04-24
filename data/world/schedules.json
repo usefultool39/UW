@@ -7,21 +7,21 @@
         "scene_id": "reading_hall",
         "tile_x": 11,
         "tile_y": 27,
-        "goal": "整理小屋与早晨餐具"
+        "goal": "整理小屋、照看赛鲁卡，并准备去教会练习基础神圣术"
       },
       "afternoon": {
         "location": "bench",
         "scene_id": "reading_hall",
         "tile_x": 13,
         "tile_y": 14,
-        "goal": "在书库整理旧记录"
+        "goal": "在教会书库整理旧记录，练习基础神圣术祈句"
       },
       "evening": {
         "location": "table",
         "scene_id": "reading_hall",
         "tile_x": 15,
         "tile_y": 15,
-        "goal": "准备晚餐并留意大家的表情"
+        "goal": "准备晚餐，询问巨树清场进度与两人的疲惫"
       },
       "night": {
         "location": "home",
@@ -39,14 +39,14 @@
         "scene_id": "gigas_clearing",
         "tile_x": 54,
         "tile_y": 22,
-        "goal": "在巨树旁开始清场训练"
+        "goal": "在基家斯西达旁开始今天的天命劳作"
       },
       "afternoon": {
         "location": "at_tree",
         "scene_id": "gigas_clearing",
         "tile_x": 53,
         "tile_y": 24,
-        "goal": "检查斧柄并练习稳定挥斧"
+        "goal": "检查龙骨斧柄，以稳定节奏继续砍伐巨树"
       },
       "evening": {
         "location": "table",

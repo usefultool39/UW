@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from app.world_map import bfs_path, is_walkable, load_world_map, scene_for_tile
+from app.world_map import bfs_path, is_walkable, load_world_map, map_path_for_id, scene_for_tile
 
 
 @pytest.fixture
@@ -44,3 +44,9 @@ def test_scene_for_tile():
         ],
     }
     assert scene_for_tile(data, 0, 0) == "reading_hall"
+
+
+def test_map_path_for_id_keeps_maps_under_world_dir(tmp_path: Path):
+    assert map_path_for_id(tmp_path, "novice_open") == tmp_path / "data" / "world" / "world_map.json"
+    assert map_path_for_id(tmp_path, "north_cave_stub") == tmp_path / "data" / "world" / "maps" / "north_cave_stub.json"
+    assert map_path_for_id(tmp_path, "../secrets") is None

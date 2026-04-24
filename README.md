@@ -13,11 +13,12 @@
 
 ## 必读文档
 
-下一个开发者或智能体优先读这三份即可：
+下一个开发者或智能体优先读这几份即可：
 
 1. [docs/README.md](docs/README.md)：文档入口和阅读顺序。
 2. [docs/PROJECT.md](docs/PROJECT.md)：当前架构、数据入口、扩展规则、版本状态。
 3. [docs/PLAYTEST.md](docs/PLAYTEST.md)：第一章三日 Demo 试玩和验收流程。
+4. [docs/SCENE_SYSTEM.md](docs/SCENE_SYSTEM.md)：场景切换、多地图和未来副本/战斗实例扩展。
 
 局部说明仍保留在：
 
@@ -76,6 +77,7 @@ npm.cmd run test:e2e
   data/
     story/              第一章事件与主线节点
     world/              地图、区域、NPC 日程
+      maps/             未来多地图文件
     memory/             本地运行记忆，不是剧情配置源
   docs/                 当前权威文档
   runs/                 本地 JSONL 运行日志，可清理

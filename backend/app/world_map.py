@@ -3,12 +3,25 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
+
+DEFAULT_MAP_ID = "novice_open"
+MAP_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 
 
 def default_map_path(project_root: Path) -> Path:
     return project_root / "data" / "world" / "world_map.json"
+
+
+def map_path_for_id(project_root: Path, map_id: str | None) -> Path | None:
+    mid = (map_id or DEFAULT_MAP_ID).strip()
+    if not MAP_ID_RE.fullmatch(mid):
+        return None
+    if mid in {DEFAULT_MAP_ID, "world_map"}:
+        return default_map_path(project_root)
+    return project_root / "data" / "world" / "maps" / f"{mid}.json"
 
 
 def load_world_map(path: Path) -> dict[str, Any]:

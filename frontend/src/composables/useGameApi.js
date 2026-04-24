@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+const DEFAULT_WORLD_MAP_ID = 'novice_open'
 /** 普通接口（状态、配置、启发式 step） */
 const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS) || 15000
 /** 超过该阈值的超时文案走「AI 慢」提示 */
@@ -153,8 +154,10 @@ export function useGameApi() {
     return requestJson('/api/world/regions')
   }
 
-  async function fetchWorldMap() {
-    return requestJson('/api/world/map')
+  async function fetchWorldMap(mapId = '') {
+    const id = String(mapId || '').trim()
+    if (!id || id === DEFAULT_WORLD_MAP_ID) return requestJson('/api/world/map')
+    return requestJson(`/api/world/maps/${encodeURIComponent(id)}`)
   }
 
   async function fetchStoryCatalog() {

@@ -26,6 +26,7 @@
       <!-- Phaser map canvas -->
       <FieldMap
         v-if="worldMapRef"
+        :key="activeMapId"
         ref="mapRef"
         :sim-state="simState"
         :world-map="worldMapRef"
@@ -148,6 +149,7 @@ import NpcProfilePanel from './NpcProfilePanel.vue'
 import Toast from './Toast.vue'
 import { getAgentLabel, getQuestGuide, getSceneLabel, getTimeBandLabel } from '../field/gameContentConfig.js'
 import { findNearbyInteractPoi } from '../field/interactPoi.js'
+import { DEFAULT_MAP_ID } from '../field/sceneRegistry.js'
 
 const props = defineProps({
   simState: { type: Object, required: true },
@@ -195,6 +197,7 @@ let sceneInstance = null
 // --- Computed ---
 const sceneLabel = computed(() => getSceneLabel(props.simState?.player?.scene_id || props.simState?.scene_id || ''))
 const timeBandLabel = computed(() => getTimeBandLabel(props.simState?.time_band || 'morning'))
+const activeMapId = computed(() => props.simState?.player?.map_id || props.simState?.map_id || DEFAULT_MAP_ID)
 
 const nearbyInteract = computed(() =>
   findNearbyInteractPoi(worldMapRef.value, props.simState?.player)
@@ -265,6 +268,17 @@ async function refreshStoryEvents() {
     storyEvents.value = Array.isArray(res?.events) ? res.events : []
   } catch {
     storyEvents.value = []
+  }
+}
+
+async function loadWorldMap(mapId = DEFAULT_MAP_ID) {
+  worldMapRef.value = null
+  try {
+    worldMapRef.value = await props.fetchWorldMap(mapId)
+    localError.value = ''
+  } catch {
+    localError.value = `地图加载失败：${mapId}`
+    worldMapRef.value = { id: mapId, rows: [], width: 0, height: 0, tile_size: 32 }
   }
 }
 
@@ -500,12 +514,7 @@ onMounted(async () => {
     const r = await props.fetchRegions()
     regionsJson.value = JSON.stringify(r, null, 2)
   } catch { regionsJson.value = '(regions 加载失败)' }
-  try {
-    worldMapRef.value = await props.fetchWorldMap()
-  } catch {
-    localError.value = '地图加载失败'
-    worldMapRef.value = { rows: [], width: 0, height: 0, tile_size: 32 }
-  }
+  await loadWorldMap(activeMapId.value)
   await refreshStoryEvents()
 })
 
@@ -548,6 +557,13 @@ watch(storyRefreshKey, () => {
   storyRefreshTimer = setTimeout(() => {
     refreshStoryEvents()
   }, 180)
+})
+
+watch(activeMapId, async (mapId, oldMapId) => {
+  if (!mapId || mapId === oldMapId) return
+  await loadWorldMap(mapId)
+  await nextTick()
+  sceneInstance?.syncPlayerFromState?.()
 })
 </script>
 

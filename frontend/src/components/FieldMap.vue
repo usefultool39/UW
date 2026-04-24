@@ -5,6 +5,62 @@
     <div class="map-corner bl" />
     <div class="map-corner br" />
     <div ref="hostEl" class="phaser-host" />
+    <div
+      v-if="miniWidth && miniHeight"
+      class="dom-minimap"
+      role="button"
+      aria-label="小地图"
+      tabindex="0"
+      @pointerdown.stop.prevent
+      @click.stop.prevent="handleMiniMapClick"
+    >
+      <div class="dom-minimap-head">
+        <span>北境地图</span>
+        <span>N</span>
+      </div>
+      <svg class="dom-minimap-svg" :viewBox="`0 0 ${miniWidth} ${miniHeight}`" preserveAspectRatio="none">
+        <rect
+          v-for="tile in miniTiles"
+          :key="tile.key"
+          :x="tile.x"
+          :y="tile.y"
+          width="1"
+          height="1"
+          :fill="tile.color"
+        />
+        <rect
+          v-if="miniViewport"
+          class="dom-minimap-viewport"
+          :x="miniViewport.x"
+          :y="miniViewport.y"
+          :width="miniViewport.w"
+          :height="miniViewport.h"
+        />
+        <circle
+          v-for="agent in miniAgents"
+          :key="agent.id"
+          class="dom-minimap-agent"
+          :cx="agent.x + 0.5"
+          :cy="agent.y + 0.5"
+          r="0.42"
+          :fill="agent.color"
+        />
+        <path
+          v-for="event in miniEvents"
+          :key="event.id"
+          class="dom-minimap-event"
+          :d="`M ${event.x + 0.5} ${event.y + 0.08} L ${event.x + 0.92} ${event.y + 0.5} L ${event.x + 0.5} ${event.y + 0.92} L ${event.x + 0.08} ${event.y + 0.5} Z`"
+        />
+        <circle
+          v-if="miniPlayer"
+          class="dom-minimap-player"
+          :cx="miniPlayer.x + 0.5"
+          :cy="miniPlayer.y + 0.5"
+          r="0.52"
+        />
+      </svg>
+      <div class="dom-minimap-foot">边界区域 · 尚未开放</div>
+    </div>
     <div class="scene-badge">
       <span class="badge-dot" :class="timeBand" />
       {{ sceneLabel }} · 第 {{ day }} 天 · {{ timeBandLabel }}
@@ -13,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 
 const props = defineProps({
   simState: { type: Object, required: true },
@@ -38,9 +94,91 @@ const shakeActive = ref(false)
 let shakeTimer = null
 let game = null
 let sceneInstance = null
+let miniFrame = null
 
 const day = ref(1)
 const timeBand = ref('morning')
+const miniViewport = ref(null)
+
+const MINI_COLORS = {
+  0: '#6f9362',
+  1: '#223c2d',
+  2: '#4b8fa0',
+  3: '#bca982',
+  4: '#766f65'
+}
+
+const miniRows = computed(() => props.worldMap?.rows || [])
+const miniWidth = computed(() => miniRows.value[0]?.length || 0)
+const miniHeight = computed(() => miniRows.value.length || 0)
+const miniTiles = computed(() => {
+  const tiles = []
+  miniRows.value.forEach((row, y) => {
+    String(row || '').split('').forEach((ch, x) => {
+      tiles.push({
+        key: `${x}-${y}`,
+        x,
+        y,
+        color: MINI_COLORS[ch] || MINI_COLORS[0]
+      })
+    })
+  })
+  return tiles
+})
+
+const miniPlayer = computed(() => {
+  const p = props.simState?.player
+  if (!p) return null
+  return { x: Number(p.tile_x) || 0, y: Number(p.tile_y) || 0 }
+})
+
+const miniAgents = computed(() => {
+  const colors = {
+    alice: '#70e0bb',
+    eugeo: '#a78bfa',
+    kirito: '#5ecfff'
+  }
+  return (props.simState?.agents || [])
+    .map((agent) => ({
+      id: agent.id,
+      x: Number(agent.tile_x),
+      y: Number(agent.tile_y),
+      color: colors[agent.id] || '#5ecfff'
+    }))
+    .filter((agent) => Number.isFinite(agent.x) && Number.isFinite(agent.y))
+})
+
+const miniEvents = computed(() => (props.storyEvents || [])
+  .map((event) => ({
+    id: event.id,
+    x: Number(event.location?.tile_x),
+    y: Number(event.location?.tile_y)
+  }))
+  .filter((event) => Number.isFinite(event.x) && Number.isFinite(event.y)))
+
+function updateMiniViewport() {
+  if (sceneInstance?.cameras?.main && sceneInstance._tileSize) {
+    const view = sceneInstance.cameras.main.worldView
+    const ts = sceneInstance._tileSize
+    miniViewport.value = {
+      x: view.x / ts,
+      y: view.y / ts,
+      w: view.width / ts,
+      h: view.height / ts
+    }
+  }
+  miniFrame = window.requestAnimationFrame(updateMiniViewport)
+}
+
+function handleMiniMapClick(event) {
+  const w = miniWidth.value
+  const h = miniHeight.value
+  if (!w || !h || !sceneInstance?.centerCameraOnTile) return
+  const rect = event.currentTarget.getBoundingClientRect()
+  const u = (event.clientX - rect.left) / Math.max(1, rect.width)
+  const v = (event.clientY - rect.top) / Math.max(1, rect.height)
+  sceneInstance.centerCameraOnTile(Math.floor(u * w), Math.floor(v * h))
+}
 
 function triggerShake() {
   if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -112,10 +250,15 @@ async function bootPhaser() {
 onMounted(async () => {
   await nextTick()
   await bootPhaser()
+  if (typeof window !== 'undefined') updateMiniViewport()
 })
 
 onUnmounted(() => {
   clearTimeout(shakeTimer)
+  if (miniFrame) {
+    window.cancelAnimationFrame(miniFrame)
+    miniFrame = null
+  }
   if (game) {
     game.destroy(true)
     game = null
@@ -211,6 +354,87 @@ watch(
   display: block;
 }
 
+.dom-minimap {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.95rem;
+  z-index: 8;
+  width: clamp(188px, 18vw, 250px);
+  padding: 0.45rem 0.5rem 0.42rem;
+  border: 1px solid rgba(246, 211, 110, 0.34);
+  background: rgba(4, 10, 18, 0.86);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42), inset 0 0 0 1px rgba(94, 207, 255, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.dom-minimap:focus-visible {
+  outline: 2px solid var(--sao-cyan);
+  outline-offset: 3px;
+}
+
+.dom-minimap-head,
+.dom-minimap-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #fde68a;
+  line-height: 1;
+}
+
+.dom-minimap-head span:last-child {
+  color: #bae6fd;
+  font-family: Georgia, serif;
+}
+
+.dom-minimap-svg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: 0.35rem;
+  border: 2px solid rgba(94, 207, 255, 0.35);
+  background: #020617;
+  image-rendering: pixelated;
+}
+
+.dom-minimap-foot {
+  margin-top: 0.32rem;
+  justify-content: flex-start;
+  color: #cbd5e1;
+  font-size: 0.56rem;
+  font-weight: 700;
+}
+
+.dom-minimap-viewport {
+  fill: rgba(255, 255, 255, 0.06);
+  stroke: #fbbf24;
+  stroke-width: 0.22;
+  vector-effect: non-scaling-stroke;
+}
+
+.dom-minimap-agent {
+  stroke: #05111c;
+  stroke-width: 0.16;
+  vector-effect: non-scaling-stroke;
+}
+
+.dom-minimap-event {
+  fill: #fde047;
+  stroke: #422006;
+  stroke-width: 0.14;
+  vector-effect: non-scaling-stroke;
+}
+
+.dom-minimap-player {
+  fill: #fbbf24;
+  stroke: #1a1209;
+  stroke-width: 0.18;
+  vector-effect: non-scaling-stroke;
+}
+
 .scene-badge {
   position: absolute;
   top: 0.75rem;
@@ -255,6 +479,12 @@ watch(
     transform: none;
     font-size: 0.66rem;
     padding: 0.32rem 0.55rem;
+  }
+
+  .dom-minimap {
+    top: 0.55rem;
+    right: 0.55rem;
+    width: clamp(150px, 34vw, 190px);
   }
 }
 </style>

@@ -4,7 +4,7 @@
     {
       "id": "alice",
       "display": "爱丽丝",
-      "role": "卢利特村 · 家务与照料（童年期）",
+      "role": "卢利特村 · 村长之女 / 神圣术见习（童年期）",
       "behavior_role": "logistics",
       "initial_location": "home",
       "enabled": true,
@@ -15,7 +15,7 @@
     {
       "id": "eugeo",
       "display": "优吉欧",
-      "role": "卢利特村 · 巨树清场（童年期）",
+      "role": "卢利特村 · 巨树清场 / 天命劳作（童年期）",
       "behavior_role": "field",
       "initial_location": "at_tree",
       "enabled": true,

@@ -7,6 +7,7 @@ from app.llm_agent import (
     _extract_thinking,
     build_user_message,
     _is_minimax_mode,
+    _is_openai_chat_model,
     _sanitize_api_key,
 )
 from app.models import Action, ActionName, WorldState, Tree, AgentState, Location
@@ -31,8 +32,19 @@ class TestIsMinimaxMode:
     def test_minimax_in_model_name(self):
         assert _is_minimax_mode("MiniMax-M2.7", has_minimax_key=False) is True
 
+    def test_m2_her_model_name(self):
+        assert _is_minimax_mode("M2-her", has_minimax_key=False) is True
+
     def test_default_false(self):
         assert _is_minimax_mode("gpt-4", has_minimax_key=False) is False
+
+
+class TestOpenAiChatModel:
+    def test_m2_her_uses_openai_chat_shape(self):
+        assert _is_openai_chat_model("M2-her") is True
+
+    def test_m27_uses_text_generation_shape(self):
+        assert _is_openai_chat_model("MiniMax-M2.7") is False
 
 
 class TestStripThinkTags:

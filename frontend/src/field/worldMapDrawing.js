@@ -4,7 +4,7 @@ import {
   AGENT_ART_KEYS,
   AGENT_TEXTURE_FALLBACKS,
   LANDMARK_ART_CONFIGS,
-  SCENE_LABELS
+  getSceneLabel
 } from './gameContentConfig.js'
 
 export const ZOOM_MIN = 0.42
@@ -375,7 +375,7 @@ export function sceneZoneLabels(map) {
   const labels = []
   for (const z of zones) {
     const sid = z.scene_id || ''
-    const text = SCENE_LABELS[sid] || sid
+    const text = getSceneLabel(sid)
     const cx = ((z.x1 ?? 0) + (z.x2 ?? 0)) / 2
     const cy = ((z.y1 ?? 0) + (z.y2 ?? 0)) / 2
     labels.push({ x: cx, y: cy, text })

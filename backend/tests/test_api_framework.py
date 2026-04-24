@@ -12,6 +12,21 @@ def test_world_regions_json():
     assert "regions" in body
 
 
+def test_world_map_by_id_default():
+    client = TestClient(app)
+    r = client.get("/api/world/maps/novice_open")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["id"] == "novice_open"
+    assert "rows" in body
+
+
+def test_world_map_by_id_rejects_path_traversal():
+    client = TestClient(app)
+    r = client.get("/api/world/maps/bad$id")
+    assert r.status_code == 400
+
+
 def test_story_catalog_json():
     client = TestClient(app)
     r = client.get("/api/story/catalog")

@@ -15,6 +15,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 from .session import Session
+from .world_map import map_path_for_id
 
 ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT / ".env")
@@ -54,12 +55,29 @@ def _llm_key_configured() -> bool:
     return bool((os.getenv("ANTHROPIC_API_KEY") or os.getenv("MINIMAX_API_KEY") or "").strip())
 
 
+def _action_model() -> str:
+    return os.getenv("ANTHROPIC_MODEL") or "MiniMax-M2.7"
+
+
+def _dialogue_model() -> str:
+    return (
+        os.getenv("DIALOGUE_MODEL")
+        or os.getenv("MINIMAX_DIALOGUE_MODEL")
+        or _action_model()
+    )
+
+
+def _is_minimax_model_name(model: str) -> bool:
+    normalized = (model or "").strip().lower()
+    return "minimax" in normalized or normalized == "m2-her"
+
+
 def _provider_hint() -> str:
-    model = (os.getenv("ANTHROPIC_MODEL") or "").lower()
+    models = (_action_model(), _dialogue_model())
     has_minimax_key = bool((os.getenv("MINIMAX_API_KEY") or "").strip())
     has_anthropic_key = bool((os.getenv("ANTHROPIC_API_KEY") or "").strip())
 
-    if has_minimax_key or "minimax" in model:
+    if has_minimax_key or any(_is_minimax_model_name(model) for model in models):
         return "MiniMax"
     if has_anthropic_key:
         return "Anthropic SDK"
@@ -112,6 +130,8 @@ def api_config():
     return {
         "llm_configured": _llm_key_configured(),
         "provider_hint": _provider_hint(),
+        "action_model": _action_model(),
+        "dialogue_model": _dialogue_model(),
         "env_file": str(ROOT / ".env"),
     }
 
@@ -155,6 +175,18 @@ def world_open_map():
         path = SESSION.root / "data" / "world" / "world_map.json"
     if not path.is_file():
         return {"v": 1, "id": "empty", "width": 0, "height": 0, "rows": []}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+@app.get("/api/world/maps/{map_id}")
+def world_map_by_id(map_id: str):
+    """按 map_id 读取地图。当前默认地图仍兼容 /api/world/map。"""
+    with SESSION_LOCK:
+        path = map_path_for_id(SESSION.root, map_id)
+    if path is None:
+        raise HTTPException(status_code=400, detail="invalid_map_id")
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail=f"unknown_map_id:{map_id}")
     return json.loads(path.read_text(encoding="utf-8"))
 
 

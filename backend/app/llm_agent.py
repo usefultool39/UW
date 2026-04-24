@@ -23,6 +23,11 @@ def _sanitize_api_key(raw: str) -> str:
     return key
 
 
+def _is_minimax_model(model: str) -> bool:
+    normalized = (model or "").strip().lower()
+    return "minimax" in normalized or normalized == "m2-her"
+
+
 def _resolve_base_url(model: str, has_minimax_key: bool) -> str | None:
     import os
 
@@ -33,14 +38,24 @@ def _resolve_base_url(model: str, has_minimax_key: bool) -> str | None:
         return custom.rstrip("/")
 
     # Auto-route MiniMax models/keys to the MiniMax Anthropic-compatible endpoint.
-    if has_minimax_key or "minimax" in model.lower():
+    if has_minimax_key or _is_minimax_model(model):
         return "https://api.minimax.chat/v1"
 
     return None
 
 
 def _is_minimax_mode(model: str, has_minimax_key: bool) -> bool:
-    return has_minimax_key or "minimax" in model.lower()
+    return has_minimax_key or _is_minimax_model(model)
+
+
+def _is_openai_chat_model(model: str) -> bool:
+    return (model or "").strip().lower() == "m2-her"
+
+
+def _select_api_key(*, model: str, anthropic_key: str, minimax_key: str) -> str:
+    if _is_minimax_mode(model=model, has_minimax_key=bool(minimax_key)):
+        return minimax_key or anthropic_key
+    return anthropic_key or minimax_key
 
 
 def _call_minimax_chat(
@@ -90,6 +105,47 @@ def _call_minimax_chat(
             return "\n".join(parts)
 
     raise RuntimeError(f"MiniMax 响应 message.content 格式不支持: {message}")
+
+
+def _call_minimax_openai_chat(
+    *,
+    api_key: str,
+    model: str,
+    system: str,
+    user: str,
+    base_url: str,
+    max_tokens: int = 1000,
+) -> str:
+    url = base_url.rstrip("/") + "/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    body = {
+        "model": model,
+        "messages": [
+            {"role": "system", "name": "NPC", "content": system},
+            {"role": "user", "name": "Player", "content": user},
+        ],
+        "max_completion_tokens": max_tokens,
+        "temperature": 1.0,
+        "top_p": 0.95,
+    }
+    with httpx.Client(timeout=45.0) as client:
+        resp = client.post(url, headers=headers, json=body)
+        resp.raise_for_status()
+        data = resp.json()
+
+    choices = data.get("choices") or []
+    if not choices:
+        raise RuntimeError(f"MiniMax response missing choices: {data}")
+
+    message = choices[0].get("message") or {}
+    content = message.get("content")
+    if isinstance(content, str):
+        return content.strip()
+
+    raise RuntimeError(f"Unsupported MiniMax message.content format: {message}")
 
 
 # (content, mtime) 用于开发时改 system_base.md 后自动失效；设 DEV_RELOAD_PERSONA=1 则完全不缓存。
@@ -305,9 +361,12 @@ def llm_choose_action(
 ) -> tuple[Action, str | None, dict[str, Any]]:
     import os
 
+    model = os.getenv("ANTHROPIC_MODEL", "MiniMax-M2.7")
     anthropic_key = _sanitize_api_key(os.getenv("ANTHROPIC_API_KEY") or "")
     minimax_key = _sanitize_api_key(os.getenv("MINIMAX_API_KEY") or "")
-    api_key = anthropic_key or minimax_key
+    api_key = _select_api_key(
+        model=model, anthropic_key=anthropic_key, minimax_key=minimax_key
+    )
     if not api_key:
         raise RuntimeError(
             "请设置 ANTHROPIC_API_KEY 或 MINIMAX_API_KEY（见 .env.example）"
@@ -317,10 +376,21 @@ def llm_choose_action(
     persona = _persona_text(project_root, agent_id, state)
     system = system_base + "\n\n# Persona\n" + persona
 
-    model = os.getenv("ANTHROPIC_MODEL", "MiniMax-M2.7")
     user = build_user_message(state, agent_id, events)
 
-    if _is_minimax_mode(model=model, has_minimax_key=bool(minimax_key)):
+    if _is_openai_chat_model(model):
+        minimax_base = (
+            os.getenv("MINIMAX_OPENAI_BASE_URL")
+            or "https://api.minimax.io/v1"
+        ).strip()
+        content = _call_minimax_openai_chat(
+            api_key=api_key,
+            model=model,
+            system=system,
+            user=user,
+            base_url=minimax_base,
+        )
+    elif _is_minimax_mode(model=model, has_minimax_key=bool(minimax_key)):
         minimax_base = (
             os.getenv("MINIMAX_BASE_URL") or "https://api.minimax.chat/v1"
         ).strip()
