@@ -83,9 +83,10 @@ button:disabled {
 }
 
 .speed-selector button.active {
-  background: var(--sao-green);
+  background: rgba(78, 204, 163, 0.85);
   color: #000;
-  border-color: var(--sao-green);
+  border-color: rgba(78, 204, 163, 0.9);
+  box-shadow: 0 0 10px rgba(78, 204, 163, 0.3);
 }
 
 .spinner {

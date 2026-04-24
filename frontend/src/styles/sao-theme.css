@@ -19,6 +19,8 @@
   --sao-border: rgba(94, 207, 255, 0.45);
   --sao-border-dim: rgba(94, 207, 255, 0.18);
   --sao-glow: 0 0 18px rgba(94, 207, 255, 0.35);
+  --sao-green: #4ecca3;
+  --sao-green-dim: rgba(78, 204, 163, 0.35);
   --field-deep: #0b1220;
   --field-frame: rgba(94, 207, 255, 0.22);
   font-family: system-ui, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
@@ -134,7 +136,7 @@ body {
   overflow: hidden;
 }
 
-/* Kenney CC0 RPG panel — subtle metal texture over cards */
+/* Subtle scanline texture on cards — no external asset dependency */
 .card::after {
   content: "";
   position: absolute;
@@ -142,9 +144,14 @@ body {
   border-radius: inherit;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.11;
-  background: url("/assets/kenney-ui/panelInset_blue.png") center / 100% 100% no-repeat;
-  mix-blend-mode: screen;
+  opacity: 0.06;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(94, 207, 255, 0.08) 3px,
+    rgba(94, 207, 255, 0.08) 4px
+  );
 }
 
 .card > * {
@@ -221,4 +228,67 @@ select:focus {
   button {
     transition: none;
   }
+}
+
+/* ===== GPU Acceleration Utilities ===== */
+.gpu {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.gpu-only {
+  will-change: transform, opacity;
+}
+
+/* ===== Reusable animation keyframes ===== */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ===== Custom scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(94, 207, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(94, 207, 255, 0.5);
+}
+
+/* ===== Text selection ===== */
+::selection {
+  background: rgba(94, 207, 255, 0.25);
+  color: #fff;
+}
+
+/* ===== Focus visible ===== */
+:focus-visible {
+  outline: 2px solid var(--sao-cyan);
+  outline-offset: 2px;
 }

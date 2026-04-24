@@ -4,10 +4,10 @@
       <button
         type="button"
         class="tab-btn"
-        :class="{ active: appTab === 'console' }"
-        @click="appTab = 'console'"
+        :class="{ active: appTab === 'overview' }"
+        @click="appTab = 'overview'"
       >
-        开发调试台
+        状态总览
       </button>
       <button
         type="button"
@@ -15,7 +15,7 @@
         :class="{ active: appTab === 'field' }"
         @click="appTab = 'field'"
       >
-        地图主界面
+        地图探索
       </button>
     </nav>
 
@@ -36,7 +36,7 @@
       :refresh="refresh"
     />
 
-    <div v-show="appTab === 'console'" class="game-layout">
+    <div v-show="appTab === 'overview'" class="game-layout">
     <DialogueBanner :message="bannerMessage" />
     <aside class="side-panel">
       <GameHeader :state="state" />
@@ -337,7 +337,7 @@ function handleSpeedChange(s) {
   border-color: var(--sao-border);
   box-shadow: var(--sao-glow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   background-color: rgba(15, 23, 42, 0.5);
-  background-image: url("/assets/kenney-ui/buttonLong_blue.png");
+  background-image: linear-gradient(180deg, rgba(94, 207, 255, 0.12), rgba(15, 23, 42, 0.6));
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
