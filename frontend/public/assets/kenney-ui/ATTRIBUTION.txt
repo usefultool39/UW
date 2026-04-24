@@ -1,0 +1,8 @@
+Sprites in this folder are from Kenney.nl (CC0 / public domain).
+
+Included packs:
+- UI Pack (arrows, divider)
+- UI Pack: RPG extension (panels, buttons, bars)
+
+Full license text: KENNEY-LICENSE.txt
+Source: https://kenney.nl

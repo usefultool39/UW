@@ -1,0 +1,27 @@
+{
+  "v": 2,
+  "agents": [
+    {
+      "id": "alice",
+      "display": "爱丽丝",
+      "role": "卢利特村 · 家务与照料（童年期）",
+      "behavior_role": "logistics",
+      "initial_location": "home",
+      "enabled": true,
+      "color": "#4ecca3",
+      "img": "/characters/alice.svg",
+      "imgFallback": "/characters/alice.svg"
+    },
+    {
+      "id": "eugeo",
+      "display": "优吉欧",
+      "role": "卢利特村 · 巨树清场（童年期）",
+      "behavior_role": "field",
+      "initial_location": "at_tree",
+      "enabled": true,
+      "color": "#533483",
+      "img": "/ugo.svg",
+      "imgFallback": "/ugo.svg"
+    }
+  ]
+}

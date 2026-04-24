@@ -1,0 +1,50 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Node / frontend
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+
+# Local runtime state
+runs/
+backend/runs/
+data/memory/
+backend/data/memory/
+
+# Test scratch dirs
+.pytest-tmp/
+pytest_tmp/
+backend/.pytest_tmp/
+backend/.codex_pytest_base/
+backend/.codex_pytest_tmp/
+backend/_test_tmp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/

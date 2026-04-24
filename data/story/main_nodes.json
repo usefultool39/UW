@@ -1,0 +1,45 @@
+{
+  "nodes": {
+    "mq00_tutorial": {
+      "label": "新手引导",
+      "requires": {},
+      "description": "初始节点；可经脚本或调试写入 prologue_reading_done 后尝试推进。"
+    },
+    "mq01_tree_arc": {
+      "label": "巨木清场篇",
+      "requires": { "prologue_reading_done": 1 },
+      "from": ["mq00_tutorial"],
+      "description": "巫师式主线闸示例：未完成读书环节则不可进入。"
+    },
+    "ch1_day1_clue_found": {
+      "label": "第一天 · 边界线索",
+      "requires": { "clue_boundary_record": 1 },
+      "from": ["mq00_tutorial", "mq01_tree_arc"],
+      "description": "玩家已经发现书库里的边界异常记录。"
+    },
+    "ch1_day2_anomaly": {
+      "label": "第二天 · 森林异常",
+      "requires": { "forest_anomaly_seen": 1 },
+      "from": ["ch1_day1_clue_found", "mq01_tree_arc"],
+      "description": "森林安静到不自然，边界冲突开始成为主线。"
+    },
+    "ch1_ending_order": {
+      "label": "结局 · 遵守规则",
+      "requires": { "ending_order": 1 },
+      "from": ["ch1_day2_anomaly"],
+      "description": "玩家选择退回村庄并报告异常。"
+    },
+    "ch1_ending_cross": {
+      "label": "结局 · 越界调查",
+      "requires": { "ending_cross": 1 },
+      "from": ["ch1_day2_anomaly"],
+      "description": "玩家选择触碰边界规则并确认异常源头。"
+    },
+    "ch1_ending_hide": {
+      "label": "结局 · 隐瞒异常",
+      "requires": { "ending_hide": 1 },
+      "from": ["ch1_day2_anomaly"],
+      "description": "玩家选择暂时隐瞒异常，把问题留到之后。"
+    }
+  }
+}

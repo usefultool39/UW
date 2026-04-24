@@ -1,0 +1,30 @@
+{
+  "v": 1,
+  "starter_region_id": "novice_village",
+  "regions": [
+    {
+      "id": "novice_village",
+      "display": "卢利特村（原型占位）",
+      "scenes": [
+        {
+          "id": "reading_hall",
+          "display": "看书/室内",
+          "daily_activity_ids": ["read", "rest_stub"],
+          "unlocked": true
+        },
+        {
+          "id": "gigas_clearing",
+          "display": "巨树清场",
+          "daily_activity_ids": ["gigas_chop"],
+          "unlocked": true
+        },
+        {
+          "id": "goblin_cave_stub",
+          "display": "北境洞窟（占位）",
+          "daily_activity_ids": [],
+          "unlocked": false
+        }
+      ]
+    }
+  ]
+}

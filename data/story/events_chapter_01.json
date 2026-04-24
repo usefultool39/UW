@@ -1,0 +1,412 @@
+{
+  "v": 1,
+  "chapter": "chapter_01",
+  "events": [
+    {
+      "id": "ch1_d1_reading_clue",
+      "chapter": "chapter_01",
+      "kind": "clue",
+      "title": "书库里的边界记录",
+      "description": "一本被反复翻过的旧书记录着北方边界的异常：那里的鸟声会突然消失，像有什么东西把规则按住了。",
+      "trigger": {
+        "day_min": 1,
+        "day_max": 1,
+        "time_bands": ["morning", "afternoon"],
+        "forbidden_flags": { "clue_boundary_record": 1 }
+      },
+      "location": { "scene_id": "reading_hall", "tile_x": 13, "tile_y": 14 },
+      "participants": ["alice"],
+      "choices": [
+        {
+          "id": "ask_alice",
+          "label": "把记录告诉爱丽丝",
+          "hint": "信任她，也让她开始担心边界。",
+          "result_text": "爱丽丝听完后没有立刻回答，只是把书页合上，问你有没有听见北边今天太安静。",
+          "effects": {
+            "flags": {
+              "clue_boundary_record": 1,
+              "alice_warned_boundary": 1
+            },
+            "story_node_id": "ch1_day1_clue_found",
+            "relationship": {
+              "alice.trust": 6,
+              "alice.tension": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家在第一天把书库里的边界记录告诉了爱丽丝。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "keep_note",
+          "label": "先把线索记在心里",
+          "hint": "你保留了主动权，但爱丽丝暂时不知道。",
+          "result_text": "你记下书页边角的符号，决定先观察村子和森林的变化。",
+          "effects": {
+            "flags": {
+              "clue_boundary_record": 1,
+              "kept_boundary_note": 1
+            },
+            "story_node_id": "ch1_day1_clue_found",
+            "relationship": {
+              "alice.tension": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家读到边界记录后没有立刻告诉爱丽丝。",
+                "weight": 3
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d1_training_with_eugeo",
+      "chapter": "chapter_01",
+      "kind": "training",
+      "title": "巨树旁的训练",
+      "description": "优吉欧在巨树旁整理斧柄。他说训练不只是力气，也是确认世界每天仍按规则运转的方式。",
+      "trigger": {
+        "day_min": 1,
+        "day_max": 1,
+        "time_bands": ["morning", "afternoon"],
+        "forbidden_flags": { "trained_with_eugeo": 1 }
+      },
+      "location": { "scene_id": "gigas_clearing", "tile_x": 54, "tile_y": 22 },
+      "participants": ["eugeo"],
+      "choices": [
+        {
+          "id": "steady_training",
+          "label": "按优吉欧的节奏训练",
+          "hint": "稳住日常，建立并肩感。",
+          "result_text": "优吉欧放慢动作教你找回节奏。巨树没有明显变化，但你们之间的沉默轻了一点。",
+          "effects": {
+            "flags": {
+              "trained_with_eugeo": 1
+            },
+            "relationship": {
+              "eugeo.affinity": 5,
+              "eugeo.trust": 4
+            },
+            "memory": {
+              "eugeo": {
+                "type": "choice",
+                "summary": "玩家第一天选择按优吉欧的节奏训练，而不是急着突破规则。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "ask_boundary",
+          "label": "训练时追问北方边界",
+          "hint": "你把日常训练和异常线索连起来。",
+          "result_text": "优吉欧的斧头停了一下。他说北边不是没人想过，只是很少有人会继续问。",
+          "effects": {
+            "flags": {
+              "trained_with_eugeo": 1,
+              "eugeo_heard_boundary_question": 1
+            },
+            "relationship": {
+              "eugeo.trust": 5,
+              "eugeo.tension": 3
+            },
+            "memory": {
+              "eugeo": {
+                "type": "choice",
+                "summary": "玩家在训练时追问北方边界，让优吉欧开始认真看待异常。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d2_forest_anomaly",
+      "chapter": "chapter_01",
+      "kind": "anomaly",
+      "title": "森林忽然安静",
+      "description": "第二天，巨树清场附近的风声断了一瞬。不是普通的安静，更像一条看不见的线划过森林。",
+      "trigger": {
+        "day_min": 2,
+        "day_max": 2,
+        "time_bands": ["morning", "afternoon"],
+        "required_flags": { "clue_boundary_record": 1 },
+        "forbidden_flags": { "forest_anomaly_seen": 1 }
+      },
+      "location": { "scene_id": "gigas_clearing", "tile_x": 58, "tile_y": 18 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "investigate_together",
+          "label": "叫上两人一起确认异常",
+          "hint": "稳妥，但会让所有人都被卷入。",
+          "result_text": "你们一起走到清场边缘。爱丽丝盯着地面，优吉欧则记住了风声消失的位置。",
+          "effects": {
+            "flags": {
+              "forest_anomaly_seen": 1,
+              "promise_investigate_with_eugeo": 1
+            },
+            "story_node_id": "ch1_day2_anomaly",
+            "relationship": {
+              "alice.trust": 4,
+              "eugeo.trust": 5,
+              "alice.tension": 3
+            },
+            "promises": {
+              "eugeo": "玩家答应第二天继续一起确认北方边界的异常。"
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家在森林异常出现时选择叫上大家一起调查。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "choice",
+                "summary": "玩家在森林异常出现时没有独自行动，而是让优吉欧一同确认。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "press_alone",
+          "label": "独自靠近异常方向",
+          "hint": "更冒险，也会让同伴不安。",
+          "result_text": "你往前多走了几步。优吉欧叫住你，爱丽丝的声音比平时冷静得多。",
+          "effects": {
+            "flags": {
+              "forest_anomaly_seen": 1,
+              "boundary_risk_taken": 1
+            },
+            "story_node_id": "ch1_day2_anomaly",
+            "relationship": {
+              "alice.tension": 7,
+              "eugeo.tension": 5,
+              "eugeo.trust": 2
+            },
+            "tensions": {
+              "alice": "玩家在森林异常出现时独自靠近危险方向。",
+              "eugeo": "玩家差点在没有准备的情况下越过安全距离。"
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家在森林异常出现时独自靠近危险方向，让爱丽丝明显不安。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "choice",
+                "summary": "玩家在森林异常出现时冒险前进，优吉欧记住了这份冲动。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d2_npc_disagreement",
+      "chapter": "chapter_01",
+      "kind": "conflict",
+      "title": "晚餐桌边的分歧",
+      "description": "傍晚，异常变成了桌边没说出口的话。爱丽丝倾向报告大人，优吉欧则想再确认一次。",
+      "trigger": {
+        "day_min": 2,
+        "day_max": 2,
+        "time_bands": ["evening", "night"],
+        "required_flags": { "forest_anomaly_seen": 1 },
+        "forbidden_flags": { "npc_disagreement_resolved": 1 }
+      },
+      "location": { "scene_id": "reading_hall", "tile_x": 15, "tile_y": 15 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "side_with_caution",
+          "label": "支持爱丽丝：先遵守规则",
+          "hint": "降低风险，但优吉欧会觉得你们停得太早。",
+          "result_text": "爱丽丝松了一口气。优吉欧没有反驳，只是把杯子转了半圈。",
+          "effects": {
+            "flags": {
+              "npc_disagreement_resolved": 1,
+              "lean_order": 1
+            },
+            "relationship": {
+              "alice.trust": 6,
+              "alice.tension": -3,
+              "eugeo.tension": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家在第二天晚餐时支持爱丽丝先遵守规则。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "choice",
+                "summary": "玩家在第二天晚餐时倾向谨慎，优吉欧觉得调查被推迟了。",
+                "weight": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "side_with_inquiry",
+          "label": "支持优吉欧：明天确认边界",
+          "hint": "推进调查，但爱丽丝会更担心。",
+          "result_text": "优吉欧点头得很慢。爱丽丝看着你们，像是在判断这是不是一个错误的开始。",
+          "effects": {
+            "flags": {
+              "npc_disagreement_resolved": 1,
+              "lean_cross": 1
+            },
+            "relationship": {
+              "eugeo.trust": 7,
+              "alice.tension": 5
+            },
+            "promises": {
+              "alice": "玩家答应第三天不会鲁莽越过边界。"
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家在第二天晚餐时支持继续确认边界，爱丽丝因此更担心。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "choice",
+                "summary": "玩家在第二天晚餐时支持优吉欧继续调查边界异常。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d3_boundary_choice",
+      "chapter": "chapter_01",
+      "kind": "final_choice",
+      "title": "第三天：边界线前",
+      "description": "你们终于站到那条看不见的边界前。规则没有声音，却比任何命令都更清楚地压在每个人心上。",
+      "trigger": {
+        "day_min": 3,
+        "day_max": 3,
+        "time_bands": ["morning", "afternoon", "evening"],
+        "required_flags": { "forest_anomaly_seen": 1 },
+        "forbidden_flags": { "boundary_incident_resolved": 1 }
+      },
+      "location": { "scene_id": "gigas_clearing", "tile_x": 61, "tile_y": 16 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "obey_order",
+          "label": "遵守规则，回村报告",
+          "hint": "安全收束，但异常会留下。",
+          "result_text": "你们退回村路。世界像是什么也没发生，但每个人都知道有些问题已经被看见。",
+          "effects": {
+            "flags": {
+              "boundary_incident_resolved": 1,
+              "ending_order": 1
+            },
+            "story_node_id": "ch1_ending_order",
+            "ending_id": "order",
+            "relationship": {
+              "alice.trust": 5,
+              "alice.tension": -4,
+              "eugeo.tension": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "ending",
+                "summary": "玩家在边界线前选择遵守规则并回村报告。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "ending",
+                "summary": "玩家在边界线前选择回村报告，优吉欧记住了这个谨慎结局。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "cross_boundary",
+          "label": "越过边界，确认异常源头",
+          "hint": "最危险，也最接近真相。",
+          "result_text": "你向前迈出一步。那一瞬间，风声重新回到森林里，像世界终于承认你听见了它。",
+          "effects": {
+            "flags": {
+              "boundary_incident_resolved": 1,
+              "boundary_rule_touched": 1,
+              "ending_cross": 1
+            },
+            "story_node_id": "ch1_ending_cross",
+            "ending_id": "cross",
+            "relationship": {
+              "alice.trust": 7,
+              "alice.tension": 8,
+              "eugeo.trust": 8,
+              "eugeo.tension": 4
+            },
+            "memory": {
+              "alice": {
+                "type": "ending",
+                "summary": "玩家在第三天越过边界确认异常，爱丽丝既信任又担心。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "ending",
+                "summary": "玩家在第三天越过边界，优吉欧把这视为第一次真正的共同冒险。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "hide_anomaly",
+          "label": "隐瞒异常，暂时保护同伴",
+          "hint": "保住当下，但关系里会留下暗线。",
+          "result_text": "你说风声已经恢复正常。没人追问，可晚餐时的沉默比前两天更长。",
+          "effects": {
+            "flags": {
+              "boundary_incident_resolved": 1,
+              "ending_hide": 1
+            },
+            "story_node_id": "ch1_ending_hide",
+            "ending_id": "hide",
+            "relationship": {
+              "alice.tension": 6,
+              "eugeo.trust": -2,
+              "eugeo.tension": 3
+            },
+            "tensions": {
+              "alice": "玩家在边界事件后选择隐瞒异常。",
+              "eugeo": "玩家没有把边界前看到的一切说完整。"
+            },
+            "memory": {
+              "alice": {
+                "type": "ending",
+                "summary": "玩家在第三天选择隐瞒边界异常，爱丽丝隐约察觉了不完整的沉默。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "ending",
+                "summary": "玩家在第三天没有完整说明边界前发生了什么。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
