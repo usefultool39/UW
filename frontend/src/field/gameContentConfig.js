@@ -4,7 +4,9 @@ export const GAME_CHAPTER_INFO = {
 }
 
 export const WORLD_ASSETS = {
-  background: '/assets/game/field-bg.png'
+  // The painted map is kept in assets, but the live field uses procedural terrain
+  // so the scene stays calmer and avoids a large, noisy texture in motion.
+  background: ''
 }
 
 export const AGENTS = {

@@ -41,24 +41,9 @@ body {
   text-rendering: optimizeLegibility;
   background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(94, 207, 255, 0.14), transparent 55%),
-    radial-gradient(ellipse 70% 50% at 0% 40%, rgba(107, 91, 154, 0.08), transparent 50%),
-    radial-gradient(ellipse 90% 60% at 100% 100%, rgba(201, 162, 39, 0.07), transparent 45%),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.015) 2px,
-      rgba(255, 255, 255, 0.015) 4px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.012) 2px,
-      rgba(255, 255, 255, 0.012) 4px
-    ),
-    linear-gradient(180deg, var(--bg-mid) 0%, var(--bg) 100%);
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(126, 169, 194, 0.12), transparent 58%),
+    radial-gradient(ellipse 70% 50% at 100% 80%, rgba(93, 111, 84, 0.08), transparent 48%),
+    linear-gradient(180deg, #101929 0%, #071019 100%);
 }
 
 /* Corner bracket frame */

@@ -185,7 +185,9 @@ export function createWorldFieldSceneClass(Phaser, deps) {
     }
 
     preload() {
-      this.load.image('world_village_bg', WORLD_ASSETS.background)
+      if (WORLD_ASSETS.background) {
+        this.load.image('world_village_bg', WORLD_ASSETS.background)
+      }
       for (const cfg of Object.values(AGENTS)) {
         if (cfg.asset) this.load.image(cfg.textureKey, cfg.asset)
       }
@@ -297,9 +299,9 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         }
       }
       g.setDepth(0)
-      g.setAlpha(hasWorldBg ? 0.08 : 1)
-      drawTerrainOverlays(this, map, ts).setAlpha(hasWorldBg ? 0.2 : 1)
-      drawLandmarkArt(this, map, ts).setAlpha(hasWorldBg ? 0.78 : 1)
+      g.setAlpha(hasWorldBg ? 0.42 : 1)
+      drawTerrainOverlays(this, map, ts).setAlpha(hasWorldBg ? 0.55 : 0.82)
+      drawLandmarkArt(this, map, ts).setAlpha(hasWorldBg ? 0.82 : 0.92)
       drawExplorationAtmosphere(this, map, ts).setAlpha(hasWorldBg ? 1 : 0.82)
       this._pathG = this.add.graphics().setDepth(3)
 

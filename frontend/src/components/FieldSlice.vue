@@ -25,6 +25,7 @@
 
       <!-- Phaser map canvas -->
       <FieldMap
+        v-if="worldMapRef"
         ref="mapRef"
         :sim-state="simState"
         :world-map="worldMapRef"
@@ -39,6 +40,7 @@
         @event-click="openStoryEvent"
         @ready="onSceneReady"
       />
+      <div v-else class="field-map-loading">正在同步村庄地图…</div>
 
       <!-- Right side quest tracker -->
       <QuestTracker
@@ -189,7 +191,6 @@ const npcProfile = ref(null)
 
 let toastTimer = null
 let sceneInstance = null
-let playerActionResolver = null
 
 // --- Computed ---
 const sceneLabel = computed(() => getSceneLabel(props.simState?.player?.scene_id || props.simState?.scene_id || ''))
@@ -286,7 +287,6 @@ async function onTileClick({ tile_x, tile_y }) {
     if (sceneInstance?.playWalkPath) {
       await sceneInstance.playWalkPath(path)
     }
-    mapRef.value?.triggerShake()
     await props.refresh()
     if (sceneInstance?.syncPlayerFromState) sceneInstance.syncPlayerFromState()
   } catch (e) {
@@ -512,10 +512,21 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleHotkey)
   clearTimeout(toastTimer)
+  clearTimeout(syncTimer)
+  clearTimeout(storyRefreshTimer)
   sceneInstance = null
 })
 
-// Sync when state changes — debounced to avoid flooding Phaser and API
+const storyRefreshKey = computed(() => JSON.stringify({
+  day: props.simState?.day,
+  time_band: props.simState?.time_band,
+  story_node_id: props.simState?.story_node_id,
+  flags: props.simState?.flags || {},
+  completed_event_ids: props.simState?.completed_event_ids || [],
+  chapter_ending_id: props.simState?.chapter_ending_id || ''
+}))
+
+// Sync visual state without re-fetching on every agent stat change.
 let syncTimer = null
 watch(
   () => props.simState,
@@ -523,16 +534,21 @@ watch(
     clearTimeout(syncTimer)
     syncTimer = setTimeout(() => {
       sceneInstance?.syncPlayerFromState?.()
-      sceneInstance?.rebuildPois?.()
-      sceneInstance?.syncNpcs?.()
-      refreshStoryEvents()
       if (npcPanelOpen.value && selectedNpcId.value && !selectedNpc.value) {
         npcPanelOpen.value = false
       }
-    }, 300)
+    }, 80)
   },
   { deep: true }
 )
+
+let storyRefreshTimer = null
+watch(storyRefreshKey, () => {
+  clearTimeout(storyRefreshTimer)
+  storyRefreshTimer = setTimeout(() => {
+    refreshStoryEvents()
+  }, 180)
+})
 </script>
 
 <style scoped>
@@ -552,6 +568,18 @@ watch(
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.42), 0 18px 54px rgba(0, 0, 0, 0.5), 0 0 30px rgba(94, 207, 255, 0.08);
   background: var(--field-deep);
   will-change: transform;
+}
+
+.field-map-loading {
+  aspect-ratio: 1280 / 720;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--muted);
+  background:
+    linear-gradient(180deg, rgba(19, 31, 44, 0.96), rgba(8, 14, 22, 0.98));
+  border: 1px solid var(--field-frame);
+  font-size: 0.86rem;
 }
 
 .field-err {
