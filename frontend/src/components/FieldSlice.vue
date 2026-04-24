@@ -301,6 +301,7 @@ async function onTileClick({ tile_x, tile_y }) {
     if (sceneInstance?.playWalkPath) {
       await sceneInstance.playWalkPath(path)
     }
+    mapRef.value?.triggerCameraShake?.()
     await props.refresh()
     if (sceneInstance?.syncPlayerFromState) sceneInstance.syncPlayerFromState()
   } catch (e) {
@@ -536,9 +537,10 @@ const storyRefreshKey = computed(() => JSON.stringify({
 }))
 
 // Sync visual state without re-fetching on every agent stat change.
+// Only watch player position and agent list length for actual sync needs.
 let syncTimer = null
 watch(
-  () => props.simState,
+  () => [props.simState?.player?.tile_x, props.simState?.player?.tile_y, props.simState?.agents?.length],
   () => {
     clearTimeout(syncTimer)
     syncTimer = setTimeout(() => {
@@ -547,8 +549,7 @@ watch(
         npcPanelOpen.value = false
       }
     }, 80)
-  },
-  { deep: true }
+  }
 )
 
 let storyRefreshTimer = null

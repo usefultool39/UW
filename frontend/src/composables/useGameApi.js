@@ -114,8 +114,7 @@ export function useGameApi() {
 
   async function refresh() {
     try {
-      await fetchState()
-      await fetchEvents()
+      await Promise.all([fetchState(), fetchEvents()])
       lastError.value = ''
     } catch (e) {
       lastError.value = e.message || '刷新失败'

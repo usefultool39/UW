@@ -95,6 +95,7 @@ let shakeTimer = null
 let game = null
 let sceneInstance = null
 let miniFrame = null
+let miniLastUpdate = 0
 
 const day = ref(1)
 const timeBand = ref('morning')
@@ -111,20 +112,30 @@ const MINI_COLORS = {
 const miniRows = computed(() => props.worldMap?.rows || [])
 const miniWidth = computed(() => miniRows.value[0]?.length || 0)
 const miniHeight = computed(() => miniRows.value.length || 0)
-const miniTiles = computed(() => {
-  const tiles = []
-  miniRows.value.forEach((row, y) => {
-    String(row || '').split('').forEach((ch, x) => {
-      tiles.push({
-        key: `${x}-${y}`,
-        x,
-        y,
-        color: MINI_COLORS[ch] || MINI_COLORS[0]
+
+// Cache tiles — recompute only when worldMap reference changes, not every reactive update
+const miniTilesCache = ref([])
+let lastWorldMapId = null
+
+watch(
+  () => props.worldMap,
+  (map) => {
+    const mapId = map?.id || ''
+    if (mapId === lastWorldMapId) return
+    lastWorldMapId = mapId
+    const tiles = []
+    const rows = map?.rows || []
+    rows.forEach((row, y) => {
+      String(row || '').split('').forEach((ch, x) => {
+        tiles.push({ key: `${x}-${y}`, x, y, color: MINI_COLORS[ch] || MINI_COLORS[0] })
       })
     })
-  })
-  return tiles
-})
+    miniTilesCache.value = tiles
+  },
+  { immediate: true }
+)
+
+const miniTiles = computed(() => miniTilesCache.value)
 
 const miniPlayer = computed(() => {
   const p = props.simState?.player
@@ -157,6 +168,13 @@ const miniEvents = computed(() => (props.storyEvents || [])
   .filter((event) => Number.isFinite(event.x) && Number.isFinite(event.y)))
 
 function updateMiniViewport() {
+  const now = Date.now()
+  if (now - (miniLastUpdate || 0) < 100) {
+    // Throttle: max 10fps for minimap viewport updates
+    miniFrame = window.requestAnimationFrame(updateMiniViewport)
+    return
+  }
+  miniLastUpdate = now
   if (sceneInstance?.cameras?.main && sceneInstance._tileSize) {
     const view = sceneInstance.cameras.main.worldView
     const ts = sceneInstance._tileSize
@@ -185,6 +203,13 @@ function triggerShake() {
   shakeActive.value = true
   clearTimeout(shakeTimer)
   shakeTimer = setTimeout(() => { shakeActive.value = false }, 220)
+}
+
+function triggerCameraShake() {
+  if (!sceneInstance?.cameras?.main) return
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  sceneInstance.cameras.main.shake(180, 0.004)
+  triggerShake()
 }
 
 watch(
@@ -267,7 +292,7 @@ onUnmounted(() => {
 })
 
 // Expose shake trigger for parent
-defineExpose({ triggerShake, sceneInstance: () => sceneInstance })
+defineExpose({ triggerShake, triggerCameraShake, sceneInstance: () => sceneInstance })
 
 watch(
   () => props.storyEvents,

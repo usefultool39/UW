@@ -366,62 +366,79 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       this.playerRoot.add([playerHalo, playerShadow, playerSprite, playerName])
 
       this._npcLayer = this.add.container(0, 0).setDepth(11)
+      // Store existing NPC containers by id for delta updates
+      this._npcContainers = {}
       this.syncNpcs = () => {
         if (!this._npcLayer) return
-        const children = [...this._npcLayer.list]
-        for (const ch of children) {
-          this.tweens.killTweensOf(ch, true)
-        }
-        this._npcLayer.destroy(true)
-        this._npcLayer = this.add.container(0, 0).setDepth(11)
         const st = getSimState()
         const agents = Array.isArray(st?.agents) ? st.agents : []
+        const aliveIds = new Set(agents.map(a => a.id))
+        // Remove NPCs that are no longer present
+        for (const id of Object.keys(this._npcContainers)) {
+          if (!aliveIds.has(id)) {
+            const cont = this._npcContainers[id]
+            if (cont) {
+              this.tweens.killTweensOf(cont, true)
+              cont.destroy(true)
+              delete this._npcContainers[id]
+            }
+          }
+        }
+        // Update or create each NPC
         for (const agent of agents) {
           const ax = Number(agent?.tile_x)
           const ay = Number(agent?.tile_y)
           if (!Number.isFinite(ax) || !Number.isFinite(ay)) continue
-          const cont = this.add.container((ax + 0.5) * ts, (ay + 0.5) * ts)
-          const npcCfg = getAgentConfig(agent.id)
-          const key = npcCfg.textureKey
-          const haloColor = npcCfg.haloColor
-          const halo = this.add.ellipse(0, 13, 34, 15, haloColor, 0.1).setStrokeStyle(1, haloColor, 0.58)
-          const shadow = this.add.ellipse(0, 17, 27, 9, 0x000000, 0.25)
-          const face = key && this.textures.exists(key) ? this.add.image(0, -15, key) : this.add.image(0, -15, AGENT_ART_KEYS.kirito)
-          face.setScale(npcCfg.tokenHeight / Math.max(1, face.height))
-          const hit = this.add.circle(0, 0, 25, 0xffffff, 0.001).setInteractive({ useHandCursor: true })
-          const mood = Number(agent.mood ?? 50)
-          const moodColor = mood >= 70 ? '#bbf7d0' : mood >= 40 ? '#fde68a' : '#fecaca'
-          const tag = this.add
-            .text(0, 29, npcCfg.label, {
-              fontSize: '10px',
-              color: '#fef3c7',
-              fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
-              stroke: '#0f172a',
-              strokeThickness: 3
+          const cont = this._npcContainers[agent.id]
+          if (cont) {
+            // Delta update: only move position
+            cont.setPosition((ax + 0.5) * ts, (ay + 0.5) * ts)
+          } else {
+            // Create new NPC container
+            const newCont = this.add.container((ax + 0.5) * ts, (ay + 0.5) * ts)
+            const npcCfg = getAgentConfig(agent.id)
+            const key = npcCfg.textureKey
+            const haloColor = npcCfg.haloColor
+            const halo = this.add.ellipse(0, 13, 34, 15, haloColor, 0.1).setStrokeStyle(1, haloColor, 0.58)
+            const shadow = this.add.ellipse(0, 17, 27, 9, 0x000000, 0.25)
+            const face = key && this.textures.exists(key) ? this.add.image(0, -15, key) : this.add.image(0, -15, AGENT_ART_KEYS.kirito)
+            face.setScale(npcCfg.tokenHeight / Math.max(1, face.height))
+            const hit = this.add.circle(0, 0, 25, 0xffffff, 0.001).setInteractive({ useHandCursor: true })
+            const mood = Number(agent.mood ?? 50)
+            const moodColor = mood >= 70 ? '#bbf7d0' : mood >= 40 ? '#fde68a' : '#fecaca'
+            const tag = this.add
+              .text(0, 29, npcCfg.label, {
+                fontSize: '10px',
+                color: '#fef3c7',
+                fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
+                stroke: '#0f172a',
+                strokeThickness: 3
+              })
+              .setOrigin(0.5, 0)
+            const tagBg = this.add
+              .rectangle(0, 37, Math.max(46, tag.width + 14), 15, 0x120f0b, 0.72)
+              .setStrokeStyle(1, 0xf6d36e, 0.28)
+            const moodDot = this.add
+              .text(16, -24, '●', {
+                fontSize: '11px',
+                color: moodColor,
+                stroke: '#0f172a',
+                strokeThickness: 3
+              })
+              .setOrigin(0.5)
+            hit.on('pointerdown', (pointer) => {
+              pointer.event?.preventDefault?.()
+              this._pendingTilePick = null
             })
-            .setOrigin(0.5, 0)
-          const tagBg = this.add
-            .rectangle(0, 37, Math.max(46, tag.width + 14), 15, 0x120f0b, 0.72)
-            .setStrokeStyle(1, 0xf6d36e, 0.28)
-          const moodDot = this.add
-            .text(16, -24, '●', {
-              fontSize: '11px',
-              color: moodColor,
-              stroke: '#0f172a',
-              strokeThickness: 3
+            hit.on('pointerup', (pointer) => {
+              pointer.event?.preventDefault?.()
+              this._pendingTilePick = null
+              if (!isBusy()) openNpcPanel(agent.id)
             })
-            .setOrigin(0.5)
-          hit.on('pointerdown', (pointer) => {
-            pointer.event?.preventDefault?.()
-            this._pendingTilePick = null
-          })
-          hit.on('pointerup', (pointer) => {
-            pointer.event?.preventDefault?.()
-            this._pendingTilePick = null
-            if (!isBusy()) openNpcPanel(agent.id)
-          })
-          cont.add([halo, shadow, face, moodDot, tagBg, tag, hit])
-          this._npcLayer.add(cont)
+            newCont.add([halo, shadow, face, moodDot, tagBg, tag, hit])
+            this._npcLayer.add(newCont)
+            this._npcContainers[agent.id] = newCont
+          }
         }
       }
       this.syncNpcs()
