@@ -19,11 +19,43 @@ export const SCENE_DEFINITIONS = {
     playMode: 'field',
     status: 'open'
   },
+  church_library: {
+    id: 'church_library',
+    mapId: 'novice_open',
+    regionId: 'novice_village',
+    label: '教会书库',
+    playMode: 'field',
+    status: 'open'
+  },
+  home_hearth: {
+    id: 'home_hearth',
+    mapId: 'novice_open',
+    regionId: 'novice_village',
+    label: '家中炉火',
+    playMode: 'field',
+    status: 'open'
+  },
+  village_square: {
+    id: 'village_square',
+    mapId: 'novice_open',
+    regionId: 'novice_village',
+    label: '村道广场',
+    playMode: 'field',
+    status: 'open'
+  },
   gigas_clearing: {
     id: 'gigas_clearing',
     mapId: 'novice_open',
     regionId: 'novice_village',
     label: '基家斯西达清场',
+    playMode: 'field',
+    status: 'open'
+  },
+  north_gate: {
+    id: 'north_gate',
+    mapId: 'novice_open',
+    regionId: 'novice_village',
+    label: '北境边门',
     playMode: 'field',
     status: 'open'
   },

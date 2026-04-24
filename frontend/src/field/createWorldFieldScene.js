@@ -534,8 +534,8 @@ export function createWorldFieldSceneClass(Phaser, deps) {
             cont.add(gix)
             cont.add(
               this.add
-                .text(0, tsz * 0.28, '互动', {
-                  fontSize: '9px',
+                .text(0, tsz * 0.28, p.label || p.title || '互动', {
+                  fontSize: '10px',
                   color: '#e0f2fe',
                   fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
                   stroke: '#0c4a6e',

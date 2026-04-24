@@ -12,10 +12,11 @@ from .heuristic import choose_action
 from .llm_agent import llm_choose_action
 from .memory_store import MemoryStore
 from .models import Location, SimEvent, WorldState
-from .relationship import ensure_relationships, npc_profile
+from .relationship import apply_relationship_effects, ensure_relationships, npc_profile
+from .scene_activities import find_scene_activity
 from .story_director import available_events, choose_event
 from .story_catalog import can_enter_node, default_catalog_path, load_main_nodes
-from .world import advance_tick, apply_action, apply_npc_schedules, initial_world
+from .world import advance_tick, apply_action, apply_environment, apply_npc_schedules, initial_world
 from .world_map import bfs_path, default_map_path, load_world_map, scene_for_tile
 
 
@@ -177,12 +178,16 @@ class Session:
         location: str | None = None,
         flag_key: str | None = None,
         flag_value: int | None = None,
+        activity_id: str | None = None,
         tile_x: int | None = None,
         tile_y: int | None = None,
     ) -> dict:
         with self._lock:
             self.state = ensure_relationships(self.state)
             path_payload: list[dict[str, int]] | None = None
+            activity_result: dict | None = None
+            relationship_changes: list[dict] = []
+            memory_written: list[dict] = []
             if kind == "move_world":
                 if tile_x is None or tile_y is None:
                     return {"ok": False, "error": "missing_tile"}
@@ -228,6 +233,98 @@ class Session:
                 flags = dict(self.state.flags)
                 flags[flag_key] = int(flag_value)
                 self.state = self.state.model_copy(update={"flags": flags})
+            elif kind == "scene_activity":
+                if not activity_id:
+                    return {"ok": False, "error": "missing_activity_id"}
+                activity = find_scene_activity(self.root, activity_id)
+                if not activity:
+                    return {"ok": False, "error": "unknown_activity"}
+
+                scene_ids = activity.get("scene_ids")
+                if isinstance(scene_ids, list) and scene_ids:
+                    allowed_scenes = {str(s) for s in scene_ids}
+                else:
+                    scene_req = str(activity.get("scene_id") or "")
+                    allowed_scenes = {scene_req} if scene_req else set()
+                if allowed_scenes and self.state.player.scene_id not in allowed_scenes:
+                    return {"ok": False, "error": "wrong_scene"}
+                time_bands = activity.get("time_bands") or []
+                if isinstance(time_bands, list) and time_bands and self.state.time_band not in time_bands:
+                    return {"ok": False, "error": "wrong_time_band"}
+
+                requirements = activity.get("requirements") or {}
+                required_flags = requirements.get("required_flags") or {}
+                if isinstance(required_flags, dict):
+                    for key, val in required_flags.items():
+                        if self.state.flags.get(str(key)) != int(val):
+                            return {"ok": False, "error": "requirements_not_met"}
+
+                effects = activity.get("effects") or {}
+                if not isinstance(effects, dict):
+                    effects = {}
+
+                flags = dict(self.state.flags)
+                for key, val in (effects.get("flags") or {}).items():
+                    flags[str(key)] = int(val)
+                if flags != self.state.flags:
+                    self.state = self.state.model_copy(update={"flags": flags})
+
+                self.state, relationship_changes = apply_relationship_effects(
+                    self.state,
+                    effects.get("relationship") if isinstance(effects.get("relationship"), dict) else {},
+                )
+
+                tree_damage = max(0, int(effects.get("tree_damage") or 0))
+                if tree_damage:
+                    tree = self.state.tree.model_copy(
+                        update={"hp": max(0, self.state.tree.hp - tree_damage)}
+                    )
+                    self.state = self.state.model_copy(update={"tree": tree})
+
+                for npc_id, memory in (effects.get("memory") or {}).items():
+                    if not isinstance(memory, dict):
+                        continue
+                    stored = self.memory_store.append_important_memory(
+                        str(npc_id),
+                        {
+                            "day": self.state.day,
+                            "type": memory.get("type") or "scene_activity",
+                            "summary": memory.get("summary") or "",
+                            "weight": memory.get("weight") or 3,
+                            "source_event": activity_id,
+                        },
+                        self.run_id,
+                    )
+                    memory_written.append({"npc_id": str(npc_id), **stored})
+
+                if effects.get("sleep_until_morning") is True:
+                    pl = self.state.player.model_copy(update={"location": Location.home})
+                    self.state = self.state.model_copy(
+                        update={
+                            "day": self.state.day + 1,
+                            "tick": 0,
+                            "time_band": "morning",
+                            "player": pl,
+                        }
+                    )
+                    self.state = apply_npc_schedules(apply_environment(self.state), self.root)
+
+                time_cost = max(0, min(12, int(activity.get("time_cost") or 0)))
+                for _ in range(time_cost):
+                    self.state = advance_tick(self.state)
+
+                activity_result = {
+                    "activity": {
+                        "id": activity.get("id"),
+                        "title": activity.get("title"),
+                        "label": activity.get("label"),
+                    },
+                    "result_text": activity.get("result_text") or "这段日常被今天记住了。",
+                    "time_cost": time_cost,
+                    "tree_damage": tree_damage,
+                    "relationship_changes": relationship_changes,
+                    "memory_written": memory_written,
+                }
             elif kind == "rest_until_next_day":
                 pl = self.state.player.model_copy(update={"location": Location.home})
                 self.state = self.state.model_copy(
@@ -238,7 +335,7 @@ class Session:
                         "player": pl,
                     }
                 )
-                self.state = apply_npc_schedules(self.state, self.root)
+                self.state = apply_npc_schedules(apply_environment(self.state), self.root)
             else:
                 return {"ok": False, "error": "unknown_action_kind"}
 
@@ -250,9 +347,11 @@ class Session:
                     "location": location,
                     "flag_key": flag_key,
                     "flag_value": flag_value,
+                    "activity_id": activity_id,
                     "tile_x": tile_x,
                     "tile_y": tile_y,
                 },
+                "activity_result": activity_result,
                 "tick": self.state.tick,
                 "day": self.state.day,
             }
@@ -262,6 +361,10 @@ class Session:
             out: dict = {"ok": True, "state": self.state.model_dump(mode="json")}
             if path_payload is not None:
                 out["path"] = path_payload
+            if activity_result is not None:
+                out["activity_result"] = activity_result
+                out["relationship_changes"] = relationship_changes
+                out["memory_written"] = memory_written
             return out
 
     def available_story_events(self) -> dict:

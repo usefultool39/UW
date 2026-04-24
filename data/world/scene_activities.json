@@ -1,0 +1,202 @@
+{
+  "v": 1,
+  "activities": [
+    {
+      "id": "gigas_chop_rhythm",
+      "scene_id": "gigas_clearing",
+      "scene_ids": ["gigas_clearing"],
+      "poi_id": "ix_gigas_tree",
+      "title": "巨树清场 · 稳定挥斧",
+      "label": "按尤吉欧的节奏砍树",
+      "description": "把注意力放在斧角、呼吸和树干回震上。巨树不会立刻倒下，但日常会慢慢变得可信。",
+      "result_text": "斧刃切进基家斯西达的表皮，回声沿着手臂传来。尤吉欧点头，说今天的节奏比昨天稳。",
+      "time_cost": 3,
+      "time_bands": ["morning", "afternoon"],
+      "participants": ["eugeo"],
+      "tags": ["training", "canon_daily"],
+      "effects": {
+        "flags": { "worked_gigas_today": 1 },
+        "tree_damage": 8,
+        "relationship": { "eugeo.affinity": 2, "eugeo.trust": 1 },
+        "memory": {
+          "eugeo": {
+            "type": "scene_activity",
+            "summary": "玩家在巨树清场按尤吉欧的节奏挥斧，没有急着逞强。",
+            "weight": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "gigas_listen_to_forest",
+      "scene_id": "gigas_clearing",
+      "scene_ids": ["gigas_clearing", "north_gate"],
+      "poi_id": "ix_gigas_tree",
+      "title": "巨树清场 · 听森林",
+      "label": "停下来听北边的风",
+      "description": "不挥斧，只听树冠、鸟声、水渠和远处山脉之间是否有异样的断点。",
+      "result_text": "你停在斧痕旁边。风声有一瞬像被压低了，尤吉欧没有催你，只顺着你的视线看向北方。",
+      "time_cost": 1,
+      "time_bands": ["morning", "afternoon", "evening"],
+      "participants": ["eugeo"],
+      "tags": ["anomaly", "foreshadowing"],
+      "effects": {
+        "flags": { "listened_to_forest": 1 },
+        "relationship": { "eugeo.trust": 2, "eugeo.tension": 1 },
+        "memory": {
+          "eugeo": {
+            "type": "scene_activity",
+            "summary": "玩家在巨树旁停下来听北方森林的异常安静。",
+            "weight": 4
+          }
+        }
+      }
+    },
+    {
+      "id": "church_read_sacred_arts",
+      "scene_id": "reading_hall",
+      "scene_ids": ["reading_hall", "church_library"],
+      "poi_id": "ix_reading_desk",
+      "title": "教会书库 · 神圣术笔记",
+      "label": "研读神圣术和旧记录",
+      "description": "把书库里的祈句、村史和边界记录对照起来，试着理解这个世界的规则如何落到日常生活里。",
+      "result_text": "旧纸页上的神圣文字让人想起清晨的教会钟声。爱丽丝把你读错的地方轻轻指出来，然后问你是不是也在想北边。",
+      "time_cost": 2,
+      "time_bands": ["morning", "afternoon"],
+      "participants": ["alice"],
+      "tags": ["reading", "sacred_arts", "canon_daily"],
+      "effects": {
+        "flags": { "studied_sacred_arts": 1, "prologue_reading_done": 1 },
+        "relationship": { "alice.trust": 2, "alice.affinity": 1 },
+        "memory": {
+          "alice": {
+            "type": "scene_activity",
+            "summary": "玩家在教会书库认真研读神圣术和边界旧记录。",
+            "weight": 4
+          }
+        }
+      }
+    },
+    {
+      "id": "church_ask_alice_lunch",
+      "scene_id": "reading_hall",
+      "scene_ids": ["reading_hall", "church_library"],
+      "poi_id": "ix_reading_desk",
+      "title": "教会书库 · 午餐篮",
+      "label": "帮爱丽丝准备午餐篮",
+      "description": "把面包、热汤和给巨树清场的干粮收好。它不是任务奖励，而是三人日常的一部分。",
+      "result_text": "爱丽丝检查篮布时故意说你包得太松，但最后还是笑了一下。她说等会儿要把午餐送去巨树那边。",
+      "time_cost": 1,
+      "time_bands": ["morning", "afternoon"],
+      "participants": ["alice"],
+      "tags": ["slice_of_life", "relationship"],
+      "effects": {
+        "flags": { "helped_alice_lunch_basket": 1 },
+        "relationship": { "alice.affinity": 3, "alice.trust": 1 },
+        "memory": {
+          "alice": {
+            "type": "scene_activity",
+            "summary": "玩家帮爱丽丝准备要送去巨树清场的午餐篮。",
+            "weight": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "home_evening_meal",
+      "scene_id": "reading_hall",
+      "scene_ids": ["reading_hall", "home_hearth"],
+      "poi_id": "ix_home_bed",
+      "title": "家中炉火 · 晚餐",
+      "label": "围着炉火吃晚饭",
+      "description": "把一天的训练、读书和不安都带回餐桌。晚餐会推进时间，也会让同伴记住你今天说过什么。",
+      "result_text": "汤碗的热气让屋子安静下来。爱丽丝问巨树那边的进度，尤吉欧则把今天听到的风声记在心里。",
+      "time_cost": 3,
+      "time_bands": ["evening", "night"],
+      "participants": ["alice", "eugeo"],
+      "tags": ["meal", "relationship", "daily_loop"],
+      "effects": {
+        "flags": { "shared_evening_meal": 1 },
+        "relationship": {
+          "alice.affinity": 2,
+          "eugeo.affinity": 2,
+          "alice.tension": -1,
+          "eugeo.tension": -1
+        },
+        "memory": {
+          "alice": {
+            "type": "scene_activity",
+            "summary": "玩家晚上回到家中和大家一起吃饭，把白天的事带回餐桌。",
+            "weight": 3
+          },
+          "eugeo": {
+            "type": "scene_activity",
+            "summary": "玩家晚上没有继续逞强，而是回到餐桌和大家整理今天的见闻。",
+            "weight": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "home_sleep_until_morning",
+      "scene_id": "reading_hall",
+      "scene_ids": ["reading_hall", "home_hearth"],
+      "poi_id": "ix_home_bed",
+      "title": "家中床铺 · 入睡",
+      "label": "睡到第二天清晨",
+      "description": "结束今天。炉火熄下去之后，梦和记忆会把一天压成更安静的东西。",
+      "result_text": "夜色从窗缝里退去。等你睁开眼，北境新手村又回到清晨，但昨天的选择没有消失。",
+      "time_cost": 0,
+      "time_bands": ["evening", "night"],
+      "participants": ["alice", "eugeo"],
+      "tags": ["sleep", "day_cycle"],
+      "effects": {
+        "flags": { "slept_at_home": 1 },
+        "sleep_until_morning": true
+      }
+    },
+    {
+      "id": "village_square_listen",
+      "scene_id": "reading_hall",
+      "scene_ids": ["reading_hall", "village_square"],
+      "poi_id": "ix_village_square",
+      "title": "村道广场 · 听传闻",
+      "label": "听村民谈北方山脉",
+      "description": "在水渠和村道交汇处停一会儿，听老人、孩子和巡逻者怎么谈禁忌目录与山脉边界。",
+      "result_text": "你听到几个零碎词：山脉、洞窟、不能越界。它们没有组成答案，却让北方边界变得更近了。",
+      "time_cost": 1,
+      "time_bands": ["morning", "afternoon", "evening"],
+      "participants": ["alice", "eugeo"],
+      "tags": ["rumor", "worldbuilding"],
+      "effects": {
+        "flags": { "heard_village_rumor": 1 },
+        "relationship": { "alice.trust": 1, "eugeo.trust": 1 }
+      }
+    },
+    {
+      "id": "north_gate_survey",
+      "scene_id": "gigas_clearing",
+      "scene_ids": ["gigas_clearing", "north_gate"],
+      "poi_id": "ix_north_gate",
+      "title": "北境边门 · 远望",
+      "label": "远望边界线",
+      "description": "还不到真正越界的时候。你只能在门边远望，确认道路、树林和水声有什么不自然的地方。",
+      "result_text": "边界之外没有立刻出现怪物，只有一种过分整齐的安静。你意识到这里以后应该成为独立场景，而不只是背景角落。",
+      "time_cost": 2,
+      "time_bands": ["afternoon", "evening"],
+      "participants": ["eugeo"],
+      "tags": ["boundary", "future_instance"],
+      "effects": {
+        "flags": { "surveyed_north_gate": 1 },
+        "relationship": { "eugeo.trust": 2, "eugeo.tension": 2 },
+        "memory": {
+          "eugeo": {
+            "type": "scene_activity",
+            "summary": "玩家在北境边门远望边界，意识到那里迟早要成为真正的场景。",
+            "weight": 4
+          }
+        }
+      }
+    }
+  ]
+}

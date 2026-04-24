@@ -15,6 +15,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 from .session import Session
+from .scene_activities import public_scene_activities
 from .world_map import map_path_for_id
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -105,6 +106,7 @@ class PlayerActionBody(BaseModel):
     location: str | None = None
     flag_key: str | None = None
     flag_value: int | None = None
+    activity_id: str | None = None
     tile_x: int | None = None
     tile_y: int | None = None
 
@@ -198,6 +200,14 @@ def world_regions():
     if not path.is_file():
         return {"v": 1, "regions": []}
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+@app.get("/api/world/scene_activities")
+def world_scene_activities():
+    """场景活动目录：用于把 POI 做成可重复的 RPG 日常玩法。"""
+    with SESSION_LOCK:
+        root = SESSION.root
+    return public_scene_activities(root)
 
 
 @app.get("/api/story/catalog")
@@ -301,6 +311,7 @@ def player_action(request: Request, body: PlayerActionBody):
             location=body.location,
             flag_key=body.flag_key,
             flag_value=body.flag_value,
+            activity_id=body.activity_id,
             tile_x=body.tile_x,
             tile_y=body.tile_y,
         )

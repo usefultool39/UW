@@ -5,6 +5,8 @@
     <div class="map-corner bl" />
     <div class="map-corner br" />
     <div ref="hostEl" class="phaser-host" />
+    <div class="atmosphere-layer" :class="[timeBand, weatherCode]" />
+    <div class="weather-note">{{ weatherNote }}</div>
     <div
       v-if="miniWidth && miniHeight"
       class="dom-minimap"
@@ -100,6 +102,8 @@ let miniLastUpdate = 0
 const day = ref(1)
 const timeBand = ref('morning')
 const miniViewport = ref(null)
+const weatherCode = computed(() => props.simState?.weather || 'clear')
+const weatherNote = computed(() => props.simState?.weather_note || '清亮的风穿过北境村道。')
 
 const MINI_COLORS = {
   0: '#6f9362',
@@ -377,6 +381,64 @@ watch(
   background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(94, 207, 255, 0.06), transparent 55%),
     var(--field-deep);
   display: block;
+}
+
+.atmosphere-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  opacity: 0.35;
+}
+
+.atmosphere-layer.morning {
+  background: linear-gradient(180deg, rgba(255, 244, 214, 0.2), transparent 42%);
+}
+
+.atmosphere-layer.afternoon {
+  background: linear-gradient(180deg, rgba(255, 226, 173, 0.14), transparent 48%);
+}
+
+.atmosphere-layer.evening {
+  background: linear-gradient(180deg, rgba(251, 146, 60, 0.15), rgba(88, 28, 135, 0.16));
+}
+
+.atmosphere-layer.night {
+  opacity: 0.62;
+  background: linear-gradient(180deg, rgba(8, 18, 48, 0.42), rgba(2, 6, 23, 0.55));
+}
+
+.atmosphere-layer.mist {
+  opacity: 0.48;
+  background:
+    linear-gradient(100deg, rgba(226, 232, 240, 0.24), transparent 34%, rgba(226, 232, 240, 0.16) 68%, transparent),
+    linear-gradient(180deg, rgba(186, 230, 253, 0.12), transparent 60%);
+}
+
+.atmosphere-layer.drizzle {
+  opacity: 0.42;
+  background:
+    repeating-linear-gradient(110deg, rgba(226, 232, 240, 0.16) 0 1px, transparent 1px 13px),
+    linear-gradient(180deg, rgba(30, 64, 175, 0.12), transparent 56%);
+}
+
+.weather-note {
+  position: absolute;
+  z-index: 4;
+  left: 0.75rem;
+  bottom: 5.4rem;
+  max-width: min(460px, calc(100% - 1.5rem));
+  padding: 0.42rem 0.62rem;
+  border-radius: 8px;
+  background: rgba(5, 10, 18, 0.64);
+  border: 1px solid rgba(186, 230, 253, 0.14);
+  color: #dbeafe;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .dom-minimap {

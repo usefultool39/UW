@@ -49,6 +49,7 @@
         :story-events="storyEvents"
         :quest-guide="questGuide"
         :nearby-npc-label="nearbyNpcLabel"
+        :nearby-interact-title="nearbyInteractTitle"
         :busy="busy"
         @open-event="openStoryEvent"
       />
@@ -164,6 +165,7 @@ const props = defineProps({
   importSave: { type: Function, required: true },
   fetchRegions: { type: Function, required: true },
   fetchWorldMap: { type: Function, required: true },
+  fetchSceneActivities: { type: Function, required: true },
   refresh: { type: Function, required: true }
 })
 
@@ -174,6 +176,7 @@ const busy = ref(false)
 const localError = ref('')
 const regionsJson = ref('')
 const worldMapRef = ref(null)
+const sceneActivityIndex = ref({})
 const storyEvents = ref([])
 const selectedStoryEventId = ref('')
 const selectedNpcId = ref('')
@@ -207,7 +210,9 @@ const visibleInteractActions = computed(() => {
   const poi = nearbyInteract.value
   const nid = props.simState?.story_node_id
   if (!poi?.actions) return []
-  return poi.actions.filter((a) => !a.requires_story || a.requires_story === nid)
+  return poi.actions
+    .filter((a) => !a.requires_story || a.requires_story === nid)
+    .map(enrichInteractAction)
 })
 
 const selectedNpc = computed(() =>
@@ -237,6 +242,8 @@ const nearbyNpcLabel = computed(() => {
   if (!nearbyNpcs.value.length) return '暂无 NPC'
   return nearbyNpcs.value.map((a) => getAgentLabel(a.id)).join('、')
 })
+
+const nearbyInteractTitle = computed(() => nearbyInteract.value?.title || '暂无地点')
 
 const questGuide = computed(() => {
   if (storyEvents.value.length) {
@@ -279,6 +286,68 @@ async function loadWorldMap(mapId = DEFAULT_MAP_ID) {
   } catch {
     localError.value = `地图加载失败：${mapId}`
     worldMapRef.value = { id: mapId, rows: [], width: 0, height: 0, tile_size: 32 }
+  }
+}
+
+async function loadSceneActivities() {
+  try {
+    const res = await props.fetchSceneActivities()
+    const activities = Array.isArray(res?.activities) ? res.activities : []
+    sceneActivityIndex.value = Object.fromEntries(
+      activities.filter((a) => a?.id).map((a) => [a.id, a])
+    )
+  } catch {
+    sceneActivityIndex.value = {}
+  }
+}
+
+function activityAvailability(activity) {
+  if (!activity) return { ok: true, reason: '' }
+  const playerScene = props.simState?.player?.scene_id || props.simState?.scene_id || ''
+  const sceneIds = Array.isArray(activity.scene_ids)
+    ? activity.scene_ids
+    : activity.scene_id
+      ? [activity.scene_id]
+      : []
+  if (sceneIds.length && !sceneIds.includes(playerScene)) {
+    return { ok: false, reason: '走到对应地点范围后可用' }
+  }
+
+  const timeBand = props.simState?.time_band || 'morning'
+  const timeBands = Array.isArray(activity.time_bands) ? activity.time_bands : []
+  if (timeBands.length && !timeBands.includes(timeBand)) {
+    return { ok: false, reason: `开放时段：${timeBands.map(getTimeBandLabel).join('、')}` }
+  }
+
+  const requiredFlags = activity.requirements?.required_flags || {}
+  const flags = props.simState?.flags || {}
+  for (const [key, value] of Object.entries(requiredFlags)) {
+    if (Number(flags[key] || 0) < Number(value || 0)) {
+      return { ok: false, reason: '需要先完成前置线索' }
+    }
+  }
+  return { ok: true, reason: '' }
+}
+
+function enrichInteractAction(action) {
+  if (action?.type !== 'scene_activity') return action
+  const activity = sceneActivityIndex.value[action.activity_id || action.id]
+  if (!activity) return action
+  const availability = activityAvailability(activity)
+  const meta = []
+  const timeCost = Number(activity.time_cost || 0)
+  meta.push(timeCost > 0 ? `耗时 ${timeCost} 刻` : '不消耗时段')
+  if (Array.isArray(activity.time_bands) && activity.time_bands.length) {
+    meta.push(activity.time_bands.map(getTimeBandLabel).join(' / '))
+  }
+  if (!availability.ok && availability.reason) meta.push(availability.reason)
+  return {
+    ...action,
+    label: activity.label || action.label,
+    description: activity.description || action.description || '',
+    meta: meta.join(' · '),
+    blockedReason: availability.ok ? '' : availability.reason,
+    activity
   }
 }
 
@@ -364,6 +433,14 @@ async function onInteractAction(act) {
     } else if (act.type === 'compound_sleep') {
       await props.playerAction({ kind: 'set_location', location: 'home' })
       await props.dailyTick(Number(act.daily_n) || 1, 'heuristic')
+    } else if (act.type === 'scene_activity') {
+      const res = await props.playerAction({ kind: 'scene_activity', activity_id: act.activity_id || act.id })
+      storyResult.value = {
+        ...(res.activity_result || {}),
+        relationship_changes: res.relationship_changes || res.activity_result?.relationship_changes || [],
+        memory_written: res.memory_written || res.activity_result?.memory_written || []
+      }
+      storyResultOpen.value = true
     }
     showToast(act.toast || '完成', 'success')
     interactOpen.value = false
@@ -501,7 +578,16 @@ async function doWithBusy(fn) {
   try {
     await fn()
   } catch (e) {
-    localError.value = e.message || String(e)
+    const msg = e.message || String(e)
+    if (msg.includes('wrong_time_band')) {
+      localError.value = '现在时段不适合这个行动。先推进时间，或去做当前时段的场景活动。'
+    } else if (msg.includes('wrong_scene')) {
+      localError.value = '你还没有进入对应场景。先走到地图上的地点范围。'
+    } else if (msg.includes('requirements_not_met')) {
+      localError.value = '这个行动还有前置条件。先完成当前线索，或与对应 NPC 互动。'
+    } else {
+      localError.value = msg
+    }
   } finally {
     busy.value = false
   }
@@ -515,6 +601,7 @@ onMounted(async () => {
     const r = await props.fetchRegions()
     regionsJson.value = JSON.stringify(r, null, 2)
   } catch { regionsJson.value = '(regions 加载失败)' }
+  await loadSceneActivities()
   await loadWorldMap(activeMapId.value)
   await refreshStoryEvents()
 })

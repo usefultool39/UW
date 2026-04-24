@@ -25,6 +25,10 @@
         <span class="chip-icon">📍</span>
         {{ nearbyNpcLabel }}
       </span>
+      <span class="meta-chip place">
+        <span class="chip-icon">◎</span>
+        {{ nearbyInteractTitle }}
+      </span>
       <span class="meta-chip node">{{ simState?.story_node_id || 'mq00_tutorial' }}</span>
     </div>
   </aside>
@@ -38,6 +42,7 @@ const props = defineProps({
   storyEvents: { type: Array, default: () => [] },
   questGuide: { type: String, default: '在村中探索，了解周围环境。' },
   nearbyNpcLabel: { type: String, default: '暂无 NPC' },
+  nearbyInteractTitle: { type: String, default: '暂无地点' },
   busy: { type: Boolean, default: false }
 })
 

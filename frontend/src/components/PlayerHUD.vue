@@ -12,6 +12,7 @@
     <div class="player-meta">
       <span class="meta-tag day">Day {{ day }}</span>
       <span class="meta-tag scene">{{ sceneLabel }}</span>
+      <span class="meta-tag weather">{{ weatherLabel }}</span>
     </div>
   </div>
 </template>
@@ -27,7 +28,7 @@ const props = defineProps({
 const imgError = ref(false)
 const avatarUrl = computed(() => {
   if (imgError.value) return null
-  return '/assets/game/player-token.png'
+  return '/assets/game/player-token-tv.png'
 })
 
 const playerName = computed(() =>
@@ -35,6 +36,7 @@ const playerName = computed(() =>
 )
 
 const day = computed(() => props.simState?.day ?? 1)
+const weatherLabel = computed(() => props.simState?.weather_label || '晴朗')
 
 const hpPercent = computed(() => {
   const hp = props.simState?.player?.hp
@@ -161,6 +163,12 @@ const mpPercent = computed(() => {
   background: rgba(94, 207, 255, 0.12);
   border: 1px solid rgba(94, 207, 255, 0.22);
   color: var(--sao-cyan);
+}
+
+.meta-tag.weather {
+  background: rgba(125, 211, 252, 0.1);
+  border: 1px solid rgba(186, 230, 253, 0.18);
+  color: #dbeafe;
 }
 
 @media (max-width: 900px) {

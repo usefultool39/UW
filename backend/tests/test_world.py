@@ -39,18 +39,20 @@ class TestInitialWorld:
         assert state.player.scene_id in state.unlocked_scenes
         assert state.story_node_id == "mq00_tutorial"
         assert "reading_hall" in state.unlocked_scenes
+        assert "home_hearth" in state.unlocked_scenes
 
     def test_initial_world_has_time_and_chapter_fields(self):
         state = initial_world()
         assert state.time_band == "morning"
         assert state.chapter_id == "chapter_01"
+        assert state.weather_label
 
     def test_agents_have_map_positions(self):
         state = initial_world()
         alice = _agent(state, "alice")
         eugeo = _agent(state, "eugeo")
         assert (alice.tile_x, alice.tile_y) == (11, 27)
-        assert alice.scene_id == "reading_hall"
+        assert alice.scene_id == "home_hearth"
         assert (eugeo.tile_x, eugeo.tile_y) == (54, 22)
         assert eugeo.scene_id == "gigas_clearing"
 

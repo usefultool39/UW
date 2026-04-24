@@ -159,6 +159,10 @@ export function useGameApi() {
     return requestJson(`/api/world/maps/${encodeURIComponent(id)}`)
   }
 
+  async function fetchSceneActivities() {
+    return requestJson('/api/world/scene_activities')
+  }
+
   async function fetchStoryCatalog() {
     return requestJson('/api/story/catalog')
   }
@@ -343,6 +347,7 @@ export function useGameApi() {
     resumeFromCheckpoint,
     fetchRegions,
     fetchWorldMap,
+    fetchSceneActivities,
     fetchStoryCatalog,
     fetchAvailableStoryEvents,
     dailyTick,

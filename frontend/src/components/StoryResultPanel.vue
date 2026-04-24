@@ -24,6 +24,13 @@
 
       <p class="result-text">{{ resultText }}</p>
 
+      <section v-if="impactLines.length" class="impact-grid">
+        <div v-for="line in impactLines" :key="line.label" class="impact-chip">
+          <span>{{ line.label }}</span>
+          <strong>{{ line.value }}</strong>
+        </div>
+      </section>
+
       <section v-if="relationshipLines.length" class="result-section">
         <h4>关系变化</h4>
         <ul>
@@ -63,6 +70,8 @@ const FIELD_LABELS = {
 }
 
 const resultTitle = computed(() => {
+  const activity = props.result?.activity?.title
+  if (activity) return activity
   const choice = props.result?.choice?.label
   const eventTitle = props.result?.event?.title || props.result?.event_title
   if (choice && eventTitle) return `${eventTitle} · ${choice}`
@@ -70,8 +79,17 @@ const resultTitle = computed(() => {
 })
 
 const resultText = computed(() =>
-  props.result?.choice?.result_text || props.result?.result_text || '选择已经写入今天的旅程。'
+  props.result?.choice?.result_text || props.result?.result_text || '这段行动已经写入今天的旅程。'
 )
+
+const impactLines = computed(() => {
+  const lines = []
+  const timeCost = Number(props.result?.time_cost || 0)
+  const treeDamage = Number(props.result?.tree_damage || 0)
+  if (timeCost > 0) lines.push({ label: '时间推进', value: `${timeCost} 刻` })
+  if (treeDamage > 0) lines.push({ label: '巨树损伤', value: `-${treeDamage}` })
+  return lines
+})
 
 const relationshipLines = computed(() => {
   const changes = Array.isArray(props.result?.relationship_changes)
@@ -162,6 +180,36 @@ const memoryLines = computed(() => {
   color: #f8fafc;
   line-height: 1.68;
   font-size: 0.92rem;
+}
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.45rem;
+  margin: 0.75rem 0 0;
+}
+
+.impact-chip {
+  min-height: 3rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 9px;
+  background: rgba(6, 12, 24, 0.58);
+  border: 1px solid rgba(246, 211, 110, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.12rem;
+}
+
+.impact-chip span {
+  color: #bfdbfe;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.impact-chip strong {
+  color: #fff7d6;
+  font-size: 0.98rem;
 }
 
 .result-section {

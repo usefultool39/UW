@@ -33,6 +33,7 @@
       :import-save="importSave"
       :fetch-regions="fetchRegions"
       :fetch-world-map="fetchWorldMap"
+      :fetch-scene-activities="fetchSceneActivities"
       :refresh="refresh"
     />
 
@@ -148,7 +149,8 @@ const {
   exportSave,
   importSave,
   fetchRegions,
-  fetchWorldMap
+  fetchWorldMap,
+  fetchSceneActivities
 } = useGameApi()
 
 const appTab = ref('field')

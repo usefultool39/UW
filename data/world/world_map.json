@@ -21,11 +21,39 @@
   },
   "scene_zones": [
     {
+      "scene_id": "church_library",
+      "x1": 9,
+      "y1": 8,
+      "x2": 19,
+      "y2": 18
+    },
+    {
+      "scene_id": "home_hearth",
+      "x1": 8,
+      "y1": 25,
+      "x2": 15,
+      "y2": 30
+    },
+    {
+      "scene_id": "village_square",
+      "x1": 20,
+      "y1": 21,
+      "x2": 31,
+      "y2": 26
+    },
+    {
       "scene_id": "reading_hall",
       "x1": 5,
       "y1": 5,
       "x2": 23,
       "y2": 21
+    },
+    {
+      "scene_id": "north_gate",
+      "x1": 64,
+      "y1": 20,
+      "x2": 72,
+      "y2": 27
     },
     {
       "scene_id": "gigas_clearing",
@@ -53,6 +81,7 @@
       "tile_x": 13,
       "tile_y": 14,
       "radius": 2,
+      "label": "教会书库",
       "title": "书库阅览台",
       "body": "尘光落在纸页上。静下心来读几章，仿佛过了一整天。",
       "actions": [
@@ -63,6 +92,18 @@
           "flag_key": "prologue_reading_done",
           "flag_value": 1,
           "toast": "书页里的边界记录被你记下了。留意地图上的金色章节事件。"
+        },
+        {
+          "id": "church_read_sacred_arts",
+          "label": "进入书库场景：研读神圣术",
+          "type": "scene_activity",
+          "activity_id": "church_read_sacred_arts"
+        },
+        {
+          "id": "church_ask_alice_lunch",
+          "label": "帮爱丽丝准备午餐篮",
+          "type": "scene_activity",
+          "activity_id": "church_ask_alice_lunch"
         }
       ]
     },
@@ -72,6 +113,7 @@
       "tile_x": 54,
       "tile_y": 22,
       "radius": 2,
+      "label": "基家斯西达",
       "title": "巨树",
       "body": "树龄无可计量。训练不只是挥斧，也是确认世界每天仍按规则运转的方式。",
       "actions": [
@@ -81,6 +123,18 @@
           "type": "daily_tick",
           "n": 1,
           "toast": "你试着挥斧，节奏被巨树沉默地接住了。"
+        },
+        {
+          "id": "gigas_chop_rhythm",
+          "label": "进入巨树场景：按节奏砍树",
+          "type": "scene_activity",
+          "activity_id": "gigas_chop_rhythm"
+        },
+        {
+          "id": "gigas_listen_to_forest",
+          "label": "停下来听北边的风",
+          "type": "scene_activity",
+          "activity_id": "gigas_listen_to_forest"
         },
         {
           "id": "chop_work",
@@ -98,6 +152,7 @@
       "tile_x": 11,
       "tile_y": 27,
       "radius": 2,
+      "label": "家中炉火",
       "title": "小屋床铺",
       "body": "夜风在外，炉火尚温。躺下会快进到下一段时间流逝，并记你回到家中。",
       "actions": [
@@ -107,6 +162,54 @@
           "type": "compound_sleep",
           "daily_n": 1,
           "toast": "已回家并休息 1 tick。"
+        },
+        {
+          "id": "home_evening_meal",
+          "label": "进入家中场景：围炉晚餐",
+          "type": "scene_activity",
+          "activity_id": "home_evening_meal"
+        },
+        {
+          "id": "home_sleep_until_morning",
+          "label": "睡到第二天清晨",
+          "type": "scene_activity",
+          "activity_id": "home_sleep_until_morning"
+        }
+      ]
+    },
+    {
+      "id": "ix_village_square",
+      "kind": "interact",
+      "tile_x": 24,
+      "tile_y": 24,
+      "radius": 3,
+      "label": "村道广场",
+      "title": "村道广场",
+      "body": "水渠、村道和田地在这里交汇。这里适合听传闻、确认日程，也适合让世界不只是一张背景图。",
+      "actions": [
+        {
+          "id": "village_square_listen",
+          "label": "听村民谈北方山脉",
+          "type": "scene_activity",
+          "activity_id": "village_square_listen"
+        }
+      ]
+    },
+    {
+      "id": "ix_north_gate",
+      "kind": "interact",
+      "tile_x": 67,
+      "tile_y": 24,
+      "radius": 3,
+      "label": "北境边门",
+      "title": "北境边门",
+      "body": "再往北就是山脉与禁忌目录共同构成的边界。现在它还是未开放边界，但你可以先远望和记录。",
+      "actions": [
+        {
+          "id": "north_gate_survey",
+          "label": "远望边界线",
+          "type": "scene_activity",
+          "activity_id": "north_gate_survey"
         }
       ]
     }
