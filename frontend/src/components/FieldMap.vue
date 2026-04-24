@@ -20,7 +20,9 @@ const props = defineProps({
   worldMap: { type: Object, required: true },
   storyEvents: { type: Array, default: () => [] },
   timeBandLabel: { type: String, default: '早晨' },
-  sceneLabel: { type: String, default: '——' }
+  sceneLabel: { type: String, default: '——' },
+  busy: { type: Boolean, default: false },
+  nearbyInteract: { type: Object, default: null }
 })
 
 const emit = defineEmits([
@@ -90,8 +92,8 @@ async function bootPhaser() {
     },
     openInteractPanel,
     openNpcPanel,
-    isBusy: () => false,
-    getNearbyInteractPoi: () => null,
+    isBusy: () => props.busy,
+    getNearbyInteractPoi: () => props.nearbyInteract,
     getStoryEvents: () => props.storyEvents,
     openStoryEventPanel: openStoryEventPanel
   })
@@ -123,6 +125,14 @@ onUnmounted(() => {
 
 // Expose shake trigger for parent
 defineExpose({ triggerShake, sceneInstance: () => sceneInstance })
+
+watch(
+  () => props.storyEvents,
+  () => {
+    sceneInstance?.rebuildPois?.()
+  },
+  { deep: true }
+)
 </script>
 
 <style scoped>

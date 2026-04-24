@@ -31,6 +31,8 @@
         :story-events="storyEvents"
         :scene-label="sceneLabel"
         :time-band-label="timeBandLabel"
+        :busy="busy"
+        :nearby-interact="nearbyInteract"
         @tile-click="onTileClick"
         @npc-click="onNpcClick"
         @interact-click="interactOpen = true"
