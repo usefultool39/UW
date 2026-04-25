@@ -4,7 +4,17 @@
     <p class="quest-rail-body">{{ questGuide }}</p>
 
     <div v-if="actionPreview.length" class="nearby-actions">
-      <div class="nearby-actions-label">附近行动</div>
+      <div class="nearby-actions-head">
+        <div class="nearby-actions-label">当前地点行动</div>
+        <button
+          type="button"
+          class="nearby-enter-btn"
+          :disabled="busy"
+          @click="$emit('open-interact')"
+        >
+          进入地点
+        </button>
+      </div>
       <button
         v-for="action in actionPreview"
         :key="action.id"
@@ -110,11 +120,41 @@ const actionPreview = computed(() =>
   gap: 0.35rem;
 }
 
+.nearby-actions-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .nearby-actions-label {
   font-size: 0.58rem;
   letter-spacing: 0.1em;
   color: var(--sao-gold);
   font-weight: 800;
+}
+
+.nearby-enter-btn {
+  flex: 0 0 auto;
+  min-height: 1.5rem;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 211, 252, 0.32);
+  background: rgba(14, 116, 144, 0.42);
+  color: #dff7ff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.nearby-enter-btn:hover:not(:disabled) {
+  border-color: rgba(246, 211, 110, 0.58);
+  color: #fff7d6;
+}
+
+.nearby-enter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .nearby-action {

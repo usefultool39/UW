@@ -2,6 +2,7 @@ import {
   AGENT_ART_KEYS,
   drawLandmarkArt,
   drawExplorationAtmosphere,
+  drawSceneZoneHighlights,
   drawStyledTile,
   drawTerrainOverlays,
   ensureWorldArtTextures,
@@ -12,7 +13,7 @@ import {
   ZOOM_WHEEL
 } from './worldMapDrawing.js'
 import { AGENTS, getAgentConfig } from './gameContentConfig.js'
-import { DEFAULT_MAP_ID, getWorldBackgroundAsset } from './sceneRegistry.js'
+import { DEFAULT_MAP_ID, getSceneDefinition, getWorldBackgroundAsset } from './sceneRegistry.js'
 
 function distance(a, b) {
   const dx = a.x - b.x
@@ -35,6 +36,25 @@ function compressTilePath(path) {
   }
   out.push(path[path.length - 1])
   return out
+}
+
+function sceneIdForTile(map, tx, ty) {
+  const zones = Array.isArray(map?.scene_zones) ? map.scene_zones : []
+  for (const zone of zones) {
+    const x1 = Number(zone.x1 ?? 0)
+    const y1 = Number(zone.y1 ?? 0)
+    const x2 = Number(zone.x2 ?? x1)
+    const y2 = Number(zone.y2 ?? y1)
+    if (
+      tx >= Math.min(x1, x2) &&
+      tx <= Math.max(x1, x2) &&
+      ty >= Math.min(y1, y2) &&
+      ty <= Math.max(y1, y2)
+    ) {
+      return String(zone.scene_id || '')
+    }
+  }
+  return ''
 }
 
 function tilePathToSmoothWorldPoints(tilePath, ts) {
@@ -215,6 +235,10 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       const tsz = this._tileSize
       const tx = Number(poi.tile_x) || 0
       const ty = Number(poi.tile_y) || 0
+      const sceneId = String(poi.scene_id || sceneIdForTile(getMap(), tx, ty))
+      const sceneDef = getSceneDefinition(sceneId)
+      const roleLabel = sceneDef.role && sceneDef.role !== 'explore' ? sceneDef.roleLabel : ''
+      this._interactBtnText?.setText?.(roleLabel ? `进入${roleLabel}` : '进入场景')
       root.setPosition((tx + 0.5) * tsz, ty * tsz - tsz * 1.05)
       root.setVisible(true)
     }
@@ -312,6 +336,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       g.setDepth(0)
       g.setAlpha(hasWorldBg ? 0.1 : 1)
       drawTerrainOverlays(this, map, ts).setAlpha(hasWorldBg ? 0.12 : 0.82)
+      drawSceneZoneHighlights(this, map, ts)
       drawLandmarkArt(this, map, ts).setAlpha(hasWorldBg ? 0.08 : 0.92)
       drawExplorationAtmosphere(this, map, ts).setAlpha(hasWorldBg ? 0.2 : 0.82)
       this._pathG = this.add.graphics().setDepth(3)
@@ -696,14 +721,14 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         bottom: cy + dispH / 2
       }
 
-      const iw = 102
+      const iw = 120
       const ih = 36
       this._interactBtnRoot = this.add.container(0, 0).setDepth(17).setVisible(false)
       const btnBg = this.add
         .rectangle(0, 0, iw, ih, 0x172554, 0.94)
         .setStrokeStyle(2, 0x7dd3fc, 0.95)
       const btnTx = this.add
-        .text(0, 0, '对话 / 互动', {
+        .text(0, 0, '进入场景', {
           fontSize: '12px',
           color: '#f8fafc',
           fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
@@ -718,6 +743,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         openInteractPanel()
       })
       this._interactBtnRoot.add([btnBg, btnTx])
+      this._interactBtnText = btnTx
       this._interactBtnHalfW = iw / 2
       this._interactBtnHalfH = ih / 2
 

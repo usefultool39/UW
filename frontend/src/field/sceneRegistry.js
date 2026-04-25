@@ -15,6 +15,9 @@ export const SCENE_DEFINITIONS = {
     id: 'reading_hall',
     mapId: 'novice_open',
     regionId: 'novice_village',
+    role: 'explore',
+    roleLabel: '探索区',
+    zoneColor: 0x7dd3fc,
     label: '教会书库与村西',
     playMode: 'field',
     status: 'open'
@@ -23,6 +26,9 @@ export const SCENE_DEFINITIONS = {
     id: 'church_library',
     mapId: 'novice_open',
     regionId: 'novice_village',
+    role: 'study',
+    roleLabel: '书库研读',
+    zoneColor: 0x60a5fa,
     label: '教会书库',
     playMode: 'field',
     status: 'open'
@@ -31,6 +37,9 @@ export const SCENE_DEFINITIONS = {
     id: 'home_hearth',
     mapId: 'novice_open',
     regionId: 'novice_village',
+    role: 'rest',
+    roleLabel: '休息区',
+    zoneColor: 0xf59e0b,
     label: '家中炉火',
     playMode: 'field',
     status: 'open'
@@ -39,6 +48,9 @@ export const SCENE_DEFINITIONS = {
     id: 'village_square',
     mapId: 'novice_open',
     regionId: 'novice_village',
+    role: 'social',
+    roleLabel: '村内交流',
+    zoneColor: 0x34d399,
     label: '村道广场',
     playMode: 'field',
     status: 'open'
@@ -47,6 +59,9 @@ export const SCENE_DEFINITIONS = {
     id: 'gigas_clearing',
     mapId: 'novice_open',
     regionId: 'novice_village',
+    role: 'work',
+    roleLabel: '工作区',
+    zoneColor: 0xfacc15,
     label: '基家斯西达清场',
     playMode: 'field',
     status: 'open'
@@ -55,6 +70,9 @@ export const SCENE_DEFINITIONS = {
     id: 'north_gate',
     mapId: 'novice_open',
     regionId: 'novice_village',
+    role: 'boundary',
+    roleLabel: '边界调查',
+    zoneColor: 0xf472b6,
     label: '北境边门',
     playMode: 'field',
     status: 'open'
@@ -63,6 +81,9 @@ export const SCENE_DEFINITIONS = {
     id: 'goblin_cave_stub',
     mapId: 'north_cave_stub',
     regionId: 'novice_village',
+    role: 'instance',
+    roleLabel: '副本入口',
+    zoneColor: 0xa78bfa,
     label: '北境洞窟',
     playMode: 'instance',
     status: 'locked'

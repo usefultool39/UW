@@ -4,6 +4,7 @@ import {
   AGENT_ART_KEYS,
   AGENT_TEXTURE_FALLBACKS,
   LANDMARK_ART_CONFIGS,
+  SCENE_DEFINITIONS,
   getSceneLabel
 } from './gameContentConfig.js'
 
@@ -146,6 +147,72 @@ export function drawTerrainOverlays(scene, map, ts) {
     }
   }
   return g
+}
+
+function zoneStyle(sceneId) {
+  const def = SCENE_DEFINITIONS[sceneId] || {}
+  const color = Number(def.zoneColor || 0x7dd3fc)
+  const role = def.role || 'explore'
+  return {
+    color,
+    role,
+    roleLabel: def.roleLabel || '功能区',
+    alpha: role === 'explore' ? 0.035 : 0.095,
+    strokeAlpha: role === 'explore' ? 0.28 : 0.72
+  }
+}
+
+export function drawSceneZoneHighlights(scene, map, ts) {
+  const layer = scene.add.container(0, 0).setDepth(4)
+  const zones = Array.isArray(map.scene_zones) ? map.scene_zones : []
+  for (const zone of zones) {
+    const sceneId = String(zone.scene_id || '')
+    if (!sceneId) continue
+    const x1 = Number(zone.x1 ?? 0)
+    const y1 = Number(zone.y1 ?? 0)
+    const x2 = Number(zone.x2 ?? x1)
+    const y2 = Number(zone.y2 ?? y1)
+    const left = Math.min(x1, x2) * ts
+    const top = Math.min(y1, y2) * ts
+    const width = (Math.abs(x2 - x1) + 1) * ts
+    const height = (Math.abs(y2 - y1) + 1) * ts
+    const cx = left + width / 2
+    const cy = top + height / 2
+    const style = zoneStyle(sceneId)
+
+    const g = scene.add.graphics()
+    g.fillStyle(style.color, style.alpha)
+    g.fillRoundedRect(left + 3, top + 3, Math.max(1, width - 6), Math.max(1, height - 6), Math.max(5, ts * 0.18))
+    g.lineStyle(Math.max(2, ts * 0.065), style.color, style.strokeAlpha)
+    g.strokeRoundedRect(left + 4, top + 4, Math.max(1, width - 8), Math.max(1, height - 8), Math.max(5, ts * 0.18))
+    g.lineStyle(Math.max(1, ts * 0.035), 0xfff7d6, 0.38)
+    const c = Math.min(ts * 1.4, width * 0.22, height * 0.22)
+    g.lineBetween(left + 6, top + 6, left + 6 + c, top + 6)
+    g.lineBetween(left + 6, top + 6, left + 6, top + 6 + c)
+    g.lineBetween(left + width - 6, top + 6, left + width - 6 - c, top + 6)
+    g.lineBetween(left + width - 6, top + 6, left + width - 6, top + 6 + c)
+    g.lineBetween(left + 6, top + height - 6, left + 6 + c, top + height - 6)
+    g.lineBetween(left + 6, top + height - 6, left + 6, top + height - 6 - c)
+    g.lineBetween(left + width - 6, top + height - 6, left + width - 6 - c, top + height - 6)
+    g.lineBetween(left + width - 6, top + height - 6, left + width - 6, top + height - 6 - c)
+    layer.add(g)
+
+    if (style.role !== 'explore') {
+      const label = scene.add
+        .text(cx, cy, style.roleLabel, {
+          fontSize: '13px',
+          color: '#fff7d6',
+          fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
+          fontStyle: 'bold',
+          stroke: '#0f172a',
+          strokeThickness: 5
+        })
+        .setOrigin(0.5)
+        .setAlpha(0.94)
+      layer.add(label)
+    }
+  }
+  return layer
 }
 
 function addBoundarySign(scene, layer, x, y, label, align = 'center') {

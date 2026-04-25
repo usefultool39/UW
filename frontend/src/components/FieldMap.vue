@@ -31,6 +31,16 @@
           :fill="tile.color"
         />
         <rect
+          v-for="zone in miniZones"
+          :key="zone.id"
+          class="dom-minimap-zone"
+          :x="zone.x"
+          :y="zone.y"
+          :width="zone.w"
+          :height="zone.h"
+          :stroke="zone.color"
+        />
+        <rect
           v-if="miniViewport"
           class="dom-minimap-viewport"
           :x="miniViewport.x"
@@ -61,7 +71,13 @@
           r="0.52"
         />
       </svg>
-      <div class="dom-minimap-foot">边界区域 · 尚未开放</div>
+      <div v-if="miniLegend.length" class="dom-minimap-legend" aria-hidden="true">
+        <span v-for="item in miniLegend" :key="item.key">
+          <i :style="{ background: item.color }" />
+          {{ item.label }}
+        </span>
+      </div>
+      <div class="dom-minimap-foot">亮框为可进入功能区</div>
     </div>
     <div class="scene-badge">
       <span class="badge-dot" :class="timeBand" />
@@ -72,6 +88,7 @@
 
 <script setup>
 import { computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { SCENE_DEFINITIONS } from '../field/sceneRegistry.js'
 
 const props = defineProps({
   simState: { type: Object, required: true },
@@ -140,6 +157,49 @@ watch(
 )
 
 const miniTiles = computed(() => miniTilesCache.value)
+
+function cssColorFromNumber(value, fallback = '#7dd3fc') {
+  const n = Number(value)
+  if (!Number.isFinite(n)) return fallback
+  return `#${n.toString(16).padStart(6, '0').slice(-6)}`
+}
+
+const miniZones = computed(() => {
+  const zones = Array.isArray(props.worldMap?.scene_zones) ? props.worldMap.scene_zones : []
+  return zones
+    .map((zone) => {
+      const id = String(zone.scene_id || '')
+      const def = SCENE_DEFINITIONS[id] || {}
+      const x1 = Number(zone.x1 ?? 0)
+      const y1 = Number(zone.y1 ?? 0)
+      const x2 = Number(zone.x2 ?? x1)
+      const y2 = Number(zone.y2 ?? y1)
+      return {
+        id,
+        role: def.role || 'explore',
+        label: def.roleLabel || def.label || '功能区',
+        x: Math.min(x1, x2),
+        y: Math.min(y1, y2),
+        w: Math.abs(x2 - x1) + 1,
+        h: Math.abs(y2 - y1) + 1,
+        color: cssColorFromNumber(def.zoneColor, '#7dd3fc')
+      }
+    })
+    .filter((zone) => zone.id)
+})
+
+const miniLegend = computed(() => {
+  const byRole = new Map()
+  miniZones.value.forEach((zone) => {
+    if (zone.role === 'explore' || byRole.has(zone.role)) return
+    byRole.set(zone.role, {
+      key: zone.role,
+      label: zone.label,
+      color: zone.color
+    })
+  })
+  return Array.from(byRole.values())
+})
 
 const miniPlayer = computed(() => {
   const p = props.simState?.player
@@ -495,11 +555,42 @@ watch(
   font-weight: 700;
 }
 
+.dom-minimap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.24rem 0.42rem;
+  margin-top: 0.36rem;
+  color: #e2e8f0;
+  font-size: 0.56rem;
+  line-height: 1.2;
+}
+
+.dom-minimap-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  white-space: nowrap;
+}
+
+.dom-minimap-legend i {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(255, 247, 214, 0.35);
+}
+
 .dom-minimap-viewport {
   fill: rgba(255, 255, 255, 0.06);
   stroke: #fbbf24;
   stroke-width: 0.22;
   vector-effect: non-scaling-stroke;
+}
+
+.dom-minimap-zone {
+  fill: rgba(255, 255, 255, 0.03);
+  stroke-width: 0.55;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1.4 0.9;
 }
 
 .dom-minimap-agent {
