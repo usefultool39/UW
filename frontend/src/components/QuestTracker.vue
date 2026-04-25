@@ -3,6 +3,22 @@
     <div class="quest-rail-title">当前目标</div>
     <p class="quest-rail-body">{{ questGuide }}</p>
 
+    <div v-if="actionPreview.length" class="nearby-actions">
+      <div class="nearby-actions-label">附近行动</div>
+      <button
+        v-for="action in actionPreview"
+        :key="action.id"
+        type="button"
+        class="nearby-action"
+        :class="{ blocked: action.blocked }"
+        :disabled="busy"
+        @click="$emit('open-interact')"
+      >
+        <span>{{ action.label }}</span>
+        <small v-if="action.meta">{{ action.meta }}</small>
+      </button>
+    </div>
+
     <Transition name="event-fade">
       <div v-if="storyEvents.length" class="event-strip">
         <div class="event-label">章节事件</div>
@@ -43,10 +59,15 @@ const props = defineProps({
   questGuide: { type: String, default: '在村中探索，了解周围环境。' },
   nearbyNpcLabel: { type: String, default: '暂无 NPC' },
   nearbyInteractTitle: { type: String, default: '暂无地点' },
+  nearbyActionPreview: { type: Array, default: () => [] },
   busy: { type: Boolean, default: false }
 })
 
-defineEmits(['open-event'])
+defineEmits(['open-event', 'open-interact'])
+
+const actionPreview = computed(() =>
+  Array.isArray(props.nearbyActionPreview) ? props.nearbyActionPreview : []
+)
 </script>
 
 <style scoped>
@@ -81,6 +102,61 @@ defineEmits(['open-event'])
   line-height: 1.55;
   color: var(--ink);
   opacity: 0.92;
+}
+
+.nearby-actions {
+  margin-top: 0.65rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.nearby-actions-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--sao-gold);
+  font-weight: 800;
+}
+
+.nearby-action {
+  width: 100%;
+  padding: 0.38rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(125, 211, 252, 0.24);
+  background: rgba(8, 21, 38, 0.78);
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.12rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nearby-action:hover:not(:disabled) {
+  border-color: rgba(246, 211, 110, 0.52);
+  background: rgba(28, 38, 56, 0.86);
+}
+
+.nearby-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nearby-action.blocked {
+  border-color: rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.68);
+}
+
+.nearby-action span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.nearby-action small {
+  color: #bae6fd;
+  font-size: 0.62rem;
+  line-height: 1.35;
 }
 
 .event-strip {
@@ -200,9 +276,11 @@ defineEmits(['open-event'])
 
 @media (max-width: 900px) {
   .quest-tracker {
-    top: 10.75rem;
-    right: 0.55rem;
-    width: min(260px, calc(100% - 1.1rem));
+    position: relative;
+    top: auto;
+    right: auto;
+    width: auto;
+    margin: 0.45rem 0.55rem 4.75rem;
     padding: 0.52rem 0.6rem;
   }
 

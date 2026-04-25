@@ -11,6 +11,7 @@
 - 时间和天气进入世界状态：后端会随 tick/day 更新 `weather`、`weather_label`、`weather_note`，前端地图会叠加清晨、傍晚、夜色、薄雾和细雨氛围。
 - NPC 记忆接入玩法：活动结果可以写入 Alice/Eugeo 的重要记忆，之后 NPC 资料和对话上下文会读到这些记忆。
 - 活动结果可视化：完成活动后会显示时间推进、巨树损伤、关系变化和被 NPC 记住的内容。
+- 活动重复规则：活动可以配置 `repeat: "daily"` 或 `repeat: "once"`，避免玩家在同一天反复刷关系、记忆和巨树进度。
 - 更细的场景分区：同一张大地图内已经细分 `church_library`、`home_hearth`、`village_square`、`gigas_clearing`、`north_gate`。
 
 ## 推荐的扩展顺序
@@ -36,6 +37,7 @@
   "description": "在巨树清场边缘寻找能给晚餐和治疗用的草叶。",
   "result_text": "你把草叶收进布袋，Eugeo 认出其中几种能缓解疲劳。",
   "time_cost": 1,
+  "repeat": "daily",
   "time_bands": ["morning", "afternoon"],
   "effects": {
     "flags": { "collected_herbs": 1 },

@@ -52,8 +52,10 @@ def public_scene_activities(project_root: Path) -> dict[str, Any]:
                     "title",
                     "label",
                     "description",
+                    "repeat",
                     "time_cost",
                     "time_bands",
+                    "requirements",
                     "participants",
                     "tags",
                 )

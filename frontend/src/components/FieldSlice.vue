@@ -50,8 +50,10 @@
         :quest-guide="questGuide"
         :nearby-npc-label="nearbyNpcLabel"
         :nearby-interact-title="nearbyInteractTitle"
+        :nearby-action-preview="nearbyActionPreview"
         :busy="busy"
         @open-event="openStoryEvent"
+        @open-interact="interactOpen = true"
       />
 
       <!-- Bottom chat strip -->
@@ -245,6 +247,15 @@ const nearbyNpcLabel = computed(() => {
 
 const nearbyInteractTitle = computed(() => nearbyInteract.value?.title || '暂无地点')
 
+const nearbyActionPreview = computed(() =>
+  visibleInteractActions.value.slice(0, 4).map((action) => ({
+    id: action.id,
+    label: action.label,
+    meta: action.meta || '',
+    blocked: !!action.blockedReason
+  }))
+)
+
 const questGuide = computed(() => {
   if (storyEvents.value.length) {
     return '地图上出现了金色章节事件标记。点击事件标题或地图上的「！」推进第一章。'
@@ -326,6 +337,14 @@ function activityAvailability(activity) {
       return { ok: false, reason: '需要先完成前置线索' }
     }
   }
+
+  const repeat = activity.repeat || 'free'
+  if (repeat === 'once' && Number(flags[`activity_done.${activity.id}`] || 0) >= 1) {
+    return { ok: false, reason: '已经完成' }
+  }
+  if (repeat === 'daily' && Number(flags[`activity_day.${activity.id}`] || -1) === Number(props.simState?.day || 1)) {
+    return { ok: false, reason: '今天已完成' }
+  }
   return { ok: true, reason: '' }
 }
 
@@ -337,6 +356,8 @@ function enrichInteractAction(action) {
   const meta = []
   const timeCost = Number(activity.time_cost || 0)
   meta.push(timeCost > 0 ? `耗时 ${timeCost} 刻` : '不消耗时段')
+  if (activity.repeat === 'daily') meta.push('每日一次')
+  if (activity.repeat === 'once') meta.push('一次性')
   if (Array.isArray(activity.time_bands) && activity.time_bands.length) {
     meta.push(activity.time_bands.map(getTimeBandLabel).join(' / '))
   }
@@ -585,6 +606,10 @@ async function doWithBusy(fn) {
       localError.value = '你还没有进入对应场景。先走到地图上的地点范围。'
     } else if (msg.includes('requirements_not_met')) {
       localError.value = '这个行动还有前置条件。先完成当前线索，或与对应 NPC 互动。'
+    } else if (msg.includes('already_done_today')) {
+      localError.value = '这个行动今天已经完成。可以推进到下一天再回来。'
+    } else if (msg.includes('already_done')) {
+      localError.value = '这个行动已经完成。去探索新的地点或推进章节事件吧。'
     } else {
       localError.value = msg
     }

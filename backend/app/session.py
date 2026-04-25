@@ -11,13 +11,35 @@ from .dialogue_agent import dialogue_reply
 from .heuristic import choose_action
 from .llm_agent import llm_choose_action
 from .memory_store import MemoryStore
-from .models import Location, SimEvent, WorldState
+from .models import Location, PlayerState, SimEvent, TreeState, WorldState
 from .relationship import apply_relationship_effects, ensure_relationships, npc_profile
 from .scene_activities import find_scene_activity
 from .story_director import available_events, choose_event
 from .story_catalog import can_enter_node, default_catalog_path, load_main_nodes
-from .world import advance_tick, apply_action, apply_environment, apply_npc_schedules, initial_world
+from .world import (
+    LOCATION_MAP_ANCHORS,
+    advance_tick,
+    apply_action,
+    apply_environment,
+    apply_npc_schedules,
+    initial_world,
+)
 from .world_map import bfs_path, default_map_path, load_world_map, scene_for_tile
+
+
+def _player_at_location(player: PlayerState, loc: Location) -> PlayerState:
+    updates: dict[str, object] = {"location": loc}
+    anchor = LOCATION_MAP_ANCHORS.get(loc)
+    if anchor:
+        updates.update(
+            {
+                "tile_x": int(anchor["tile_x"]),
+                "tile_y": int(anchor["tile_y"]),
+                "scene_id": str(anchor["scene_id"]),
+                "map_id": "novice_open",
+            }
+        )
+    return player.model_copy(update=updates)
 
 
 class Session:
@@ -225,8 +247,10 @@ class Session:
                     loc = Location(location)
                 except ValueError:
                     return {"ok": False, "error": "invalid_location"}
-                pl = self.state.player.model_copy(update={"location": loc})
-                self.state = self.state.model_copy(update={"player": pl})
+                pl = _player_at_location(self.state.player, loc)
+                self.state = self.state.model_copy(
+                    update={"player": pl, "scene_id": pl.scene_id}
+                )
             elif kind == "set_flag":
                 if not flag_key or flag_value is None:
                     return {"ok": False, "error": "missing_flag"}
@@ -256,7 +280,7 @@ class Session:
                 required_flags = requirements.get("required_flags") or {}
                 if isinstance(required_flags, dict):
                     for key, val in required_flags.items():
-                        if self.state.flags.get(str(key)) != int(val):
+                        if int(self.state.flags.get(str(key), 0)) < int(val):
                             return {"ok": False, "error": "requirements_not_met"}
 
                 effects = activity.get("effects") or {}
@@ -264,8 +288,21 @@ class Session:
                     effects = {}
 
                 flags = dict(self.state.flags)
+                repeat = str(activity.get("repeat") or "free")
+                activity_day = int(self.state.day)
+                done_key = f"activity_done.{activity_id}"
+                day_key = f"activity_day.{activity_id}"
+                if repeat == "once" and int(flags.get(done_key, 0)) >= 1:
+                    return {"ok": False, "error": "already_done"}
+                if repeat == "daily" and int(flags.get(day_key, -1)) == activity_day:
+                    return {"ok": False, "error": "already_done_today"}
+
                 for key, val in (effects.get("flags") or {}).items():
                     flags[str(key)] = int(val)
+                if repeat == "once":
+                    flags[done_key] = 1
+                elif repeat == "daily":
+                    flags[day_key] = activity_day
                 if flags != self.state.flags:
                     self.state = self.state.model_copy(update={"flags": flags})
 
@@ -276,8 +313,12 @@ class Session:
 
                 tree_damage = max(0, int(effects.get("tree_damage") or 0))
                 if tree_damage:
+                    next_hp = max(0, self.state.tree.hp - tree_damage)
                     tree = self.state.tree.model_copy(
-                        update={"hp": max(0, self.state.tree.hp - tree_damage)}
+                        update={
+                            "hp": next_hp,
+                            "state": TreeState.fallen if next_hp <= 0 else self.state.tree.state,
+                        }
                     )
                     self.state = self.state.model_copy(update={"tree": tree})
 
@@ -298,12 +339,13 @@ class Session:
                     memory_written.append({"npc_id": str(npc_id), **stored})
 
                 if effects.get("sleep_until_morning") is True:
-                    pl = self.state.player.model_copy(update={"location": Location.home})
+                    pl = _player_at_location(self.state.player, Location.home)
                     self.state = self.state.model_copy(
                         update={
                             "day": self.state.day + 1,
                             "tick": 0,
                             "time_band": "morning",
+                            "scene_id": pl.scene_id,
                             "player": pl,
                         }
                     )
@@ -322,16 +364,18 @@ class Session:
                     "result_text": activity.get("result_text") or "这段日常被今天记住了。",
                     "time_cost": time_cost,
                     "tree_damage": tree_damage,
+                    "repeat": repeat,
                     "relationship_changes": relationship_changes,
                     "memory_written": memory_written,
                 }
             elif kind == "rest_until_next_day":
-                pl = self.state.player.model_copy(update={"location": Location.home})
+                pl = _player_at_location(self.state.player, Location.home)
                 self.state = self.state.model_copy(
                     update={
                         "day": self.state.day + 1,
                         "tick": 0,
                         "time_band": "morning",
+                        "scene_id": pl.scene_id,
                         "player": pl,
                     }
                 )

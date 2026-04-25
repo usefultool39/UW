@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.session import Session
 
 
 def test_world_regions_json():
@@ -18,7 +19,8 @@ def test_world_scene_activities_json():
     assert r.status_code == 200
     body = r.json()
     assert body.get("v") == 1
-    assert any(item["id"] == "gigas_chop_rhythm" for item in body["activities"])
+    activity = next(item for item in body["activities"] if item["id"] == "gigas_chop_rhythm")
+    assert activity["repeat"] == "daily"
 
 
 def test_world_map_by_id_default():
@@ -205,6 +207,22 @@ def test_move_world_returns_path():
     assert body["path"][-1] == {"x": 26, "y": 24}
 
 
+def test_set_location_updates_player_map_anchor():
+    client = TestClient(app)
+    client.post("/api/reset")
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "set_location", "location": "home"},
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["state"]["player"]["location"] == "home"
+    assert body["state"]["player"]["scene_id"] == "home_hearth"
+    assert body["state"]["player"]["tile_x"] == 11
+    assert body["state"]["player"]["tile_y"] == 27
+
+
 def test_scene_activity_updates_time_tree_relationship_and_memory():
     client = TestClient(app)
     client.post("/api/reset")
@@ -220,8 +238,30 @@ def test_scene_activity_updates_time_tree_relationship_and_memory():
     assert body["activity_result"]["tree_damage"] == 8
     assert body["state"]["tick"] == before["tick"] + 3
     assert body["state"]["tree"]["hp"] == before["tree"]["hp"] - 8
+    assert body["state"]["flags"]["activity_day.gigas_chop_rhythm"] == before["day"]
     assert body["relationship_changes"]
     assert body["memory_written"][0]["npc_id"] == "eugeo"
+
+    repeated = client.post(
+        "/api/player/action",
+        json={"kind": "scene_activity", "activity_id": "gigas_chop_rhythm"},
+    ).json()
+    assert repeated["ok"] is False
+    assert repeated["error"] == "already_done_today"
+
+
+def test_scene_activity_tree_damage_can_fell_tree():
+    session = Session(run_id="test_scene_activity_tree_damage")
+    session.player_action(kind="move_scene", scene_id="gigas_clearing")
+    session.state = session.state.model_copy(
+        update={"tree": session.state.tree.model_copy(update={"hp": 5})}
+    )
+
+    out = session.player_action(kind="scene_activity", activity_id="gigas_chop_rhythm")
+
+    assert out["ok"] is True
+    assert out["state"]["tree"]["hp"] == 0
+    assert out["state"]["tree"]["state"] == "fallen"
 
 
 def test_scene_activity_rejects_wrong_time_band():
@@ -257,3 +297,6 @@ def test_scene_activity_sleep_resets_day_and_environment():
     assert body["state"]["tick"] == 0
     assert body["state"]["time_band"] == "morning"
     assert body["state"]["weather_label"]
+    assert body["state"]["player"]["scene_id"] == "home_hearth"
+    assert body["state"]["player"]["tile_x"] == 11
+    assert body["state"]["player"]["tile_y"] == 27
