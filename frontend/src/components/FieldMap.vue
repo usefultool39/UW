@@ -113,7 +113,7 @@ const shakeActive = ref(false)
 let shakeTimer = null
 let game = null
 let sceneInstance = null
-let miniFrame = null
+let miniTimer = null
 let miniLastUpdate = 0
 
 const day = ref(1)
@@ -170,14 +170,16 @@ const miniZones = computed(() => {
     .map((zone) => {
       const id = String(zone.scene_id || '')
       const def = SCENE_DEFINITIONS[id] || {}
+      const regionType = zone.regionType || def.regionType || def.role || 'explore'
       const x1 = Number(zone.x1 ?? 0)
       const y1 = Number(zone.y1 ?? 0)
       const x2 = Number(zone.x2 ?? x1)
       const y2 = Number(zone.y2 ?? y1)
       return {
         id,
-        role: def.role || 'explore',
-        label: def.roleLabel || def.label || '功能区',
+        role: def.role || regionType,
+        regionType,
+        label: zone.label || def.roleLabel || def.label || '功能区',
         x: Math.min(x1, x2),
         y: Math.min(y1, y2),
         w: Math.abs(x2 - x1) + 1,
@@ -191,9 +193,10 @@ const miniZones = computed(() => {
 const miniLegend = computed(() => {
   const byRole = new Map()
   miniZones.value.forEach((zone) => {
-    if (zone.role === 'explore' || byRole.has(zone.role)) return
-    byRole.set(zone.role, {
-      key: zone.role,
+    const key = zone.regionType || zone.role
+    if (key === 'explore' || byRole.has(key)) return
+    byRole.set(key, {
+      key,
       label: zone.label,
       color: zone.color
     })
@@ -234,22 +237,25 @@ const miniEvents = computed(() => (props.storyEvents || [])
 function updateMiniViewport() {
   const now = Date.now()
   if (now - (miniLastUpdate || 0) < 100) {
-    // Throttle: max 10fps for minimap viewport updates
-    miniFrame = window.requestAnimationFrame(updateMiniViewport)
     return
   }
   miniLastUpdate = now
   if (sceneInstance?.cameras?.main && sceneInstance._tileSize) {
     const view = sceneInstance.cameras.main.worldView
     const ts = sceneInstance._tileSize
+    const width = Math.max(1, miniWidth.value)
+    const height = Math.max(1, miniHeight.value)
+    const w = Math.min(width, Math.max(0.6, view.width / ts))
+    const h = Math.min(height, Math.max(0.6, view.height / ts))
+    const x = Math.min(Math.max(0, view.x / ts), Math.max(0, width - w))
+    const y = Math.min(Math.max(0, view.y / ts), Math.max(0, height - h))
     miniViewport.value = {
-      x: view.x / ts,
-      y: view.y / ts,
-      w: view.width / ts,
-      h: view.height / ts
+      x,
+      y,
+      w,
+      h
     }
   }
-  miniFrame = window.requestAnimationFrame(updateMiniViewport)
 }
 
 function handleMiniMapClick(event) {
@@ -339,14 +345,17 @@ async function bootPhaser() {
 onMounted(async () => {
   await nextTick()
   await bootPhaser()
-  if (typeof window !== 'undefined') updateMiniViewport()
+  if (typeof window !== 'undefined') {
+    updateMiniViewport()
+    miniTimer = window.setInterval(updateMiniViewport, 120)
+  }
 })
 
 onUnmounted(() => {
   clearTimeout(shakeTimer)
-  if (miniFrame) {
-    window.cancelAnimationFrame(miniFrame)
-    miniFrame = null
+  if (miniTimer) {
+    window.clearInterval(miniTimer)
+    miniTimer = null
   }
   if (game) {
     game.destroy(true)
@@ -505,8 +514,9 @@ watch(
   position: absolute;
   top: 0.9rem;
   right: 0.95rem;
-  z-index: 8;
+  z-index: 30;
   width: clamp(188px, 18vw, 250px);
+  min-width: 170px;
   padding: 0.45rem 0.5rem 0.42rem;
   border: 1px solid rgba(246, 211, 110, 0.34);
   background: rgba(4, 10, 18, 0.86);
@@ -514,6 +524,7 @@ watch(
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .dom-minimap:focus-visible {
@@ -544,7 +555,7 @@ watch(
   margin-top: 0.35rem;
   border: 2px solid rgba(94, 207, 255, 0.35);
   background: #020617;
-  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .dom-minimap-foot {

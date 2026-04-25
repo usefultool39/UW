@@ -6,6 +6,11 @@
 
 ## 当前新增内容
 
+- 本轮修复了 `POST /api/player/action` 的历史兼容问题：旧的 `move_world`、`move_scene`、`scene_activity` 仍可用，新的 `move_map`、`enter_scene`、`interact_with_hub`、`compound_sleep`、`daily_tick` 会返回统一的 `state/events/camera/scene_update` 结构。
+- 模型配置集中到 `backend/app/llm_config.py`，默认动作模型和对话模型都为 `M2-H`；`.env` 只需要覆盖 `ACTION_MODEL`、`DIALOGUE_MODEL` 或密钥。
+- 小地图改为 DOM 固定层，视口框会按缩放夹取到地图范围内，避免缩放后看不到或读不清。
+- 地图分区现在显式携带 `regionType`、`entry_points`、`transfers`、`requirements`，前端小地图和世界高亮不再重复推断区域含义。
+- 玩家只要进入工作区/休息区/互动区的高亮范围，就能打开对应入口；不必精确踩到某一个小点。
 - 场景活动数据化：`data/world/scene_activities.json` 定义砍树、读书、晚餐、睡觉、广场听传闻、北境远望等活动。
 - 地图 POI 可承载玩法：`data/world/world_map.json` 的互动点只引用 `activity_id`，具体耗时、可用时段、关系变化和记忆写入都放在活动数据里。
 - 时间和天气进入世界状态：后端会随 tick/day 更新 `weather`、`weather_label`、`weather_note`，前端地图会叠加清晨、傍晚、夜色、薄雾和细雨氛围。
@@ -72,8 +77,45 @@
 
 - 地图文件：`data/world/maps/<map_id>.json`
 - 地图/场景注册：`frontend/src/field/sceneRegistry.js`
-- 后端入口：在某个 POI 活动或故事事件里改变 `player.map_id`、`player.scene_id`、`player.tile_x`、`player.tile_y`
+- 后端入口：优先通过 `POST /api/player/action` 的 `move_map` 迁移地图，或通过故事事件改变 `player.map_id`、`player.scene_id`、`player.tile_x`、`player.tile_y`
 - 玩法结果：继续通过 `scene_activities` 或 `story events` 写回 flags、relationships、memories
+
+## 新增地图/场景的最小配置
+
+在地图 JSON 里给每个可发现区域加上这些字段：
+
+```json
+{
+  "scene_id": "forest_boundary",
+  "label": "北境森林边缘",
+  "regionType": "interact",
+  "x1": 10,
+  "y1": 10,
+  "x2": 22,
+  "y2": 18,
+  "entry_points": [{ "id": "trail", "x": 14, "y": 14 }],
+  "transfers": [{ "to_scene_id": "village_square", "kind": "same_map", "label": "返回村道" }],
+  "requirements": { "required_flags": { "surveyed_north_gate": 1 } }
+}
+```
+
+`regionType` 推荐先用这几类：`interact`、`work`、`rest`、`locked`、`forbidden`。UI 会自动用它们显示高亮、图例和入口按钮。
+
+## 动作接口约定
+
+`POST /api/player/action` 的成功响应现在固定包含：
+
+```json
+{
+  "ok": true,
+  "state": {},
+  "events": [],
+  "camera": { "mode": "follow_player", "focus_tile": { "x": 24, "y": 24 } },
+  "scene_update": { "changed": false, "map_id": "novice_open", "scene_id": "village_square" }
+}
+```
+
+失败响应也会返回 `state/events/camera/scene_update/allowed_actions`，前端可以直接显示错误并保持服务器权威状态。
 
 ## 验证命令
 

@@ -22,51 +22,115 @@
   "scene_zones": [
     {
       "scene_id": "church_library",
+      "label": "教会书库",
+      "regionType": "interact",
       "x1": 9,
       "y1": 8,
       "x2": 19,
-      "y2": 18
+      "y2": 18,
+      "entry_points": [
+        { "id": "front_desk", "x": 13, "y": 14 }
+      ],
+      "transfers": [
+        { "to_scene_id": "reading_hall", "kind": "same_map", "label": "返回村西书道" }
+      ],
+      "requirements": {}
     },
     {
       "scene_id": "home_hearth",
+      "label": "家中炉火",
+      "regionType": "rest",
       "x1": 8,
       "y1": 25,
       "x2": 15,
-      "y2": 30
+      "y2": 30,
+      "entry_points": [
+        { "id": "door", "x": 11, "y": 27 }
+      ],
+      "transfers": [
+        { "to_scene_id": "village_square", "kind": "same_map", "label": "回到村道广场" }
+      ],
+      "requirements": {}
     },
     {
       "scene_id": "village_square",
+      "label": "村道广场",
+      "regionType": "interact",
       "x1": 20,
       "y1": 21,
       "x2": 31,
-      "y2": 26
+      "y2": 26,
+      "entry_points": [
+        { "id": "crossroad", "x": 24, "y": 24 }
+      ],
+      "transfers": [
+        { "to_scene_id": "church_library", "kind": "same_map", "label": "去教会书库" },
+        { "to_scene_id": "gigas_clearing", "kind": "same_map", "label": "去巨树清场" }
+      ],
+      "requirements": {}
     },
     {
       "scene_id": "reading_hall",
+      "label": "村西书道",
+      "regionType": "interact",
       "x1": 5,
       "y1": 5,
       "x2": 23,
-      "y2": 21
+      "y2": 21,
+      "entry_points": [
+        { "id": "west_path", "x": 14, "y": 14 }
+      ],
+      "transfers": [
+        { "to_scene_id": "church_library", "kind": "same_map", "label": "进入教会书库" }
+      ],
+      "requirements": {}
     },
     {
       "scene_id": "north_gate",
+      "label": "北境边门",
+      "regionType": "locked",
       "x1": 64,
       "y1": 20,
       "x2": 72,
-      "y2": 27
+      "y2": 27,
+      "entry_points": [
+        { "id": "gate", "x": 67, "y": 24 }
+      ],
+      "transfers": [
+        {
+          "to_map_id": "north_boundary_stub",
+          "kind": "future_map",
+          "label": "边界外区域未开放",
+          "locked_reason": "需要后续章节开放"
+        }
+      ],
+      "requirements": {
+        "recommended_flags": ["surveyed_north_gate"]
+      }
     },
     {
       "scene_id": "gigas_clearing",
+      "label": "基家斯西达清场",
+      "regionType": "work",
       "x1": 38,
       "y1": 7,
       "x2": 72,
-      "y2": 39
+      "y2": 39,
+      "entry_points": [
+        { "id": "tree_line", "x": 54, "y": 22 }
+      ],
+      "transfers": [
+        { "to_scene_id": "village_square", "kind": "same_map", "label": "回村道广场" },
+        { "to_scene_id": "north_gate", "kind": "same_map", "label": "去北境边门" }
+      ],
+      "requirements": {}
     }
   ],
   "pois": [
     {
       "id": "poi_reading_quest",
       "kind": "quest",
+      "scene_id": "church_library",
       "active_story_nodes": [
         "mq00_tutorial"
       ],
@@ -78,6 +142,7 @@
     {
       "id": "ix_reading_desk",
       "kind": "interact",
+      "scene_id": "church_library",
       "tile_x": 13,
       "tile_y": 14,
       "radius": 2,
@@ -110,6 +175,7 @@
     {
       "id": "ix_gigas_tree",
       "kind": "interact",
+      "scene_id": "gigas_clearing",
       "tile_x": 54,
       "tile_y": 22,
       "radius": 2,
@@ -149,6 +215,7 @@
     {
       "id": "ix_home_bed",
       "kind": "interact",
+      "scene_id": "home_hearth",
       "tile_x": 11,
       "tile_y": 27,
       "radius": 2,
@@ -180,6 +247,7 @@
     {
       "id": "ix_village_square",
       "kind": "interact",
+      "scene_id": "village_square",
       "tile_x": 24,
       "tile_y": 24,
       "radius": 3,
@@ -198,6 +266,7 @@
     {
       "id": "ix_north_gate",
       "kind": "interact",
+      "scene_id": "north_gate",
       "tile_x": 67,
       "tile_y": 24,
       "radius": 3,

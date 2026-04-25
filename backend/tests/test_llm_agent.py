@@ -35,6 +35,9 @@ class TestIsMinimaxMode:
     def test_m2_her_model_name(self):
         assert _is_minimax_mode("M2-her", has_minimax_key=False) is True
 
+    def test_m2_h_model_name(self):
+        assert _is_minimax_mode("M2-H", has_minimax_key=False) is True
+
     def test_default_false(self):
         assert _is_minimax_mode("gpt-4", has_minimax_key=False) is False
 
@@ -42,6 +45,9 @@ class TestIsMinimaxMode:
 class TestOpenAiChatModel:
     def test_m2_her_uses_openai_chat_shape(self):
         assert _is_openai_chat_model("M2-her") is True
+
+    def test_m2_h_uses_openai_chat_shape(self):
+        assert _is_openai_chat_model("M2-H") is True
 
     def test_m27_uses_text_generation_shape(self):
         assert _is_openai_chat_model("MiniMax-M2.7") is False

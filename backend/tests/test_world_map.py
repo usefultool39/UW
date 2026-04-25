@@ -30,6 +30,14 @@ def test_bfs_adjacent(tiny_map: Path):
     assert path[-1] == (3, 1)
 
 
+def test_bfs_allows_safe_diagonal_smoothing(tiny_map: Path):
+    data = load_world_map(tiny_map)
+    path = bfs_path(data, 1, 1, 3, 2)
+    assert path is not None
+    assert len(path) <= 3
+    assert path[-1] == (3, 2)
+
+
 def test_bfs_blocked(tiny_map: Path):
     data = load_world_map(tiny_map)
     data["rows"] = ["00000", "01000", "00000"]

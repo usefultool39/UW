@@ -9,7 +9,10 @@
     >
       <div class="interact-card" @click.stop>
         <header class="interact-card-hd">
-          <h3 class="interact-card-title">{{ nearbyInteract?.title }}</h3>
+          <div>
+            <div v-if="regionLabel" class="interact-region">{{ regionLabel }}</div>
+            <h3 class="interact-card-title">{{ nearbyInteract?.title }}</h3>
+          </div>
           <button
             type="button"
             class="interact-close"
@@ -30,6 +33,7 @@
             :disabled="busy || !!act.blockedReason"
             @click="emit('interact-action', act)"
           >
+            <span class="action-kicker">确认交互</span>
             <span class="action-label">{{ act.label }}</span>
             <span v-if="act.meta" class="action-meta">{{ act.meta }}</span>
             <span v-if="act.description" class="action-desc">{{ act.description }}</span>
@@ -44,11 +48,28 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   nearbyInteract: { type: Object, default: null },
   visibleInteractActions: { type: Array, default: () => [] },
   busy: { type: Boolean, default: false },
   modelValue: { type: Boolean, default: false }
+})
+
+const REGION_LABELS = {
+  work: '工作区域',
+  rest: '休息区域',
+  interact: '互动区域',
+  locked: '边界区域',
+  forbidden: '不可进入'
+}
+
+const regionLabel = computed(() => {
+  const poi = props.nearbyInteract
+  const type = poi?.regionType
+  if (!type && !poi?.zoneEntry) return ''
+  return REGION_LABELS[type] || poi?.zoneLabel || '可互动区域'
 })
 
 const emit = defineEmits(['update:modelValue', 'interact-action'])
@@ -97,6 +118,18 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   font-size: 1.05rem;
   font-weight: 600;
   color: #f8fafc;
+}
+
+.interact-region {
+  display: inline-flex;
+  margin-bottom: 0.22rem;
+  padding: 0.14rem 0.38rem;
+  border-radius: 999px;
+  border: 1px solid rgba(246, 211, 110, 0.28);
+  background: rgba(246, 211, 110, 0.08);
+  color: #fde68a;
+  font-size: 0.62rem;
+  font-weight: 800;
 }
 
 .interact-close {
@@ -176,6 +209,13 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   color: #fff7d6;
   font-weight: 800;
   line-height: 1.35;
+}
+
+.action-kicker {
+  color: #bae6fd;
+  font-size: 0.58rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .action-meta {

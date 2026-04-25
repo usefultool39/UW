@@ -10,6 +10,7 @@ import httpx
 from anthropic import Anthropic
 
 from .config import RECENT_EVENTS_K
+from .llm_config import action_model, is_minimax_model, is_openai_chat_model
 from .models import Action, ActionName, AgentState, WorldState
 from .persona_phase import persona_phase_key
 from .time_bands import circadian_band_name_en, circadian_hint_zh
@@ -24,8 +25,7 @@ def _sanitize_api_key(raw: str) -> str:
 
 
 def _is_minimax_model(model: str) -> bool:
-    normalized = (model or "").strip().lower()
-    return "minimax" in normalized or normalized == "m2-her"
+    return is_minimax_model(model)
 
 
 def _resolve_base_url(model: str, has_minimax_key: bool) -> str | None:
@@ -49,7 +49,7 @@ def _is_minimax_mode(model: str, has_minimax_key: bool) -> bool:
 
 
 def _is_openai_chat_model(model: str) -> bool:
-    return (model or "").strip().lower() == "m2-her"
+    return is_openai_chat_model(model)
 
 
 def _select_api_key(*, model: str, anthropic_key: str, minimax_key: str) -> str:
@@ -361,7 +361,7 @@ def llm_choose_action(
 ) -> tuple[Action, str | None, dict[str, Any]]:
     import os
 
-    model = os.getenv("ANTHROPIC_MODEL", "MiniMax-M2.7")
+    model = action_model()
     anthropic_key = _sanitize_api_key(os.getenv("ANTHROPIC_API_KEY") or "")
     minimax_key = _sanitize_api_key(os.getenv("MINIMAX_API_KEY") or "")
     api_key = _select_api_key(

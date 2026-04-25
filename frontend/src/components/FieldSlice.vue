@@ -245,7 +245,12 @@ const nearbyNpcLabel = computed(() => {
   return nearbyNpcs.value.map((a) => getAgentLabel(a.id)).join('、')
 })
 
-const nearbyInteractTitle = computed(() => nearbyInteract.value?.title || '暂无地点')
+const nearbyInteractTitle = computed(() => {
+  const poi = nearbyInteract.value
+  if (!poi) return '暂无地点'
+  if (poi.zoneEntry && poi.zoneLabel) return `${poi.zoneLabel} · ${poi.title || poi.label || '可互动'}`
+  return poi.title || '暂无地点'
+})
 
 const nearbyActionPreview = computed(() =>
   visibleInteractActions.value.slice(0, 4).map((action) => ({
@@ -384,7 +389,7 @@ async function onTileClick({ tile_x, tile_y }) {
   localError.value = ''
   try {
     const j = await props.playerAction(
-      { kind: 'move_world', tile_x, tile_y },
+      { kind: 'move_map', map_id: activeMapId.value, tile_x, tile_y },
       { deferRefresh: true }
     )
     const path = j.path || []
@@ -450,12 +455,15 @@ async function onInteractAction(act) {
     if (act.type === 'set_flag') {
       await props.playerAction({ kind: 'set_flag', flag_key: act.flag_key, flag_value: act.flag_value ?? 1 })
     } else if (act.type === 'daily_tick') {
-      await props.dailyTick(Number(act.n) || 1, 'heuristic')
+      await props.playerAction({ kind: 'daily_tick', n: Number(act.n) || 1 })
     } else if (act.type === 'compound_sleep') {
-      await props.playerAction({ kind: 'set_location', location: 'home' })
-      await props.dailyTick(Number(act.daily_n) || 1, 'heuristic')
+      await props.playerAction({ kind: 'compound_sleep', daily_n: Number(act.daily_n) || 1 })
     } else if (act.type === 'scene_activity') {
-      const res = await props.playerAction({ kind: 'scene_activity', activity_id: act.activity_id || act.id })
+      const res = await props.playerAction({
+        kind: 'interact_with_hub',
+        poi_id: nearbyInteract.value?.id,
+        activity_id: act.activity_id || act.id
+      })
       storyResult.value = {
         ...(res.activity_result || {}),
         relationship_changes: res.relationship_changes || res.activity_result?.relationship_changes || [],

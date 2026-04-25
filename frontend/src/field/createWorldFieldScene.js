@@ -238,7 +238,11 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       const sceneId = String(poi.scene_id || sceneIdForTile(getMap(), tx, ty))
       const sceneDef = getSceneDefinition(sceneId)
       const roleLabel = sceneDef.role && sceneDef.role !== 'explore' ? sceneDef.roleLabel : ''
-      this._interactBtnText?.setText?.(roleLabel ? `进入${roleLabel}` : '进入场景')
+      const zoneLabel = poi.zoneLabel || sceneDef.roleLabel || sceneDef.label || roleLabel
+      const buttonLabel = poi.regionType === 'locked'
+        ? `调查${zoneLabel || '边界'}`
+        : `进入${zoneLabel || '场景'}`
+      this._interactBtnText?.setText?.(buttonLabel)
       root.setPosition((tx + 0.5) * tsz, ty * tsz - tsz * 1.05)
       root.setVisible(true)
     }
@@ -552,7 +556,16 @@ export function createWorldFieldSceneClass(Phaser, deps) {
             )
           } else if (p.kind === 'interact') {
             const gix = this.add.graphics()
-            gix.lineStyle(2, 0x38bdf8, 0.95)
+            const sceneId = String(p.scene_id || sceneIdForTile(m, tx, ty))
+            const sceneDef = getSceneDefinition(sceneId)
+            const markerColor = sceneDef.regionType === 'rest'
+              ? 0xf59e0b
+              : sceneDef.regionType === 'work'
+                ? 0xfacc15
+                : sceneDef.regionType === 'locked'
+                  ? 0xf472b6
+                  : 0x38bdf8
+            gix.lineStyle(2, markerColor, 0.95)
             gix.strokeCircle(0, -2, 11)
             gix.lineStyle(1, 0xbae6fd, 0.6)
             gix.strokeCircle(0, -2, 6)
@@ -911,6 +924,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
 
       this.playWalkPath = (path) => {
         return new Promise((resolve) => {
+          const perfStart = typeof performance !== 'undefined' ? performance.now() : 0
           const tsLocal = this._tileSize
           if (!path?.length || !this.playerRoot) {
             resolve()
@@ -972,6 +986,14 @@ export function createWorldFieldSceneClass(Phaser, deps) {
             onComplete: () => {
               this.playerRoot.setPosition(finalPoint.x, finalPoint.y)
               this._walkTween = null
+              if (typeof window !== 'undefined' && perfStart) {
+                window.__UW_PERF = {
+                  ...(window.__UW_PERF || {}),
+                  lastWalkMs: Math.round(performance.now() - perfStart),
+                  lastWalkPoints: smooth.length,
+                  lastWalkDistance: Math.round(total)
+                }
+              }
               fadePath()
             }
           })
@@ -979,8 +1001,11 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       }
 
       this.events.on('postupdate', () => {
-        this.refreshMiniViewport()
-        this.updateWorldInteractButton()
+        const now = this.time.now
+        if (!this._lastInteractUiAt || now - this._lastInteractUiAt > 90) {
+          this._lastInteractUiAt = now
+          this.updateWorldInteractButton()
+        }
       })
 
       assignSceneInstance(this)

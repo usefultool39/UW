@@ -98,6 +98,7 @@ def test_player_move_scene_locked():
     )
     assert r.json()["ok"] is False
     assert r.json()["error"] == "scene_locked"
+    assert r.json()["events"][0]["type"] == "action_rejected"
 
 
 def test_daily_tick_same_shape_as_step():
@@ -205,6 +206,67 @@ def test_move_world_returns_path():
     assert isinstance(body["path"], list)
     assert len(body["path"]) >= 2
     assert body["path"][-1] == {"x": 26, "y": 24}
+    assert body["camera"]["mode"] == "follow_player"
+    assert body["scene_update"]["map_id"] == "novice_open"
+
+
+def test_move_map_alias_returns_unified_envelope():
+    client = TestClient(app)
+    client.post("/api/reset")
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "move_map", "map_id": "novice_open", "tile_x": 26, "tile_y": 24},
+    )
+    body = r.json()
+    assert body["ok"] is True
+    assert body["events"][0]["type"] == "player_moved"
+    assert body["camera"]["focus_tile"] == {"x": 26, "y": 24}
+    assert "scene_update" in body
+
+
+def test_enter_scene_alias_updates_scene():
+    client = TestClient(app)
+    client.post("/api/reset")
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "enter_scene", "scene_id": "home_hearth"},
+    )
+    body = r.json()
+    assert body["ok"] is True
+    assert body["state"]["player"]["scene_id"] == "home_hearth"
+    assert body["events"][0]["type"] == "scene_entered"
+
+
+def test_interact_with_hub_runs_scene_activity():
+    client = TestClient(app)
+    client.post("/api/reset")
+    client.post("/api/player/action", json={"kind": "enter_scene", "scene_id": "gigas_clearing"})
+    r = client.post(
+        "/api/player/action",
+        json={
+            "kind": "interact_with_hub",
+            "poi_id": "ix_gigas_tree",
+            "activity_id": "gigas_chop_rhythm",
+        },
+    )
+    body = r.json()
+    assert body["ok"] is True
+    assert body["activity_result"]["tree_damage"] == 8
+    assert body["events"][0]["type"] == "scene_activity_completed"
+
+
+def test_compound_sleep_keeps_player_home_and_advances_time():
+    client = TestClient(app)
+    client.post("/api/reset")
+    before = client.get("/api/state").json()
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "compound_sleep", "daily_n": 2},
+    )
+    body = r.json()
+    assert body["ok"] is True
+    assert body["state"]["player"]["location"] == "home"
+    assert body["state"]["tick"] == before["tick"] + 2
 
 
 def test_set_location_updates_player_map_anchor():

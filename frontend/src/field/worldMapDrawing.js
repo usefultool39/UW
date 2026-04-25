@@ -149,16 +149,28 @@ export function drawTerrainOverlays(scene, map, ts) {
   return g
 }
 
-function zoneStyle(sceneId) {
+const REGION_STYLE = {
+  interact: { color: 0x38bdf8, roleLabel: '互动区', alpha: 0.08, strokeAlpha: 0.64 },
+  work: { color: 0xfacc15, roleLabel: '工作区', alpha: 0.12, strokeAlpha: 0.82 },
+  rest: { color: 0xf59e0b, roleLabel: '休息区', alpha: 0.12, strokeAlpha: 0.78 },
+  locked: { color: 0xf472b6, roleLabel: '未开放', alpha: 0.08, strokeAlpha: 0.72 },
+  forbidden: { color: 0xef4444, roleLabel: '禁止区', alpha: 0.08, strokeAlpha: 0.72 }
+}
+
+function zoneStyle(zone) {
+  const sceneId = String(zone?.scene_id || '')
   const def = SCENE_DEFINITIONS[sceneId] || {}
-  const color = Number(def.zoneColor || 0x7dd3fc)
-  const role = def.role || 'explore'
+  const regionType = String(zone?.regionType || def.regionType || def.role || 'explore')
+  const region = REGION_STYLE[regionType] || null
+  const color = Number(zone?.zoneColor || def.zoneColor || region?.color || 0x7dd3fc)
+  const role = def.role || regionType || 'explore'
   return {
     color,
     role,
-    roleLabel: def.roleLabel || '功能区',
-    alpha: role === 'explore' ? 0.035 : 0.095,
-    strokeAlpha: role === 'explore' ? 0.28 : 0.72
+    regionType,
+    roleLabel: zone?.label || region?.roleLabel || def.roleLabel || '功能区',
+    alpha: role === 'explore' && !region ? 0.035 : (region?.alpha ?? 0.095),
+    strokeAlpha: role === 'explore' && !region ? 0.28 : (region?.strokeAlpha ?? 0.72)
   }
 }
 
@@ -178,7 +190,7 @@ export function drawSceneZoneHighlights(scene, map, ts) {
     const height = (Math.abs(y2 - y1) + 1) * ts
     const cx = left + width / 2
     const cy = top + height / 2
-    const style = zoneStyle(sceneId)
+    const style = zoneStyle(zone)
 
     const g = scene.add.graphics()
     g.fillStyle(style.color, style.alpha)
@@ -197,7 +209,7 @@ export function drawSceneZoneHighlights(scene, map, ts) {
     g.lineBetween(left + width - 6, top + height - 6, left + width - 6, top + height - 6 - c)
     layer.add(g)
 
-    if (style.role !== 'explore') {
+    if (style.role !== 'explore' || style.regionType !== 'explore') {
       const label = scene.add
         .text(cx, cy, style.roleLabel, {
           fontSize: '13px',

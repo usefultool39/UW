@@ -4,7 +4,7 @@ import json
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from .agent_registry import get_agent_profile
 from .dialogue_agent import dialogue_reply
@@ -24,7 +24,26 @@ from .world import (
     apply_npc_schedules,
     initial_world,
 )
-from .world_map import bfs_path, default_map_path, load_world_map, scene_for_tile
+from .world_map import bfs_path, load_world_map, map_path_for_id, scene_for_tile
+
+
+PLAYER_ACTIONS = {
+    "move_world",
+    "move_map",
+    "move_scene",
+    "enter_scene",
+    "interact_with_hub",
+    "set_location",
+    "set_flag",
+    "scene_activity",
+    "daily_tick",
+    "compound_sleep",
+    "rest_until_next_day",
+}
+
+ACTION_ALIASES = {
+    "enter_scene": "move_scene",
+}
 
 
 def _player_at_location(player: PlayerState, loc: Location) -> PlayerState:
@@ -40,6 +59,33 @@ def _player_at_location(player: PlayerState, loc: Location) -> PlayerState:
             }
         )
     return player.model_copy(update=updates)
+
+
+def _camera_for_player(player: PlayerState) -> dict[str, Any]:
+    return {
+        "mode": "follow_player",
+        "focus_tile": {"x": int(player.tile_x), "y": int(player.tile_y)},
+        "map_id": player.map_id,
+        "scene_id": player.scene_id,
+    }
+
+
+def _zone_for_scene(world_map: dict[str, Any], scene_id: str | None) -> dict[str, Any] | None:
+    if not scene_id:
+        return None
+    for zone in world_map.get("scene_zones") or []:
+        if isinstance(zone, dict) and zone.get("scene_id") == scene_id:
+            return dict(zone)
+    return None
+
+
+def _poi_by_id(world_map: dict[str, Any], poi_id: str | None) -> dict[str, Any] | None:
+    if not poi_id:
+        return None
+    for poi in world_map.get("pois") or []:
+        if isinstance(poi, dict) and poi.get("id") == poi_id:
+            return dict(poi)
+    return None
 
 
 class Session:
@@ -196,73 +242,203 @@ class Session:
         self,
         *,
         kind: str,
+        map_id: str | None = None,
+        entry_point: str | None = None,
         scene_id: str | None = None,
+        poi_id: str | None = None,
         location: str | None = None,
         flag_key: str | None = None,
         flag_value: int | None = None,
         activity_id: str | None = None,
         tile_x: int | None = None,
         tile_y: int | None = None,
+        n: int | None = None,
+        daily_n: int | None = None,
     ) -> dict:
         with self._lock:
             self.state = ensure_relationships(self.state)
+            original_kind = str(kind or "").strip()
+            kind = ACTION_ALIASES.get(original_kind, original_kind)
+            if kind == "interact_with_hub" and activity_id:
+                kind = "scene_activity"
+            before_player = self.state.player
+            action_events: list[dict[str, Any]] = []
             path_payload: list[dict[str, int]] | None = None
             activity_result: dict | None = None
             relationship_changes: list[dict] = []
             memory_written: list[dict] = []
-            if kind == "move_world":
-                if tile_x is None or tile_y is None:
-                    return {"ok": False, "error": "missing_tile"}
-                wm = load_world_map(default_map_path(self.root))
-                sx = self.state.player.tile_x
-                sy = self.state.player.tile_y
-                tx, ty = int(tile_x), int(tile_y)
-                path = bfs_path(wm, sx, sy, tx, ty)
+
+            def current_map() -> tuple[dict[str, Any] | None, str | None]:
+                mid = map_id or self.state.player.map_id or "novice_open"
+                path = map_path_for_id(self.root, mid)
                 if path is None:
-                    return {"ok": False, "error": "unreachable_or_blocked"}
-                path_payload = [{"x": px, "y": py} for px, py in path]
-                new_scene = scene_for_tile(wm, tx, ty)
-                sid = self.state.player.scene_id
-                if new_scene and new_scene in self.state.unlocked_scenes:
-                    sid = new_scene
-                pl = self.state.player.model_copy(
-                    update={"tile_x": tx, "tile_y": ty, "scene_id": sid}
-                )
-                self.state = self.state.model_copy(
-                    update={"scene_id": sid, "player": pl}
-                )
+                    return None, "invalid_map_id"
+                if not path.is_file():
+                    return None, "unknown_map_id"
+                return load_world_map(path), None
+
+            def response_scene_update(changed: bool, reason: str | None = None) -> dict[str, Any]:
+                wm, _ = current_map()
+                zone = _zone_for_scene(wm or {}, self.state.player.scene_id)
+                return {
+                    "changed": changed,
+                    "reason": reason or kind,
+                    "map_id": self.state.player.map_id,
+                    "scene_id": self.state.player.scene_id,
+                    "region": zone,
+                }
+
+            def fail(error: str, **extra: Any) -> dict:
+                return {
+                    "ok": False,
+                    "error": error,
+                    "state": self.state.model_dump(mode="json"),
+                    "events": [
+                        {
+                            "type": "action_rejected",
+                            "action": original_kind,
+                            "normalized_action": kind,
+                            "reason": error,
+                        }
+                    ],
+                    "camera": _camera_for_player(self.state.player),
+                    "scene_update": response_scene_update(False, error),
+                    "allowed_actions": sorted(PLAYER_ACTIONS),
+                    **extra,
+                }
+
+            if kind not in PLAYER_ACTIONS:
+                return fail("unknown_action_kind")
+
+            if kind in {"move_world", "move_map"}:
+                did_map_migration = False
+                if tile_x is None or tile_y is None:
+                    if kind == "move_map" and map_id:
+                        wm, err = current_map()
+                        if err or wm is None:
+                            return fail(err or "unknown_map_id")
+                        points = wm.get("entry_points") or {}
+                        entry = points.get(entry_point or "default") if isinstance(points, dict) else None
+                        spawn = entry if isinstance(entry, dict) else wm.get("spawn") or {}
+                        tx = int(spawn.get("x", 0))
+                        ty = int(spawn.get("y", 0))
+                        sid = str(spawn.get("scene_id") or scene_for_tile(wm, tx, ty) or self.state.player.scene_id)
+                        if sid not in self.state.unlocked_scenes:
+                            return fail("scene_locked")
+                        pl = self.state.player.model_copy(
+                            update={"map_id": map_id, "tile_x": tx, "tile_y": ty, "scene_id": sid}
+                        )
+                        self.state = self.state.model_copy(update={"scene_id": sid, "player": pl})
+                        path_payload = [{"x": tx, "y": ty}]
+                        did_map_migration = True
+                        action_events.append(
+                            {"type": "map_changed", "map_id": map_id, "scene_id": sid, "tile": {"x": tx, "y": ty}}
+                        )
+                    else:
+                        return fail("missing_tile")
+                else:
+                    wm, err = current_map()
+                    if err or wm is None:
+                        return fail(err or "unknown_map_id")
+                if not did_map_migration:
+                    sx = self.state.player.tile_x
+                    sy = self.state.player.tile_y
+                    tx, ty = int(tile_x), int(tile_y)
+                    path = bfs_path(wm, sx, sy, tx, ty)
+                    if path is None:
+                        return fail("unreachable_or_blocked")
+                    path_payload = [{"x": px, "y": py} for px, py in path]
+                    new_scene = scene_for_tile(wm, tx, ty)
+                    sid = self.state.player.scene_id
+                    if new_scene and new_scene in self.state.unlocked_scenes:
+                        sid = new_scene
+                    pl = self.state.player.model_copy(
+                        update={"map_id": map_id or self.state.player.map_id, "tile_x": tx, "tile_y": ty, "scene_id": sid}
+                    )
+                    self.state = self.state.model_copy(
+                        update={"scene_id": sid, "player": pl}
+                    )
+                    action_events.append(
+                        {"type": "player_moved", "map_id": pl.map_id, "scene_id": sid, "tile": {"x": tx, "y": ty}}
+                    )
             elif kind == "move_scene":
                 if not scene_id:
-                    return {"ok": False, "error": "missing_scene_id"}
+                    return fail("missing_scene_id")
                 if scene_id not in self.state.unlocked_scenes:
-                    return {"ok": False, "error": "scene_locked"}
-                pl = self.state.player.model_copy(update={"scene_id": scene_id})
+                    return fail("scene_locked")
+                updates: dict[str, Any] = {"scene_id": scene_id}
+                wm, err = current_map()
+                if err is None and wm:
+                    zone = _zone_for_scene(wm, scene_id)
+                    entries = zone.get("entry_points") if isinstance(zone, dict) else None
+                    picked = None
+                    if isinstance(entries, list) and entries:
+                        if entry_point:
+                            picked = next((p for p in entries if isinstance(p, dict) and p.get("id") == entry_point), None)
+                        picked = picked or next((p for p in entries if isinstance(p, dict)), None)
+                    if isinstance(picked, dict) and {"x", "y"} <= set(picked):
+                        updates.update({"tile_x": int(picked["x"]), "tile_y": int(picked["y"])})
+                pl = self.state.player.model_copy(update=updates)
                 self.state = self.state.model_copy(
                     update={"scene_id": scene_id, "player": pl}
                 )
+                action_events.append({"type": "scene_entered", "scene_id": scene_id})
+            elif kind == "interact_with_hub":
+                if scene_id:
+                    if scene_id not in self.state.unlocked_scenes:
+                        return fail("scene_locked")
+                    pl = self.state.player.model_copy(update={"scene_id": scene_id})
+                    self.state = self.state.model_copy(update={"scene_id": scene_id, "player": pl})
+                    action_events.append({"type": "scene_entered", "scene_id": scene_id})
+                elif poi_id:
+                    wm, err = current_map()
+                    if err or wm is None:
+                        return fail(err or "unknown_map_id")
+                    poi = _poi_by_id(wm, poi_id)
+                    if not poi:
+                        return fail("unknown_poi")
+                    px, py = int(poi.get("tile_x", self.state.player.tile_x)), int(poi.get("tile_y", self.state.player.tile_y))
+                    sid = str(poi.get("scene_id") or scene_for_tile(wm, px, py) or self.state.player.scene_id)
+                    action_events.append({"type": "hub_ready", "poi_id": poi_id, "scene_id": sid})
+                else:
+                    return fail("missing_interaction_target")
             elif kind == "set_location":
                 if not location:
-                    return {"ok": False, "error": "missing_location"}
+                    return fail("missing_location")
                 try:
                     loc = Location(location)
                 except ValueError:
-                    return {"ok": False, "error": "invalid_location"}
+                    return fail("invalid_location")
                 pl = _player_at_location(self.state.player, loc)
                 self.state = self.state.model_copy(
                     update={"player": pl, "scene_id": pl.scene_id}
                 )
+                action_events.append({"type": "location_changed", "location": loc.value, "scene_id": pl.scene_id})
             elif kind == "set_flag":
                 if not flag_key or flag_value is None:
-                    return {"ok": False, "error": "missing_flag"}
+                    return fail("missing_flag")
                 flags = dict(self.state.flags)
                 flags[flag_key] = int(flag_value)
                 self.state = self.state.model_copy(update={"flags": flags})
+                action_events.append({"type": "flag_set", "key": flag_key, "value": int(flag_value)})
+            elif kind == "daily_tick":
+                steps = max(1, min(24, int(n or daily_n or 1)))
+                for _ in range(steps):
+                    self.state = advance_tick(self.state)
+                action_events.append({"type": "time_advanced", "ticks": steps})
+            elif kind == "compound_sleep":
+                pl = _player_at_location(self.state.player, Location.home)
+                self.state = self.state.model_copy(update={"player": pl, "scene_id": pl.scene_id})
+                steps = max(1, min(24, int(daily_n or n or 1)))
+                for _ in range(steps):
+                    self.state = advance_tick(self.state)
+                action_events.append({"type": "rested", "location": "home", "ticks": steps})
             elif kind == "scene_activity":
                 if not activity_id:
-                    return {"ok": False, "error": "missing_activity_id"}
+                    return fail("missing_activity_id")
                 activity = find_scene_activity(self.root, activity_id)
                 if not activity:
-                    return {"ok": False, "error": "unknown_activity"}
+                    return fail("unknown_activity")
 
                 scene_ids = activity.get("scene_ids")
                 if isinstance(scene_ids, list) and scene_ids:
@@ -271,17 +447,17 @@ class Session:
                     scene_req = str(activity.get("scene_id") or "")
                     allowed_scenes = {scene_req} if scene_req else set()
                 if allowed_scenes and self.state.player.scene_id not in allowed_scenes:
-                    return {"ok": False, "error": "wrong_scene"}
+                    return fail("wrong_scene", allowed_scenes=sorted(allowed_scenes))
                 time_bands = activity.get("time_bands") or []
                 if isinstance(time_bands, list) and time_bands and self.state.time_band not in time_bands:
-                    return {"ok": False, "error": "wrong_time_band"}
+                    return fail("wrong_time_band", allowed_time_bands=time_bands)
 
                 requirements = activity.get("requirements") or {}
                 required_flags = requirements.get("required_flags") or {}
                 if isinstance(required_flags, dict):
                     for key, val in required_flags.items():
                         if int(self.state.flags.get(str(key), 0)) < int(val):
-                            return {"ok": False, "error": "requirements_not_met"}
+                            return fail("requirements_not_met", required_flags=required_flags)
 
                 effects = activity.get("effects") or {}
                 if not isinstance(effects, dict):
@@ -293,9 +469,9 @@ class Session:
                 done_key = f"activity_done.{activity_id}"
                 day_key = f"activity_day.{activity_id}"
                 if repeat == "once" and int(flags.get(done_key, 0)) >= 1:
-                    return {"ok": False, "error": "already_done"}
+                    return fail("already_done")
                 if repeat == "daily" and int(flags.get(day_key, -1)) == activity_day:
-                    return {"ok": False, "error": "already_done_today"}
+                    return fail("already_done_today")
 
                 for key, val in (effects.get("flags") or {}).items():
                     flags[str(key)] = int(val)
@@ -368,6 +544,14 @@ class Session:
                     "relationship_changes": relationship_changes,
                     "memory_written": memory_written,
                 }
+                action_events.append(
+                    {
+                        "type": "scene_activity_completed",
+                        "activity_id": activity_id,
+                        "time_cost": time_cost,
+                        "tree_damage": tree_damage,
+                    }
+                )
             elif kind == "rest_until_next_day":
                 pl = _player_at_location(self.state.player, Location.home)
                 self.state = self.state.model_copy(
@@ -380,29 +564,45 @@ class Session:
                     }
                 )
                 self.state = apply_npc_schedules(apply_environment(self.state), self.root)
-            else:
-                return {"ok": False, "error": "unknown_action_kind"}
+                action_events.append({"type": "day_reset", "day": self.state.day, "time_band": self.state.time_band})
 
             row = {
                 "kind": "player_action",
                 "payload": {
-                    "kind": kind,
+                    "kind": original_kind,
+                    "normalized_kind": kind,
+                    "map_id": map_id,
+                    "entry_point": entry_point,
                     "scene_id": scene_id,
+                    "poi_id": poi_id,
                     "location": location,
                     "flag_key": flag_key,
                     "flag_value": flag_value,
                     "activity_id": activity_id,
                     "tile_x": tile_x,
                     "tile_y": tile_y,
+                    "n": n,
+                    "daily_n": daily_n,
                 },
                 "activity_result": activity_result,
+                "events": action_events,
                 "tick": self.state.tick,
                 "day": self.state.day,
             }
             self.events.append(row)
             self._append_jsonl(row)
             self._flush_writes()
-            out: dict = {"ok": True, "state": self.state.model_dump(mode="json")}
+            scene_changed = (
+                before_player.map_id != self.state.player.map_id
+                or before_player.scene_id != self.state.player.scene_id
+            )
+            out: dict = {
+                "ok": True,
+                "state": self.state.model_dump(mode="json"),
+                "events": action_events,
+                "camera": _camera_for_player(self.state.player),
+                "scene_update": response_scene_update(scene_changed),
+            }
             if path_payload is not None:
                 out["path"] = path_payload
             if activity_result is not None:

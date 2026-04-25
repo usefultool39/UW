@@ -17,6 +17,7 @@ from .llm_agent import (
     _sanitize_api_key,
     _select_api_key,
 )
+from .llm_config import dialogue_model
 from .models import AgentState, WorldState
 
 
@@ -121,12 +122,7 @@ def llm_dialogue_reply(
     memory_context: dict[str, Any] | None = None,
     relationship: Any | None = None,
 ) -> dict[str, Any]:
-    model = (
-        os.getenv("DIALOGUE_MODEL")
-        or os.getenv("MINIMAX_DIALOGUE_MODEL")
-        or os.getenv("ANTHROPIC_MODEL")
-        or "MiniMax-M2.7"
-    )
+    model = dialogue_model()
     anthropic_key = _sanitize_api_key(os.getenv("ANTHROPIC_API_KEY") or "")
     minimax_key = _sanitize_api_key(os.getenv("MINIMAX_API_KEY") or "")
     api_key = _select_api_key(

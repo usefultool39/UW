@@ -14,6 +14,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
+from .llm_config import model_meta
 from .session import Session
 from .scene_activities import public_scene_activities
 from .world_map import map_path_for_id
@@ -52,39 +53,6 @@ SESSION = Session(run_id="default")
 SESSION_LOCK = threading.Lock()
 
 
-def _llm_key_configured() -> bool:
-    return bool((os.getenv("ANTHROPIC_API_KEY") or os.getenv("MINIMAX_API_KEY") or "").strip())
-
-
-def _action_model() -> str:
-    return os.getenv("ANTHROPIC_MODEL") or "MiniMax-M2.7"
-
-
-def _dialogue_model() -> str:
-    return (
-        os.getenv("DIALOGUE_MODEL")
-        or os.getenv("MINIMAX_DIALOGUE_MODEL")
-        or _action_model()
-    )
-
-
-def _is_minimax_model_name(model: str) -> bool:
-    normalized = (model or "").strip().lower()
-    return "minimax" in normalized or normalized == "m2-her"
-
-
-def _provider_hint() -> str:
-    models = (_action_model(), _dialogue_model())
-    has_minimax_key = bool((os.getenv("MINIMAX_API_KEY") or "").strip())
-    has_anthropic_key = bool((os.getenv("ANTHROPIC_API_KEY") or "").strip())
-
-    if has_minimax_key or any(_is_minimax_model_name(model) for model in models):
-        return "MiniMax"
-    if has_anthropic_key:
-        return "Anthropic SDK"
-    return "未配置"
-
-
 @app.get("/api/health")
 def health_check():
     """健康检查端点"""
@@ -102,13 +70,18 @@ class RunBody(BaseModel):
 
 class PlayerActionBody(BaseModel):
     kind: str
+    map_id: str | None = None
+    entry_point: str | None = None
     scene_id: str | None = None
+    poi_id: str | None = None
     location: str | None = None
     flag_key: str | None = None
     flag_value: int | None = None
     activity_id: str | None = None
     tile_x: int | None = None
     tile_y: int | None = None
+    n: int | None = None
+    daily_n: int | None = None
 
 
 class StoryAdvanceBody(BaseModel):
@@ -130,10 +103,7 @@ class DialogueBody(BaseModel):
 def api_config():
     """供前端显示「密钥是否已被后端加载」；网页本身读不到 .env。"""
     return {
-        "llm_configured": _llm_key_configured(),
-        "provider_hint": _provider_hint(),
-        "action_model": _action_model(),
-        "dialogue_model": _dialogue_model(),
+        **model_meta(),
         "env_file": str(ROOT / ".env"),
     }
 
@@ -307,13 +277,18 @@ def player_action(request: Request, body: PlayerActionBody):
         sess = SESSION
         out = sess.player_action(
             kind=body.kind,
+            map_id=body.map_id,
+            entry_point=body.entry_point,
             scene_id=body.scene_id,
+            poi_id=body.poi_id,
             location=body.location,
             flag_key=body.flag_key,
             flag_value=body.flag_value,
             activity_id=body.activity_id,
             tile_x=body.tile_x,
             tile_y=body.tile_y,
+            n=body.n,
+            daily_n=body.daily_n,
         )
     return out
 

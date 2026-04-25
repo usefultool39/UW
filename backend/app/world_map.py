@@ -108,7 +108,16 @@ def bfs_path(
     q: deque[tuple[int, int]] = deque()
     q.append((sx, sy))
     prev[(sx, sy)] = None
-    dirs = ((0, 1), (0, -1), (1, 0), (-1, 0))
+    dirs = (
+        (0, 1),
+        (0, -1),
+        (1, 0),
+        (-1, 0),
+        (1, 1),
+        (1, -1),
+        (-1, 1),
+        (-1, -1),
+    )
     found = None
     while q:
         cx, cy = q.popleft()
@@ -121,6 +130,9 @@ def bfs_path(
                 continue
             if not is_walkable(data, nx, ny):
                 continue
+            if dx and dy:
+                if not is_walkable(data, cx + dx, cy) or not is_walkable(data, cx, cy + dy):
+                    continue
             if (nx, ny) in prev:
                 continue
             prev[(nx, ny)] = (cx, cy)

@@ -1,7 +1,7 @@
 <template>
   <aside class="quest-tracker" role="status">
     <div class="quest-rail-title">当前目标</div>
-    <p class="quest-rail-body">{{ questGuide }}</p>
+    <p class="quest-rail-body">{{ safeQuestGuide }}</p>
 
     <div v-if="actionPreview.length" class="nearby-actions">
       <div class="nearby-actions-head">
@@ -30,10 +30,10 @@
     </div>
 
     <Transition name="event-fade">
-      <div v-if="storyEvents.length" class="event-strip">
+      <div v-if="safeStoryEvents.length" class="event-strip">
         <div class="event-label">章节事件</div>
         <button
-          v-for="event in storyEvents"
+          v-for="event in safeStoryEvents"
           :key="event.id"
           type="button"
           :disabled="busy"
@@ -48,12 +48,12 @@
 
     <div class="tracker-meta">
       <span class="meta-chip">
-        <span class="chip-icon">📍</span>
-        {{ nearbyNpcLabel }}
+        <span class="chip-icon">NPC</span>
+        {{ safeNearbyNpcLabel }}
       </span>
       <span class="meta-chip place">
-        <span class="chip-icon">◎</span>
-        {{ nearbyInteractTitle }}
+        <span class="chip-icon">地点</span>
+        {{ safeNearbyInteractTitle }}
       </span>
       <span class="meta-chip node">{{ simState?.story_node_id || 'mq00_tutorial' }}</span>
     </div>
@@ -78,6 +78,14 @@ defineEmits(['open-event', 'open-interact'])
 const actionPreview = computed(() =>
   Array.isArray(props.nearbyActionPreview) ? props.nearbyActionPreview : []
 )
+
+const safeStoryEvents = computed(() =>
+  Array.isArray(props.storyEvents) ? props.storyEvents : []
+)
+
+const safeQuestGuide = computed(() => props.questGuide || '在村中探索，了解周围环境。')
+const safeNearbyNpcLabel = computed(() => props.nearbyNpcLabel || '暂无 NPC')
+const safeNearbyInteractTitle = computed(() => props.nearbyInteractTitle || '暂无地点')
 </script>
 
 <style scoped>
