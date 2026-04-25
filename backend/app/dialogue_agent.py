@@ -8,12 +8,16 @@ from typing import Any
 from .agent_registry import get_agent_profile
 from .llm_agent import (
     _call_minimax_chat,
+    _call_minimax_openai_chat,
     _extract_json_objects,
     _extract_text_blocks,
     _is_minimax_mode,
+    _is_openai_chat_model,
     _resolve_base_url,
     _sanitize_api_key,
+    _select_api_key,
 )
+from .llm_config import dialogue_model
 from .models import AgentState, WorldState
 
 
@@ -118,15 +122,17 @@ def llm_dialogue_reply(
     memory_context: dict[str, Any] | None = None,
     relationship: Any | None = None,
 ) -> dict[str, Any]:
+    model = dialogue_model()
     anthropic_key = _sanitize_api_key(os.getenv("ANTHROPIC_API_KEY") or "")
     minimax_key = _sanitize_api_key(os.getenv("MINIMAX_API_KEY") or "")
-    api_key = anthropic_key or minimax_key
+    api_key = _select_api_key(
+        model=model, anthropic_key=anthropic_key, minimax_key=minimax_key
+    )
     if not api_key:
         raise RuntimeError("llm_key_missing")
 
     agent = _agent_by_id(state, npc_id)
     profile = get_agent_profile(project_root, npc_id)
-    model = os.getenv("ANTHROPIC_MODEL", "MiniMax-M2.7")
     persona = _persona_text(project_root, npc_id)
     memory_tail = recent_memories or []
     system = (
@@ -151,7 +157,20 @@ def llm_dialogue_reply(
         ]
     )
 
-    if _is_minimax_mode(model=model, has_minimax_key=bool(minimax_key)):
+    if _is_openai_chat_model(model):
+        base_url = (
+            os.getenv("MINIMAX_OPENAI_BASE_URL")
+            or "https://api.minimax.io/v1"
+        ).strip()
+        content = _call_minimax_openai_chat(
+            api_key=api_key,
+            model=model,
+            system=system,
+            user=user,
+            base_url=base_url,
+            max_tokens=600,
+        )
+    elif _is_minimax_mode(model=model, has_minimax_key=bool(minimax_key)):
         base_url = (os.getenv("MINIMAX_BASE_URL") or "https://api.minimax.chat/v1").strip()
         content = _call_minimax_chat(
             api_key=api_key,

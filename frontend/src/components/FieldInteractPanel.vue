@@ -9,7 +9,10 @@
     >
       <div class="interact-card" @click.stop>
         <header class="interact-card-hd">
-          <h3 class="interact-card-title">{{ nearbyInteract?.title }}</h3>
+          <div>
+            <div v-if="regionLabel" class="interact-region">{{ regionLabel }}</div>
+            <h3 class="interact-card-title">{{ nearbyInteract?.title }}</h3>
+          </div>
           <button
             type="button"
             class="interact-close"
@@ -25,15 +28,19 @@
             v-for="act in visibleInteractActions"
             :key="act.id"
             type="button"
-            class="tb tb-primary"
-            :disabled="busy"
+            class="interact-action"
+            :class="{ blocked: !!act.blockedReason }"
+            :disabled="busy || !!act.blockedReason"
             @click="emit('interact-action', act)"
           >
-            {{ act.label }}
+            <span class="action-kicker">确认交互</span>
+            <span class="action-label">{{ act.label }}</span>
+            <span v-if="act.meta" class="action-meta">{{ act.meta }}</span>
+            <span v-if="act.description" class="action-desc">{{ act.description }}</span>
           </button>
         </div>
         <p class="interact-card-note">
-          站定或走完路后再点地图上的「对话/互动」（移动中按钮会隐藏）。选项在下方。
+          走进小地图亮框标出的功能区后，地图中会浮出「进入场景」。点击后在这里选择每日行动或剧情互动。
         </p>
       </div>
     </div>
@@ -41,11 +48,28 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   nearbyInteract: { type: Object, default: null },
   visibleInteractActions: { type: Array, default: () => [] },
   busy: { type: Boolean, default: false },
   modelValue: { type: Boolean, default: false }
+})
+
+const REGION_LABELS = {
+  work: '工作区域',
+  rest: '休息区域',
+  interact: '互动区域',
+  locked: '边界区域',
+  forbidden: '不可进入'
+}
+
+const regionLabel = computed(() => {
+  const poi = props.nearbyInteract
+  const type = poi?.regionType
+  if (!type && !poi?.zoneEntry) return ''
+  return REGION_LABELS[type] || poi?.zoneLabel || '可互动区域'
 })
 
 const emit = defineEmits(['update:modelValue', 'interact-action'])
@@ -96,6 +120,18 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   color: #f8fafc;
 }
 
+.interact-region {
+  display: inline-flex;
+  margin-bottom: 0.22rem;
+  padding: 0.14rem 0.38rem;
+  border-radius: 999px;
+  border: 1px solid rgba(246, 211, 110, 0.28);
+  background: rgba(246, 211, 110, 0.08);
+  color: #fde68a;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
 .interact-close {
   flex-shrink: 0;
   width: 2rem;
@@ -127,9 +163,8 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   margin-bottom: 0.65rem;
 }
 
-.interact-actions .tb {
+.interact-actions .interact-action {
   width: 100%;
-  justify-content: center;
 }
 
 .interact-card-note {
@@ -139,36 +174,59 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   color: #64748b;
 }
 
-.tb {
+.interact-action {
   font-size: 0.76rem;
-  padding: 0.38rem 0.65rem;
+  padding: 0.52rem 0.65rem;
   border-radius: 9px;
   border: 1px solid rgba(148, 163, 184, 0.22);
-  background: rgba(51, 65, 85, 0.45);
+  background: linear-gradient(180deg, rgba(185, 88, 58, 0.88), rgba(110, 46, 44, 0.92));
   color: #e2e8f0;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.18rem;
+  text-align: left;
 }
 
-.tb:hover:not(:disabled) {
-  background: rgba(71, 85, 105, 0.55);
+.interact-action:hover:not(:disabled) {
+  border-color: rgba(253, 224, 71, 0.55);
+  background: linear-gradient(180deg, rgba(210, 104, 68, 0.96), rgba(126, 55, 48, 0.96));
+  box-shadow: 0 0 16px rgba(246, 211, 110, 0.14);
 }
 
-.tb-accent {
-  background: linear-gradient(180deg, #6366f1, #4f46e5);
-  border-color: rgba(165, 180, 252, 0.4);
-  color: #fff;
-  font-weight: 600;
-}
-
-.tb-primary {
-  background: linear-gradient(180deg, #e94560, #c73e54);
-  border-color: rgba(251, 113, 133, 0.4);
-  color: #fff;
-  font-weight: 600;
-}
-
-.tb:disabled {
-  opacity: 0.45;
+.interact-action:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
+}
+
+.interact-action.blocked {
+  background: rgba(31, 41, 55, 0.72);
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+.action-label {
+  color: #fff7d6;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.action-kicker {
+  color: #bae6fd;
+  font-size: 0.58rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.action-meta {
+  color: #bae6fd;
+  font-size: 0.66rem;
+  line-height: 1.35;
+}
+
+.action-desc {
+  color: #cbd5e1;
+  font-size: 0.68rem;
+  line-height: 1.45;
 }
 </style>

@@ -83,6 +83,9 @@ class WorldState(BaseModel):
     tick: int = 0
     day: int = 1
     time_band: Literal["morning", "afternoon", "evening", "night"] = "morning"
+    weather: str = "clear"
+    weather_label: str = "晴朗"
+    weather_note: str = "清亮的风穿过北境村道。"
     chapter_id: str = "chapter_01"
     scene_id: str = "gigas_clearing"
     tree: Tree
@@ -97,7 +100,14 @@ class WorldState(BaseModel):
     chapter_ending_id: str | None = None
     player: PlayerState = Field(default_factory=PlayerState)
     unlocked_scenes: list[str] = Field(
-        default_factory=lambda: ["reading_hall", "gigas_clearing"]
+        default_factory=lambda: [
+            "reading_hall",
+            "church_library",
+            "home_hearth",
+            "village_square",
+            "gigas_clearing",
+            "north_gate",
+        ]
     )
 
 

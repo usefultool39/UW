@@ -32,6 +32,30 @@ from .time_bands import circadian_band_name_en
 from .world_map import default_map_path, load_world_map, scene_for_tile
 
 
+WEATHER_ROTATION: tuple[dict[str, str], ...] = (
+    {"weather": "clear", "weather_label": "晴朗", "weather_note": "风从山脉那侧吹来，村道和麦田都很亮。"},
+    {"weather": "mist", "weather_label": "薄雾", "weather_note": "薄雾贴着水渠和树根，远处的山线像被擦淡了。"},
+    {"weather": "cloudy", "weather_label": "多云", "weather_note": "云影掠过屋顶，巨树清场的光线忽明忽暗。"},
+    {"weather": "drizzle", "weather_label": "细雨", "weather_note": "细雨落在草叶和斧柄上，空气里有湿木头的味道。"},
+)
+
+
+def environment_for(day: int, tick: int) -> dict[str, str]:
+    band = circadian_band_name_en(tick)
+    if band == "night":
+        return {
+            "weather": "night",
+            "weather_label": "夜色",
+            "weather_note": "炉火和窗光变得显眼，村外的树林只剩下暗轮廓。",
+        }
+    item = WEATHER_ROTATION[(int(day) * 3 + int(tick) // 9) % len(WEATHER_ROTATION)]
+    return dict(item)
+
+
+def apply_environment(state: WorldState) -> WorldState:
+    return state.model_copy(update=environment_for(state.day, state.tick))
+
+
 LOCATION_MAP_ANCHORS: dict[Location, dict[str, object]] = {
     Location.at_tree: {
         "tile_x": 54,
@@ -42,19 +66,19 @@ LOCATION_MAP_ANCHORS: dict[Location, dict[str, object]] = {
     Location.bench: {
         "tile_x": 24,
         "tile_y": 24,
-        "scene_id": "reading_hall",
+        "scene_id": "village_square",
         "current_goal": "在村道旁短暂休息",
     },
     Location.home: {
         "tile_x": 11,
         "tile_y": 27,
-        "scene_id": "reading_hall",
+        "scene_id": "home_hearth",
         "current_goal": "在小屋整理与休息",
     },
     Location.table: {
         "tile_x": 15,
         "tile_y": 15,
-        "scene_id": "reading_hall",
+        "scene_id": "home_hearth",
         "current_goal": "准备一起用餐",
     },
 }
@@ -196,7 +220,7 @@ def initial_world(seed: int | None = None) -> WorldState:
             tile_y=py,
         ),
     )
-    return apply_npc_schedules(state, root)
+    return apply_npc_schedules(apply_environment(state), root)
 
 
 def _agent_by_id(state: WorldState, aid: str) -> AgentState:
@@ -330,4 +354,4 @@ def advance_tick(state: WorldState) -> WorldState:
             agent.daily_contribution = 0
 
     st.time_band = circadian_band_name_en(st.tick)  # type: ignore[assignment]
-    return apply_npc_schedules(st)
+    return apply_npc_schedules(apply_environment(st))

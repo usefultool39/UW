@@ -1,6 +1,6 @@
 # 30小镇项目说明
 
-更新时间：2026-04-24
+更新时间：2026-04-25
 
 ## 一句话定位
 
@@ -32,6 +32,18 @@
 - 前端支持导出/导入本地 JSON 存档。
 - pytest 改用项目内临时目录，规避部分 Windows 用户 Temp ACL 锁死问题。
 - 后端测试、前端构建、E2E smoke 已验证通过。
+
+### v1.2 视觉、智能体与场景扩展铺垫
+
+已完成：
+
+- 地图主背景替换为更接近动画感的原创素材，程序化叠加层降噪。
+- 小地图改为固定 DOM/SVG 层，缩放镜头时保持清晰。
+- Alice / Eugeo / 玩家贴图换为新的 TV 动画风格素材。
+- Alice / Eugeo 的 persona、backstory、系统基底和日程统一到早期卢利特村时间线。
+- 前端增加 `sceneRegistry.js`，集中管理 map/scene/display/mode/未来切换蓝图。
+- 后端增加 `GET /api/world/maps/{map_id}`，为后续多地图切换做准备。
+- 新增 [SCENE_SYSTEM.md](SCENE_SYSTEM.md)，说明同地图分区、多地图入口和实例场景的扩展路线。
 
 ## 设计原则
 
@@ -69,6 +81,7 @@
 | `frontend/src/App.vue` | 应用入口、地图/调试台切换 |
 | `frontend/src/components/FieldSlice.vue` | 地图主体验容器、HUD、热键、面板调度、存档按钮 |
 | `frontend/src/field/createWorldFieldScene.js` | Phaser 地图渲染、玩家移动、NPC/事件/POI 标记 |
+| `frontend/src/field/sceneRegistry.js` | map/scene 注册表、背景素材、未来切换蓝图 |
 | `frontend/src/field/gameContentConfig.js` | 显示名、素材路径、场景名、时间段、目标提示 |
 | `frontend/src/components/DialoguePanel.vue` | NPC 对话 UI |
 | `frontend/src/components/StoryEventPanel.vue` | 章节事件选择 UI |
@@ -83,6 +96,7 @@
 | `data/story/events_chapter_01.json` | 第一章三日事件、选择、后果、记忆 |
 | `data/story/main_nodes.json` | 主线节点和闸锁 |
 | `data/world/world_map.json` | 新手村地图、POI、可走层、场景分区 |
+| `data/world/maps/` | 未来多地图文件目录 |
 | `data/world/regions.json` | 区域/场景表 |
 | `data/world/schedules.json` | NPC 按时间段移动和当前目标 |
 | `characters/meta.json` | 角色注册和展示元数据 |
@@ -105,6 +119,7 @@
 | `GET` | `/api/state` | 当前权威世界状态 |
 | `GET` | `/api/events` | 运行事件日志 |
 | `GET` | `/api/world/map` | 地图数据 |
+| `GET` | `/api/world/maps/{map_id}` | 按 map_id 读取地图，供未来多地图切换 |
 | `GET` | `/api/world/regions` | 区域数据 |
 | `GET` | `/api/story/available_events` | 当前可触发章节事件 |
 | `POST` | `/api/story/choose` | 选择事件选项并应用后果 |
@@ -177,15 +192,19 @@
 优先改：
 
 1. `data/world/world_map.json`
-2. `data/world/regions.json`
-3. `data/world/schedules.json`
-4. `frontend/src/field/gameContentConfig.js`
+2. 未来独立地图放入 `data/world/maps/<map_id>.json`
+3. `data/world/regions.json`
+4. `data/world/schedules.json`
+5. `frontend/src/field/sceneRegistry.js`
+6. `frontend/src/field/gameContentConfig.js`
 
 地图约定：
 
 - `0`、`3` 是可走层。
 - POI 的 `tile_x` / `tile_y` 必须落在可走或可接近位置。
 - `scene_zones` 用于把格子映射到 `scene_id`。
+- 如果跨地图切换，后端需要同时更新 `player.map_id`、`player.scene_id`、`tile_x`、`tile_y`。
+- 战斗、副本、剧情演出优先做成 instance 场景，不塞进当前探索地图渲染器。
 
 ### 修改 AI 行为
 
@@ -217,7 +236,7 @@ npm.cmd run test:e2e
 
 当前验证结果：
 
-- `116 passed`
+- `122 passed`
 - `npm.cmd run build` 通过
 - `npm.cmd run test:e2e` 通过
 

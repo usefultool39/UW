@@ -4,7 +4,8 @@ import {
   AGENT_ART_KEYS,
   AGENT_TEXTURE_FALLBACKS,
   LANDMARK_ART_CONFIGS,
-  SCENE_LABELS
+  SCENE_DEFINITIONS,
+  getSceneLabel
 } from './gameContentConfig.js'
 
 export const ZOOM_MIN = 0.42
@@ -12,11 +13,11 @@ export const ZOOM_MAX = 2.35
 export const ZOOM_WHEEL = 0.055
 
 export const MINI_COL = {
-  0: 0x4f9c54,
-  1: 0x183d25,
-  2: 0x2f7fa6,
-  3: 0xc8a56a,
-  4: 0x6f5947
+  0: 0x6f9362,
+  1: 0x223c2d,
+  2: 0x4b8fa0,
+  3: 0xbca982,
+  4: 0x766f65
 }
 
 export { AGENT_ART_KEYS }
@@ -49,60 +50,60 @@ export function drawStyledTile(g, x, y, ts, code) {
   const h0 = tileHash(x, y)
 
   if (code === 0) {
-    g.fillStyle(h0 > 0.48 ? 0x5aa65a : 0x4f9652, 1)
+    g.fillStyle(h0 > 0.48 ? 0x6a9362 : 0x668e60, 1)
     g.fillRect(px + pad, py + pad, w, h)
-    g.fillStyle(0x86c56b, 0.18)
+    g.fillStyle(0xb9d28e, 0.045)
     g.fillTriangle(px, py, px + w * 0.9, py, px, py + h * 0.62)
-    g.fillStyle(0x2f6f3b, 0.18)
+    g.fillStyle(0x314d35, 0.045)
     g.fillTriangle(px + w, py + h, px + w * 0.15, py + h, px + w, py + h * 0.24)
     if (h0 > 0.64) {
-      strokeGrassBlade(g, px + ts * (0.22 + h0 * 0.18), py + ts * 0.74, ts, 0x174f2d, 0.42)
+      strokeGrassBlade(g, px + ts * (0.22 + h0 * 0.18), py + ts * 0.74, ts, 0x31583c, 0.18)
     }
     if (h0 > 0.82) {
-      g.fillStyle(h0 > 0.91 ? 0xf7d56a : 0xd9f99d, 0.85)
+      g.fillStyle(h0 > 0.91 ? 0xd9c474 : 0xc5d99c, 0.56)
       g.fillCircle(px + ts * 0.68, py + ts * 0.42, Math.max(1.2, ts * 0.045))
     }
   } else if (code === 1) {
-    g.fillStyle(0x173b25, 1)
+    g.fillStyle(0x223a2b, 1)
     g.fillRect(px, py, w, h)
-    g.fillStyle(0x0f2a1b, 0.82)
+    g.fillStyle(0x16271d, 0.82)
     g.fillEllipse(px + ts * 0.5, py + ts * 0.72, ts * 0.72, ts * 0.34)
-    g.fillStyle(0x6c482c, 1)
+    g.fillStyle(0x604735, 1)
     g.fillRoundedRect(px + ts * 0.43, py + ts * 0.48, ts * 0.14, ts * 0.42, Math.max(1, ts * 0.03))
-    g.fillStyle(h0 > 0.55 ? 0x1f6d3d : 0x14522f, 1)
+    g.fillStyle(h0 > 0.55 ? 0x31583d : 0x2d4f39, 1)
     g.fillCircle(px + ts * 0.5, py + ts * 0.34, ts * 0.31)
-    g.fillStyle(0x2f8f51, 0.88)
+    g.fillStyle(0x4d7650, 0.62)
     g.fillCircle(px + ts * 0.36, py + ts * 0.43, ts * 0.2)
     g.fillCircle(px + ts * 0.64, py + ts * 0.45, ts * 0.19)
-    g.fillStyle(0xb7e36c, 0.16)
+    g.fillStyle(0xc6d58f, 0.12)
     g.fillCircle(px + ts * 0.39, py + ts * 0.24, ts * 0.1)
   } else if (code === 2) {
-    g.fillStyle(0x2f7599, 1)
+    g.fillStyle(0x4b8fa0, 1)
     g.fillRect(px, py, w, h)
-    g.fillStyle(0x174d72, 0.42)
+    g.fillStyle(0x275f73, 0.32)
     g.fillTriangle(px + w, py + h, px + w * 0.2, py + h, px + w, py + h * 0.2)
-    g.lineStyle(Math.max(1, ts * 0.04), 0x92e6ff, 0.23)
+    g.lineStyle(Math.max(1, ts * 0.04), 0xc0e3e8, 0.17)
     const wave = ((x + y) % 3) * ts * 0.08
     g.lineBetween(px + ts * 0.14, py + ts * 0.32 + wave, px + ts * 0.86, py + ts * 0.28 + wave)
-    g.lineStyle(Math.max(1, ts * 0.03), 0xc8f7ff, 0.18)
+    g.lineStyle(Math.max(1, ts * 0.03), 0xd8f3f3, 0.13)
     g.lineBetween(px + ts * 0.22, py + ts * 0.62, px + ts * 0.68, py + ts * 0.58)
   } else if (code === 3) {
-    g.fillStyle(0xb98e58, 1)
+    g.fillStyle(0xb7a47f, 1)
     g.fillRect(px, py, w, h)
-    g.fillStyle(0xd3b274, 0.68)
+    g.fillStyle(0xd1c29a, 0.22)
     g.fillTriangle(px, py, px + w * 0.7, py, px, py + h * 0.52)
-    g.fillStyle(0x7f5f3e, 0.28)
+    g.fillStyle(0x756342, 0.1)
     g.fillTriangle(px + w, py + h, px + w * 0.12, py + h, px + w, py + h * 0.36)
     if (h0 > 0.35) {
-      g.fillStyle(0x765235, 0.36)
+      g.fillStyle(0x74624a, 0.16)
       g.fillEllipse(px + ts * (0.24 + h0 * 0.4), py + ts * (0.2 + h0 * 0.5), ts * 0.12, ts * 0.06)
     }
   } else {
-    g.fillStyle(0x645444, 1)
+    g.fillStyle(0x716e66, 1)
     g.fillRect(px, py, w, h)
-    g.fillStyle(0x8b755f, 0.74)
+    g.fillStyle(0x938b7a, 0.46)
     g.fillTriangle(px + ts * 0.13, py + ts * 0.82, px + ts * 0.54, py + ts * 0.16, px + ts * 0.92, py + ts * 0.78)
-    g.fillStyle(0x3b2e24, 0.28)
+    g.fillStyle(0x47423a, 0.22)
     g.fillTriangle(px + ts * 0.54, py + ts * 0.16, px + ts * 0.92, py + ts * 0.78, px + ts * 0.58, py + ts * 0.72)
   }
 }
@@ -124,20 +125,20 @@ export function drawTerrainOverlays(scene, map, ts) {
         const westWater = codeAt(rows, x - 1, y) === 2
         const eastWater = codeAt(rows, x + 1, y) === 2
         if (northWater || southWater || westWater || eastWater) {
-          g.fillStyle(0xd2bd72, 0.62)
+          g.fillStyle(0xd5c99a, 0.38)
           if (northWater) g.fillRect(px, py, ts, ts * 0.18)
           if (southWater) g.fillRect(px, py + ts * 0.82, ts, ts * 0.18)
           if (westWater) g.fillRect(px, py, ts * 0.18, ts)
           if (eastWater) g.fillRect(px + ts * 0.82, py, ts * 0.18, ts)
         }
         if (h0 > 0.78) {
-          strokeGrassBlade(g, px + ts * 0.22, py + ts * 0.78, ts, 0x154b2d, 0.54)
-          strokeGrassBlade(g, px + ts * 0.72, py + ts * 0.58, ts * 0.8, 0x1f6b3c, 0.44)
+          strokeGrassBlade(g, px + ts * 0.22, py + ts * 0.78, ts, 0x31583c, 0.2)
+          strokeGrassBlade(g, px + ts * 0.72, py + ts * 0.58, ts * 0.8, 0x3d6545, 0.16)
         }
       }
 
       if (code === 3) {
-        g.lineStyle(Math.max(1, ts * 0.04), 0x6f4b2d, 0.18)
+        g.lineStyle(Math.max(1, ts * 0.04), 0x776b55, 0.12)
         if (codeAt(rows, x, y - 1) !== 3) g.lineBetween(px, py + 1, px + ts, py + 1)
         if (codeAt(rows, x, y + 1) !== 3) g.lineBetween(px, py + ts - 1, px + ts, py + ts - 1)
         if (codeAt(rows, x - 1, y) !== 3) g.lineBetween(px + 1, py, px + 1, py + ts)
@@ -146,6 +147,84 @@ export function drawTerrainOverlays(scene, map, ts) {
     }
   }
   return g
+}
+
+const REGION_STYLE = {
+  interact: { color: 0x38bdf8, roleLabel: '互动区', alpha: 0.08, strokeAlpha: 0.64 },
+  work: { color: 0xfacc15, roleLabel: '工作区', alpha: 0.12, strokeAlpha: 0.82 },
+  rest: { color: 0xf59e0b, roleLabel: '休息区', alpha: 0.12, strokeAlpha: 0.78 },
+  locked: { color: 0xf472b6, roleLabel: '未开放', alpha: 0.08, strokeAlpha: 0.72 },
+  forbidden: { color: 0xef4444, roleLabel: '禁止区', alpha: 0.08, strokeAlpha: 0.72 }
+}
+
+function zoneStyle(zone) {
+  const sceneId = String(zone?.scene_id || '')
+  const def = SCENE_DEFINITIONS[sceneId] || {}
+  const regionType = String(zone?.regionType || def.regionType || def.role || 'explore')
+  const region = REGION_STYLE[regionType] || null
+  const color = Number(zone?.zoneColor || def.zoneColor || region?.color || 0x7dd3fc)
+  const role = def.role || regionType || 'explore'
+  return {
+    color,
+    role,
+    regionType,
+    roleLabel: zone?.label || region?.roleLabel || def.roleLabel || '功能区',
+    alpha: role === 'explore' && !region ? 0.035 : (region?.alpha ?? 0.095),
+    strokeAlpha: role === 'explore' && !region ? 0.28 : (region?.strokeAlpha ?? 0.72)
+  }
+}
+
+export function drawSceneZoneHighlights(scene, map, ts) {
+  const layer = scene.add.container(0, 0).setDepth(4)
+  const zones = Array.isArray(map.scene_zones) ? map.scene_zones : []
+  for (const zone of zones) {
+    const sceneId = String(zone.scene_id || '')
+    if (!sceneId) continue
+    const x1 = Number(zone.x1 ?? 0)
+    const y1 = Number(zone.y1 ?? 0)
+    const x2 = Number(zone.x2 ?? x1)
+    const y2 = Number(zone.y2 ?? y1)
+    const left = Math.min(x1, x2) * ts
+    const top = Math.min(y1, y2) * ts
+    const width = (Math.abs(x2 - x1) + 1) * ts
+    const height = (Math.abs(y2 - y1) + 1) * ts
+    const cx = left + width / 2
+    const cy = top + height / 2
+    const style = zoneStyle(zone)
+
+    const g = scene.add.graphics()
+    g.fillStyle(style.color, style.alpha)
+    g.fillRoundedRect(left + 3, top + 3, Math.max(1, width - 6), Math.max(1, height - 6), Math.max(5, ts * 0.18))
+    g.lineStyle(Math.max(2, ts * 0.065), style.color, style.strokeAlpha)
+    g.strokeRoundedRect(left + 4, top + 4, Math.max(1, width - 8), Math.max(1, height - 8), Math.max(5, ts * 0.18))
+    g.lineStyle(Math.max(1, ts * 0.035), 0xfff7d6, 0.38)
+    const c = Math.min(ts * 1.4, width * 0.22, height * 0.22)
+    g.lineBetween(left + 6, top + 6, left + 6 + c, top + 6)
+    g.lineBetween(left + 6, top + 6, left + 6, top + 6 + c)
+    g.lineBetween(left + width - 6, top + 6, left + width - 6 - c, top + 6)
+    g.lineBetween(left + width - 6, top + 6, left + width - 6, top + 6 + c)
+    g.lineBetween(left + 6, top + height - 6, left + 6 + c, top + height - 6)
+    g.lineBetween(left + 6, top + height - 6, left + 6, top + height - 6 - c)
+    g.lineBetween(left + width - 6, top + height - 6, left + width - 6 - c, top + height - 6)
+    g.lineBetween(left + width - 6, top + height - 6, left + width - 6, top + height - 6 - c)
+    layer.add(g)
+
+    if (style.role !== 'explore' || style.regionType !== 'explore') {
+      const label = scene.add
+        .text(cx, cy, style.roleLabel, {
+          fontSize: '13px',
+          color: '#fff7d6',
+          fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
+          fontStyle: 'bold',
+          stroke: '#0f172a',
+          strokeThickness: 5
+        })
+        .setOrigin(0.5)
+        .setAlpha(0.94)
+      layer.add(label)
+    }
+  }
+  return layer
 }
 
 function addBoundarySign(scene, layer, x, y, label, align = 'center') {
@@ -215,16 +294,8 @@ export function drawExplorationAtmosphere(scene, map, ts) {
     mist.fillStyle(0x86efac, 0.045)
     mist.fillEllipse(mapW * ux + ts * 0.7, mapH * uy + ts * 0.2, w * 0.74, h * 0.72)
   }
+  mist.setAlpha(0.62)
   layer.add(mist)
-  scene.tweens.add({
-    targets: mist,
-    alpha: 0.62,
-    x: ts * 0.24,
-    duration: 2600,
-    yoyo: true,
-    repeat: -1,
-    ease: 'Sine.easeInOut'
-  })
 
   const signs = scene.add.container(0, 0)
   addBoundarySign(scene, signs, mapW * 0.5, ts * 2.2, '北境边界')
@@ -383,7 +454,7 @@ export function sceneZoneLabels(map) {
   const labels = []
   for (const z of zones) {
     const sid = z.scene_id || ''
-    const text = SCENE_LABELS[sid] || sid
+    const text = getSceneLabel(sid)
     const cx = ((z.x1 ?? 0) + (z.x2 ?? 0)) / 2
     const cy = ((z.y1 ?? 0) + (z.y2 ?? 0)) / 2
     labels.push({ x: cx, y: cy, text })

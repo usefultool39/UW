@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.session import Session
 
 
 def test_world_regions_json():
@@ -10,6 +11,31 @@ def test_world_regions_json():
     body = r.json()
     assert body.get("v") == 1
     assert "regions" in body
+
+
+def test_world_scene_activities_json():
+    client = TestClient(app)
+    r = client.get("/api/world/scene_activities")
+    assert r.status_code == 200
+    body = r.json()
+    assert body.get("v") == 1
+    activity = next(item for item in body["activities"] if item["id"] == "gigas_chop_rhythm")
+    assert activity["repeat"] == "daily"
+
+
+def test_world_map_by_id_default():
+    client = TestClient(app)
+    r = client.get("/api/world/maps/novice_open")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["id"] == "novice_open"
+    assert "rows" in body
+
+
+def test_world_map_by_id_rejects_path_traversal():
+    client = TestClient(app)
+    r = client.get("/api/world/maps/bad$id")
+    assert r.status_code == 400
 
 
 def test_story_catalog_json():
@@ -26,6 +52,7 @@ def test_state_returns_time_chapter_and_agent_positions():
     assert r.status_code == 200
     body = r.json()
     assert body["time_band"] == "morning"
+    assert body["weather_label"]
     assert body["chapter_id"] == "chapter_01"
     agents = {a["id"]: a for a in body["agents"]}
     assert agents["alice"]["tile_x"] == 11
@@ -71,6 +98,7 @@ def test_player_move_scene_locked():
     )
     assert r.json()["ok"] is False
     assert r.json()["error"] == "scene_locked"
+    assert r.json()["events"][0]["type"] == "action_rejected"
 
 
 def test_daily_tick_same_shape_as_step():
@@ -178,3 +206,159 @@ def test_move_world_returns_path():
     assert isinstance(body["path"], list)
     assert len(body["path"]) >= 2
     assert body["path"][-1] == {"x": 26, "y": 24}
+    assert body["camera"]["mode"] == "follow_player"
+    assert body["scene_update"]["map_id"] == "novice_open"
+
+
+def test_move_map_alias_returns_unified_envelope():
+    client = TestClient(app)
+    client.post("/api/reset")
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "move_map", "map_id": "novice_open", "tile_x": 26, "tile_y": 24},
+    )
+    body = r.json()
+    assert body["ok"] is True
+    assert body["events"][0]["type"] == "player_moved"
+    assert body["camera"]["focus_tile"] == {"x": 26, "y": 24}
+    assert "scene_update" in body
+
+
+def test_enter_scene_alias_updates_scene():
+    client = TestClient(app)
+    client.post("/api/reset")
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "enter_scene", "scene_id": "home_hearth"},
+    )
+    body = r.json()
+    assert body["ok"] is True
+    assert body["state"]["player"]["scene_id"] == "home_hearth"
+    assert body["events"][0]["type"] == "scene_entered"
+
+
+def test_interact_with_hub_runs_scene_activity():
+    client = TestClient(app)
+    client.post("/api/reset")
+    client.post("/api/player/action", json={"kind": "enter_scene", "scene_id": "gigas_clearing"})
+    r = client.post(
+        "/api/player/action",
+        json={
+            "kind": "interact_with_hub",
+            "poi_id": "ix_gigas_tree",
+            "activity_id": "gigas_chop_rhythm",
+        },
+    )
+    body = r.json()
+    assert body["ok"] is True
+    assert body["activity_result"]["tree_damage"] == 8
+    assert body["events"][0]["type"] == "scene_activity_completed"
+
+
+def test_compound_sleep_keeps_player_home_and_advances_time():
+    client = TestClient(app)
+    client.post("/api/reset")
+    before = client.get("/api/state").json()
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "compound_sleep", "daily_n": 2},
+    )
+    body = r.json()
+    assert body["ok"] is True
+    assert body["state"]["player"]["location"] == "home"
+    assert body["state"]["tick"] == before["tick"] + 2
+
+
+def test_set_location_updates_player_map_anchor():
+    client = TestClient(app)
+    client.post("/api/reset")
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "set_location", "location": "home"},
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["state"]["player"]["location"] == "home"
+    assert body["state"]["player"]["scene_id"] == "home_hearth"
+    assert body["state"]["player"]["tile_x"] == 11
+    assert body["state"]["player"]["tile_y"] == 27
+
+
+def test_scene_activity_updates_time_tree_relationship_and_memory():
+    client = TestClient(app)
+    client.post("/api/reset")
+    client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "gigas_clearing"})
+    before = client.get("/api/state").json()
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "scene_activity", "activity_id": "gigas_chop_rhythm"},
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["activity_result"]["tree_damage"] == 8
+    assert body["state"]["tick"] == before["tick"] + 3
+    assert body["state"]["tree"]["hp"] == before["tree"]["hp"] - 8
+    assert body["state"]["flags"]["activity_day.gigas_chop_rhythm"] == before["day"]
+    assert body["relationship_changes"]
+    assert body["memory_written"][0]["npc_id"] == "eugeo"
+
+    repeated = client.post(
+        "/api/player/action",
+        json={"kind": "scene_activity", "activity_id": "gigas_chop_rhythm"},
+    ).json()
+    assert repeated["ok"] is False
+    assert repeated["error"] == "already_done_today"
+
+
+def test_scene_activity_tree_damage_can_fell_tree():
+    session = Session(run_id="test_scene_activity_tree_damage")
+    session.player_action(kind="move_scene", scene_id="gigas_clearing")
+    session.state = session.state.model_copy(
+        update={"tree": session.state.tree.model_copy(update={"hp": 5})}
+    )
+
+    out = session.player_action(kind="scene_activity", activity_id="gigas_chop_rhythm")
+
+    assert out["ok"] is True
+    assert out["state"]["tree"]["hp"] == 0
+    assert out["state"]["tree"]["state"] == "fallen"
+
+
+def test_scene_activity_rejects_wrong_time_band():
+    client = TestClient(app)
+    client.post("/api/reset")
+    client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "reading_hall"})
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "scene_activity", "activity_id": "home_evening_meal"},
+    )
+    assert r.status_code == 200
+    assert r.json()["ok"] is False
+    assert r.json()["error"] == "wrong_time_band"
+
+
+def test_scene_activity_sleep_resets_day_and_environment():
+    client = TestClient(app)
+    client.post("/api/reset")
+    client.post("/api/sim/daily_tick", json={"n": 40, "mode": "heuristic"})
+    before = client.get("/api/state").json()
+    assert before["time_band"] == "evening"
+    client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "home_hearth"})
+
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "scene_activity", "activity_id": "home_sleep_until_morning"},
+    )
+
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["state"]["day"] == before["day"] + 1
+    assert body["state"]["tick"] == 0
+    assert body["state"]["time_band"] == "morning"
+    assert body["state"]["weather_label"]
+    assert body["state"]["player"]["scene_id"] == "home_hearth"
+    assert body["state"]["player"]["tile_x"] == 11
+    assert body["state"]["player"]["tile_y"] == 27

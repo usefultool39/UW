@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+const DEFAULT_WORLD_MAP_ID = 'novice_open'
 /** 普通接口（状态、配置、启发式 step） */
 const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS) || 15000
 /** 超过该阈值的超时文案走「AI 慢」提示 */
@@ -113,8 +114,7 @@ export function useGameApi() {
 
   async function refresh() {
     try {
-      await fetchState()
-      await fetchEvents()
+      await Promise.all([fetchState(), fetchEvents()])
       lastError.value = ''
     } catch (e) {
       lastError.value = e.message || '刷新失败'
@@ -153,8 +153,14 @@ export function useGameApi() {
     return requestJson('/api/world/regions')
   }
 
-  async function fetchWorldMap() {
-    return requestJson('/api/world/map')
+  async function fetchWorldMap(mapId = '') {
+    const id = String(mapId || '').trim()
+    if (!id || id === DEFAULT_WORLD_MAP_ID) return requestJson('/api/world/map')
+    return requestJson(`/api/world/maps/${encodeURIComponent(id)}`)
+  }
+
+  async function fetchSceneActivities() {
+    return requestJson('/api/world/scene_activities')
   }
 
   async function fetchStoryCatalog() {
@@ -341,6 +347,7 @@ export function useGameApi() {
     resumeFromCheckpoint,
     fetchRegions,
     fetchWorldMap,
+    fetchSceneActivities,
     fetchStoryCatalog,
     fetchAvailableStoryEvents,
     dailyTick,

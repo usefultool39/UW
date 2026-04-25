@@ -10,7 +10,10 @@
 2. [PLAYTEST.md](PLAYTEST.md)  
    第一章三日 Demo 的试玩步骤和验收点。
 
-3. 根目录 [README.md](../README.md)  
+3. [SCENE_SYSTEM.md](SCENE_SYSTEM.md)
+   场景切换、多地图、未来副本/战斗实例的扩展方式。
+
+4. 根目录 [README.md](../README.md)
    快速启动、目录结构和常用验证命令。
 
 ## 局部文档

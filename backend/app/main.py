@@ -14,7 +14,10 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
+from .llm_config import model_meta
 from .session import Session
+from .scene_activities import public_scene_activities
+from .world_map import map_path_for_id
 
 ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT / ".env")
@@ -50,22 +53,6 @@ SESSION = Session(run_id="default")
 SESSION_LOCK = threading.Lock()
 
 
-def _llm_key_configured() -> bool:
-    return bool((os.getenv("ANTHROPIC_API_KEY") or os.getenv("MINIMAX_API_KEY") or "").strip())
-
-
-def _provider_hint() -> str:
-    model = (os.getenv("ANTHROPIC_MODEL") or "").lower()
-    has_minimax_key = bool((os.getenv("MINIMAX_API_KEY") or "").strip())
-    has_anthropic_key = bool((os.getenv("ANTHROPIC_API_KEY") or "").strip())
-
-    if has_minimax_key or "minimax" in model:
-        return "MiniMax"
-    if has_anthropic_key:
-        return "Anthropic SDK"
-    return "未配置"
-
-
 @app.get("/api/health")
 def health_check():
     """健康检查端点"""
@@ -83,12 +70,18 @@ class RunBody(BaseModel):
 
 class PlayerActionBody(BaseModel):
     kind: str
+    map_id: str | None = None
+    entry_point: str | None = None
     scene_id: str | None = None
+    poi_id: str | None = None
     location: str | None = None
     flag_key: str | None = None
     flag_value: int | None = None
+    activity_id: str | None = None
     tile_x: int | None = None
     tile_y: int | None = None
+    n: int | None = None
+    daily_n: int | None = None
 
 
 class StoryAdvanceBody(BaseModel):
@@ -110,8 +103,7 @@ class DialogueBody(BaseModel):
 def api_config():
     """供前端显示「密钥是否已被后端加载」；网页本身读不到 .env。"""
     return {
-        "llm_configured": _llm_key_configured(),
-        "provider_hint": _provider_hint(),
+        **model_meta(),
         "env_file": str(ROOT / ".env"),
     }
 
@@ -158,6 +150,18 @@ def world_open_map():
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+@app.get("/api/world/maps/{map_id}")
+def world_map_by_id(map_id: str):
+    """按 map_id 读取地图。当前默认地图仍兼容 /api/world/map。"""
+    with SESSION_LOCK:
+        path = map_path_for_id(SESSION.root, map_id)
+    if path is None:
+        raise HTTPException(status_code=400, detail="invalid_map_id")
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail=f"unknown_map_id:{map_id}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 @app.get("/api/world/regions")
 def world_regions():
     """静态区域/场景表（新手村 + 日后 stub），供客户端渲染与按钮。"""
@@ -166,6 +170,14 @@ def world_regions():
     if not path.is_file():
         return {"v": 1, "regions": []}
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+@app.get("/api/world/scene_activities")
+def world_scene_activities():
+    """场景活动目录：用于把 POI 做成可重复的 RPG 日常玩法。"""
+    with SESSION_LOCK:
+        root = SESSION.root
+    return public_scene_activities(root)
 
 
 @app.get("/api/story/catalog")
@@ -265,12 +277,18 @@ def player_action(request: Request, body: PlayerActionBody):
         sess = SESSION
         out = sess.player_action(
             kind=body.kind,
+            map_id=body.map_id,
+            entry_point=body.entry_point,
             scene_id=body.scene_id,
+            poi_id=body.poi_id,
             location=body.location,
             flag_key=body.flag_key,
             flag_value=body.flag_value,
+            activity_id=body.activity_id,
             tile_x=body.tile_x,
             tile_y=body.tile_y,
+            n=body.n,
+            daily_n=body.daily_n,
         )
     return out
 

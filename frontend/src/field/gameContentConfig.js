@@ -1,31 +1,34 @@
+import { DEFAULT_MAP_ID, getSceneLabel as getRegisteredSceneLabel, getWorldBackgroundAsset } from './sceneRegistry.js'
+export { MAP_DEFINITIONS, SCENE_DEFINITIONS, SCENE_TRANSITION_BLUEPRINTS } from './sceneRegistry.js'
+
 export const GAME_CHAPTER_INFO = {
   kicker: '30小镇 · 第一章',
   title: '北境新手村'
 }
 
 export const WORLD_ASSETS = {
-  background: '/assets/game/field-bg.png'
+  background: getWorldBackgroundAsset(DEFAULT_MAP_ID)
 }
 
 export const AGENTS = {
   player: {
     label: '你',
     textureKey: 'char_player_traveler',
-    asset: '/assets/game/player-token.png',
+    asset: '/assets/game/player-token-tv.png',
     haloColor: 0xfbbf24,
     tokenHeight: 58
   },
   alice: {
     label: '爱丽丝',
     textureKey: 'char_alice_village',
-    asset: '/assets/game/alice-token.png',
+    asset: '/assets/game/alice-token-tv.png',
     haloColor: 0x70e0bb,
     tokenHeight: 52
   },
   eugeo: {
     label: '优吉欧',
     textureKey: 'char_eugeo_woodsman',
-    asset: '/assets/game/eugeo-token.png',
+    asset: '/assets/game/eugeo-token-tv.png',
     haloColor: 0xa78bfa,
     tokenHeight: 52
   },
@@ -86,11 +89,6 @@ export const AGENT_TEXTURE_FALLBACKS = {
   }
 }
 
-export const SCENE_LABELS = {
-  reading_hall: '书库与村西',
-  gigas_clearing: '巨树清场'
-}
-
 export const TIME_BAND_LABELS = {
   morning: '清晨',
   afternoon: '白昼',
@@ -121,7 +119,7 @@ export function getTimeBandLabel(timeBand) {
 }
 
 export function getSceneLabel(sceneId) {
-  return SCENE_LABELS[sceneId] || sceneId || '未知地点'
+  return getRegisteredSceneLabel(sceneId)
 }
 
 export function getQuestGuide(simState) {
