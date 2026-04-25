@@ -21,11 +21,17 @@
         <option value="heuristic">规则模式</option>
         <option value="llm">智能模式</option>
       </select>
+      <button type="button" class="audio-btn" @click="toggleMute" :title="isMuted ? '取消静音' : '静音'">
+        {{ isMuted ? '🔇' : '🔊' }}
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useAudio } from '../composables/useAudio.js'
+const { isMuted, toggleMute } = useAudio()
+
 defineProps({
   autoRunning: { type: Boolean, default: false },
   loading: { type: Boolean, default: false },
@@ -87,6 +93,21 @@ button:disabled {
   color: #000;
   border-color: rgba(78, 204, 163, 0.9);
   box-shadow: 0 0 10px rgba(78, 204, 163, 0.3);
+}
+
+.audio-btn {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--sao-border-dim);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.audio-btn:hover {
+  border-color: var(--sao-cyan);
+  color: var(--sao-cyan);
 }
 
 .spinner {

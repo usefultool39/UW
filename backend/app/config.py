@@ -2,8 +2,8 @@
 
 SCENE_ID = "gigas_clearing"
 
-# 原著向：巨树极高血量，日常砍击仅作进度展示，主线不依赖砍完。
-TREE_HP_MAX = 100_000_000
+# 原著向：巨树血量可完成章节剧情，3天砍树+NPC贡献约150-200伤害。
+TREE_HP_MAX = 200
 CHOP_DAMAGE = 10
 CHOP_STAMINA_COST = 8
 

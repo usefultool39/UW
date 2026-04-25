@@ -11,7 +11,7 @@ class TestSessionInit:
         sess = Session(seed=42, run_id="test-run")
         assert sess.state.tick == 0
         assert sess.state.day == 1
-        assert sess.state.tree.hp == 100_000_000
+        assert sess.state.tree.hp == 200
         assert len(sess.events) == 0
         assert sess.run_id == "test-run"
 

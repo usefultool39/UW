@@ -12,7 +12,7 @@ class TestInitialWorld:
         state = initial_world()
         assert state.tick == 0
         assert state.day == 1
-        assert state.tree.hp == 100_000_000
+        assert state.tree.hp == 200
         assert state.tree.state == TreeState.standing
         assert len(state.agents) == 2
 
@@ -62,7 +62,7 @@ class TestApplyAction:
         state = initial_world()
         action = Action(name=ActionName.chop)
         new_state, event = apply_action(state, "eugeo", action)
-        assert new_state.tree.hp == 100_000_000 - 10
+        assert new_state.tree.hp == 200 - 10
         assert event.ok is True
         assert "chop" in event.detail
 

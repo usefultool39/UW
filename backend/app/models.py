@@ -48,6 +48,12 @@ class PlayerState(BaseModel):
     map_id: str = "novice_open"
     tile_x: int = 4
     tile_y: int = 10
+    hp: int = 100
+    max_hp: int = 100
+    mp: int = 100
+    max_mp: int = 100
+    stamina: int = 100
+    max_stamina: int = 100
 
 
 class AgentState(BaseModel):

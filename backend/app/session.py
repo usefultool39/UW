@@ -428,7 +428,8 @@ class Session:
                 action_events.append({"type": "time_advanced", "ticks": steps})
             elif kind == "compound_sleep":
                 pl = _player_at_location(self.state.player, Location.home)
-                self.state = self.state.model_copy(update={"player": pl, "scene_id": pl.scene_id})
+                player = pl.model_copy(update={"stamina": pl.max_stamina})
+                self.state = self.state.model_copy(update={"player": player, "scene_id": pl.scene_id})
                 steps = max(1, min(24, int(daily_n or n or 1)))
                 for _ in range(steps):
                     self.state = advance_tick(self.state)
@@ -488,6 +489,15 @@ class Session:
                 )
 
                 tree_damage = max(0, int(effects.get("tree_damage") or 0))
+                stamina_cost = max(0, int(effects.get("stamina_cost") or 8))
+                if self.state.player.stamina < stamina_cost:
+                    return fail("insufficient_stamina", required=stamina_cost, current=self.state.player.stamina)
+
+                # Consume player stamina
+                new_stamina = max(0, self.state.player.stamina - stamina_cost)
+                player = self.state.player.model_copy(update={"stamina": new_stamina})
+                self.state = self.state.model_copy(update={"player": player})
+
                 if tree_damage:
                     next_hp = max(0, self.state.tree.hp - tree_damage)
                     tree = self.state.tree.model_copy(
@@ -516,13 +526,14 @@ class Session:
 
                 if effects.get("sleep_until_morning") is True:
                     pl = _player_at_location(self.state.player, Location.home)
+                    player = pl.model_copy(update={"stamina": pl.max_stamina})
                     self.state = self.state.model_copy(
                         update={
                             "day": self.state.day + 1,
                             "tick": 0,
                             "time_band": "morning",
                             "scene_id": pl.scene_id,
-                            "player": pl,
+                            "player": player,
                         }
                     )
                     self.state = apply_npc_schedules(apply_environment(self.state), self.root)
@@ -540,6 +551,7 @@ class Session:
                     "result_text": activity.get("result_text") or "这段日常被今天记住了。",
                     "time_cost": time_cost,
                     "tree_damage": tree_damage,
+                    "stamina_cost": stamina_cost,
                     "repeat": repeat,
                     "relationship_changes": relationship_changes,
                     "memory_written": memory_written,
@@ -554,13 +566,15 @@ class Session:
                 )
             elif kind == "rest_until_next_day":
                 pl = _player_at_location(self.state.player, Location.home)
+                # Restore player stamina when resting
+                player = pl.model_copy(update={"stamina": pl.max_stamina})
                 self.state = self.state.model_copy(
                     update={
                         "day": self.state.day + 1,
                         "tick": 0,
                         "time_band": "morning",
                         "scene_id": pl.scene_id,
-                        "player": pl,
+                        "player": player,
                     }
                 )
                 self.state = apply_npc_schedules(apply_environment(self.state), self.root)

@@ -8,6 +8,7 @@
       <div class="vital-name">{{ playerName }}</div>
       <div class="bar hp"><span :style="{ width: hpPercent + '%' }"></span></div>
       <div class="bar mp"><span :style="{ width: mpPercent + '%' }"></span></div>
+      <div class="bar stamina"><span :style="{ width: staminaPercent + '%' }"></span></div>
     </div>
     <div class="player-meta">
       <span class="meta-tag day">Day {{ day }}</span>
@@ -50,6 +51,12 @@ const mpPercent = computed(() => {
   const maxMp = props.simState?.player?.max_mp
   if (!Number.isFinite(mp) || !Number.isFinite(maxMp) || maxMp === 0) return 68
   return Math.round((mp / maxMp) * 100)
+})
+const staminaPercent = computed(() => {
+  const s = props.simState?.player?.stamina
+  const maxS = props.simState?.player?.max_stamina
+  if (!Number.isFinite(s) || !Number.isFinite(maxS) || maxS === 0) return 100
+  return Math.round((s / maxS) * 100)
 })
 </script>
 
@@ -136,6 +143,10 @@ const mpPercent = computed(() => {
 
 .bar.mp span {
   background: linear-gradient(90deg, #0ea5e9, #67e8f9);
+}
+
+.bar.stamina span {
+  background: linear-gradient(90deg, #f59e0b, #fcd34d);
 }
 
 .player-meta {

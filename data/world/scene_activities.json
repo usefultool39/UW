@@ -18,6 +18,7 @@
       "effects": {
         "flags": { "worked_gigas_today": 1 },
         "tree_damage": 8,
+        "stamina_cost": 8,
         "relationship": { "eugeo.affinity": 2, "eugeo.trust": 1 },
         "memory": {
           "eugeo": {
@@ -44,6 +45,7 @@
       "tags": ["anomaly", "foreshadowing"],
       "effects": {
         "flags": { "listened_to_forest": 1 },
+        "stamina_cost": 3,
         "relationship": { "eugeo.trust": 2, "eugeo.tension": 1 },
         "memory": {
           "eugeo": {
@@ -70,6 +72,7 @@
       "tags": ["reading", "sacred_arts", "canon_daily"],
       "effects": {
         "flags": { "studied_sacred_arts": 1, "prologue_reading_done": 1 },
+        "stamina_cost": 5,
         "relationship": { "alice.trust": 2, "alice.affinity": 1 },
         "memory": {
           "alice": {
@@ -96,6 +99,7 @@
       "tags": ["slice_of_life", "relationship"],
       "effects": {
         "flags": { "helped_alice_lunch_basket": 1 },
+        "stamina_cost": 3,
         "relationship": { "alice.affinity": 3, "alice.trust": 1 },
         "memory": {
           "alice": {
@@ -122,6 +126,7 @@
       "tags": ["meal", "relationship", "daily_loop"],
       "effects": {
         "flags": { "shared_evening_meal": 1 },
+        "stamina_cost": 5,
         "relationship": {
           "alice.affinity": 2,
           "eugeo.affinity": 2,
@@ -158,6 +163,7 @@
       "tags": ["sleep", "day_cycle"],
       "effects": {
         "flags": { "slept_at_home": 1 },
+        "stamina_cost": 0,
         "sleep_until_morning": true
       }
     },
@@ -177,6 +183,7 @@
       "tags": ["rumor", "worldbuilding"],
       "effects": {
         "flags": { "heard_village_rumor": 1 },
+        "stamina_cost": 2,
         "relationship": { "alice.trust": 1, "eugeo.trust": 1 }
       }
     },
@@ -196,6 +203,7 @@
       "tags": ["boundary", "future_instance"],
       "effects": {
         "flags": { "surveyed_north_gate": 1 },
+        "stamina_cost": 5,
         "relationship": { "eugeo.trust": 2, "eugeo.tension": 2 },
         "memory": {
           "eugeo": {

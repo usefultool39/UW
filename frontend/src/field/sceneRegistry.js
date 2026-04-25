@@ -7,6 +7,13 @@ export const MAP_DEFINITIONS = {
     regionId: 'novice_village',
     mode: 'field',
     background: '/assets/game/field-bg-tv-v3.jpg'
+  },
+  north_boundary_stub: {
+    id: 'north_boundary_stub',
+    label: '北境边界',
+    regionId: 'novice_village',
+    mode: 'field',
+    background: '/assets/game/field-bg-tv-v3.jpg'
   }
 }
 
@@ -76,10 +83,22 @@ export const SCENE_DEFINITIONS = {
     mapId: 'novice_open',
     regionId: 'novice_village',
     role: 'boundary',
-    regionType: 'locked',
+    regionType: 'boundary',
     roleLabel: '边界调查',
     zoneColor: 0xf472b6,
     label: '北境边门',
+    playMode: 'field',
+    status: 'open'
+  },
+  north_boundary: {
+    id: 'north_boundary',
+    mapId: 'north_boundary_stub',
+    regionId: 'novice_village',
+    role: 'boundary',
+    regionType: 'boundary',
+    roleLabel: '边界探索',
+    zoneColor: 0xfb923c,
+    label: '北境边界',
     playMode: 'field',
     status: 'open'
   },

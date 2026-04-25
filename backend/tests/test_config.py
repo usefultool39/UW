@@ -4,7 +4,7 @@ from app import config
 
 class TestConfig:
     def test_tree_config(self):
-        assert config.TREE_HP_MAX == 100_000_000
+        assert config.TREE_HP_MAX == 200
         assert config.CHOP_DAMAGE == 10
         assert config.CHOP_STAMINA_COST == 8
 

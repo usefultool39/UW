@@ -99,9 +99,9 @@
       "transfers": [
         {
           "to_map_id": "north_boundary_stub",
-          "kind": "future_map",
-          "label": "边界外区域未开放",
-          "locked_reason": "需要后续章节开放"
+          "to_scene_id": "north_boundary",
+          "kind": "map_gate",
+          "label": "探索北境边界"
         }
       ],
       "requirements": {

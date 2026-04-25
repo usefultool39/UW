@@ -153,6 +153,10 @@ import Toast from './Toast.vue'
 import { getAgentLabel, getQuestGuide, getSceneLabel, getTimeBandLabel } from '../field/gameContentConfig.js'
 import { findNearbyInteractPoi } from '../field/interactPoi.js'
 import { DEFAULT_MAP_ID } from '../field/sceneRegistry.js'
+import { useAudio } from '../composables/useAudio.js'
+
+// Audio composable for SFX on interactions
+const { playSfx } = useAudio()
 
 const props = defineProps({
   simState: { type: Object, required: true },
@@ -399,6 +403,7 @@ async function onTileClick({ tile_x, tile_y }) {
     mapRef.value?.triggerCameraShake?.()
     await props.refresh()
     if (sceneInstance?.syncPlayerFromState) sceneInstance.syncPlayerFromState()
+    playSfx('/assets/audio/sfx_step.mp3')
   } catch (e) {
     const msg = e.message || String(e)
     if (msg.includes('unreachable_or_blocked')) {
@@ -470,6 +475,7 @@ async function onInteractAction(act) {
         memory_written: res.memory_written || res.activity_result?.memory_written || []
       }
       storyResultOpen.value = true
+      playSfx('/assets/audio/sfx_activity.mp3')
     }
     showToast(act.toast || '完成', 'success')
     interactOpen.value = false

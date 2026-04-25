@@ -12,6 +12,7 @@ from .config import (
     REST_RECOVER,
     SLEEP_HUNGER_INCREASE,
     SLEEP_STAMINA_RECOVER,
+    STAMINA_MAX,
     TREE_HP_MAX,
     TICK_PER_DAY,
 )
@@ -218,6 +219,8 @@ def initial_world(seed: int | None = None) -> WorldState:
             map_id=mid,
             tile_x=px,
             tile_y=py,
+            stamina=STAMINA_MAX,
+            max_stamina=STAMINA_MAX,
         ),
     )
     return apply_npc_schedules(apply_environment(state), root)
