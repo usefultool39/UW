@@ -129,12 +129,12 @@ async function submit() {
 }
 
 .dialogue-panel {
-  width: min(92vw, 720px);
-  max-height: min(82vh, 620px);
+  width: min(94vw, 940px);
+  max-height: min(88vh, 760px);
   display: flex;
   flex-direction: column;
-  padding: 0.9rem;
-  border-radius: 12px;
+  padding: 1.2rem;
+  border-radius: 16px;
   background: rgba(9, 14, 26, 0.96);
   border: 1px solid rgba(94, 207, 255, 0.34);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.58), 0 0 24px rgba(94, 207, 255, 0.12);
@@ -159,13 +159,13 @@ async function submit() {
 
 .dialogue-header h3 {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.45rem;
 }
 
 .dialogue-close {
   flex: 0 0 auto;
-  width: 2rem;
-  height: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 8px;
   padding: 0;
   font-size: 1.25rem;
@@ -173,7 +173,7 @@ async function submit() {
 }
 
 .dialogue-log {
-  min-height: 210px;
+  min-height: 320px;
   overflow: auto;
   padding: 0.8rem 0.15rem;
   display: flex;
@@ -184,7 +184,7 @@ async function submit() {
 .dialogue-empty {
   margin: auto;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .dialogue-line {
@@ -198,16 +198,16 @@ async function submit() {
 .dialogue-line span {
   display: block;
   margin-bottom: 0.22rem;
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   color: var(--muted);
 }
 
 .dialogue-line p {
   margin: 0;
-  padding: 0.62rem 0.75rem;
-  border-radius: 10px;
-  font-size: 0.88rem;
-  line-height: 1.55;
+  padding: 0.78rem 0.95rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  line-height: 1.65;
   background: rgba(24, 37, 58, 0.88);
   border: 1px solid rgba(148, 163, 184, 0.16);
 }
@@ -227,11 +227,13 @@ async function submit() {
 
 .dialogue-form input {
   min-width: 0;
-  min-height: 2.5rem;
+  min-height: 3rem;
+  font-size: 1rem;
 }
 
 .dialogue-send {
-  min-width: 5.2rem;
+  min-width: 6.5rem;
+  font-size: 1rem;
 }
 
 .memory-hint {
@@ -241,7 +243,7 @@ async function submit() {
   color: #d1fae5;
   background: rgba(16, 185, 129, 0.13);
   border: 1px solid rgba(110, 231, 183, 0.22);
-  font-size: 0.76rem;
+  font-size: 0.9rem;
   line-height: 1.45;
 }
 

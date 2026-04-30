@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from app.world_map import bfs_path, is_walkable, load_world_map, map_path_for_id, scene_for_tile
+from app.world_map import bfs_path, is_blocked_zone_tile, is_walkable, load_world_map, map_path_for_id, scene_for_tile
 
 
 @pytest.fixture
@@ -41,6 +41,18 @@ def test_bfs_allows_safe_diagonal_smoothing(tiny_map: Path):
 def test_bfs_blocked(tiny_map: Path):
     data = load_world_map(tiny_map)
     data["rows"] = ["00000", "01000", "00000"]
+    assert bfs_path(data, 1, 1, 2, 1) is None
+
+
+def test_bfs_avoids_locked_zone_tiles(tiny_map: Path):
+    data = load_world_map(tiny_map)
+    data["scene_zones"] = [
+        {"regionType": "locked", "x1": 2, "y1": 1, "x2": 2, "y2": 1}
+    ]
+    path = bfs_path(data, 1, 1, 3, 1)
+    assert path is not None
+    assert (2, 1) not in path
+    assert is_blocked_zone_tile(data, 2, 1) is True
     assert bfs_path(data, 1, 1, 2, 1) is None
 
 

@@ -224,6 +224,20 @@ def test_move_map_alias_returns_unified_envelope():
     assert "scene_update" in body
 
 
+def test_move_map_rejects_locked_zone():
+    client = TestClient(app)
+    client.post("/api/reset")
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "move_map", "map_id": "novice_open", "tile_x": 67, "tile_y": 24},
+    )
+    body = r.json()
+    assert body["ok"] is False
+    assert body["error"] == "zone_locked"
+    assert body["events"][0]["type"] == "action_rejected"
+    assert body["zone"]["regionType"] == "locked"
+
+
 def test_enter_scene_alias_updates_scene():
     client = TestClient(app)
     client.post("/api/reset")

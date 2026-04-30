@@ -95,11 +95,11 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
 
 .interact-card {
   width: 100%;
-  max-width: 420px;
-  max-height: min(86vh, 520px);
+  max-width: 760px;
+  max-height: min(88vh, 680px);
   overflow: auto;
-  padding: 1rem 1.1rem;
-  border-radius: 14px;
+  padding: 1.35rem 1.45rem;
+  border-radius: 16px;
   background: linear-gradient(165deg, rgba(30, 41, 59, 0.95), rgba(7, 10, 18, 0.98));
   border: 1px solid var(--sao-border);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 24px rgba(94, 207, 255, 0.08);
@@ -115,7 +115,7 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
 
 .interact-card-title {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.45rem;
   font-weight: 600;
   color: #f8fafc;
 }
@@ -128,14 +128,14 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   border: 1px solid rgba(246, 211, 110, 0.28);
   background: rgba(246, 211, 110, 0.08);
   color: #fde68a;
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   font-weight: 800;
 }
 
 .interact-close {
   flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border: none;
   border-radius: 8px;
   background: rgba(51, 65, 85, 0.6);
@@ -150,17 +150,17 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
 }
 
 .interact-card-body {
-  margin: 0 0 0.75rem;
-  font-size: 0.88rem;
-  line-height: 1.6;
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.7;
   color: #cbd5e1;
 }
 
 .interact-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  margin-bottom: 0.65rem;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
 }
 
 .interact-actions .interact-action {
@@ -169,15 +169,15 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
 
 .interact-card-note {
   margin: 0;
-  font-size: 0.68rem;
-  line-height: 1.45;
+  font-size: 0.82rem;
+  line-height: 1.55;
   color: #64748b;
 }
 
 .interact-action {
-  font-size: 0.76rem;
-  padding: 0.52rem 0.65rem;
-  border-radius: 9px;
+  font-size: 0.95rem;
+  padding: 0.78rem 0.9rem;
+  border-radius: 11px;
   border: 1px solid rgba(148, 163, 184, 0.22);
   background: linear-gradient(180deg, rgba(185, 88, 58, 0.88), rgba(110, 46, 44, 0.92));
   color: #e2e8f0;
@@ -213,20 +213,20 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
 
 .action-kicker {
   color: #bae6fd;
-  font-size: 0.58rem;
+  font-size: 0.7rem;
   font-weight: 800;
   line-height: 1;
 }
 
 .action-meta {
   color: #bae6fd;
-  font-size: 0.66rem;
+  font-size: 0.8rem;
   line-height: 1.35;
 }
 
 .action-desc {
   color: #cbd5e1;
-  font-size: 0.68rem;
+  font-size: 0.82rem;
   line-height: 1.45;
 }
 </style>

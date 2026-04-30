@@ -129,9 +129,9 @@ const locationLabel = computed(() => {
 }
 
 .npc-panel {
-  width: min(92vw, 390px);
-  padding: 1rem;
-  border-radius: 12px;
+  width: min(92vw, 560px);
+  padding: 1.25rem;
+  border-radius: 16px;
   background: linear-gradient(165deg, rgba(25, 37, 56, 0.97), rgba(8, 12, 22, 0.98));
   border: 1px solid var(--sao-border);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 24px rgba(94, 207, 255, 0.1);
@@ -155,14 +155,14 @@ const locationLabel = computed(() => {
 
 .npc-title {
   margin: 0;
-  font-size: 1.18rem;
+  font-size: 1.5rem;
   color: #f8fafc;
 }
 
 .npc-close {
   flex: 0 0 auto;
-  width: 2rem;
-  height: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 8px;
   background: rgba(51, 65, 85, 0.6);
@@ -187,13 +187,13 @@ const locationLabel = computed(() => {
 
 .npc-facts dt {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.84rem;
 }
 
 .npc-facts dd {
   margin: 0;
   color: #e2e8f0;
-  font-size: 0.84rem;
+  font-size: 1rem;
   line-height: 1.45;
 }
 
@@ -204,7 +204,7 @@ const locationLabel = computed(() => {
   color: #dbeafe;
   background: rgba(30, 64, 175, 0.18);
   border: 1px solid rgba(147, 197, 253, 0.2);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   line-height: 1.55;
 }
 
@@ -215,12 +215,12 @@ const locationLabel = computed(() => {
 }
 
 .npc-action {
-  min-height: 2.35rem;
+  min-height: 3rem;
   border-radius: 9px;
   border: 1px solid rgba(148, 163, 184, 0.24);
   background: rgba(51, 65, 85, 0.45);
   color: #e2e8f0;
-  font-size: 0.8rem;
+  font-size: 0.98rem;
   font-weight: 600;
   cursor: pointer;
 }

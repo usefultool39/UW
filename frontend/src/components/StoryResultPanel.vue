@@ -129,11 +129,11 @@ const memoryLines = computed(() => {
 }
 
 .result-panel {
-  width: min(94vw, 620px);
-  max-height: min(88vh, 640px);
+  width: min(94vw, 820px);
+  max-height: min(88vh, 740px);
   overflow: auto;
-  padding: 1rem;
-  border-radius: 12px;
+  padding: 1.25rem;
+  border-radius: 16px;
   background: linear-gradient(165deg, rgba(30, 43, 62, 0.98), rgba(8, 12, 22, 0.98));
   border: 1px solid rgba(246, 211, 110, 0.36);
   box-shadow: 0 26px 68px rgba(0, 0, 0, 0.56), 0 0 28px rgba(246, 211, 110, 0.12);
@@ -157,15 +157,15 @@ const memoryLines = computed(() => {
 
 .result-header h3 {
   margin: 0;
-  font-size: 1.14rem;
+  font-size: 1.45rem;
   color: #fff7d6;
   line-height: 1.35;
 }
 
 .result-close {
   flex: 0 0 auto;
-  width: 2rem;
-  height: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.2);
   background: rgba(51, 65, 85, 0.6);
@@ -179,7 +179,7 @@ const memoryLines = computed(() => {
   margin: 0.85rem 0;
   color: #f8fafc;
   line-height: 1.68;
-  font-size: 0.92rem;
+  font-size: 1.05rem;
 }
 
 .impact-grid {
@@ -203,13 +203,13 @@ const memoryLines = computed(() => {
 
 .impact-chip span {
   color: #bfdbfe;
-  font-size: 0.66rem;
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
 .impact-chip strong {
   color: #fff7d6;
-  font-size: 0.98rem;
+  font-size: 1.14rem;
 }
 
 .result-section {
@@ -222,7 +222,7 @@ const memoryLines = computed(() => {
 
 .result-section h4 {
   margin: 0 0 0.35rem;
-  font-size: 0.76rem;
+  font-size: 0.92rem;
   color: var(--sao-cyan);
 }
 
@@ -230,14 +230,15 @@ const memoryLines = computed(() => {
   margin: 0;
   padding-left: 1rem;
   color: #e2e8f0;
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   line-height: 1.6;
 }
 
 .result-primary {
   width: 100%;
   margin-top: 0.9rem;
-  min-height: 2.45rem;
+  min-height: 3rem;
+  font-size: 1rem;
   border-radius: 10px;
   color: #fff7d6;
   font-weight: 800;

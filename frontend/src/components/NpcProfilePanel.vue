@@ -96,11 +96,11 @@ const rel = computed(() => props.profile?.relationship || {})
 }
 
 .profile-panel {
-  width: min(94vw, 460px);
-  max-height: min(88vh, 640px);
+  width: min(94vw, 720px);
+  max-height: min(88vh, 720px);
   overflow: auto;
-  padding: 1rem;
-  border-radius: 12px;
+  padding: 1.25rem;
+  border-radius: 16px;
   background: linear-gradient(165deg, rgba(25, 37, 56, 0.98), rgba(8, 12, 22, 0.98));
   border: 1px solid rgba(94, 207, 255, 0.32);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 24px rgba(94, 207, 255, 0.1);
@@ -124,12 +124,12 @@ const rel = computed(() => props.profile?.relationship || {})
 
 .profile-header h3 {
   margin: 0;
-  font-size: 1.18rem;
+  font-size: 1.45rem;
 }
 
 .profile-close {
-  width: 2rem;
-  height: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.2);
   background: rgba(51, 65, 85, 0.6);
@@ -142,7 +142,7 @@ const rel = computed(() => props.profile?.relationship || {})
 .profile-role {
   margin: 0.72rem 0;
   color: #cbd5e1;
-  font-size: 0.82rem;
+  font-size: 1rem;
 }
 
 .relation-grid {
@@ -161,13 +161,14 @@ const rel = computed(() => props.profile?.relationship || {})
 
 .relation-grid dt {
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.82rem;
 }
 
 .relation-grid dd {
   margin: 0.18rem 0 0;
   color: #f8fafc;
   font-weight: 800;
+  font-size: 1.12rem;
 }
 
 .relation-note {
@@ -177,7 +178,7 @@ const rel = computed(() => props.profile?.relationship || {})
   color: #dbeafe;
   background: rgba(30, 64, 175, 0.18);
   border: 1px solid rgba(147, 197, 253, 0.18);
-  font-size: 0.8rem;
+  font-size: 0.96rem;
 }
 
 .memory-section {
@@ -186,7 +187,7 @@ const rel = computed(() => props.profile?.relationship || {})
 
 .memory-section h4 {
   margin: 0 0 0.35rem;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   color: var(--sao-gold);
 }
 
@@ -194,13 +195,13 @@ const rel = computed(() => props.profile?.relationship || {})
   margin: 0;
   padding-left: 1rem;
   color: #e2e8f0;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   line-height: 1.55;
 }
 
 .empty {
   margin: 0;
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.94rem;
 }
 </style>

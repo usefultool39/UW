@@ -80,11 +80,11 @@ const participantLabel = computed(() => {
 }
 
 .event-panel {
-  width: min(94vw, 560px);
-  max-height: min(88vh, 640px);
+  width: min(94vw, 800px);
+  max-height: min(88vh, 720px);
   overflow: auto;
-  padding: 1rem;
-  border-radius: 12px;
+  padding: 1.25rem;
+  border-radius: 16px;
   background: linear-gradient(165deg, rgba(27, 38, 58, 0.97), rgba(8, 12, 22, 0.98));
   border: 1px solid rgba(246, 211, 110, 0.34);
   box-shadow: 0 26px 68px rgba(0, 0, 0, 0.56), 0 0 26px rgba(246, 211, 110, 0.1);
@@ -109,13 +109,13 @@ const participantLabel = computed(() => {
 
 .event-header h3 {
   margin: 0;
-  font-size: 1.18rem;
+  font-size: 1.5rem;
   color: #fff7d6;
 }
 
 .event-close {
-  width: 2rem;
-  height: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.2);
   background: rgba(51, 65, 85, 0.6);
@@ -129,7 +129,7 @@ const participantLabel = computed(() => {
   margin: 0.85rem 0;
   color: #e2e8f0;
   line-height: 1.65;
-  font-size: 0.9rem;
+  font-size: 1.04rem;
 }
 
 .event-meta {
@@ -145,7 +145,7 @@ const participantLabel = computed(() => {
   background: rgba(30, 64, 175, 0.24);
   border: 1px solid rgba(147, 197, 253, 0.18);
   color: #dbeafe;
-  font-size: 0.68rem;
+  font-size: 0.82rem;
 }
 
 .event-choices {
@@ -155,8 +155,8 @@ const participantLabel = computed(() => {
 
 .event-choice {
   text-align: left;
-  padding: 0.7rem 0.78rem;
-  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
   border: 1px solid rgba(246, 211, 110, 0.26);
   background: rgba(15, 23, 42, 0.72);
   color: #f8fafc;
@@ -174,14 +174,14 @@ const participantLabel = computed(() => {
 }
 
 .event-choice strong {
-  font-size: 0.84rem;
+  font-size: 1.02rem;
 }
 
 .event-choice span {
   margin-top: 0.28rem;
   color: #cbd5e1;
-  font-size: 0.74rem;
-  line-height: 1.45;
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 .event-choice:disabled {

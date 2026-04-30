@@ -40,6 +40,7 @@
         @interact-click="interactOpen = true"
         @event-click="openStoryEvent"
         @ready="onSceneReady"
+        @blocked-click="onBlockedTileClick"
       />
       <div v-else class="field-map-loading">正在同步村庄地图…</div>
 
@@ -405,7 +406,9 @@ async function onTileClick({ tile_x, tile_y }) {
     playSfx('/assets/audio/sfx_step.mp3')
   } catch (e) {
     const msg = e.message || String(e)
-    if (msg.includes('unreachable_or_blocked')) {
+    if (msg.includes('zone_locked') || msg.includes('scene_locked')) {
+      showToast('这里还没开放。先完成当前目标，之后再回来探索边界。')
+    } else if (msg.includes('unreachable_or_blocked')) {
       showToast('前方是尚未开放或无法通行的边界。先在村内完成当前目标。')
     } else {
       localError.value = msg
@@ -414,6 +417,11 @@ async function onTileClick({ tile_x, tile_y }) {
     sceneInstance?.resumeCameraFollow?.()
     busy.value = false
   }
+}
+
+function onBlockedTileClick(payload) {
+  const label = payload?.zone?.label || '未开放区域'
+  showToast(`${label} 还没开放。先完成当前目标，之后再回来探索边界。`)
 }
 
 function onNpcClick(agentId) {

@@ -102,6 +102,7 @@ const props = defineProps({
 
 const emit = defineEmits([
   'tile-click',
+  'blocked-click',
   'npc-click',
   'interact-click',
   'event-click',
@@ -304,6 +305,10 @@ async function bootPhaser() {
     emit('tile-click', { tile_x: tx, tile_y: ty })
   }
 
+  const onBlockedTilePick = (payload) => {
+    emit('blocked-click', payload)
+  }
+
   const openInteractPanel = () => emit('interact-click')
   const openNpcPanel = (agentId) => emit('npc-click', agentId)
   const openStoryEventPanel = (eventId) => emit('event-click', eventId)
@@ -329,7 +334,8 @@ async function bootPhaser() {
     isBusy: () => props.busy,
     getNearbyInteractPoi: () => props.nearbyInteract,
     getStoryEvents: () => props.storyEvents,
-    openStoryEventPanel: openStoryEventPanel
+    openStoryEventPanel: openStoryEventPanel,
+    onBlockedTilePick
   })
 
   const rect = hostEl.value.getBoundingClientRect()

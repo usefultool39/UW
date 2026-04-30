@@ -71,7 +71,7 @@ def is_walkable(data: dict[str, Any], x: int, y: int) -> bool:
     return c in (0, 3)
 
 
-def scene_for_tile(data: dict[str, Any], tx: int, ty: int) -> str | None:
+def zone_for_tile(data: dict[str, Any], tx: int, ty: int) -> dict[str, Any] | None:
     for z in data.get("scene_zones") or []:
         if not isinstance(z, dict):
             continue
@@ -87,16 +87,31 @@ def scene_for_tile(data: dict[str, Any], tx: int, ty: int) -> str | None:
         lo_x, hi_x = (x1, x2) if x1 <= x2 else (x2, x1)
         lo_y, hi_y = (y1, y2) if y1 <= y2 else (y2, y1)
         if lo_x <= tx <= hi_x and lo_y <= ty <= hi_y:
-            sid = z.get("scene_id")
-            if isinstance(sid, str):
-                return sid
+            return dict(z)
     return None
+
+
+def is_blocked_zone(zone: dict[str, Any] | None) -> bool:
+    return str((zone or {}).get("regionType") or "") in {"locked", "forbidden"}
+
+
+def is_blocked_zone_tile(data: dict[str, Any], tx: int, ty: int) -> bool:
+    return is_blocked_zone(zone_for_tile(data, tx, ty))
+
+
+def scene_for_tile(data: dict[str, Any], tx: int, ty: int) -> str | None:
+    z = zone_for_tile(data, tx, ty)
+    sid = z.get("scene_id") if isinstance(z, dict) else None
+    return sid if isinstance(sid, str) else None
 
 
 def bfs_path(
     data: dict[str, Any], sx: int, sy: int, tx: int, ty: int
 ) -> list[tuple[int, int]] | None:
-    if not is_walkable(data, sx, sy) or not is_walkable(data, tx, ty):
+    def can_step(x: int, y: int) -> bool:
+        return is_walkable(data, x, y) and not is_blocked_zone_tile(data, x, y)
+
+    if not is_walkable(data, sx, sy) or not can_step(tx, ty):
         return None
     if sx == tx and sy == ty:
         return [(sx, sy)]
@@ -128,10 +143,10 @@ def bfs_path(
             nx, ny = cx + dx, cy + dy
             if nx < 0 or ny < 0 or nx >= w or ny >= h:
                 continue
-            if not is_walkable(data, nx, ny):
+            if not can_step(nx, ny):
                 continue
             if dx and dy:
-                if not is_walkable(data, cx + dx, cy) or not is_walkable(data, cx, cy + dy):
+                if not can_step(cx + dx, cy) or not can_step(cx, cy + dy):
                     continue
             if (nx, ny) in prev:
                 continue

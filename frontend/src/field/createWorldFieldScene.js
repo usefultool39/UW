@@ -55,6 +55,72 @@ function sceneIdForTile(map, tx, ty) {
   return ''
 }
 
+function zoneForTile(map, tx, ty) {
+  const zones = Array.isArray(map?.scene_zones) ? map.scene_zones : []
+  for (const zone of zones) {
+    const x1 = Number(zone.x1 ?? 0)
+    const y1 = Number(zone.y1 ?? 0)
+    const x2 = Number(zone.x2 ?? x1)
+    const y2 = Number(zone.y2 ?? y1)
+    if (
+      tx >= Math.min(x1, x2) &&
+      tx <= Math.max(x1, x2) &&
+      ty >= Math.min(y1, y2) &&
+      ty <= Math.max(y1, y2)
+    ) {
+      return zone
+    }
+  }
+  return null
+}
+
+function isBlockedZone(zone) {
+  const type = String(zone?.regionType || '')
+  return type === 'locked' || type === 'forbidden'
+}
+
+function drawBlockedZoneWarnings(scene, map, ts) {
+  const layer = scene.add.container(0, 0).setDepth(9)
+  const zones = Array.isArray(map?.scene_zones) ? map.scene_zones : []
+  for (const zone of zones) {
+    if (!isBlockedZone(zone)) continue
+    const x1 = Number(zone.x1 ?? 0)
+    const y1 = Number(zone.y1 ?? 0)
+    const x2 = Number(zone.x2 ?? x1)
+    const y2 = Number(zone.y2 ?? y1)
+    const left = Math.min(x1, x2) * ts
+    const top = Math.min(y1, y2) * ts
+    const width = (Math.abs(x2 - x1) + 1) * ts
+    const height = (Math.abs(y2 - y1) + 1) * ts
+    const color = String(zone.regionType) === 'forbidden' ? 0xef4444 : 0xc084fc
+    const fill = scene.add.graphics()
+    fill.fillStyle(0x050816, 0.28)
+    fill.fillRoundedRect(left + 2, top + 2, width - 4, height - 4, Math.max(8, ts * 0.22))
+    fill.lineStyle(Math.max(3, ts * 0.08), color, 0.88)
+    fill.strokeRoundedRect(left + 3, top + 3, width - 6, height - 6, Math.max(8, ts * 0.22))
+    fill.lineStyle(1, 0xfff7d6, 0.32)
+    for (let d = -height; d < width; d += ts * 0.82) {
+      fill.lineBetween(left + d, top + height, left + d + height, top)
+    }
+    layer.add(fill)
+
+    const label = scene.add
+      .text(left + width / 2, top + height / 2, zone.label || '未开放区域', {
+        fontSize: '15px',
+        color: '#fff7d6',
+        fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
+        fontStyle: 'bold',
+        stroke: '#16081f',
+        strokeThickness: 5,
+        align: 'center'
+      })
+      .setOrigin(0.5)
+      .setAlpha(0.92)
+    layer.add(label)
+  }
+  return layer
+}
+
 function tilePathToSmoothWorldPoints(tilePath, ts) {
   const norm = (tilePath || [])
     .map((p) => ({ x: Number(p.x), y: Number(p.y) }))
@@ -175,7 +241,8 @@ function pointAtDistance(table, target) {
  *   isBusy: () => boolean,
  *   getNearbyInteractPoi: () => object | null,
  *   getStoryEvents?: () => object[],
- *   openStoryEventPanel?: (eventId: string) => void
+ *   openStoryEventPanel?: (eventId: string) => void,
+ *   onBlockedTilePick?: (payload: object) => void
  * }} deps
  */
 export function createWorldFieldSceneClass(Phaser, deps) {
@@ -190,7 +257,8 @@ export function createWorldFieldSceneClass(Phaser, deps) {
     isBusy,
     getNearbyInteractPoi,
     getStoryEvents = () => [],
-    openStoryEventPanel = () => {}
+    openStoryEventPanel = () => {},
+    onBlockedTilePick = () => {}
   } = deps
 
   return class WorldFieldScene extends Phaser.Scene {
@@ -325,7 +393,8 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         const bg = this.add.image(mapW / 2, mapH / 2, bgKey).setDepth(-5)
         const bgScale = Math.max(mapW / Math.max(1, bg.width), mapH / Math.max(1, bg.height))
         bg.setScale(bgScale)
-        bg.setAlpha(0.78)
+        bg.setAlpha(0.68)
+        this.add.rectangle(mapW / 2, mapH / 2, mapW, mapH, 0x071019, 0.18).setDepth(-4)
       }
 
       const g = this.add.graphics()
@@ -341,6 +410,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       g.setAlpha(hasWorldBg ? 0.16 : 1)
       drawTerrainOverlays(this, map, ts).setAlpha(hasWorldBg ? 0.22 : 0.82)
       // Keep zone data interactive, but do not paint large debug-like frames over the world.
+      drawBlockedZoneWarnings(this, map, ts)
       drawLandmarkArt(this, map, ts).setAlpha(0.92)
       drawExplorationAtmosphere(this, map, ts).setAlpha(hasWorldBg ? 0.16 : 0.82)
       this._pathG = this.add.graphics().setDepth(3)
@@ -875,6 +945,11 @@ export function createWorldFieldSceneClass(Phaser, deps) {
             }
           }
         }
+
+        const tx = Math.floor(pointer.worldX / ts)
+        const ty = Math.floor(pointer.worldY / ts)
+        const hoverZone = zoneForTile(getMap(), tx, ty)
+        this.input.setDefaultCursor(isBlockedZone(hoverZone) ? 'not-allowed' : 'default')
       })
 
       this.input.on('pointerup', (pointer) => {
@@ -901,7 +976,16 @@ export function createWorldFieldSceneClass(Phaser, deps) {
           this._pendingTilePick = null
           if (dist < 14 && elapsed < 900 && !pointInMiniHit(pointer.x, pointer.y)) {
             if (!hitsWorldInteractButton(pointer.x, pointer.y)) {
-              onTilePick(p0.tx, p0.ty)
+              const blockedZone = zoneForTile(getMap(), p0.tx, p0.ty)
+              if (isBlockedZone(blockedZone)) {
+                onBlockedTilePick({
+                  tile_x: p0.tx,
+                  tile_y: p0.ty,
+                  zone: blockedZone
+                })
+              } else {
+                onTilePick(p0.tx, p0.ty)
+              }
             }
           }
         }

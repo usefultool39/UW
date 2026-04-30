@@ -24,7 +24,7 @@ from .world import (
     apply_npc_schedules,
     initial_world,
 )
-from .world_map import bfs_path, load_world_map, map_path_for_id, scene_for_tile
+from .world_map import bfs_path, is_blocked_zone, load_world_map, map_path_for_id, scene_for_tile, zone_for_tile
 
 
 PLAYER_ACTIONS = {
@@ -344,6 +344,9 @@ class Session:
                     sx = self.state.player.tile_x
                     sy = self.state.player.tile_y
                     tx, ty = int(tile_x), int(tile_y)
+                    target_zone = zone_for_tile(wm, tx, ty)
+                    if is_blocked_zone(target_zone):
+                        return fail("zone_locked", zone=target_zone)
                     path = bfs_path(wm, sx, sy, tx, ty)
                     if path is None:
                         return fail("unreachable_or_blocked")
