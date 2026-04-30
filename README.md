@@ -29,10 +29,15 @@
 
 ## 快速启动
 
-方式 A：Windows 一键启动：
+方式 A：Windows 一键启动（推荐）：
 
 ```bat
-cd /d C:\Users\liang\Downloads\30小镇\30小镇
+启动全部项目.bat
+```
+
+也可以在项目根目录运行：
+
+```bat
 start.bat
 ```
 
@@ -40,11 +45,11 @@ start.bat
 
 ```bat
 :: 终端 1：后端
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\backend
+cd /d <项目根目录>\backend
 python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8765
 
 :: 终端 2：前端
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\frontend
+cd /d <项目根目录>\frontend
 npm install
 npm run dev
 ```
@@ -54,13 +59,27 @@ npm run dev
 - 前端：http://127.0.0.1:3000
 - 后端健康检查：http://127.0.0.1:8765/api/health
 
+### 环境迁移说明
+
+`start.bat` 会优先复用项目本地运行环境：
+
+1. 已存在 `.venv/` 时，使用 `.venv`。
+2. 已存在 `.conda/uw-runtime/` 时，使用这个项目本地 Conda 环境。
+3. 如果没有本地环境但电脑装了 Conda，会自动创建 `.conda/uw-runtime`。
+4. 如果没有 Conda 但有可用 Python 3，会自动创建 `.venv`。
+5. 如果电脑没有 Conda/Python，会下载 Miniforge 到 `.tools/miniforge/`，再创建 `.conda/uw-runtime`。
+6. 后端依赖缺失时，会自动执行 `pip install -r backend/requirements.txt`。
+7. 前端依赖缺失时，会自动执行 `npm install`。
+
+不建议直接打包提交完整环境目录；`.venv/`、`.conda/`、`.tools/`、`frontend/node_modules/` 都是本机运行产物。换电脑时保留代码和依赖清单即可，让 `start.bat` 重新创建环境。
+
 ## 常用验证
 
 ```bat
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\backend
+cd /d <项目根目录>\backend
 python -m pytest -q
 
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\frontend
+cd /d <项目根目录>\frontend
 npm.cmd run build
 npm.cmd run test:e2e
 ```
