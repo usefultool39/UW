@@ -115,6 +115,7 @@ let game = null
 let sceneInstance = null
 let miniTimer = null
 let miniLastUpdate = 0
+let resizeObserver = null
 
 const day = ref(1)
 const timeBand = ref('morning')
@@ -331,15 +332,30 @@ async function bootPhaser() {
     openStoryEventPanel: openStoryEventPanel
   })
 
+  const rect = hostEl.value.getBoundingClientRect()
+  const initialWidth = Math.max(960, Math.floor(rect.width || window.innerWidth || 1280))
+  const initialHeight = Math.max(540, Math.floor(rect.height || window.innerHeight || 720))
+
   game = new Phaser.Game({
     type: Phaser.AUTO,
-    width: 1280,
-    height: 720,
+    width: initialWidth,
+    height: initialHeight,
     parent: hostEl.value,
     transparent: true,
     scene: SceneClass,
-    scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }
+    scale: { mode: Phaser.Scale.RESIZE, autoCenter: Phaser.Scale.NO_CENTER }
   })
+
+  resizeObserver = new ResizeObserver((entries) => {
+    const box = entries[0]?.contentRect
+    if (!box || !game) return
+    const w = Math.max(640, Math.floor(box.width))
+    const h = Math.max(420, Math.floor(box.height))
+    game.scale.resize(w, h)
+    sceneInstance?.handleViewportResize?.(w, h)
+    updateMiniViewport()
+  })
+  resizeObserver.observe(hostEl.value)
 }
 
 onMounted(async () => {
@@ -356,6 +372,10 @@ onUnmounted(() => {
   if (miniTimer) {
     window.clearInterval(miniTimer)
     miniTimer = null
+  }
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
   }
   if (game) {
     game.destroy(true)
@@ -379,13 +399,13 @@ watch(
 <style scoped>
 .field-map-shell {
   position: relative;
-  border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--field-frame);
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.42),
-    0 18px 54px rgba(0, 0, 0, 0.5),
-    0 0 30px rgba(94, 207, 255, 0.08);
+  border: 0;
+  box-shadow: none;
   background: var(--field-deep);
   will-change: transform;
 }
@@ -404,6 +424,7 @@ watch(
 
 /* Decorative corner brackets */
 .map-corner {
+  display: none;
   position: absolute;
   width: 16px;
   height: 16px;
@@ -445,7 +466,8 @@ watch(
 
 .phaser-host {
   width: 100%;
-  aspect-ratio: 1280 / 720;
+  height: 100%;
+  min-height: 100vh;
   overflow: hidden;
   background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(94, 207, 255, 0.06), transparent 55%),
     var(--field-deep);
@@ -493,6 +515,7 @@ watch(
 }
 
 .weather-note {
+  display: none;
   position: absolute;
   z-index: 4;
   left: 0.75rem;
@@ -512,19 +535,24 @@ watch(
 
 .dom-minimap {
   position: absolute;
-  top: 0.9rem;
-  right: 0.95rem;
+  top: 4rem;
+  right: 0.8rem;
   z-index: 30;
-  width: clamp(188px, 18vw, 250px);
-  min-width: 170px;
-  padding: 0.45rem 0.5rem 0.42rem;
-  border: 1px solid rgba(246, 211, 110, 0.34);
-  background: rgba(4, 10, 18, 0.86);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42), inset 0 0 0 1px rgba(94, 207, 255, 0.12);
+  width: clamp(132px, 12vw, 178px);
+  min-width: 132px;
+  padding: 0.34rem 0.38rem 0.34rem;
+  border: 1px solid rgba(246, 211, 110, 0.2);
+  background: rgba(4, 10, 18, 0.58);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(94, 207, 255, 0.08);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   cursor: pointer;
   pointer-events: auto;
+}
+
+.dom-minimap:hover {
+  border-color: rgba(246, 211, 110, 0.42);
+  background: rgba(4, 10, 18, 0.82);
 }
 
 .dom-minimap:focus-visible {
@@ -537,7 +565,7 @@ watch(
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  font-size: 0.62rem;
+  font-size: 0.56rem;
   font-weight: 800;
   color: #fde68a;
   line-height: 1;
@@ -552,13 +580,14 @@ watch(
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
-  margin-top: 0.35rem;
-  border: 2px solid rgba(94, 207, 255, 0.35);
+  margin-top: 0.28rem;
+  border: 1px solid rgba(94, 207, 255, 0.25);
   background: #020617;
   image-rendering: crisp-edges;
 }
 
 .dom-minimap-foot {
+  display: none;
   margin-top: 0.32rem;
   justify-content: flex-start;
   color: #cbd5e1;
@@ -567,7 +596,7 @@ watch(
 }
 
 .dom-minimap-legend {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   gap: 0.24rem 0.42rem;
   margin-top: 0.36rem;
@@ -625,6 +654,7 @@ watch(
 }
 
 .scene-badge {
+  display: none;
   position: absolute;
   top: 0.75rem;
   left: 50%;
@@ -671,9 +701,9 @@ watch(
   }
 
   .dom-minimap {
-    top: 0.55rem;
+    top: 3.5rem;
     right: 0.55rem;
-    width: clamp(150px, 34vw, 190px);
+    width: clamp(120px, 30vw, 150px);
   }
 }
 </style>

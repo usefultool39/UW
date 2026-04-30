@@ -1,5 +1,5 @@
 <template>
-  <div class="game-container">
+  <div class="game-container" :class="{ 'field-mode': appTab === 'field' }">
     <nav class="app-tabs" aria-label="视图切换">
       <button
         type="button"
@@ -301,6 +301,25 @@ function handleSpeedChange(s) {
   padding: 0.55rem 0.85rem 1rem;
 }
 
+.game-container.field-mode {
+  max-width: none;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.field-mode .app-tabs {
+  position: fixed;
+  top: 0.7rem;
+  right: 0.8rem;
+  z-index: 120;
+  width: auto;
+  background: rgba(4, 8, 18, 0.72);
+}
+
 .app-tabs {
   display: flex;
   gap: 0.25rem;
@@ -428,6 +447,12 @@ function handleSpeedChange(s) {
 
   .app-tabs {
     width: 100%;
+  }
+
+  .field-mode .app-tabs {
+    top: 0.55rem;
+    right: 0.55rem;
+    width: auto;
   }
 
   .tab-btn {

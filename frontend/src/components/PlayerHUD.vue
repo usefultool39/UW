@@ -63,9 +63,9 @@ const staminaPercent = computed(() => {
 <style scoped>
 .mmo-player-frame {
   position: absolute;
-  z-index: 3;
-  top: 0.75rem;
-  left: 0.75rem;
+  z-index: 40;
+  top: 5rem;
+  left: 0.8rem;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -184,6 +184,8 @@ const staminaPercent = computed(() => {
 
 @media (max-width: 900px) {
   .mmo-player-frame {
+    top: 0.55rem;
+    left: 0.55rem;
     width: min(260px, calc(100% - 1.1rem));
   }
 }

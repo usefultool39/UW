@@ -34,15 +34,15 @@ const actions = [
 <style scoped>
 .action-hotbar {
   position: absolute;
-  z-index: 5;
+  z-index: 45;
   left: 50%;
-  bottom: 0.72rem;
+  bottom: 0.85rem;
   transform: translateX(-50%);
   display: grid;
-  grid-template-columns: repeat(5, minmax(3.7rem, 1fr));
-  gap: 0.45rem;
-  width: min(520px, calc(100% - 1.5rem));
-  padding: 0.45rem;
+  grid-template-columns: repeat(5, minmax(4.4rem, 1fr));
+  gap: 0.55rem;
+  width: min(680px, calc(100% - 1.5rem));
+  padding: 0.55rem;
   border-radius: 12px;
   background: rgba(4, 8, 18, 0.82);
   border: 1px solid rgba(229, 196, 92, 0.3);
@@ -52,7 +52,7 @@ const actions = [
 }
 
 .action-hotbar button {
-  min-height: 3.1rem;
+  min-height: 3.55rem;
   padding: 0.35rem 0.28rem;
   border-radius: 8px;
   display: flex;
@@ -63,7 +63,7 @@ const actions = [
   background: linear-gradient(180deg, rgba(82, 63, 35, 0.92), rgba(18, 25, 38, 0.96));
   border-color: rgba(245, 208, 112, 0.34);
   color: #f8fafc;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   font-weight: 800;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
   will-change: transform;

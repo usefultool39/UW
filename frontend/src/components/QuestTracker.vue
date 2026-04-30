@@ -91,13 +91,13 @@ const safeNearbyInteractTitle = computed(() => props.nearbyInteractTitle || '暂
 <style scoped>
 .quest-tracker {
   position: absolute;
-  z-index: 3;
-  right: 0.75rem;
-  top: 13.25rem;
-  width: min(300px, calc(100% - 1.5rem));
+  z-index: 35;
+  right: 0.8rem;
+  top: 12.5rem;
+  width: min(280px, calc(100% - 1.5rem));
   padding: 0.68rem 0.75rem;
   border-radius: 10px;
-  background: rgba(6, 12, 24, 0.8);
+  background: rgba(6, 12, 24, 0.68);
   border: 1px solid rgba(94, 207, 255, 0.22);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
   backdrop-filter: blur(8px);
@@ -116,7 +116,7 @@ const safeNearbyInteractTitle = computed(() => props.nearbyInteractTitle || '暂
 
 .quest-rail-body {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   line-height: 1.55;
   color: var(--ink);
   opacity: 0.92;
@@ -328,7 +328,7 @@ const safeNearbyInteractTitle = computed(() => props.nearbyInteractTitle || '暂
     top: auto;
     right: auto;
     width: auto;
-    margin: 0.45rem 0.55rem 4.75rem;
+    margin: 0.45rem 0.55rem 5.4rem;
     padding: 0.52rem 0.6rem;
   }
 

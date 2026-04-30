@@ -2,12 +2,10 @@ import {
   AGENT_ART_KEYS,
   drawLandmarkArt,
   drawExplorationAtmosphere,
-  drawSceneZoneHighlights,
   drawStyledTile,
   drawTerrainOverlays,
   ensureWorldArtTextures,
   MINI_COL,
-  sceneZoneLabels,
   ZOOM_MAX,
   ZOOM_MIN,
   ZOOM_WHEEL
@@ -107,33 +105,28 @@ function tilePathToSmoothWorldPoints(tilePath, ts) {
 function drawSmoothRoute(g, points) {
   g.clear()
   if (!points || points.length < 2) return
-  const stroke = (width, color, alpha) => {
-    g.lineStyle(width, color, alpha)
-    g.beginPath()
-    g.moveTo(points[0].x, points[0].y)
-    for (let i = 1; i < points.length; i++) {
-      g.lineTo(points[i].x, points[i].y)
-    }
-    g.strokePath()
-  }
-  stroke(13, 0x1f1308, 0.3)
-  stroke(7, 0x9a6b2f, 0.28)
-  stroke(3, 0xfde68a, 0.88)
-  stroke(1, 0xfff7d6, 0.72)
-
   const end = points[points.length - 1]
-  g.fillStyle(0xfbbf24, 0.16)
-  g.fillCircle(end.x, end.y, 18)
-  g.lineStyle(2, 0xfff7d6, 0.7)
-  g.strokeCircle(end.x, end.y, 13)
-  g.fillStyle(0xfff7d6, 0.9)
-  g.fillCircle(end.x, end.y, 3)
 
-  const stride = Math.max(5, Math.floor(points.length / 10))
-  g.fillStyle(0xfff7d6, 0.52)
-  for (let i = stride; i < points.length - 1; i += stride) {
-    g.fillCircle(points[i].x, points[i].y, 2)
+  g.lineStyle(2, 0xfff7d6, 0.2)
+  g.beginPath()
+  g.moveTo(points[0].x, points[0].y)
+  for (let i = 1; i < points.length; i++) {
+    g.lineTo(points[i].x, points[i].y)
   }
+  g.strokePath()
+
+  const stride = Math.max(5, Math.floor(points.length / 8))
+  g.fillStyle(0xfff7d6, 0.34)
+  for (let i = stride; i < points.length - 1; i += stride) {
+    g.fillCircle(points[i].x, points[i].y, 2.2)
+  }
+
+  g.fillStyle(0xfbbf24, 0.12)
+  g.fillCircle(end.x, end.y, 22)
+  g.lineStyle(2, 0xfbbf24, 0.72)
+  g.strokeCircle(end.x, end.y, 16)
+  g.lineStyle(1, 0xfff7d6, 0.46)
+  g.strokeCircle(end.x, end.y, 9)
 }
 
 function buildDistanceTable(points) {
@@ -220,8 +213,15 @@ export function createWorldFieldSceneClass(Phaser, deps) {
     resumeCameraFollow() {
       const cam = this.cameras.main
       if (this.playerRoot) {
-        cam.startFollow(this.playerRoot, true, 0.12, 0.12)
+        cam.startFollow(this.playerRoot, true, 0.08, 0.08)
       }
+    }
+
+    handleViewportResize() {
+      const cam = this.cameras.main
+      if (!cam) return
+      cam.setBounds(0, 0, this._mapWtiles * this._tileSize, this._mapHtiles * this._tileSize)
+      this.refreshMiniViewport?.()
     }
 
     updateWorldInteractButton() {
@@ -325,7 +325,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         const bg = this.add.image(mapW / 2, mapH / 2, bgKey).setDepth(-5)
         const bgScale = Math.max(mapW / Math.max(1, bg.width), mapH / Math.max(1, bg.height))
         bg.setScale(bgScale)
-        bg.setAlpha(0.96)
+        bg.setAlpha(0.78)
       }
 
       const g = this.add.graphics()
@@ -338,27 +338,12 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         }
       }
       g.setDepth(0)
-      g.setAlpha(hasWorldBg ? 0.1 : 1)
-      drawTerrainOverlays(this, map, ts).setAlpha(hasWorldBg ? 0.12 : 0.82)
-      drawSceneZoneHighlights(this, map, ts)
-      drawLandmarkArt(this, map, ts).setAlpha(hasWorldBg ? 0.08 : 0.92)
-      drawExplorationAtmosphere(this, map, ts).setAlpha(hasWorldBg ? 0.2 : 0.82)
+      g.setAlpha(hasWorldBg ? 0.16 : 1)
+      drawTerrainOverlays(this, map, ts).setAlpha(hasWorldBg ? 0.22 : 0.82)
+      // Keep zone data interactive, but do not paint large debug-like frames over the world.
+      drawLandmarkArt(this, map, ts).setAlpha(0.92)
+      drawExplorationAtmosphere(this, map, ts).setAlpha(hasWorldBg ? 0.16 : 0.82)
       this._pathG = this.add.graphics().setDepth(3)
-
-      for (const zl of sceneZoneLabels(map)) {
-        this.add
-          .text(zl.x * ts + ts / 2, zl.y * ts - ts * 0.35, zl.text, {
-            fontSize: '13px',
-            color: '#f0f9ff',
-            fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
-            fontStyle: 'bold',
-            stroke: '#0c1929',
-            strokeThickness: 5
-          })
-          .setOrigin(0.5)
-          .setDepth(6)
-          .setAlpha(0.95)
-      }
 
       const hudW = Math.min(mapW, 720)
       this.add.rectangle(mapW / 2, 18, hudW, 30, 0x24180f, 0.78).setDepth(20)
@@ -379,13 +364,13 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       this.playerRoot = this.add.container(0, 0)
       this.playerRoot.setDepth(15)
       const playerCfg = getAgentConfig('player')
-      const playerHalo = this.add.ellipse(0, 13, 38, 18, playerCfg.haloColor, 0.1).setStrokeStyle(2, playerCfg.haloColor, 0.78)
-      const playerShadow = this.add.ellipse(0, 17, 30, 10, 0x000000, 0.28)
-      const playerSprite = this.add.image(0, -16, playerCfg.textureKey)
+      const playerHalo = this.add.ellipse(0, 15, 48, 22, playerCfg.haloColor, 0.12).setStrokeStyle(2, playerCfg.haloColor, 0.78)
+      const playerShadow = this.add.ellipse(0, 20, 38, 12, 0x000000, 0.3)
+      const playerSprite = this.add.image(0, -20, playerCfg.textureKey)
       playerSprite.setScale(playerCfg.tokenHeight / Math.max(1, playerSprite.height))
       const playerName = this.add
-        .text(0, 31, playerCfg.label, {
-          fontSize: '10px',
+        .text(0, 36, playerCfg.label, {
+          fontSize: '12px',
           color: '#fff7d6',
           fontStyle: 'bold',
           stroke: '#2f1d0b',
@@ -428,16 +413,16 @@ export function createWorldFieldSceneClass(Phaser, deps) {
             const npcCfg = getAgentConfig(agent.id)
             const key = npcCfg.textureKey
             const haloColor = npcCfg.haloColor
-            const halo = this.add.ellipse(0, 13, 34, 15, haloColor, 0.1).setStrokeStyle(1, haloColor, 0.58)
-            const shadow = this.add.ellipse(0, 17, 27, 9, 0x000000, 0.25)
-            const face = key && this.textures.exists(key) ? this.add.image(0, -15, key) : this.add.image(0, -15, AGENT_ART_KEYS.kirito)
+            const halo = this.add.ellipse(0, 15, 42, 19, haloColor, 0.1).setStrokeStyle(1, haloColor, 0.58)
+            const shadow = this.add.ellipse(0, 20, 33, 10, 0x000000, 0.25)
+            const face = key && this.textures.exists(key) ? this.add.image(0, -18, key) : this.add.image(0, -18, AGENT_ART_KEYS.kirito)
             face.setScale(npcCfg.tokenHeight / Math.max(1, face.height))
             const hit = this.add.circle(0, 0, 25, 0xffffff, 0.001).setInteractive({ useHandCursor: true })
             const mood = Number(agent.mood ?? 50)
             const moodColor = mood >= 70 ? '#bbf7d0' : mood >= 40 ? '#fde68a' : '#fecaca'
             const tag = this.add
-              .text(0, 29, npcCfg.label, {
-                fontSize: '10px',
+              .text(0, 34, npcCfg.label, {
+                fontSize: '11px',
                 color: '#fef3c7',
                 fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
                 stroke: '#0f172a',
@@ -445,11 +430,11 @@ export function createWorldFieldSceneClass(Phaser, deps) {
               })
               .setOrigin(0.5, 0)
             const tagBg = this.add
-              .rectangle(0, 37, Math.max(46, tag.width + 14), 15, 0x120f0b, 0.72)
+              .rectangle(0, 43, Math.max(52, tag.width + 16), 17, 0x120f0b, 0.72)
               .setStrokeStyle(1, 0xf6d36e, 0.28)
             const moodDot = this.add
-              .text(16, -24, '●', {
-                fontSize: '11px',
+              .text(19, -29, '●', {
+                fontSize: '12px',
                 color: moodColor,
                 stroke: '#0f172a',
                 strokeThickness: 3
@@ -734,15 +719,15 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         bottom: cy + dispH / 2
       }
 
-      const iw = 120
-      const ih = 36
+      const iw = 156
+      const ih = 44
       this._interactBtnRoot = this.add.container(0, 0).setDepth(17).setVisible(false)
       const btnBg = this.add
-        .rectangle(0, 0, iw, ih, 0x172554, 0.94)
-        .setStrokeStyle(2, 0x7dd3fc, 0.95)
+        .rectangle(0, 0, iw, ih, 0x0f766e, 0.94)
+        .setStrokeStyle(2, 0xfde68a, 0.95)
       const btnTx = this.add
         .text(0, 0, '进入场景', {
-          fontSize: '12px',
+          fontSize: '14px',
           color: '#f8fafc',
           fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',
           fontStyle: 'bold',
@@ -761,9 +746,9 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       this._interactBtnHalfH = ih / 2
 
       this.cameras.main.setBounds(0, 0, mapW, mapH)
-      this.cameras.main.setZoom(hasWorldBg ? 1.18 : 1.22)
+      this.cameras.main.setZoom(hasWorldBg ? 1.42 : 1.48)
       this.cameras.main.roundPixels = false
-      this.cameras.main.startFollow(this.playerRoot, true, 0.12, 0.12)
+      this.cameras.main.startFollow(this.playerRoot, true, 0.08, 0.08)
 
       this._rmbPanning = false
       this._rmbPanLast = { x: 0, y: 0 }
@@ -944,7 +929,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
           if (gPath) {
             drawSmoothRoute(gPath, smooth)
           }
-          const speed = 280
+          const speed = 430
           const { table, total } = buildDistanceTable(smooth)
           if (!Number.isFinite(total) || total <= 0) {
             resolve()
@@ -973,7 +958,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
             })
           }
           const finalPoint = table[table.length - 1]
-          const duration = Math.max(180, Math.min(4200, Math.floor((total / speed) * 1000)))
+          const duration = Math.max(160, Math.min(3200, Math.floor((total / speed) * 1000)))
           this._walkTween = this.tweens.add({
             targets: progress,
             d: total,

@@ -16,27 +16,27 @@ export const AGENTS = {
     textureKey: 'char_player_traveler',
     asset: '/assets/game/player-token-tv.png',
     haloColor: 0xfbbf24,
-    tokenHeight: 58
+    tokenHeight: 72
   },
   alice: {
     label: '爱丽丝',
     textureKey: 'char_alice_village',
     asset: '/assets/game/alice-token-tv.png',
     haloColor: 0x70e0bb,
-    tokenHeight: 52
+    tokenHeight: 66
   },
   eugeo: {
     label: '优吉欧',
     textureKey: 'char_eugeo_woodsman',
     asset: '/assets/game/eugeo-token-tv.png',
     haloColor: 0xa78bfa,
-    tokenHeight: 52
+    tokenHeight: 66
   },
   kirito: {
     label: '桐人',
     textureKey: 'char_kirito_swordsman',
     haloColor: 0x5ecfff,
-    tokenHeight: 52
+    tokenHeight: 66
   }
 }
 
@@ -44,7 +44,7 @@ export const FALLBACK_AGENT = {
   label: 'NPC',
   textureKey: 'char_generic_npc',
   haloColor: 0x5ecfff,
-  tokenHeight: 52
+  tokenHeight: 66
 }
 
 export const AGENT_ART_KEYS = Object.fromEntries(

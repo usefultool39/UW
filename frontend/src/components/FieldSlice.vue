@@ -400,7 +400,6 @@ async function onTileClick({ tile_x, tile_y }) {
     if (sceneInstance?.playWalkPath) {
       await sceneInstance.playWalkPath(path)
     }
-    mapRef.value?.triggerCameraShake?.()
     await props.refresh()
     if (sceneInstance?.syncPlayerFromState) sceneInstance.syncPlayerFromState()
     playSfx('/assets/audio/sfx_step.mp3')
@@ -697,20 +696,53 @@ watch(activeMapId, async (mapId, oldMapId) => {
 <style scoped>
 .field-slice {
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto 1rem;
-  padding: 0.75rem;
+  max-width: none;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   position: relative;
+  overflow: hidden;
 }
 
 .playfield-shell {
   position: relative;
-  border-radius: 12px;
+  height: 100%;
+  min-height: 100vh;
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--field-frame);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.42), 0 18px 54px rgba(0, 0, 0, 0.5), 0 0 30px rgba(94, 207, 255, 0.08);
+  border: 0;
+  box-shadow: none;
   background: var(--field-deep);
   will-change: transform;
+}
+
+.field-slice :deep(.field-header) {
+  position: absolute;
+  z-index: 90;
+  top: 0.7rem;
+  left: 0.8rem;
+  right: 12rem;
+  margin: 0;
+  padding: 0.5rem 0.6rem;
+  border-radius: 10px;
+  background: rgba(4, 8, 18, 0.58);
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.field-slice :deep(.field-title h2) {
+  font-size: 1rem;
+}
+
+.field-slice :deep(.field-kicker) {
+  font-size: 0.56rem;
+}
+
+.field-slice :deep(.header-actions .tb) {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.68rem;
 }
 
 .field-map-loading {
@@ -754,10 +786,11 @@ watch(activeMapId, async (mapId, oldMapId) => {
 .err-close:hover { opacity: 1; background: transparent; border-color: transparent; }
 
 .chat-strip {
+  display: none;
   position: absolute;
   z-index: 4;
   left: 0.75rem;
-  bottom: 5rem;
+  bottom: 6.2rem;
   width: min(470px, calc(100% - 1.5rem));
   padding: 0.45rem 0.62rem;
   border-radius: 9px;
@@ -788,6 +821,7 @@ watch(activeMapId, async (mapId, oldMapId) => {
 }
 
 .debug-drawer {
+  display: none;
   position: relative;
   margin-top: 0.55rem;
   padding: 0.55rem 0.65rem;
@@ -860,6 +894,7 @@ watch(activeMapId, async (mapId, oldMapId) => {
 .save-file { display: none; }
 
 .regions-details {
+  display: none;
   margin-top: 0.65rem;
   font-size: 0.78rem;
   color: var(--muted);
@@ -891,7 +926,16 @@ watch(activeMapId, async (mapId, oldMapId) => {
 }
 
 @media (max-width: 900px) {
-  .field-slice { padding: 0.55rem; }
+  .field-slice { padding: 0; }
+  .field-slice :deep(.field-header) {
+    top: auto;
+    left: 0.55rem;
+    right: 0.55rem;
+    bottom: 5.35rem;
+    padding: 0.45rem;
+  }
+  .field-slice :deep(.field-title) { display: none; }
+  .field-slice :deep(.header-actions) { gap: 0.3rem; }
   .chat-strip { display: none; }
 }
 </style>
