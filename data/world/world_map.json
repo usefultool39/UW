@@ -266,7 +266,7 @@
     },
     {
       "scene_id": "north_ridge_gate",
-      "label": "北境山道 未开放",
+      "label": "北境山道（封锁）",
       "regionType": "locked",
       "x1": 42,
       "y1": 2,
@@ -292,7 +292,7 @@
     },
     {
       "scene_id": "east_highroad_gate",
-      "label": "东侧高路 未开放",
+      "label": "东侧高路（封锁）",
       "regionType": "locked",
       "x1": 84,
       "y1": 17,
@@ -317,7 +317,7 @@
     },
     {
       "scene_id": "south_lake_gate",
-      "label": "南湖旧渡 未开放",
+      "label": "南湖旧渡（封锁）",
       "regionType": "locked",
       "x1": 32,
       "y1": 45,
@@ -487,7 +487,7 @@
       "radius": 2,
       "label": "传送阵",
       "title": "传送阵广场",
-      "body": "石环里的蓝光还没有完全醒来。以后这里会承担跨地图移动，现在可以先作为村内地标和未来入口。",
+      "body": "石环里的蓝光还没有完全醒来。村里人说它终有一天会重新连上远方，现在只能先记下刻印的纹路。",
       "actions": [
         {
           "id": "inspect_transfer_gate",
@@ -495,7 +495,7 @@
           "type": "set_flag",
           "flag_key": "transfer_gate_seen",
           "flag_value": 1,
-          "toast": "你记下了传送阵刻印。它还缺少可前往的目的地。"
+          "toast": "你记下了传送阵刻印。它还在沉睡，暂时不会回应远方。"
         }
       ]
     },
@@ -510,7 +510,7 @@
       "radius": 3,
       "label": "北境边门",
       "title": "北境边门",
-      "body": "再往北就是山脉与北境律令共同构成的边界。现在它仍是未开放边界，但你可以先远望和记录。",
+      "body": "再往北就是山脉与北境律令共同构成的边界。边门暂时封锁，但你可以先远望和记录。",
       "actions": [
         {
           "id": "north_gate_survey",
@@ -532,15 +532,15 @@
       "radius": 3,
       "label": "东侧高路",
       "title": "东侧高路",
-      "body": "道路已经铺到空气墙之后。它会作为后续章节的新地图入口，现在只能调查边界标记。",
+      "body": "道路延伸到雾墙之后。守门人暂时封锁了通行，只能先调查边界标记。",
       "actions": [
         {
           "id": "inspect_east_highroad",
-          "label": "记录东侧空气墙",
+          "label": "记录东侧雾墙",
           "type": "set_flag",
           "flag_key": "east_highroad_seen",
           "flag_value": 1,
-          "toast": "东侧高路被记录到地图上。传送阵激活后这里会重新检查。"
+          "toast": "东侧高路被记录到地图上。等传送阵苏醒后，这里还要重新检查。"
         }
       ]
     },
@@ -556,7 +556,7 @@
       "radius": 3,
       "label": "南湖旧渡",
       "title": "南湖旧渡",
-      "body": "旧渡口被临时封住，湖对岸已经画在地图上，但还不能探索。",
+      "body": "旧渡口被临时封住，湖对岸隐在雾里。现在只能记录水位和封锁标记。",
       "actions": [
         {
           "id": "inspect_south_lake",
@@ -564,7 +564,7 @@
           "type": "set_flag",
           "flag_key": "south_lake_seen",
           "flag_value": 1,
-          "toast": "南湖旧渡被记在地图上。以后这里适合做跨区域入口。"
+          "toast": "南湖旧渡被记在地图上。等渡口修复后，这里可能会成为离村路线。"
         }
       ]
     }
