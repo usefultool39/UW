@@ -1,7 +1,7 @@
 import { ref } from 'vue'
+import { API_ROUTES, DEFAULT_WORLD_MAP_ID } from '../contracts/clientContract.js'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
-const DEFAULT_WORLD_MAP_ID = 'novice_open'
 /** 普通接口（状态、配置、启发式 step） */
 const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS) || 15000
 /** 超过该阈值的超时文案走「AI 慢」提示 */
@@ -105,11 +105,11 @@ export function useGameApi() {
   }
 
   async function fetchState() {
-    state.value = await requestJson('/api/state')
+    state.value = await requestJson(API_ROUTES.state)
   }
 
   async function fetchEvents(limit = 200) {
-    events.value = await requestJson(`/api/events?limit=${limit}`)
+    events.value = await requestJson(`${API_ROUTES.events}?limit=${limit}`)
   }
 
   async function refresh() {
@@ -124,7 +124,7 @@ export function useGameApi() {
 
   async function step(n = 1, mode = 'heuristic') {
     const j = await requestJson(
-      '/api/step',
+      API_ROUTES.step,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -142,7 +142,7 @@ export function useGameApi() {
   async function reset() {
     if (running.value) stopRun()
     clearCheckpoint()
-    const j = await requestJson('/api/reset', { method: 'POST' })
+    const j = await requestJson(API_ROUTES.reset, { method: 'POST' })
     if (j.run_id) runId.value = j.run_id
     await refresh()
     lastError.value = ''
@@ -150,31 +150,36 @@ export function useGameApi() {
   }
 
   async function fetchRegions() {
-    return requestJson('/api/world/regions')
+    return requestJson(API_ROUTES.worldRegions)
   }
 
   async function fetchWorldMap(mapId = '') {
     const id = String(mapId || '').trim()
-    if (!id || id === DEFAULT_WORLD_MAP_ID) return requestJson('/api/world/map')
-    return requestJson(`/api/world/maps/${encodeURIComponent(id)}`)
+    if (!id || id === DEFAULT_WORLD_MAP_ID) return requestJson(API_ROUTES.worldMap)
+    return requestJson(API_ROUTES.worldMapById(id))
   }
 
   async function fetchSceneActivities() {
-    return requestJson('/api/world/scene_activities')
+    return requestJson(API_ROUTES.sceneActivities)
   }
 
   async function fetchStoryCatalog() {
-    return requestJson('/api/story/catalog')
+    return requestJson(API_ROUTES.storyCatalog)
+  }
+
+  async function fetchMonthPlan(monthId = 'month_01') {
+    const suffix = monthId ? `?month_id=${encodeURIComponent(monthId)}` : ''
+    return requestJson(`${API_ROUTES.storyMonthPlan}${suffix}`)
   }
 
   async function fetchAvailableStoryEvents() {
-    return requestJson('/api/story/available_events')
+    return requestJson(API_ROUTES.availableStoryEvents)
   }
 
   /** 与 POST /api/step 等价，命名对齐后端「日常 tick」 */
   async function dailyTick(n = 1, mode = 'heuristic') {
     const j = await requestJson(
-      '/api/sim/daily_tick',
+      API_ROUTES.dailyTick,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -194,7 +199,7 @@ export function useGameApi() {
    * deferRefresh: 仅返回 JSON（含 path），不立刻拉 state；用于移动动画播完后再 refresh。
    */
   async function playerAction(body, opts = {}) {
-    const j = await requestJson('/api/player/action', {
+    const j = await requestJson(API_ROUTES.playerAction, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -208,7 +213,7 @@ export function useGameApi() {
   }
 
   async function storyAdvance(targetId) {
-    const j = await requestJson('/api/story/advance', {
+    const j = await requestJson(API_ROUTES.storyAdvance, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ target_id: targetId })
@@ -220,7 +225,7 @@ export function useGameApi() {
   }
 
   async function chooseStoryEvent(body) {
-    const j = await requestJson('/api/story/choose', {
+    const j = await requestJson(API_ROUTES.storyChoose, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -232,11 +237,11 @@ export function useGameApi() {
   }
 
   async function fetchNpcProfile(npcId) {
-    return requestJson(`/api/npc/${encodeURIComponent(npcId)}/profile`)
+    return requestJson(API_ROUTES.npcProfile(npcId))
   }
 
   async function sendDialogue(body) {
-    const j = await requestJson('/api/dialogue', {
+    const j = await requestJson(API_ROUTES.dialogue, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -248,11 +253,11 @@ export function useGameApi() {
   }
 
   async function exportSave() {
-    return requestJson('/api/save/export')
+    return requestJson(API_ROUTES.saveExport)
   }
 
   async function importSave(save) {
-    const j = await requestJson('/api/save/import', {
+    const j = await requestJson(API_ROUTES.saveImport, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(save)
@@ -264,7 +269,7 @@ export function useGameApi() {
   }
 
   async function checkLlm() {
-    const c = await requestJson('/api/config')
+    const c = await requestJson(API_ROUTES.config)
     llmConfigured.value = c.llm_configured
     llmProvider.value = c.provider_hint
   }
@@ -349,6 +354,7 @@ export function useGameApi() {
     fetchWorldMap,
     fetchSceneActivities,
     fetchStoryCatalog,
+    fetchMonthPlan,
     fetchAvailableStoryEvents,
     dailyTick,
     playerAction,

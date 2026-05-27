@@ -7,7 +7,7 @@ Vue 3 + Vite + Phaser 地图主界面。前端只发送玩家意图和展示结�
 ## 运行
 
 ```bat
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\frontend
+cd /d F:\usefultool39\02-UW小镇\frontend
 npm install
 npm run dev
 ```

@@ -80,6 +80,17 @@ def _relationship_lines(relationship: Any | None) -> str:
     )
 
 
+
+def _relationship_number(relationship: Any | None, key: str) -> int:
+    if relationship is None:
+        return 0
+    getter = relationship.get if isinstance(relationship, dict) else lambda k, default=None: getattr(relationship, k, default)
+    try:
+        return int(getter(key, 0))
+    except (TypeError, ValueError):
+        return 0
+
+
 def _parse_dialogue_json(text: str, fallback_emotion: str) -> dict[str, Any]:
     candidates = _extract_json_objects(text) or [text]
     last_err: Exception | None = None
@@ -196,6 +207,12 @@ def llm_dialogue_reply(
         content = _extract_text_blocks(message_obj.content)
 
     parsed = _parse_dialogue_json(content, _mood_emotion(agent))
+    if parsed.get("memory_candidate") is None and message.strip():
+        parsed["memory_candidate"] = {
+            "type": "dialogue",
+            "summary": f"玩家对{profile.display}说：{message.strip()[:60]}",
+            "weight": 2,
+        }
     return {
         "ok": True,
         "npc_id": npc_id,
@@ -227,6 +244,9 @@ def fallback_dialogue_reply(
         if isinstance(top, dict) and top.get("summary"):
             memory_hint = f" 我还记得：{str(top['summary'])[:32]}。"
     rel_text = _relationship_lines(relationship)
+    rel_affinity = _relationship_number(relationship, "affinity")
+    rel_trust = _relationship_number(relationship, "trust")
+    rel_tension = _relationship_number(relationship, "tension")
 
     if any(key in msg for key in ("北", "边界", "禁忌", "异常")):
         if npc_id == "alice":
@@ -256,7 +276,13 @@ def fallback_dialogue_reply(
     elif state.time_band == "night":
         reply = "夜里声音会变得很远。要说重要的事，现在反而合适。"
     else:
-        if "tension=" in rel_text and "tension=0" not in rel_text:
+        if rel_tension >= 6:
+            reply = "嗯，我听着。只是我还在担心你会不会把危险说得太轻。"
+        elif rel_trust >= 6:
+            reply = "嗯，我相信你不是随口问问。把你看到的细节说完，我们一起判断。"
+        elif rel_affinity >= 5:
+            reply = "嗯，我听着。今天的事有点怪，但和你一起想会容易些。"
+        elif rel_tension > 0:
             reply = "嗯，我听着。只是今天有些话说出口以后，就很难再当作没发生过。"
         else:
             reply = "嗯，我听着。今天的村子和平时有一点不一样，你也感觉到了吗？"

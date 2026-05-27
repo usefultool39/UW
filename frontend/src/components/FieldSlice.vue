@@ -23,6 +23,18 @@
       <!-- Player HUD (top-left overlay) -->
       <PlayerHUD :sim-state="simState" :scene-label="sceneLabel" />
 
+      <Transition name="brief-fade">
+        <section v-if="openingBriefVisible" class="opening-brief" role="status">
+          <div class="brief-kicker">第一天 · 清晨</div>
+          <h3>细雨停在村道边</h3>
+          <p>书库里的旧记录和巨树旁的训练都在等你回应。今天的选择，会被艾琳和尤里记住。</p>
+          <div class="brief-actions">
+            <button type="button" @click="focusFirstStoryEvent">查看线索</button>
+            <button type="button" class="brief-ghost" @click="openingBriefDismissed = true">开始行动</button>
+          </div>
+        </section>
+      </Transition>
+
       <!-- Phaser map canvas -->
       <FieldMap
         v-if="worldMapRef"
@@ -34,10 +46,10 @@
         :scene-label="sceneLabel"
         :time-band-label="timeBandLabel"
         :busy="busy"
-        :nearby-interact="nearbyInteract"
+        :nearby-interact="effectiveNearbyInteract"
         @tile-click="onTileClick"
         @npc-click="onNpcClick"
-        @interact-click="interactOpen = true"
+        @interact-click="openInteractPanel"
         @event-click="openStoryEvent"
         @ready="onSceneReady"
         @blocked-click="onBlockedTileClick"
@@ -54,7 +66,7 @@
         :nearby-action-preview="nearbyActionPreview"
         :busy="busy"
         @open-event="openStoryEvent"
-        @open-interact="interactOpen = true"
+        @open-interact="openInteractPanel"
       />
 
       <!-- Bottom chat strip -->
@@ -65,6 +77,15 @@
 
       <!-- Bottom hotbar -->
       <Hotbar :busy="busy" :has-events="!!storyEvents.length" @action="onHotbarAction" />
+
+      <ClueJournalPanel
+        v-model="journalOpen"
+        :sim-state="simState"
+        :story-events="storyEvents"
+        :month-plan="monthPlan"
+        :recent-memories="recentJournalMemories"
+        :npc-profiles="journalProfiles"
+      />
     </div>
 
     <!-- Debug drawer (collapsed by default) -->
@@ -91,7 +112,7 @@
     <!-- Modals -->
     <FieldInteractPanel
       v-model="interactOpen"
-      :nearby-interact="nearbyInteract"
+      :nearby-interact="effectiveNearbyInteract"
       :visible-interact-actions="visibleInteractActions"
       :busy="busy"
       @interact-action="onInteractAction"
@@ -119,9 +140,45 @@
       @choose="onStoryEventChoose"
     />
 
+    <TrainingMiniGamePanel
+      v-model="trainingGameOpen"
+      :event="selectedStoryEvent"
+      :busy="busy"
+      @complete="onTrainingComplete"
+    />
+
+    <BoundaryProbeMiniGamePanel
+      v-model="boundaryProbeOpen"
+      :event="selectedStoryEvent"
+      :busy="busy"
+      @complete="onBoundaryProbeComplete"
+    />
+
+    <BoundaryVerdictMiniGamePanel
+      v-model="boundaryVerdictOpen"
+      :event="selectedStoryEvent"
+      :busy="busy"
+      @complete="onBoundaryVerdictComplete"
+    />
+
+    <ReadingMiniGamePanel
+      v-model="readingGameOpen"
+      :activity="pendingActivityAction?.activity"
+      :busy="busy"
+      @complete="onReadingComplete"
+    />
+
+    <MealChoicePanel
+      v-model="mealChoiceOpen"
+      :activity="pendingActivityAction?.activity"
+      :busy="busy"
+      @complete="onMealChoiceComplete"
+    />
+
     <StoryResultPanel
       v-model="storyResultOpen"
       :result="storyResult"
+      @focus-event="onResultFocusEvent"
     />
 
     <NpcProfilePanel
@@ -150,14 +207,22 @@ import DialoguePanel from './DialoguePanel.vue'
 import StoryEventPanel from './StoryEventPanel.vue'
 import StoryResultPanel from './StoryResultPanel.vue'
 import NpcProfilePanel from './NpcProfilePanel.vue'
+import ClueJournalPanel from './ClueJournalPanel.vue'
+import TrainingMiniGamePanel from './TrainingMiniGamePanel.vue'
+import BoundaryProbeMiniGamePanel from './BoundaryProbeMiniGamePanel.vue'
+import BoundaryVerdictMiniGamePanel from './BoundaryVerdictMiniGamePanel.vue'
+import ReadingMiniGamePanel from './ReadingMiniGamePanel.vue'
+import MealChoicePanel from './MealChoicePanel.vue'
 import Toast from './Toast.vue'
 import { getAgentLabel, getQuestGuide, getSceneLabel, getTimeBandLabel } from '../field/gameContentConfig.js'
 import { findNearbyInteractPoi } from '../field/interactPoi.js'
 import { DEFAULT_MAP_ID } from '../field/sceneRegistry.js'
 import { useAudio } from '../composables/useAudio.js'
+import { useFieldToast } from '../composables/useFieldToast.js'
 
 // Audio composable for SFX on interactions
 const { playSfx } = useAudio()
+const { toastMessage, toastType, toastOpen, showToast, clearToastTimer } = useFieldToast()
 
 const props = defineProps({
   simState: { type: Object, required: true },
@@ -173,6 +238,7 @@ const props = defineProps({
   fetchRegions: { type: Function, required: true },
   fetchWorldMap: { type: Function, required: true },
   fetchSceneActivities: { type: Function, required: true },
+  fetchMonthPlan: { type: Function, required: true },
   refresh: { type: Function, required: true }
 })
 
@@ -185,11 +251,13 @@ const regionsJson = ref('')
 const worldMapRef = ref(null)
 const sceneActivityIndex = ref({})
 const storyEvents = ref([])
+const monthPlan = ref(null)
 const selectedStoryEventId = ref('')
 const selectedNpcId = ref('')
-const toastMessage = ref('')
-const toastType = ref('info')
-const toastOpen = ref(false)
+const openingBriefDismissed = ref(false)
+const journalOpen = ref(false)
+const journalProfiles = ref({})
+const recentJournalMemories = ref([])
 
 // Modal states
 const interactOpen = ref(false)
@@ -198,11 +266,19 @@ const dialogueOpen = ref(false)
 const storyEventOpen = ref(false)
 const storyResultOpen = ref(false)
 const npcProfileOpen = ref(false)
+const trainingGameOpen = ref(false)
+const boundaryProbeOpen = ref(false)
+const boundaryVerdictOpen = ref(false)
+const readingGameOpen = ref(false)
+const mealChoiceOpen = ref(false)
+const pendingActivityAction = ref(null)
 const storyResult = ref(null)
 const npcProfile = ref(null)
 
-let toastTimer = null
 let sceneInstance = null
+
+const READING_ACTIVITY_IDS = new Set(['church_read_sacred_arts'])
+const MEAL_ACTIVITY_IDS = new Set(['church_ask_alice_lunch', 'home_evening_meal'])
 
 // --- Computed ---
 const sceneLabel = computed(() => getSceneLabel(props.simState?.player?.scene_id || props.simState?.scene_id || ''))
@@ -213,13 +289,120 @@ const nearbyInteract = computed(() =>
   findNearbyInteractPoi(worldMapRef.value, props.simState?.player)
 )
 
+const nearbyStoryEvents = computed(() => {
+  const p = props.simState?.player
+  if (!p) return []
+  const px = Number(p.tile_x)
+  const py = Number(p.tile_y)
+  if (!Number.isFinite(px) || !Number.isFinite(py)) return []
+  return storyEvents.value
+    .map((event) => {
+      const loc = event?.location || {}
+      const tx = Number(loc.tile_x)
+      const ty = Number(loc.tile_y)
+      if (!Number.isFinite(tx) || !Number.isFinite(ty)) return null
+      const dist = Math.max(Math.abs(px - tx), Math.abs(py - ty))
+      const sameScene = String(loc.scene_id || '') && String(loc.scene_id || '') === String(p.scene_id || props.simState?.scene_id || '')
+      if (dist > 4 && !(sameScene && dist <= 7)) return null
+      return { event, dist }
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.dist - b.dist)
+    .map((item) => item.event)
+})
+
+const npcIntents = computed(() =>
+  Array.isArray(props.simState?.npc_intents) ? props.simState.npc_intents : []
+)
+
+const nearbyNpcIntents = computed(() => {
+  const p = props.simState?.player
+  if (!p) return []
+  const px = Number(p.tile_x)
+  const py = Number(p.tile_y)
+  const playerScene = String(p.scene_id || props.simState?.scene_id || '')
+  if (!Number.isFinite(px) || !Number.isFinite(py)) return []
+  return npcIntents.value
+    .map((intent) => {
+      const tx = Number(intent?.tile_x)
+      const ty = Number(intent?.tile_y)
+      const sceneId = String(intent?.scene_id || '')
+      if (!Number.isFinite(tx) || !Number.isFinite(ty)) return null
+      const dist = Math.max(Math.abs(px - tx), Math.abs(py - ty))
+      const sameScene = sceneId && sceneId === playerScene
+      if (dist > 4 && !(sameScene && dist <= 8)) return null
+      return { intent, dist }
+    })
+    .filter(Boolean)
+    .sort((a, b) => (Number(b.intent?.priority || 0) - Number(a.intent?.priority || 0)) || a.dist - b.dist)
+    .map((item) => item.intent)
+})
+
+const effectiveNearbyInteract = computed(() => {
+  if (nearbyInteract.value) return nearbyInteract.value
+  const event = nearbyStoryEvents.value[0]
+  if (!event) {
+    const intent = nearbyNpcIntents.value[0]
+    if (!intent) return null
+    return {
+      id: `intent_${intent.id}`,
+      kind: 'interact',
+      scene_id: intent.scene_id || props.simState?.player?.scene_id || props.simState?.scene_id,
+      tile_x: Number(intent.tile_x) || Number(props.simState?.player?.tile_x) || 0,
+      tile_y: Number(intent.tile_y) || Number(props.simState?.player?.tile_y) || 0,
+      radius: 2,
+      regionType: 'interact',
+      zoneLabel: 'NPC 主动',
+      label: 'NPC 主动',
+      title: intent.title || '附近有人想和你确认一件事',
+      body: intent.description || intent.reason || '这个 NPC 正在根据今天发生的事做出反应。',
+      actions: []
+    }
+  }
+  const loc = event.location || {}
+  return {
+    id: `story_${event.id}`,
+    kind: 'interact',
+    scene_id: loc.scene_id || props.simState?.player?.scene_id || props.simState?.scene_id,
+    tile_x: Number(loc.tile_x) || Number(props.simState?.player?.tile_x) || 0,
+    tile_y: Number(loc.tile_y) || Number(props.simState?.player?.tile_y) || 0,
+    radius: 2,
+    regionType: 'interact',
+    zoneLabel: '线索地点',
+    label: '线索地点',
+    title: event.title || '附近线索',
+    body: event.description || '这里有一段正在发生的剧情线索。',
+    actions: []
+  }
+})
+
+const naturalStoryEventActions = computed(() =>
+  nearbyStoryEvents.value.map((event) => ({
+    id: `story:${event.id}`,
+    type: 'story_event',
+    event_id: event.id,
+    label: naturalStoryEventLabel(event),
+    description: event.description || '',
+    meta: storyEventMeta(event),
+    storyEvent: event
+  }))
+)
+
+const npcIntentActions = computed(() =>
+  nearbyNpcIntents.value
+    .flatMap(enrichNpcIntentActions)
+    .filter(Boolean)
+)
+
 const visibleInteractActions = computed(() => {
   const poi = nearbyInteract.value
   const nid = props.simState?.story_node_id
-  if (!poi?.actions) return []
-  return poi.actions
-    .filter((a) => !a.requires_story || a.requires_story === nid)
-    .map(enrichInteractAction)
+  const base = poi?.actions
+    ? poi.actions
+      .filter((a) => !a.requires_story || a.requires_story === nid)
+      .map(enrichInteractAction)
+    : []
+  return [...npcIntentActions.value, ...naturalStoryEventActions.value, ...base]
 })
 
 const selectedNpc = computed(() =>
@@ -251,7 +434,7 @@ const nearbyNpcLabel = computed(() => {
 })
 
 const nearbyInteractTitle = computed(() => {
-  const poi = nearbyInteract.value
+  const poi = effectiveNearbyInteract.value
   if (!poi) return '暂无地点'
   if (poi.zoneEntry && poi.zoneLabel) return `${poi.zoneLabel} · ${poi.title || poi.label || '可互动'}`
   return poi.title || '暂无地点'
@@ -267,22 +450,23 @@ const nearbyActionPreview = computed(() =>
 )
 
 const questGuide = computed(() => {
+  const intent = nearbyNpcIntents.value[0] || npcIntents.value[0]
+  if (intent) {
+    return `${getAgentLabel(intent.npc_id)}正在推动下一步：${intent.title}。${intent.description || ''}`.trim()
+  }
   if (storyEvents.value.length) {
-    return '地图上出现了金色章节事件标记。点击事件标题或地图上的「！」推进第一章。'
+    const event = storyEvents.value[0]
+    return `${event.title || '新的线索'}：${event.description || '靠近金色线索后可触发。'}`
   }
   return getQuestGuide(props.simState)
 })
 
-// --- Toast ---
-function showToast(msg, type = 'info') {
-  toastMessage.value = msg
-  toastType.value = type
-  clearTimeout(toastTimer)
-  toastOpen.value = false
-  nextTick(() => {
-    toastOpen.value = true
-  })
-}
+const openingBriefVisible = computed(() =>
+  !openingBriefDismissed.value &&
+  Number(props.simState?.day || 1) === 1 &&
+  !props.simState?.chapter_ending_id &&
+  storyEvents.value.length > 0
+)
 
 // --- Scene ---
 function onSceneReady(sc) {
@@ -297,6 +481,16 @@ async function refreshStoryEvents() {
   } catch {
     storyEvents.value = []
   }
+  await refreshMonthPlan()
+}
+
+async function refreshMonthPlan() {
+  try {
+    const res = await props.fetchMonthPlan('month_01')
+    monthPlan.value = res?.ok === false ? null : res
+  } catch {
+    monthPlan.value = null
+  }
 }
 
 async function loadWorldMap(mapId = DEFAULT_MAP_ID) {
@@ -306,7 +500,7 @@ async function loadWorldMap(mapId = DEFAULT_MAP_ID) {
     localError.value = ''
   } catch {
     localError.value = `地图加载失败：${mapId}`
-    worldMapRef.value = { id: mapId, rows: [], width: 0, height: 0, tile_size: 32 }
+    worldMapRef.value = { id: mapId, rows: [], width: 0, height: 0, tile_size: 28 }
   }
 }
 
@@ -364,6 +558,7 @@ function enrichInteractAction(action) {
   if (!activity) return action
   const availability = activityAvailability(activity)
   const meta = []
+  if (action.meta) meta.push(action.meta)
   const timeCost = Number(activity.time_cost || 0)
   meta.push(timeCost > 0 ? `耗时 ${timeCost} 刻` : '不消耗时段')
   if (activity.repeat === 'daily') meta.push('每日一次')
@@ -374,17 +569,169 @@ function enrichInteractAction(action) {
   if (!availability.ok && availability.reason) meta.push(availability.reason)
   return {
     ...action,
-    label: activity.label || action.label,
-    description: activity.description || action.description || '',
+    label: action.label || activity.label,
+    description: action.description || activity.description || '',
     meta: meta.join(' · '),
     blockedReason: availability.ok ? '' : availability.reason,
     activity
   }
 }
 
+function naturalStoryEventLabel(event) {
+  const kind = String(event?.kind || '')
+  if (kind === 'clue') return '调查边界记录'
+  if (kind === 'training') return '开始巨树训练'
+  if (kind === 'anomaly') return '确认森林异常'
+  if (kind === 'conflict') return '进入晚餐分歧'
+  if (kind === 'final_choice') return '走向边界线'
+  return event?.title ? `处理：${event.title}` : '触发章节线索'
+}
+
+function storyEventMeta(event) {
+  const parts = ['章节事件']
+  const participants = Array.isArray(event?.participants) ? event.participants : []
+  if (participants.length) parts.push(`相关：${participants.map(getAgentLabel).join('、')}`)
+  const sceneId = event?.location?.scene_id
+  if (sceneId) parts.push(getSceneLabel(sceneId))
+  return parts.join(' · ')
+}
+
+function enrichNpcIntentActions(intent) {
+  const responses = Array.isArray(intent?.response_options) ? intent.response_options : []
+  const responseActions = responses.map((option) => enrichNpcIntentResponseAction(intent, option)).filter(Boolean)
+  const primary = enrichNpcIntentAction(intent)
+  return primary ? [...responseActions, primary] : responseActions
+}
+
+function enrichNpcIntentResponseAction(intent, option) {
+  const responseId = String(option?.id || '').trim()
+  if (!responseId) return null
+  const stakes = Array.isArray(intent?.stakes) ? intent.stakes.filter(Boolean).slice(0, 1) : []
+  const meta = [
+    `NPC回应 · ${getAgentLabel(intent.npc_id)}`,
+    getSceneLabel(intent.scene_id),
+    option?.tone ? `语气：${option.tone}` : '',
+    ...stakes
+  ].filter(Boolean).join(' · ')
+  return {
+    id: `intent-response:${intent.id}:${responseId}`,
+    type: 'npc_intent_response',
+    intent_id: intent.id,
+    response_id: responseId,
+    npc_id: intent.npc_id,
+    label: option.label || '回应 NPC',
+    description: option.hint || intent.description || intent.reason || '',
+    meta,
+    source: 'npc_intent',
+    npcIntent: intent,
+    responseOption: option
+  }
+}
+
+function enrichNpcIntentAction(intent) {
+  const action = intent?.action || {}
+  const type = action.type || ''
+  const stakes = Array.isArray(intent?.stakes) ? intent.stakes.filter(Boolean).slice(0, 1) : []
+  const baseMeta = [`NPC主动 · ${getAgentLabel(intent.npc_id)}`, getSceneLabel(intent.scene_id), ...stakes].filter(Boolean).join(' · ')
+  if (type === 'story_event' && action.event_id) {
+    return {
+      id: `intent:${intent.id}`,
+      type: 'story_event',
+      event_id: action.event_id,
+      label: intent.title || '回应 NPC',
+      description: intent.description || intent.reason || '',
+      meta: baseMeta,
+      source: 'npc_intent',
+      npcIntent: intent
+    }
+  }
+  if (type === 'scene_activity' && action.activity_id) {
+    const activity = sceneActivityIndex.value[action.activity_id]
+    return enrichInteractAction({
+      id: `intent:${intent.id}`,
+      type: 'scene_activity',
+      activity_id: action.activity_id,
+      label: intent.title || activity?.label || '回应 NPC',
+      description: intent.description || activity?.description || '',
+      meta: baseMeta,
+      source: 'npc_intent',
+      activity,
+      npcIntent: intent
+    })
+  }
+  if (type === 'dialogue') {
+    return {
+      id: `intent:${intent.id}`,
+      type: 'npc_dialogue',
+      npc_id: intent.npc_id,
+      label: intent.title || `和 ${getAgentLabel(intent.npc_id)} 交谈`,
+      description: intent.description || intent.reason || '',
+      meta: baseMeta,
+      source: 'npc_intent',
+      npcIntent: intent
+    }
+  }
+  return null
+}
+
 function openStoryEvent(eventId) {
   selectedStoryEventId.value = eventId
+  const event = storyEvents.value.find((e) => e.id === eventId) || selectedStoryEvent.value
+  if (event?.kind === 'training') {
+    trainingGameOpen.value = true
+    return
+  }
+  if (event?.kind === 'anomaly') {
+    boundaryProbeOpen.value = true
+    return
+  }
+  if (event?.kind === 'final_choice') {
+    boundaryVerdictOpen.value = true
+    return
+  }
   storyEventOpen.value = true
+}
+
+function openInteractPanel() {
+  const modalOpen =
+    storyResultOpen.value ||
+    storyEventOpen.value ||
+    trainingGameOpen.value ||
+    boundaryProbeOpen.value ||
+    boundaryVerdictOpen.value ||
+    readingGameOpen.value ||
+    mealChoiceOpen.value ||
+    dialogueOpen.value ||
+    npcPanelOpen.value ||
+    npcProfileOpen.value ||
+    journalOpen.value
+  if (busy.value || modalOpen) return
+  interactOpen.value = true
+}
+
+function focusFirstStoryEvent() {
+  const event = storyEvents.value[0]
+  const loc = event?.location || {}
+  const tx = Number(loc.tile_x)
+  const ty = Number(loc.tile_y)
+  if (Number.isFinite(tx) && Number.isFinite(ty)) {
+    sceneInstance?.centerCameraOnTile?.(tx, ty)
+  }
+  openingBriefDismissed.value = true
+  if (event?.id) {
+    window.setTimeout(() => openStoryEvent(event.id), 180)
+  }
+}
+
+function onResultFocusEvent(payload) {
+  const loc = payload?.location || {}
+  const tx = Number(loc.tile_x)
+  const ty = Number(loc.tile_y)
+  if (Number.isFinite(tx) && Number.isFinite(ty)) {
+    sceneInstance?.centerCameraOnTile?.(tx, ty)
+    storyResultOpen.value = false
+    showToast('镜头已带到下一条线索附近。')
+  }
 }
 
 // --- Player Actions ---
@@ -392,19 +739,30 @@ async function onTileClick({ tile_x, tile_y }) {
   if (busy.value) return
   busy.value = true
   localError.value = ''
+  let walkPromise = null
+  let walkStarted = false
   try {
+    const localPath = sceneInstance?.buildLocalPathTo?.(tile_x, tile_y)
+    if (sceneInstance?.playWalkPath && Array.isArray(localPath) && localPath.length > 1) {
+      walkStarted = true
+      walkPromise = sceneInstance.playWalkPath(localPath)
+      playSfx('/assets/audio/sfx_step.mp3')
+    }
     const j = await props.playerAction(
       { kind: 'move_map', map_id: activeMapId.value, tile_x, tile_y },
       { deferRefresh: true }
     )
     const path = j.path || []
-    if (sceneInstance?.playWalkPath) {
-      await sceneInstance.playWalkPath(path)
+    if (!walkStarted && sceneInstance?.playWalkPath) {
+      walkPromise = sceneInstance.playWalkPath(path)
+      if (path.length > 1) playSfx('/assets/audio/sfx_step.mp3')
     }
+    if (walkPromise) await walkPromise
     await props.refresh()
     if (sceneInstance?.syncPlayerFromState) sceneInstance.syncPlayerFromState()
-    playSfx('/assets/audio/sfx_step.mp3')
   } catch (e) {
+    sceneInstance?.cancelWalk?.()
+    sceneInstance?.syncPlayerFromState?.()
     const msg = e.message || String(e)
     if (msg.includes('zone_locked') || msg.includes('scene_locked')) {
       showToast('这里还没开放。先完成当前目标，之后再回来探索边界。')
@@ -413,6 +771,7 @@ async function onTileClick({ tile_x, tile_y }) {
     } else {
       localError.value = msg
     }
+    sceneInstance?.triggerCameraShake?.()
   } finally {
     sceneInstance?.resumeCameraFollow?.()
     busy.value = false
@@ -420,13 +779,19 @@ async function onTileClick({ tile_x, tile_y }) {
 }
 
 function onBlockedTileClick(payload) {
-  const label = payload?.zone?.label || '未开放区域'
+  const label = payload?.terrainLabel || payload?.zone?.label || '未开放区域'
+  if (payload?.reason === 'terrain_blocked') {
+    showToast(`${label}不能通行。沿着浅色道路和草地边缘移动会更安全。`)
+    sceneInstance?.triggerCameraShake?.()
+    return
+  }
   showToast(`${label} 还没开放。先完成当前目标，之后再回来探索边界。`)
 }
 
 function onNpcClick(agentId) {
   selectedNpcId.value = agentId
   npcPanelOpen.value = true
+  showToast(`靠近 ${getAgentLabel(agentId)}：可以对话或查看关系。`)
 }
 
 async function onHotbarAction(actionId) {
@@ -436,33 +801,98 @@ async function onHotbarAction(actionId) {
     selectedNpcId.value = npc.id
     dialogueOpen.value = true
   } else if (actionId === 'read') {
-    await doWithBusy(async () => {
-      await props.playerAction({ kind: 'set_flag', flag_key: 'prologue_reading_done', flag_value: 1 })
-      await refreshStoryEvents()
-      showToast('已读完书页：规则与边界的线索被记下。', 'success')
-    })
+    const activity = sceneActivityIndex.value.church_read_sacred_arts
+    const availability = activityAvailability(activity)
+    if (!activity || !availability.ok) {
+      showToast(availability.reason || '先走到书库阅览台附近，再调查旧记录。')
+      return
+    }
+    pendingActivityAction.value = {
+      id: 'church_read_sacred_arts',
+      type: 'scene_activity',
+      activity_id: 'church_read_sacred_arts',
+      activity
+    }
+    readingGameOpen.value = true
   } else if (actionId === 'train') {
-    await doWithBusy(async () => {
-      await props.dailyTick(1, 'heuristic')
-      await refreshStoryEvents()
-      showToast('训练推进了一个时刻。')
-      sceneInstance?.syncPlayerFromState?.()
-    })
+    const trainingEvent = nearbyStoryEvents.value.find((event) => event?.kind === 'training')
+      || storyEvents.value.find((event) => event?.kind === 'training' && (event?.location?.scene_id === props.simState?.player?.scene_id))
+    if (trainingEvent?.id) {
+      selectedStoryEventId.value = trainingEvent.id
+      trainingGameOpen.value = true
+      showToast('尤里已经摆好训练节奏。先完成三次出手，再决定怎么回应他。')
+      return
+    }
+    const trainingIntent = nearbyNpcIntents.value.find((intent) => intent?.action?.event_id === 'ch1_d1_training_with_eugeo')
+    if (trainingIntent?.action?.event_id) {
+      selectedStoryEventId.value = trainingIntent.action.event_id
+      trainingGameOpen.value = true
+      showToast('尤里向你示意：训练从现在开始。')
+      return
+    }
+    showToast('先走到古誓树清场，靠近尤里后再开始训练。')
   } else if (actionId === 'rest') {
     await doWithBusy(async () => {
-      await props.playerAction({ kind: 'rest_until_next_day' })
+      const beforeDay = Number(props.simState?.day || 1)
+      const res = await props.playerAction({ kind: 'rest_until_next_day' })
       await refreshStoryEvents()
+      storyResult.value = buildDaySettlementResult(res?.state || props.simState, storyEvents.value, beforeDay)
+      storyResultOpen.value = true
       showToast('你回到小屋休息。新的一天开始了。', 'success')
       sceneInstance?.syncPlayerFromState?.()
     })
-  } else if (actionId === 'event') {
-    const event = storyEvents.value[0]
-    if (!event) { showToast('当前还没有可触发的章节事件。'); return }
-    openStoryEvent(event.id)
+  } else if (actionId === 'journal') {
+    await openJournal()
   }
 }
 
 async function onInteractAction(act) {
+  if (act?.type === 'npc_intent_response' && act?.intent_id && act?.response_id) {
+    await doWithBusy(async () => {
+      const res = await props.playerAction({
+        kind: 'respond_npc_intent',
+        intent_id: act.intent_id,
+        response_id: act.response_id
+      })
+      storyResult.value = {
+        ...(res.intent_result || {}),
+        relationship_changes: res.relationship_changes || res.intent_result?.relationship_changes || [],
+        memory_written: res.memory_written || res.intent_result?.memory_written || [],
+        promises: res.intent_result?.promises || {},
+        tensions: res.intent_result?.tensions || {}
+      }
+      rememberJournalMemories(storyResult.value.memory_written)
+      interactOpen.value = false
+      storyResultOpen.value = true
+      showToast('你的回应已经写入关系和记忆。', 'success')
+      await refreshStoryEvents()
+      sceneInstance?.syncPlayerFromState?.()
+    })
+    return
+  }
+  if (act?.type === 'story_event') {
+    interactOpen.value = false
+    openStoryEvent(act.event_id)
+    return
+  }
+  if (act?.type === 'npc_dialogue' && act?.npc_id) {
+    selectedNpcId.value = act.npc_id
+    interactOpen.value = false
+    dialogueOpen.value = true
+    return
+  }
+  if (act?.type === 'scene_activity' && shouldOpenActivityPanel(act)) {
+    pendingActivityAction.value = act
+    interactOpen.value = false
+    if (READING_ACTIVITY_IDS.has(activityIdForAction(act))) {
+      readingGameOpen.value = true
+      showToast('书页已经摊开，先拼出你要带走的线索。')
+    } else {
+      mealChoiceOpen.value = true
+      showToast('餐桌上的态度，会被关系和记忆记住。')
+    }
+    return
+  }
   await doWithBusy(async () => {
     if (act.type === 'set_flag') {
       await props.playerAction({ kind: 'set_flag', flag_key: act.flag_key, flag_value: act.flag_value ?? 1 })
@@ -471,24 +901,84 @@ async function onInteractAction(act) {
     } else if (act.type === 'compound_sleep') {
       await props.playerAction({ kind: 'compound_sleep', daily_n: Number(act.daily_n) || 1 })
     } else if (act.type === 'scene_activity') {
-      const res = await props.playerAction({
-        kind: 'interact_with_hub',
-        poi_id: nearbyInteract.value?.id,
-        activity_id: act.activity_id || act.id
-      })
-      storyResult.value = {
-        ...(res.activity_result || {}),
-        relationship_changes: res.relationship_changes || res.activity_result?.relationship_changes || [],
-        memory_written: res.memory_written || res.activity_result?.memory_written || []
-      }
-      storyResultOpen.value = true
-      playSfx('/assets/audio/sfx_activity.mp3')
+      await runSceneActivity(act)
     }
     showToast(act.toast || '完成', 'success')
     interactOpen.value = false
     await refreshStoryEvents()
     sceneInstance?.syncPlayerFromState?.()
   })
+}
+
+function activityIdForAction(act) {
+  return String(act?.activity_id || act?.id || act?.activity?.id || '')
+}
+
+function shouldOpenActivityPanel(act) {
+  const activityId = activityIdForAction(act)
+  const kind = act?.activity?.interaction_kind || ''
+  return (
+    kind === 'reading_keywords' ||
+    kind === 'meal_choice' ||
+    READING_ACTIVITY_IDS.has(activityId) ||
+    MEAL_ACTIVITY_IDS.has(activityId)
+  )
+}
+
+async function runSceneActivity(act, extra = {}) {
+  const activityId = activityIdForAction(act)
+  interactOpen.value = false
+  const res = await props.playerAction({
+    kind: 'interact_with_hub',
+    poi_id: nearbyInteract.value?.id || effectiveNearbyInteract.value?.id || act?.activity?.poi_id,
+    activity_id: activityId,
+    activity_choice: extra.activity_choice || undefined
+  })
+  storyResult.value = {
+    ...(res.activity_result || {}),
+    reading_result: extra.reading_result || null,
+    meal_result: extra.meal_result || null,
+    relationship_changes: res.relationship_changes || res.activity_result?.relationship_changes || [],
+    memory_written: res.memory_written || res.activity_result?.memory_written || [],
+    promises: res.activity_result?.promises || {},
+    tensions: res.activity_result?.tensions || {}
+  }
+  rememberJournalMemories(storyResult.value.memory_written)
+  storyResultOpen.value = true
+  playSfx('/assets/audio/sfx_activity.mp3')
+}
+
+async function openJournal() {
+  journalOpen.value = true
+  await refreshMonthPlan()
+  const agents = Array.isArray(props.simState?.agents) ? props.simState.agents : []
+  if (!agents.length) return
+  const nextProfiles = { ...journalProfiles.value }
+  const settled = await Promise.allSettled(
+    agents.map(async (agent) => {
+      const res = await props.fetchNpcProfile(agent.id)
+      return [agent.id, res?.profile]
+    })
+  )
+  for (const item of settled) {
+    if (item.status !== 'fulfilled') continue
+    const [npcId, profile] = item.value || []
+    if (npcId && profile) nextProfiles[npcId] = profile
+  }
+  journalProfiles.value = nextProfiles
+}
+
+function rememberJournalMemories(rows) {
+  const incoming = Array.isArray(rows) ? rows.filter((item) => item?.npc_id && item?.summary) : []
+  if (!incoming.length) return
+  const merged = [...incoming, ...recentJournalMemories.value]
+  const seen = new Set()
+  recentJournalMemories.value = merged.filter((item) => {
+    const key = `${item.npc_id}:${item.summary}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  }).slice(0, 16)
 }
 
 // --- NPC ---
@@ -516,6 +1006,7 @@ async function onStoryEventChoose(choice) {
     const text = res?.choice?.result_text || `${event.title} 已完成。`
     showToast(text, 'success')
     storyResult.value = { ...res, event_title: event.title }
+    rememberJournalMemories(res?.memory_written)
     storyResultOpen.value = true
     storyEventOpen.value = false
     storyEvents.value = Array.isArray(res?.available_events) ? res.available_events : storyEvents.value
@@ -593,7 +1084,110 @@ async function onRefresh() {
 
 async function onDaily() {
   await doWithBusy(async () => {
-    await props.dailyTick(1, 'heuristic')
+    const res = await props.dailyTick(1, 'heuristic')
+    await refreshStoryEvents()
+    storyResult.value = buildDailySummaryResult(res, storyEvents.value)
+    storyResultOpen.value = true
+    sceneInstance?.syncPlayerFromState?.()
+  })
+}
+
+async function onTrainingComplete(payload) {
+  const event = selectedStoryEvent.value
+  const choice = (event?.choices || []).find((item) => item.id === payload?.choice_id) || event?.choices?.[0]
+  if (!event?.id || !choice?.id || busy.value) return
+  await doWithBusy(async () => {
+    const res = await props.chooseStoryEvent({ event_id: event.id, choice_id: choice.id })
+    const training = payload?.result || null
+    const text = res?.choice?.result_text || `${event.title} 已完成。`
+    showToast(training ? `训练${training.label}：${text}` : text, 'success')
+    storyResult.value = {
+      ...res,
+      event_title: event.title,
+      training_result: training
+    }
+    rememberJournalMemories(res?.memory_written)
+    storyResultOpen.value = true
+    trainingGameOpen.value = false
+    storyEvents.value = Array.isArray(res?.available_events) ? res.available_events : storyEvents.value
+    await refreshStoryEvents()
+    sceneInstance?.syncPlayerFromState?.()
+  })
+}
+
+async function onBoundaryProbeComplete(payload) {
+  const event = selectedStoryEvent.value
+  const choice = (event?.choices || []).find((item) => item.id === payload?.choice_id) || event?.choices?.[0]
+  if (!event?.id || !choice?.id || busy.value) return
+  await doWithBusy(async () => {
+    const res = await props.chooseStoryEvent({ event_id: event.id, choice_id: choice.id })
+    const probe = payload?.result || null
+    const text = res?.choice?.result_text || `${event.title} 已完成。`
+    showToast(probe ? `边界读数${probe.label}：${text}` : text, 'success')
+    storyResult.value = {
+      ...res,
+      event_title: event.title,
+      anomaly_result: probe
+    }
+    rememberJournalMemories(res?.memory_written)
+    storyResultOpen.value = true
+    boundaryProbeOpen.value = false
+    storyEvents.value = Array.isArray(res?.available_events) ? res.available_events : storyEvents.value
+    await refreshStoryEvents()
+    sceneInstance?.syncPlayerFromState?.()
+  })
+}
+
+async function onBoundaryVerdictComplete(payload) {
+  const event = selectedStoryEvent.value
+  const choice = (event?.choices || []).find((item) => item.id === payload?.choice_id) || event?.choices?.[0]
+  if (!event?.id || !choice?.id || busy.value) return
+  await doWithBusy(async () => {
+    const res = await props.chooseStoryEvent({ event_id: event.id, choice_id: choice.id })
+    const verdict = payload?.result || null
+    const text = res?.choice?.result_text || `${event.title} 已完成。`
+    showToast(verdict ? `边界判定：${verdict.label}` : text, 'success')
+    storyResult.value = {
+      ...res,
+      event_title: event.title,
+      final_result: verdict
+    }
+    rememberJournalMemories(res?.memory_written)
+    storyResultOpen.value = true
+    boundaryVerdictOpen.value = false
+    storyEvents.value = Array.isArray(res?.available_events) ? res.available_events : storyEvents.value
+    await refreshStoryEvents()
+    sceneInstance?.syncPlayerFromState?.()
+  })
+}
+
+async function onReadingComplete(payload) {
+  const act = pendingActivityAction.value
+  if (!act || busy.value) return
+  await doWithBusy(async () => {
+    await runSceneActivity(act, {
+      activity_choice: payload?.choice_id,
+      reading_result: payload?.result || null
+    })
+    readingGameOpen.value = false
+    pendingActivityAction.value = null
+    showToast('书库线索已经写入日志和关系。', 'success')
+    await refreshStoryEvents()
+    sceneInstance?.syncPlayerFromState?.()
+  })
+}
+
+async function onMealChoiceComplete(payload) {
+  const act = pendingActivityAction.value
+  if (!act || busy.value) return
+  await doWithBusy(async () => {
+    await runSceneActivity(act, {
+      activity_choice: payload?.choice_id,
+      meal_result: payload?.result || null
+    })
+    mealChoiceOpen.value = false
+    pendingActivityAction.value = null
+    showToast('这次餐桌态度已经被记住。', 'success')
     await refreshStoryEvents()
     sceneInstance?.syncPlayerFromState?.()
   })
@@ -603,13 +1197,36 @@ async function onDaily() {
 function handleHotkey(e) {
   const tag = e.target?.tagName?.toLowerCase?.()
   if (tag === 'input' || tag === 'textarea' || tag === 'select') return
-  if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value) return
+  if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value || storyEventOpen.value || storyResultOpen.value || npcProfileOpen.value || journalOpen.value || trainingGameOpen.value || boundaryProbeOpen.value || boundaryVerdictOpen.value || readingGameOpen.value || mealChoiceOpen.value) return
   const key = String(e.key || '').toLowerCase()
+  if (key === 'v' && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+    e.preventDefault()
+    sceneInstance?.toggleNavigationOverlay?.()
+    showToast('已切换可走层调试视图。绿色可走，蓝色水域，红色阻挡。')
+    return
+  }
+  const moveKeys = {
+    w: [0, -1],
+    arrowup: [0, -1],
+    s: [0, 1],
+    arrowdown: [0, 1],
+    a: [-1, 0],
+    arrowleft: [-1, 0],
+    d: [1, 0],
+    arrowright: [1, 0]
+  }
+  if (moveKeys[key] && sceneInstance?.tryKeyboardStep) {
+    e.preventDefault()
+    e.__uwHandled = true
+    const [dx, dy] = moveKeys[key]
+    sceneInstance.tryKeyboardStep(dx, dy)
+    return
+  }
   if (key === '1') { e.preventDefault(); onHotbarAction('talk') }
   else if (key === '2') { e.preventDefault(); onHotbarAction('read') }
   else if (key === '3') { e.preventDefault(); onHotbarAction('train') }
   else if (key === '4') { e.preventDefault(); onHotbarAction('rest') }
-  else if (key === '5') { e.preventDefault(); onHotbarAction('event') }
+  else if (key === '5') { e.preventDefault(); onHotbarAction('journal') }
   else if (key === 'r') { e.preventDefault(); onRefresh() }
 }
 
@@ -639,6 +1256,39 @@ async function doWithBusy(fn) {
   }
 }
 
+function buildDailySummaryResult(res, nextEvents = []) {
+  const events = Array.isArray(res?.events) ? res.events : []
+  const state = res?.state || props.simState || {}
+  const timeLabel = getTimeBandLabel(state.time_band || props.simState?.time_band || '')
+  const activeNames = events
+    .map((event) => event.actor_name || getAgentLabel(event.actor))
+    .filter(Boolean)
+  const actorText = [...new Set(activeNames)].slice(0, 3).join('、') || '村子'
+  return {
+    kind: 'daily_summary',
+    day: state.day,
+    time_band: timeLabel,
+    events,
+    next_events: nextEvents,
+    result_text: `${actorText}在这一刻继续行动。你推进的不只是时间，也是在让 NPC 的体力、饥饿、目标和日常选择继续变化。`
+  }
+}
+
+function buildDaySettlementResult(state, nextEvents = [], beforeDay = 1) {
+  const currentDay = Number(state?.day || beforeDay + 1)
+  const nextTitles = nextEvents.map((event) => event.title).filter(Boolean)
+  const nextText = nextTitles.length
+    ? `新的线索已经浮现：${nextTitles.slice(0, 2).join('、')}。`
+    : '暂时没有新的章节事件，但 NPC 的日常仍在继续。'
+  return {
+    kind: 'day_settlement',
+    day: currentDay,
+    time_band: getTimeBandLabel(state?.time_band || 'morning'),
+    next_events: nextEvents,
+    result_text: `Day ${beforeDay} 结束了。${nextText} 明天的对话会带着今天留下的关系和记忆。`
+  }
+}
+
 // --- Lifecycle ---
 onMounted(async () => {
   window.addEventListener('keydown', handleHotkey)
@@ -654,7 +1304,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleHotkey)
-  clearTimeout(toastTimer)
+  clearToastTimer()
   clearTimeout(syncTimer)
   clearTimeout(storyRefreshTimer)
   sceneInstance = null
@@ -672,6 +1322,10 @@ const storyRefreshKey = computed(() => JSON.stringify({
 // Sync visual state without re-fetching on every agent stat change.
 // Only watch player position and agent list length for actual sync needs.
 let syncTimer = null
+watch(storyResultOpen, (open) => {
+  if (open) interactOpen.value = false
+})
+
 watch(
   () => [props.simState?.player?.tile_x, props.simState?.player?.tile_y, props.simState?.agents?.length],
   () => {
@@ -725,6 +1379,70 @@ watch(activeMapId, async (mapId, oldMapId) => {
   will-change: transform;
 }
 
+.opening-brief {
+  position: absolute;
+  z-index: 44;
+  left: 0.85rem;
+  bottom: 10.45rem;
+  width: min(390px, calc(100% - 2rem));
+  padding: 0.82rem 0.92rem;
+  border-radius: 8px;
+  color: #fff7df;
+  background:
+    linear-gradient(135deg, rgba(79, 55, 31, 0.92), rgba(39, 50, 32, 0.76)),
+    radial-gradient(circle at 18% 0%, rgba(246, 211, 110, 0.2), transparent 44%);
+  border: 1px solid rgba(255, 239, 198, 0.32);
+  box-shadow: 0 18px 42px rgba(25, 18, 10, 0.36), 0 0 24px rgba(246, 211, 110, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+
+.brief-kicker {
+  color: #ffe2a3;
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.opening-brief h3 {
+  margin: 0.18rem 0 0.32rem;
+  color: #fff7df;
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.opening-brief p {
+  margin: 0;
+  color: #e9dcc2;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.brief-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+
+.brief-actions button {
+  min-height: 2.1rem;
+  padding: 0 0.8rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #332414;
+  background: linear-gradient(180deg, #ffe6a6, #d99545);
+  border: 1px solid rgba(255, 247, 214, 0.74);
+  box-shadow: 0 0 18px rgba(246, 211, 110, 0.18);
+}
+
+.brief-actions .brief-ghost {
+  color: #fff7df;
+  background: rgba(44, 38, 26, 0.72);
+  border-color: rgba(255, 239, 198, 0.24);
+  box-shadow: none;
+}
+
 .field-slice :deep(.field-header) {
   position: absolute;
   z-index: 90;
@@ -733,11 +1451,10 @@ watch(activeMapId, async (mapId, oldMapId) => {
   right: 12rem;
   margin: 0;
   padding: 0.5rem 0.6rem;
-  border-radius: 10px;
-  background: rgba(4, 8, 18, 0.58);
-  border: 1px solid rgba(125, 211, 252, 0.16);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-radius: 8px;
+  background: rgba(47, 38, 24, 0.72);
+  border: 1px solid rgba(255, 239, 198, 0.16);
+  box-shadow: 0 8px 20px rgba(25, 18, 10, 0.18);
 }
 
 .field-slice :deep(.field-title h2) {
@@ -933,17 +1650,41 @@ watch(activeMapId, async (mapId, oldMapId) => {
   transform: translateY(-6px);
 }
 
+.brief-fade-enter-active,
+.brief-fade-leave-active {
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.brief-fade-enter-from,
+.brief-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
 @media (max-width: 900px) {
   .field-slice { padding: 0; }
   .field-slice :deep(.field-header) {
     top: auto;
-    left: 0.55rem;
+    left: auto;
     right: 0.55rem;
     bottom: 5.35rem;
+    width: auto;
     padding: 0.45rem;
+    background: rgba(47, 38, 24, 0.58);
   }
   .field-slice :deep(.field-title) { display: none; }
   .field-slice :deep(.header-actions) { gap: 0.3rem; }
+  .opening-brief {
+    top: 5.9rem;
+    bottom: auto;
+    left: 0.55rem;
+    right: auto;
+    width: min(235px, calc(100% - 1.1rem));
+    padding: 0.68rem 0.72rem;
+  }
+  .opening-brief h3 { font-size: 0.94rem; }
+  .opening-brief p { font-size: 0.74rem; }
+  .brief-actions button { flex: 1; padding: 0 0.45rem; }
   .chat-strip { display: none; }
 }
 </style>

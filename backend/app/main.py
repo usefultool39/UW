@@ -9,12 +9,14 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
+from .api_models import DialogueBody, PlayerActionBody, RunBody, StoryAdvanceBody, StoryChooseBody
+from .content_validator import validate_project
 from .llm_config import model_meta
+from .month_plan import public_month_plan
 from .session import Session
 from .scene_activities import public_scene_activities
 from .world_map import map_path_for_id
@@ -37,7 +39,7 @@ def _cors_allow_origins() -> list[str]:
 
 
 limiter = Limiter(key_func=get_remote_address)
-app = FastAPI(title="30小镇 · 日常/主线框架 API")
+app = FastAPI(title="边境回声 · 日常/主线框架 API")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
@@ -58,45 +60,9 @@ def health_check():
     """健康检查端点"""
     return {
         "status": "ok",
-        "service": "30小镇-API",
+        "service": "边境回声-API",
         "version": "1.1.0"
     }
-
-
-class RunBody(BaseModel):
-    n: int = 1
-    mode: str = "heuristic"
-
-
-class PlayerActionBody(BaseModel):
-    kind: str
-    map_id: str | None = None
-    entry_point: str | None = None
-    scene_id: str | None = None
-    poi_id: str | None = None
-    location: str | None = None
-    flag_key: str | None = None
-    flag_value: int | None = None
-    activity_id: str | None = None
-    tile_x: int | None = None
-    tile_y: int | None = None
-    n: int | None = None
-    daily_n: int | None = None
-
-
-class StoryAdvanceBody(BaseModel):
-    target_id: str
-
-
-class StoryChooseBody(BaseModel):
-    event_id: str
-    choice_id: str
-
-
-class DialogueBody(BaseModel):
-    npc_id: str
-    message: str
-    context: dict | None = None
 
 
 @app.get("/api/config")
@@ -112,7 +78,7 @@ def api_config():
 def get_state():
     with SESSION_LOCK:
         sess = SESSION
-    return sess.state.model_dump(mode="json")
+    return sess.public_state().model_dump(mode="json")
 
 
 @app.get("/api/events")
@@ -188,6 +154,24 @@ def story_catalog():
     if not p.is_file():
         return {"nodes": {}}
     return json.loads(p.read_text(encoding="utf-8"))
+
+
+@app.get("/api/story/month_plan")
+def story_month_plan(month_id: str = Query("month_01", min_length=1, max_length=40)):
+    """第一月路线与当前进度，供日志面板展示长期目标。"""
+    with SESSION_LOCK:
+        sess = SESSION
+        state = sess.public_state()
+        root = sess.root
+    return public_month_plan(root, state, month_id=month_id)
+
+
+@app.get("/api/dev/content_validation")
+def dev_content_validation():
+    """Read-only content reference validation for story, map and activity config."""
+    with SESSION_LOCK:
+        root = SESSION.root
+    return validate_project(root)
 
 
 @app.get("/api/story/available_events")
@@ -285,6 +269,9 @@ def player_action(request: Request, body: PlayerActionBody):
             flag_key=body.flag_key,
             flag_value=body.flag_value,
             activity_id=body.activity_id,
+            activity_choice=body.activity_choice,
+            intent_id=body.intent_id,
+            response_id=body.response_id,
             tile_x=body.tile_x,
             tile_y=body.tile_y,
             n=body.n,

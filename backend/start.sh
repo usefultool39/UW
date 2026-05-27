@@ -1,45 +1,43 @@
 #!/bin/bash
-# 项目 · 前后端分离启动脚本 (Linux/Mac)
+set -euo pipefail
 
-echo "╔════════════════════════════════════════════════════════╗"
-echo "║   项目 · 前后端分离启动工具                        ║"
-echo "║                                                        ║"
-echo "║   🔧 启动步骤：                                       ║"
-echo "║   1. 启动后端 API 服务 (8000)                        ║"
-echo "║   2. 启动前端 Web 服务 (3000)                        ║"
-echo "║                                                        ║"
-echo "║   💡 提示：按 Ctrl+C 停止服务                        ║"
-echo "╚════════════════════════════════════════════════════════╝"
+# 边境回声 · 前后端分离启动脚本 (Linux/Mac)
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BACKEND_DIR="$ROOT/backend"
+FRONTEND_DIR="$ROOT/frontend"
+BACKEND_PORT="${BACKEND_PORT:-8765}"
+FRONTEND_PORT="${FRONTEND_PORT:-3000}"
+PYTHON_BIN="${PYTHON_BIN:-python}"
+
+echo "边境回声 · 启动前后端"
+echo "后端: http://127.0.0.1:${BACKEND_PORT}/api/health"
+echo "前端: http://127.0.0.1:${FRONTEND_PORT}"
 echo ""
 
-# 启动后端 API
-echo "[后端] 启动 FastAPI 服务器..."
-cd /path/to/integrity/30小镇/backend
-python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload &
+cleanup() {
+  if [ -n "${BACKEND_PID:-}" ]; then kill "$BACKEND_PID" 2>/dev/null || true; fi
+  if [ -n "${FRONTEND_PID:-}" ]; then kill "$FRONTEND_PID" 2>/dev/null || true; fi
+}
+trap cleanup EXIT INT TERM
+
+echo "[后端] 启动 FastAPI..."
+(
+  cd "$BACKEND_DIR"
+  "$PYTHON_BIN" -m uvicorn app.main:app --host 127.0.0.1 --port "$BACKEND_PORT" --reload
+) &
 BACKEND_PID=$!
-
-sleep 3
-
-# 启动前端 Web
-echo "[前端] 启动 Express 服务器..."
-cd /path/to/integrity/30小镇/frontend
-npm install >/dev/null 2>&1
-npm start &
-FRONTEND_PID=$!
 
 sleep 2
 
-echo ""
-echo "╔════════════════════════════════════════════════════════╗"
-echo "║   ✅ 所有服务已启动！                                ║"
-echo "║                                                        ║"
-echo "║   🌐 前端: http://127.0.0.1:3000                     ║"
-echo "║   🔌 API:  http://127.0.0.1:8000/api/health          ║"
-echo "║                                                        ║"
-echo "║   打开浏览器访问应用                                ║"
-echo "║   按 Ctrl+C 停止所有服务                           ║"
-echo "╚════════════════════════════════════════════════════════╝"
-echo ""
+echo "[前端] 启动 Vite..."
+(
+  cd "$FRONTEND_DIR"
+  if [ ! -d node_modules ]; then npm install; fi
+  npm run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT"
+) &
+FRONTEND_PID=$!
 
-# 等待中断
-wait $BACKEND_PID $FRONTEND_PID
+echo ""
+echo "服务已启动。按 Ctrl+C 停止。"
+wait "$BACKEND_PID" "$FRONTEND_PID"

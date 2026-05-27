@@ -1,30 +1,71 @@
 {
-  "v": 1,
-  "starter_region_id": "novice_village",
-  "regions": [
-    {
-      "id": "novice_village",
-      "display": "卢利特村（原型占位）",
-      "scenes": [
-        {
-          "id": "reading_hall",
-          "display": "看书/室内",
-          "daily_activity_ids": ["read", "rest_stub"],
-          "unlocked": true
-        },
-        {
-          "id": "gigas_clearing",
-          "display": "巨树清场",
-          "daily_activity_ids": ["gigas_chop"],
-          "unlocked": true
-        },
-        {
-          "id": "goblin_cave_stub",
-          "display": "北境洞窟（占位）",
-          "daily_activity_ids": [],
-          "unlocked": false
-        }
-      ]
-    }
-  ]
+    "v":  1,
+    "starter_region_id":  "novice_village",
+    "regions":  [
+                    {
+                        "id":  "novice_village",
+                        "display":  "露茵村",
+                        "scenes":  [
+                                       {
+                                           "id":  "reading_hall",
+                                           "display":  "村西书道",
+                                           "daily_activity_ids":  [
+                                                                      "church_read_sacred_arts"
+                                                                  ],
+                                           "unlocked":  true
+                                       },
+                                       {
+                                           "id":  "church_library",
+                                           "display":  "村西书库",
+                                           "daily_activity_ids":  [
+                                                                      "church_read_sacred_arts",
+                                                                      "church_ask_alice_lunch"
+                                                                  ],
+                                           "unlocked":  true
+                                       },
+                                       {
+                                           "id":  "village_square",
+                                           "display":  "村道广场",
+                                           "daily_activity_ids":  [
+                                                                      "village_square_listen"
+                                                                  ],
+                                           "unlocked":  true
+                                       },
+                                       {
+                                           "id":  "home_hearth",
+                                           "display":  "家中炉火",
+                                           "daily_activity_ids":  [
+                                                                      "home_evening_meal",
+                                                                      "home_sleep_until_morning"
+                                                                  ],
+                                           "unlocked":  true
+                                       },
+                                       {
+                                           "id":  "gigas_clearing",
+                                           "display":  "古誓树清场",
+                                           "daily_activity_ids":  [
+                                                                      "gigas_chop_rhythm",
+                                                                      "gigas_listen_to_forest"
+                                                                  ],
+                                           "unlocked":  true
+                                       },
+                                       {
+                                           "id":  "north_gate",
+                                           "display":  "北境边门",
+                                           "daily_activity_ids":  [
+                                                                      "north_gate_survey"
+                                                                  ],
+                                           "unlocked":  true
+                                       },
+                                       {
+                                           "id":  "goblin_cave_stub",
+                                           "display":  "北境洞窟（占位）",
+                                           "daily_activity_ids":  [
+
+                                                                  ],
+                                           "unlocked":  false
+                                       }
+                                   ]
+                    }
+                ]
 }

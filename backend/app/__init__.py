@@ -1,1 +1,1 @@
-﻿"""30小镇 MVP package."""
+"""边境回声 MVP package."""

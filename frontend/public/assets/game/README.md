@@ -27,3 +27,13 @@
 这个文件集中管理地图主界面的章节标题、人物显示名、角色素材路径、场景名、时间段名称、任务提示和地标绘制配置。
 
 `frontend/src/field/gameAssetPaths.js` 仍保留兼容旧引用，但新的内容扩展优先改 `gameContentConfig.js`。
+
+## Tileset manifest
+
+从 Cocos 并行客户端开始，地图美术入口统一走：
+
+```text
+frontend/public/assets/game/tilesets/luin_village_v1.json
+```
+
+`world_map.json.visual.tileset_manifest` 会指向这个文件。当前 manifest 只定义地形语义、颜色、可走性和角色 token 路径，正式 tile 图片后续再补；没有图片时，Vue/Phaser 与 Cocos 都应回退到程序化 tile 渲染。

@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "30town-backend"
+name = "border-echo-backend"
 version = "0.1.0"
-description = "30小镇 · 双人砍树 MVP 后端"
-authors = ["30小镇 Team"]
+description = "边境回声 · 单人 AI RPG 纵切 Demo 后端"
+authors = ["Border Echo Team"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -17,6 +17,9 @@ slowapi = ">=0.1"
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0"
 pytest-asyncio = ">=0.23"
+
+[tool.pytest.ini_options]
+cache_dir = "_test_tmp/.pytest_cache"
 
 [build-system]
 requires = ["poetry-core"]

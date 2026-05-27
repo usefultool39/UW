@@ -41,25 +41,36 @@ def public_scene_activities(project_root: Path) -> dict[str, Any]:
     for item in raw.get("activities") or []:
         if not isinstance(item, dict):
             continue
-        out.append(
-            {
-                key: item.get(key)
-                for key in (
-                    "id",
-                    "scene_id",
-                    "scene_ids",
-                    "poi_id",
-                    "title",
-                    "label",
-                    "description",
-                    "repeat",
-                    "time_cost",
-                    "time_bands",
-                    "requirements",
-                    "participants",
-                    "tags",
-                )
-                if key in item
-            }
-        )
+        row = {
+            key: item.get(key)
+            for key in (
+                "id",
+                "scene_id",
+                "scene_ids",
+                "poi_id",
+                "title",
+                "label",
+                "description",
+                "repeat",
+                "time_cost",
+                "time_bands",
+                "requirements",
+                "participants",
+                "tags",
+                "interaction_kind",
+            )
+            if key in item
+        }
+        choices = item.get("choices")
+        if isinstance(choices, list):
+            row["choices"] = [
+                {
+                    key: choice.get(key)
+                    for key in ("id", "label", "hint", "tone")
+                    if isinstance(choice, dict) and key in choice
+                }
+                for choice in choices
+                if isinstance(choice, dict)
+            ]
+        out.append(row)
     return {"v": raw.get("v", 1), "activities": out}

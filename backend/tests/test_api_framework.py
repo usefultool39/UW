@@ -45,6 +45,16 @@ def test_story_catalog_json():
     assert "nodes" in r.json()
 
 
+def test_dev_content_validation_endpoint_reports_current_config_ok():
+    client = TestClient(app)
+    r = client.get("/api/dev/content_validation")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True, body["errors"]
+    assert body["warnings"] == []
+    assert body["summary"]["story_events"] >= 4
+
+
 def test_state_returns_time_chapter_and_agent_positions():
     client = TestClient(app)
     client.post("/api/reset")
@@ -104,11 +114,12 @@ def test_player_move_scene_locked():
 def test_daily_tick_same_shape_as_step():
     client = TestClient(app)
     client.post("/api/reset")
+    before = client.get("/api/state").json()
     r = client.post("/api/sim/daily_tick", json={"n": 1, "mode": "heuristic"})
     assert r.status_code == 200
     body = r.json()
     assert body["ok"] is True
-    assert len(body["events"]) == 2
+    assert len(body["events"]) == len(before["agents"])
 
 
 def test_dialogue_returns_reply_and_memory_candidate():
@@ -224,18 +235,17 @@ def test_move_map_alias_returns_unified_envelope():
     assert "scene_update" in body
 
 
-def test_move_map_rejects_locked_zone():
+def test_move_map_rejects_blocked_terrain():
     client = TestClient(app)
     client.post("/api/reset")
     r = client.post(
         "/api/player/action",
-        json={"kind": "move_map", "map_id": "novice_open", "tile_x": 67, "tile_y": 24},
+        json={"kind": "move_map", "map_id": "novice_open", "tile_x": 67, "tile_y": 23},
     )
     body = r.json()
     assert body["ok"] is False
-    assert body["error"] == "zone_locked"
+    assert body["error"] == "unreachable_or_blocked"
     assert body["events"][0]["type"] == "action_rejected"
-    assert body["zone"]["regionType"] == "locked"
 
 
 def test_enter_scene_alias_updates_scene():
@@ -324,6 +334,31 @@ def test_scene_activity_updates_time_tree_relationship_and_memory():
     ).json()
     assert repeated["ok"] is False
     assert repeated["error"] == "already_done_today"
+
+
+def test_scene_activity_choice_effects_update_flags_relationship_and_memory():
+    client = TestClient(app)
+    client.post("/api/reset")
+    client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "reading_hall"})
+    before = client.get("/api/state").json()
+
+    r = client.post(
+        "/api/player/action",
+        json={
+            "kind": "scene_activity",
+            "activity_id": "church_ask_alice_lunch",
+            "activity_choice": "support_eugeo",
+        },
+    )
+
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["activity_result"]["activity_choice"]["id"] == "support_eugeo"
+    assert body["state"]["flags"]["lunch_packed_for_eugeo"] == 1
+    assert body["state"]["tick"] == before["tick"] + 1
+    assert any(item["npc_id"] == "eugeo" for item in body["memory_written"])
+    assert any(item["npc_id"] == "eugeo" for item in body["relationship_changes"])
 
 
 def test_scene_activity_tree_damage_can_fell_tree():

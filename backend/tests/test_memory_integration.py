@@ -10,9 +10,9 @@ def test_session_step_writes_per_npc_memory(tmp_path):
     s.memory_store = MemoryStore(tmp_path / "memory")
 
     events = s.step(mode="heuristic")
-    assert len(events) == 2
+    assert len(events) == len(s.state.agents)
 
-    for npc_id in ["alice", "eugeo"]:
+    for npc_id in [agent.id for agent in s.state.agents]:
         summary = s.memory_store.load_summary(npc_id)
         assert summary["npc_id"] == npc_id
         assert summary["total_events"] == 1

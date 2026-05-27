@@ -68,9 +68,9 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const NAMES = {
-  alice: '爱丽丝',
-  eugeo: '优吉欧',
-  kirito: '桐人'
+  alice: '艾琳',
+  eugeo: '尤里',
+  kirito: '凛斗'
 }
 
 const draft = ref('')

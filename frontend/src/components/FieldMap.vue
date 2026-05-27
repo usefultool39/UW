@@ -1,12 +1,9 @@
 <template>
   <div class="field-map-shell" :class="{ shake: shakeActive }">
-    <div class="map-corner tl" />
-    <div class="map-corner tr" />
-    <div class="map-corner bl" />
-    <div class="map-corner br" />
     <div ref="hostEl" class="phaser-host" />
     <div class="atmosphere-layer" :class="[timeBand, weatherCode]" />
     <div class="weather-note">{{ weatherNote }}</div>
+
     <div
       v-if="miniWidth && miniHeight"
       class="dom-minimap"
@@ -17,10 +14,15 @@
       @click.stop.prevent="handleMiniMapClick"
     >
       <div class="dom-minimap-head">
-        <span>北境地图</span>
+        <span>露茵村地图</span>
         <span>N</span>
       </div>
-      <svg class="dom-minimap-svg" :viewBox="`0 0 ${miniWidth} ${miniHeight}`" preserveAspectRatio="none">
+      <svg
+        class="dom-minimap-svg"
+        :style="{ aspectRatio: miniAspect }"
+        :viewBox="`0 0 ${miniWidth} ${miniHeight}`"
+        preserveAspectRatio="none"
+      >
         <rect
           v-for="tile in miniTiles"
           :key="tile.key"
@@ -33,7 +35,7 @@
         <rect
           v-for="zone in miniZones"
           :key="zone.id"
-          class="dom-minimap-zone"
+          :class="['dom-minimap-zone', zone.regionType]"
           :x="zone.x"
           :y="zone.y"
           :width="zone.w"
@@ -77,8 +79,17 @@
           {{ item.label }}
         </span>
       </div>
-      <div class="dom-minimap-foot">亮框为可进入功能区</div>
+      <div class="dom-minimap-foot">亮框为当前视野</div>
     </div>
+
+    <div class="map-readability-key" aria-label="地图图例">
+      <span><i class="tile road" />道路</span>
+      <span><i class="tile grass" />草地</span>
+      <span><i class="tile water" />水域</span>
+      <span><i class="tile forest" />森林</span>
+      <span><i class="tile blocked" />暂不可达</span>
+    </div>
+
     <div class="scene-badge">
       <span class="badge-dot" :class="timeBand" />
       {{ sceneLabel }} · 第 {{ day }} 天 · {{ timeBandLabel }}
@@ -94,20 +105,13 @@ const props = defineProps({
   simState: { type: Object, required: true },
   worldMap: { type: Object, required: true },
   storyEvents: { type: Array, default: () => [] },
-  timeBandLabel: { type: String, default: '早晨' },
-  sceneLabel: { type: String, default: '——' },
+  timeBandLabel: { type: String, default: '清晨' },
+  sceneLabel: { type: String, default: '未知地点' },
   busy: { type: Boolean, default: false },
   nearbyInteract: { type: Object, default: null }
 })
 
-const emit = defineEmits([
-  'tile-click',
-  'blocked-click',
-  'npc-click',
-  'interact-click',
-  'event-click',
-  'ready'
-])
+const emit = defineEmits(['tile-click', 'blocked-click', 'npc-click', 'interact-click', 'event-click', 'ready'])
 
 const hostEl = ref(null)
 const shakeActive = ref(false)
@@ -122,28 +126,20 @@ const day = ref(1)
 const timeBand = ref('morning')
 const miniViewport = ref(null)
 const weatherCode = computed(() => props.simState?.weather || 'clear')
-const weatherNote = computed(() => props.simState?.weather_note || '清亮的风穿过北境村道。')
+const weatherNote = computed(() => props.simState?.weather_note || '清亮的风穿过村道。')
 
-const MINI_COLORS = {
-  0: '#6f9362',
-  1: '#223c2d',
-  2: '#4b8fa0',
-  3: '#bca982',
-  4: '#766f65'
-}
-
+const MINI_COLORS = { 0: '#6f9362', 1: '#223c2d', 2: '#4b8fa0', 3: '#bca982', 4: '#766f65' }
 const miniRows = computed(() => props.worldMap?.rows || [])
 const miniWidth = computed(() => miniRows.value[0]?.length || 0)
 const miniHeight = computed(() => miniRows.value.length || 0)
-
-// Cache tiles — recompute only when worldMap reference changes, not every reactive update
+const miniAspect = computed(() => `${Math.max(1, miniWidth.value)} / ${Math.max(1, miniHeight.value)}`)
 const miniTilesCache = ref([])
 let lastWorldMapId = null
 
 watch(
   () => props.worldMap,
   (map) => {
-    const mapId = map?.id || ''
+    const mapId = `${map?.id || ''}:${map?.rows?.length || 0}:${map?.tile_size || ''}`
     if (mapId === lastWorldMapId) return
     lastWorldMapId = mapId
     const tiles = []
@@ -197,13 +193,9 @@ const miniLegend = computed(() => {
   miniZones.value.forEach((zone) => {
     const key = zone.regionType || zone.role
     if (key === 'explore' || byRole.has(key)) return
-    byRole.set(key, {
-      key,
-      label: zone.label,
-      color: zone.color
-    })
+    byRole.set(key, { key, label: zone.label, color: zone.color })
   })
-  return Array.from(byRole.values())
+  return Array.from(byRole.values()).slice(0, 4)
 })
 
 const miniPlayer = computed(() => {
@@ -214,49 +206,38 @@ const miniPlayer = computed(() => {
 
 const miniAgents = computed(() => {
   const colors = {
-    alice: '#70e0bb',
-    eugeo: '#a78bfa',
+    alice: '#f6d36e',
+    eugeo: '#7dd3fc',
+    selka: '#f7b7c8',
+    garret: '#b9d57a',
+    rulid_elder: '#d8b889',
     kirito: '#5ecfff'
   }
   return (props.simState?.agents || [])
-    .map((agent) => ({
-      id: agent.id,
-      x: Number(agent.tile_x),
-      y: Number(agent.tile_y),
-      color: colors[agent.id] || '#5ecfff'
-    }))
+    .map((agent) => ({ id: agent.id, x: Number(agent.tile_x), y: Number(agent.tile_y), color: colors[agent.id] || '#5ecfff' }))
     .filter((agent) => Number.isFinite(agent.x) && Number.isFinite(agent.y))
 })
 
 const miniEvents = computed(() => (props.storyEvents || [])
-  .map((event) => ({
-    id: event.id,
-    x: Number(event.location?.tile_x),
-    y: Number(event.location?.tile_y)
-  }))
+  .map((event) => ({ id: event.id, x: Number(event.location?.tile_x), y: Number(event.location?.tile_y) }))
   .filter((event) => Number.isFinite(event.x) && Number.isFinite(event.y)))
 
 function updateMiniViewport() {
   const now = Date.now()
-  if (now - (miniLastUpdate || 0) < 100) {
-    return
-  }
+  if (now - (miniLastUpdate || 0) < 100) return
   miniLastUpdate = now
-  if (sceneInstance?.cameras?.main && sceneInstance._tileSize) {
-    const view = sceneInstance.cameras.main.worldView
-    const ts = sceneInstance._tileSize
-    const width = Math.max(1, miniWidth.value)
-    const height = Math.max(1, miniHeight.value)
-    const w = Math.min(width, Math.max(0.6, view.width / ts))
-    const h = Math.min(height, Math.max(0.6, view.height / ts))
-    const x = Math.min(Math.max(0, view.x / ts), Math.max(0, width - w))
-    const y = Math.min(Math.max(0, view.y / ts), Math.max(0, height - h))
-    miniViewport.value = {
-      x,
-      y,
-      w,
-      h
-    }
+  if (!sceneInstance?.cameras?.main || !sceneInstance._tileSize) return
+  const view = sceneInstance.cameras.main.worldView
+  const ts = sceneInstance._tileSize
+  const width = Math.max(1, miniWidth.value)
+  const height = Math.max(1, miniHeight.value)
+  const w = Math.min(width, Math.max(0.6, view.width / ts))
+  const h = Math.min(height, Math.max(0.6, view.height / ts))
+  miniViewport.value = {
+    x: Math.min(Math.max(0, view.x / ts), Math.max(0, width - w)),
+    y: Math.min(Math.max(0, view.y / ts), Math.max(0, height - h)),
+    w,
+    h
   }
 }
 
@@ -284,38 +265,17 @@ function triggerCameraShake() {
   triggerShake()
 }
 
-watch(
-  () => props.simState?.day,
-  (d) => { day.value = d ?? 1 }
-)
-
-watch(
-  () => props.simState?.time_band,
-  (tb) => { timeBand.value = tb || 'morning' }
-)
+watch(() => props.simState?.day, (d) => { day.value = d ?? 1 }, { immediate: true })
+watch(() => props.simState?.time_band, (tb) => { timeBand.value = tb || 'morning' }, { immediate: true })
 
 async function bootPhaser() {
   if (!hostEl.value) return
   const Phaser = (await import('phaser')).default
   const { createWorldFieldSceneClass } = await import('../field/createWorldFieldScene.js')
 
-  const getMap = () => props.worldMap
-
-  const onTilePick = async (tx, ty) => {
-    emit('tile-click', { tile_x: tx, tile_y: ty })
-  }
-
-  const onBlockedTilePick = (payload) => {
-    emit('blocked-click', payload)
-  }
-
-  const openInteractPanel = () => emit('interact-click')
-  const openNpcPanel = (agentId) => emit('npc-click', agentId)
-  const openStoryEventPanel = (eventId) => emit('event-click', eventId)
-
   const SceneClass = createWorldFieldSceneClass(Phaser, {
-    getMap,
-    onTilePick,
+    getMap: () => props.worldMap,
+    onTilePick: async (tx, ty) => emit('tile-click', { tile_x: tx, tile_y: ty }),
     getSimState: () => props.simState,
     assignSceneInstance: (sc) => {
       sceneInstance = sc
@@ -329,19 +289,18 @@ async function bootPhaser() {
       sceneInstance._hudText?.setText?.(`${props.sceneLabel} · 第 ${props.simState.day} 天 · ${props.timeBandLabel}`)
       sceneInstance.syncNpcs?.()
     },
-    openInteractPanel,
-    openNpcPanel,
+    openInteractPanel: () => emit('interact-click'),
+    openNpcPanel: (agentId) => emit('npc-click', agentId),
     isBusy: () => props.busy,
     getNearbyInteractPoi: () => props.nearbyInteract,
     getStoryEvents: () => props.storyEvents,
-    openStoryEventPanel: openStoryEventPanel,
-    onBlockedTilePick
+    openStoryEventPanel: (eventId) => emit('event-click', eventId),
+    onBlockedTilePick: (payload) => emit('blocked-click', payload)
   })
 
   const rect = hostEl.value.getBoundingClientRect()
   const initialWidth = Math.max(960, Math.floor(rect.width || window.innerWidth || 1280))
   const initialHeight = Math.max(540, Math.floor(rect.height || window.innerHeight || 720))
-
   game = new Phaser.Game({
     type: Phaser.AUTO,
     width: initialWidth,
@@ -375,31 +334,18 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearTimeout(shakeTimer)
-  if (miniTimer) {
-    window.clearInterval(miniTimer)
-    miniTimer = null
-  }
-  if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
-  }
-  if (game) {
-    game.destroy(true)
-    game = null
-  }
+  if (miniTimer) window.clearInterval(miniTimer)
+  resizeObserver?.disconnect?.()
+  game?.destroy?.(true)
+  miniTimer = null
+  resizeObserver = null
+  game = null
   sceneInstance = null
 })
 
-// Expose shake trigger for parent
 defineExpose({ triggerShake, triggerCameraShake, sceneInstance: () => sceneInstance })
 
-watch(
-  () => props.storyEvents,
-  () => {
-    sceneInstance?.rebuildPois?.()
-  },
-  { deep: true }
-)
+watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep: true })
 </script>
 
 <style scoped>
@@ -408,18 +354,12 @@ watch(
   width: 100%;
   height: 100%;
   min-height: 100vh;
-  border-radius: 0;
   overflow: hidden;
-  border: 0;
-  box-shadow: none;
   background: var(--field-deep);
   will-change: transform;
 }
 
-.field-map-shell.shake {
-  animation: map-shake 0.22s ease;
-}
-
+.field-map-shell.shake { animation: map-shake 0.22s ease; }
 @keyframes map-shake {
   0%, 100% { transform: translate(0, 0); }
   20% { transform: translate(2px, -1px); }
@@ -428,54 +368,14 @@ watch(
   80% { transform: translate(-1px, -1px); }
 }
 
-/* Decorative corner brackets */
-.map-corner {
-  display: none;
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  pointer-events: none;
-  z-index: 6;
-}
-
-.map-corner.tl {
-  top: 6px;
-  left: 6px;
-  border-top: 2px solid var(--sao-cyan);
-  border-left: 2px solid var(--sao-cyan);
-  opacity: 0.7;
-}
-
-.map-corner.tr {
-  top: 6px;
-  right: 6px;
-  border-top: 2px solid var(--sao-cyan);
-  border-right: 2px solid var(--sao-cyan);
-  opacity: 0.7;
-}
-
-.map-corner.bl {
-  bottom: 6px;
-  left: 6px;
-  border-bottom: 2px solid var(--sao-gold);
-  border-left: 2px solid var(--sao-gold);
-  opacity: 0.6;
-}
-
-.map-corner.br {
-  bottom: 6px;
-  right: 6px;
-  border-bottom: 2px solid var(--sao-gold);
-  border-right: 2px solid var(--sao-gold);
-  opacity: 0.6;
-}
-
 .phaser-host {
   width: 100%;
   height: 100%;
   min-height: 100vh;
   overflow: hidden;
-  background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(94, 207, 255, 0.06), transparent 55%),
+  background:
+    radial-gradient(ellipse 100% 80% at 50% 0%, rgba(241, 199, 107, 0.09), transparent 55%),
+    linear-gradient(180deg, rgba(71, 102, 63, 0.22), transparent 38%),
     var(--field-deep);
   display: block;
 }
@@ -485,86 +385,34 @@ watch(
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  mix-blend-mode: soft-light;
-  opacity: 0.35;
+  opacity: 0.18;
 }
+.atmosphere-layer.morning { background: linear-gradient(180deg, rgba(255, 244, 214, 0.24), transparent 42%); }
+.atmosphere-layer.afternoon { background: linear-gradient(180deg, rgba(255, 226, 173, 0.16), transparent 48%); }
+.atmosphere-layer.evening { background: linear-gradient(180deg, rgba(245, 158, 85, 0.17), rgba(76, 58, 86, 0.16)); }
+.atmosphere-layer.night { opacity: 0.42; background: linear-gradient(180deg, rgba(24, 37, 72, 0.42), rgba(8, 17, 31, 0.55)); }
+.atmosphere-layer.mist { opacity: 0.28; background: linear-gradient(100deg, rgba(226, 232, 240, 0.24), transparent 34%, rgba(226, 232, 240, 0.16) 68%, transparent); }
+.atmosphere-layer.drizzle { opacity: 0.24; background: repeating-linear-gradient(110deg, rgba(226, 232, 240, 0.16) 0 1px, transparent 1px 13px); }
 
-.atmosphere-layer.morning {
-  background: linear-gradient(180deg, rgba(255, 244, 214, 0.2), transparent 42%);
-}
-
-.atmosphere-layer.afternoon {
-  background: linear-gradient(180deg, rgba(255, 226, 173, 0.14), transparent 48%);
-}
-
-.atmosphere-layer.evening {
-  background: linear-gradient(180deg, rgba(251, 146, 60, 0.15), rgba(88, 28, 135, 0.16));
-}
-
-.atmosphere-layer.night {
-  opacity: 0.62;
-  background: linear-gradient(180deg, rgba(8, 18, 48, 0.42), rgba(2, 6, 23, 0.55));
-}
-
-.atmosphere-layer.mist {
-  opacity: 0.48;
-  background:
-    linear-gradient(100deg, rgba(226, 232, 240, 0.24), transparent 34%, rgba(226, 232, 240, 0.16) 68%, transparent),
-    linear-gradient(180deg, rgba(186, 230, 253, 0.12), transparent 60%);
-}
-
-.atmosphere-layer.drizzle {
-  opacity: 0.42;
-  background:
-    repeating-linear-gradient(110deg, rgba(226, 232, 240, 0.16) 0 1px, transparent 1px 13px),
-    linear-gradient(180deg, rgba(30, 64, 175, 0.12), transparent 56%);
-}
-
-.weather-note {
-  display: none;
-  position: absolute;
-  z-index: 4;
-  left: 0.75rem;
-  bottom: 5.4rem;
-  max-width: min(460px, calc(100% - 1.5rem));
-  padding: 0.42rem 0.62rem;
-  border-radius: 8px;
-  background: rgba(5, 10, 18, 0.64);
-  border: 1px solid rgba(186, 230, 253, 0.14);
-  color: #dbeafe;
-  font-size: 0.72rem;
-  line-height: 1.45;
-  pointer-events: none;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
+.weather-note { display: none; }
 
 .dom-minimap {
   position: absolute;
-  top: 4rem;
+  top: 0.8rem;
   right: 0.8rem;
   z-index: 30;
-  width: clamp(132px, 12vw, 178px);
-  min-width: 132px;
-  padding: 0.34rem 0.38rem 0.34rem;
-  border: 1px solid rgba(246, 211, 110, 0.2);
-  background: rgba(4, 10, 18, 0.58);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(94, 207, 255, 0.08);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  width: clamp(154px, 12.4vw, 190px);
+  min-width: 154px;
+  padding: 0.34rem 0.38rem;
+  border: 1px solid rgba(255, 239, 198, 0.3);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(48, 39, 24, 0.88), rgba(36, 43, 29, 0.74));
+  box-shadow: 0 8px 18px rgba(25, 18, 10, 0.24), inset 0 0 0 1px rgba(246, 211, 110, 0.08);
   cursor: pointer;
   pointer-events: auto;
 }
-
-.dom-minimap:hover {
-  border-color: rgba(246, 211, 110, 0.42);
-  background: rgba(4, 10, 18, 0.82);
-}
-
-.dom-minimap:focus-visible {
-  outline: 2px solid var(--sao-cyan);
-  outline-offset: 3px;
-}
+.dom-minimap:hover { border-color: rgba(246, 211, 110, 0.54); }
+.dom-minimap:focus-visible { outline: 2px solid var(--sao-cyan); outline-offset: 3px; }
 
 .dom-minimap-head,
 .dom-minimap-foot {
@@ -573,107 +421,71 @@ watch(
   gap: 0.5rem;
   font-size: 0.56rem;
   font-weight: 800;
-  color: #fde68a;
+  color: #fff0bc;
   line-height: 1;
 }
-
-.dom-minimap-head span:last-child {
-  color: #bae6fd;
-  font-family: Georgia, serif;
-}
-
+.dom-minimap-head span:last-child { color: #bae6fd; font-family: Georgia, serif; }
 .dom-minimap-svg {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
   margin-top: 0.28rem;
-  border: 1px solid rgba(94, 207, 255, 0.25);
-  background: #020617;
+  border: 1px solid rgba(255, 239, 198, 0.28);
+  background: #172115;
   image-rendering: crisp-edges;
 }
+.dom-minimap-foot { display: none; margin-top: 0.32rem; justify-content: flex-start; color: #cbd5e1; font-size: 0.56rem; font-weight: 700; }
+.dom-minimap-legend { display: none; flex-wrap: wrap; gap: 0.24rem 0.42rem; margin-top: 0.36rem; color: #e2e8f0; font-size: 0.56rem; line-height: 1.2; }
+.dom-minimap-legend span { display: inline-flex; align-items: center; gap: 0.22rem; white-space: nowrap; }
+.dom-minimap-legend i { width: 0.42rem; height: 0.42rem; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255, 247, 214, 0.35); }
+.dom-minimap-viewport { fill: rgba(255, 255, 255, 0.06); stroke: #fbbf24; stroke-width: 0.22; vector-effect: non-scaling-stroke; }
+.dom-minimap-zone { fill: rgba(255, 255, 255, 0.03); stroke-width: 0.55; vector-effect: non-scaling-stroke; stroke-dasharray: 1.4 0.9; }
+.dom-minimap-zone.locked { fill: rgba(244, 114, 182, 0.09); stroke-dasharray: 1 0.7; }
+.dom-minimap-zone.travel { fill: rgba(139, 92, 246, 0.1); }
+.dom-minimap-zone.boundary { fill: rgba(251, 113, 133, 0.08); }
+.dom-minimap-agent { stroke: #05111c; stroke-width: 0.16; vector-effect: non-scaling-stroke; }
+.dom-minimap-event { fill: #fde047; stroke: #422006; stroke-width: 0.14; vector-effect: non-scaling-stroke; }
+.dom-minimap-player { fill: #fbbf24; stroke: #1a1209; stroke-width: 0.18; vector-effect: non-scaling-stroke; }
 
-.dom-minimap-foot {
-  display: none;
-  margin-top: 0.32rem;
-  justify-content: flex-start;
-  color: #cbd5e1;
-  font-size: 0.56rem;
-  font-weight: 700;
-}
-
-.dom-minimap-legend {
-  display: none;
+.map-readability-key {
+  position: absolute;
+  left: 0.8rem;
+  bottom: 5.7rem;
+  z-index: 30;
+  display: flex;
   flex-wrap: wrap;
-  gap: 0.24rem 0.42rem;
-  margin-top: 0.36rem;
-  color: #e2e8f0;
-  font-size: 0.56rem;
-  line-height: 1.2;
+  gap: 0.34rem 0.56rem;
+  max-width: min(440px, calc(100% - 1.6rem));
+  padding: 0.38rem 0.5rem;
+  border: 1px solid rgba(255, 239, 198, 0.22);
+  border-radius: 8px;
+  background: rgba(45, 37, 23, 0.64);
+  box-shadow: inset 0 0 0 1px rgba(255, 239, 198, 0.07);
+  color: #fff7df;
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
 }
-
-.dom-minimap-legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.22rem;
-  white-space: nowrap;
-}
-
-.dom-minimap-legend i {
-  width: 0.42rem;
-  height: 0.42rem;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(255, 247, 214, 0.35);
-}
-
-.dom-minimap-viewport {
-  fill: rgba(255, 255, 255, 0.06);
-  stroke: #fbbf24;
-  stroke-width: 0.22;
-  vector-effect: non-scaling-stroke;
-}
-
-.dom-minimap-zone {
-  fill: rgba(255, 255, 255, 0.03);
-  stroke-width: 0.55;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1.4 0.9;
-}
-
-.dom-minimap-agent {
-  stroke: #05111c;
-  stroke-width: 0.16;
-  vector-effect: non-scaling-stroke;
-}
-
-.dom-minimap-event {
-  fill: #fde047;
-  stroke: #422006;
-  stroke-width: 0.14;
-  vector-effect: non-scaling-stroke;
-}
-
-.dom-minimap-player {
-  fill: #fbbf24;
-  stroke: #1a1209;
-  stroke-width: 0.18;
-  vector-effect: non-scaling-stroke;
-}
+.map-readability-key span { display: inline-flex; align-items: center; gap: 0.28rem; white-space: nowrap; }
+.map-readability-key .tile { width: 0.62rem; height: 0.62rem; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255, 247, 214, 0.28); }
+.map-readability-key .road { background: #bca982; }
+.map-readability-key .grass { background: #6f9362; }
+.map-readability-key .water { background: #4b8fa0; }
+.map-readability-key .forest { background: #223c2d; }
+.map-readability-key .blocked { background: #766f65; }
 
 .scene-badge {
-  display: none;
   position: absolute;
   top: 0.75rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 4;
   padding: 0.4rem 0.75rem;
-  border-radius: 999px;
+  border-radius: 8px;
   text-align: center;
-  background: rgba(6, 12, 24, 0.76);
-  border: 1px solid rgba(94, 207, 255, 0.24);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(46, 36, 22, 0.76);
+  border: 1px solid rgba(255, 239, 198, 0.24);
+  box-shadow: 0 6px 16px rgba(25, 18, 10, 0.2);
   font-size: 0.72rem;
   color: var(--ink);
   white-space: nowrap;
@@ -682,34 +494,17 @@ watch(
   align-items: center;
   gap: 0.4rem;
 }
-
-.badge-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: #94a3b8;
-  flex: 0 0 auto;
-}
-
+.badge-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #94a3b8; flex: 0 0 auto; }
 .badge-dot.morning { background: #fbbf24; }
 .badge-dot.afternoon { background: #fb923c; }
 .badge-dot.evening { background: #a78bfa; }
 .badge-dot.night { background: #60a5fa; }
 
 @media (max-width: 900px) {
-  .scene-badge {
-    top: 0.55rem;
-    left: 0.55rem;
-    right: auto;
-    transform: none;
-    font-size: 0.66rem;
-    padding: 0.32rem 0.55rem;
-  }
-
-  .dom-minimap {
-    top: 3.5rem;
-    right: 0.55rem;
-    width: clamp(120px, 30vw, 150px);
-  }
+  .scene-badge { top: 0.55rem; left: 0.55rem; right: auto; transform: none; font-size: 0.66rem; padding: 0.32rem 0.55rem; }
+  .dom-minimap { top: 3.5rem; right: 0.55rem; width: 136px; min-width: 136px; padding: 0.28rem; }
+  .dom-minimap-legend,
+  .dom-minimap-foot { display: none; }
+  .map-readability-key { display: none; }
 }
 </style>

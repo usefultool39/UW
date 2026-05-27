@@ -25,7 +25,7 @@ class TestSessionStep:
     def test_step_returns_events(self, tmp_path):
         sess = Session(run_id="test-step")
         events = sess.step(mode="heuristic")
-        assert len(events) == 2
+        assert len(events) == len(sess.state.agents)
 
     def test_step_increments_tick(self, tmp_path):
         sess = Session(run_id="test-tick")
@@ -48,7 +48,7 @@ class TestSessionStep:
         sess = Session(run_id="test-multi")
         for _ in range(5):
             sess.step(mode="heuristic")
-        assert len(sess.events) == 10
+        assert len(sess.events) == 5 * len(sess.state.agents)
 
 
 class TestSessionConcurrency:

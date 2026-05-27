@@ -30,17 +30,20 @@
             type="button"
             class="interact-action"
             :class="{ blocked: !!act.blockedReason }"
+            :data-action-id="act.id"
+            :data-action-type="act.type || ''"
+            :data-activity-id="act.activity?.id || act.activity_id || ''"
             :disabled="busy || !!act.blockedReason"
             @click="emit('interact-action', act)"
           >
-            <span class="action-kicker">确认交互</span>
+            <span class="action-kicker">{{ actionKicker(act) }}</span>
             <span class="action-label">{{ act.label }}</span>
             <span v-if="act.meta" class="action-meta">{{ act.meta }}</span>
             <span v-if="act.description" class="action-desc">{{ act.description }}</span>
           </button>
         </div>
         <p class="interact-card-note">
-          走进小地图亮框标出的功能区后，地图中会浮出「进入场景」。点击后在这里选择每日行动或剧情互动。
+          当前地点的行动会写入日志、关系和 NPC 记忆。
         </p>
       </div>
     </div>
@@ -58,7 +61,7 @@ const props = defineProps({
 })
 
 const REGION_LABELS = {
-  work: '工作区域',
+  work: '训练区域',
   rest: '休息区域',
   interact: '互动区域',
   locked: '边界区域',
@@ -71,6 +74,17 @@ const regionLabel = computed(() => {
   if (!type && !poi?.zoneEntry) return ''
   return REGION_LABELS[type] || poi?.zoneLabel || '可互动区域'
 })
+
+function actionKicker(action) {
+  if (action?.type === 'npc_intent_response') return 'NPC 回应'
+  if (action?.source === 'npc_intent') return 'NPC 主动'
+  if (action?.type === 'story_event') return '章节线索'
+  if (action?.activity?.interaction_kind === 'reading_keywords') return '轻量玩法 · 读书'
+  if (action?.activity?.interaction_kind === 'meal_choice') return '关系选择'
+  if (action?.type === 'scene_activity') return '场景活动'
+  if (action?.type === 'daily_tick') return '日常推进'
+  return '确认互动'
+}
 
 const emit = defineEmits(['update:modelValue', 'interact-action'])
 </script>
@@ -230,3 +244,4 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   line-height: 1.45;
 }
 </style>
+

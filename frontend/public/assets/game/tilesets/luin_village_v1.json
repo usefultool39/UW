@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "id": "luin_village_v1",
+  "contract": "client-contract-2026-05-13-v1",
+  "tile_size": 28,
+  "fallback": "procedural_tilemap_v1",
+  "terrain": {
+    "0": { "name": "grass", "label": "草地", "walkable": true, "color": "#4f8554" },
+    "1": { "name": "forest", "label": "森林", "walkable": false, "color": "#2d593d" },
+    "2": { "name": "water", "label": "水域", "walkable": false, "color": "#2f779a" },
+    "3": { "name": "road", "label": "道路", "walkable": true, "color": "#967d4c" },
+    "4": { "name": "building", "label": "建筑", "walkable": false, "color": "#5c493a" },
+    "5": { "name": "gate", "label": "边门", "walkable": false, "color": "#785e43" },
+    "9": { "name": "blocked", "label": "封锁", "walkable": false, "color": "#262f32" }
+  },
+  "characters": {
+    "player": "/assets/game/player-token.png",
+    "alice": "/assets/game/alice-token.png",
+    "eugeo": "/assets/game/eugeo-token.png"
+  }
+}
+

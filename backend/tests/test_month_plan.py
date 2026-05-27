@@ -1,0 +1,101 @@
+from fastapi.testclient import TestClient
+
+from app.main import app
+from app.month_plan import public_month_plan
+from app.session import Session
+
+
+def _finish_first_three_days(sess: Session) -> None:
+    sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
+    sess.player_action(kind="rest_until_next_day")
+    sess.choose_story_event("ch1_d2_forest_anomaly", "investigate_together")
+    sess.player_action(kind="rest_until_next_day")
+    sess.choose_story_event("ch1_d3_boundary_choice", "cross_boundary")
+
+
+def _rest_to_day(sess: Session, day: int) -> None:
+    while sess.state.day < day:
+        sess.player_action(kind="rest_until_next_day")
+
+
+def test_month_plan_starts_with_opening_milestone_active():
+    sess = Session(run_id="test-month-plan-start")
+
+    plan = public_month_plan(sess.root, sess.state)
+
+    assert plan["ok"] is True
+    assert plan["title"] == "第一月：北境静默线"
+    assert len(plan["weeks"]) == 4
+    assert plan["current"]["active_milestone_id"] == "m01_opening_incident"
+    assert plan["weeks"][0]["milestones"][0]["status"] == "active"
+
+
+def test_month_plan_reflects_day_four_debrief_after_boundary_ending():
+    sess = Session(run_id="test-month-plan-day4")
+    _finish_first_three_days(sess)
+    sess.player_action(kind="rest_until_next_day")
+
+    plan = public_month_plan(sess.root, sess.state)
+    events = sess.available_story_events()["events"]
+    ids = {event["id"] for event in events}
+
+    assert sess.state.day == 4
+    assert plan["current"]["ending_path"] == "cross"
+    assert plan["weeks"][0]["milestones"][0]["status"] == "completed"
+    assert plan["current"]["active_milestone_id"] == "m01_debrief"
+    assert "ch1_d4_after_boundary_debrief" in ids
+
+
+def test_first_month_events_chain_to_week_two_drill():
+    sess = Session(run_id="test-month-plan-week2")
+    _finish_first_three_days(sess)
+    sess.player_action(kind="rest_until_next_day")
+    out = sess.choose_story_event("ch1_d4_after_boundary_debrief", "write_truth")
+    assert out["ok"] is True
+
+    while sess.state.day < 7:
+        sess.player_action(kind="rest_until_next_day")
+
+    events = sess.available_story_events()["events"]
+    ids = {event["id"] for event in events}
+    plan = public_month_plan(sess.root, sess.state)
+
+    assert "ch1_d7_first_boundary_drill" in ids
+    assert plan["current"]["active_milestone_id"] == "m01_first_drill"
+
+
+def test_first_month_event_chain_can_reach_north_gate_finale():
+    sess = Session(run_id="test-month-plan-full-chain")
+    _finish_first_three_days(sess)
+
+    _rest_to_day(sess, 4)
+    assert sess.choose_story_event("ch1_d4_after_boundary_debrief", "write_truth")["ok"] is True
+    _rest_to_day(sess, 7)
+    assert sess.choose_story_event("ch1_d7_first_boundary_drill", "mark_safe_route")["ok"] is True
+    _rest_to_day(sess, 12)
+    assert sess.choose_story_event("ch1_d12_village_trust", "public_patrol_board")["ok"] is True
+    _rest_to_day(sess, 18)
+    assert sess.choose_story_event("ch1_d18_silent_line_rehearsal", "calibrate_sacred_arts")["ok"] is True
+    _rest_to_day(sess, 24)
+    assert sess.choose_story_event("ch1_d24_expedition_pack", "pack_for_safety")["ok"] is True
+    _rest_to_day(sess, 28)
+    assert sess.choose_story_event("ch1_d30_first_month_gate", "route_report_first")["ok"] is True
+
+    plan = public_month_plan(sess.root, sess.state)
+
+    assert sess.state.flags["month01_gate_resolved"] == 1
+    assert plan["weeks"][-1]["milestones"][-1]["status"] == "completed"
+
+
+def test_month_plan_endpoint_returns_current_route():
+    client = TestClient(app)
+    client.post("/api/reset")
+
+    r = client.get("/api/story/month_plan")
+
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["id"] == "month_01"
+    assert body["current"]["day"] == 1
+    assert body["weeks"][0]["milestones"][0]["status"] == "active"

@@ -7,7 +7,7 @@ FastAPI 后端负责权威世界状态、玩家行动校验、NPC 日程、剧�
 ## 运行
 
 ```bat
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\backend
+cd /d F:\usefultool39\02-UW小镇\backend
 python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8765
 ```
 
@@ -20,7 +20,7 @@ http://127.0.0.1:8765/api/health
 ## 测试
 
 ```bat
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\backend
+cd /d F:\usefultool39\02-UW小镇\backend
 python -m pytest -q
 ```
 

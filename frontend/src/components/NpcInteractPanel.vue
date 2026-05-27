@@ -64,8 +64,8 @@ const emit = defineEmits(['update:modelValue', 'talk', 'relationship'])
 
 const NAMES = {
   alice: '爱丽丝',
-  eugeo: '优吉欧',
-  kirito: '桐人'
+  eugeo: '悠吉欧',
+  kirito: 'Kirito'
 }
 
 const LOCATION_LABELS = {

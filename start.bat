@@ -2,7 +2,7 @@
 setlocal EnableExtensions EnableDelayedExpansion
 
 chcp 65001 >nul
-title UW - start full project
+title Border Echo - start full project
 
 set "ROOT=%~dp0"
 set "BACKEND_DIR=%ROOT%backend"
@@ -19,7 +19,7 @@ set "BACKEND_PORT=8765"
 set "FRONTEND_PORT=3000"
 
 echo ========================================
-echo   UW full project launcher
+echo   Border Echo full project launcher
 echo ========================================
 echo.
 
@@ -231,7 +231,7 @@ if errorlevel 1 (
     set "UW_PYTHON=%PYTHON_CMD%"
     set "UW_BACKEND_DIR=%BACKEND_DIR%"
     set "UW_BACKEND_PORT=%BACKEND_PORT%"
-    start "UW backend" "%SCRIPTS_DIR%\run-backend.bat"
+    start "Border Echo backend" "%SCRIPTS_DIR%\run-backend.bat"
 ) else (
     echo [1/2] Backend port %BACKEND_PORT% is already in use. Reusing the running service.
 )
@@ -243,14 +243,14 @@ if errorlevel 1 (
     echo [2/2] Starting frontend: http://127.0.0.1:%FRONTEND_PORT%
     set "UW_FRONTEND_DIR=%FRONTEND_DIR%"
     set "UW_FRONTEND_PORT=%FRONTEND_PORT%"
-    start "UW frontend" "%SCRIPTS_DIR%\run-frontend.bat"
+    start "Border Echo frontend" "%SCRIPTS_DIR%\run-frontend.bat"
 ) else (
     echo [2/2] Frontend port %FRONTEND_PORT% is already in use. Reusing the running service.
 )
 
 echo.
 echo ========================================
-echo   Project is starting
+echo   Border Echo is starting
 echo   Frontend: http://127.0.0.1:%FRONTEND_PORT%
 echo   Backend:  http://127.0.0.1:%BACKEND_PORT%/api/health
 echo ========================================

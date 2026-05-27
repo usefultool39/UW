@@ -1,67 +1,163 @@
 {
-  "v": 1,
-  "alice": {
-    "default": {
-      "morning": {
-        "location": "home",
-        "scene_id": "home_hearth",
-        "tile_x": 11,
-        "tile_y": 27,
-        "goal": "整理小屋、照看赛鲁卡，并准备去教会练习基础神圣术"
-      },
-      "afternoon": {
-        "location": "bench",
-        "scene_id": "church_library",
-        "tile_x": 13,
-        "tile_y": 14,
-        "goal": "在教会书库整理旧记录，练习基础神圣术祈句"
-      },
-      "evening": {
-        "location": "table",
-        "scene_id": "home_hearth",
-        "tile_x": 15,
-        "tile_y": 15,
-        "goal": "准备晚餐，询问巨树清场进度与两人的疲惫"
-      },
-      "night": {
-        "location": "home",
-        "scene_id": "home_hearth",
-        "tile_x": 11,
-        "tile_y": 27,
-        "goal": "在小屋休息"
-      }
-    }
-  },
-  "eugeo": {
-    "default": {
-      "morning": {
-        "location": "at_tree",
-        "scene_id": "gigas_clearing",
-        "tile_x": 54,
-        "tile_y": 22,
-        "goal": "在基家斯西达旁开始今天的天命劳作"
-      },
-      "afternoon": {
-        "location": "at_tree",
-        "scene_id": "gigas_clearing",
-        "tile_x": 53,
-        "tile_y": 24,
-        "goal": "检查龙骨斧柄，以稳定节奏继续砍伐巨树"
-      },
-      "evening": {
-        "location": "table",
-        "scene_id": "home_hearth",
-        "tile_x": 15,
-        "tile_y": 15,
-        "goal": "回到餐桌讨论今天的事"
-      },
-      "night": {
-        "location": "home",
-        "scene_id": "home_hearth",
-        "tile_x": 12,
-        "tile_y": 27,
-        "goal": "在小屋休息"
-      }
-    }
-  }
+    "v":  1,
+    "alice":  {
+                  "default":  {
+                                  "morning":  {
+                                                  "location":  "home",
+                                                  "scene_id":  "home_hearth",
+                                                  "tile_x":  11,
+                                                  "tile_y":  27,
+                                                  "goal":  "整理小屋、照看家中琐事，并准备去书库练习基础刻印术"
+                                              },
+                                  "afternoon":  {
+                                                    "location":  "library",
+                                                    "scene_id":  "church_library",
+                                                    "tile_x":  13,
+                                                    "tile_y":  14,
+                                                    "goal":  "在村西书库整理旧记录，练习基础刻印术祈句"
+                                                },
+                                  "evening":  {
+                                                  "location":  "table",
+                                                  "scene_id":  "home_hearth",
+                                                  "tile_x":  10,
+                                                  "tile_y":  27,
+                                                  "goal":  "准备晚餐，询问古誓树清场进度与两人的疲惫"
+                                              },
+                                  "night":  {
+                                                "location":  "home",
+                                                "scene_id":  "home_hearth",
+                                                "tile_x":  11,
+                                                "tile_y":  27,
+                                                "goal":  "在小屋休息"
+                                            }
+                              }
+              },
+    "eugeo":  {
+                  "default":  {
+                                  "morning":  {
+                                                  "location":  "at_tree",
+                                                  "scene_id":  "gigas_clearing",
+                                                  "tile_x":  54,
+                                                  "tile_y":  22,
+                                                  "goal":  "在古誓树旁开始今天的清场劳作"
+                                              },
+                                  "afternoon":  {
+                                                    "location":  "at_tree",
+                                                    "scene_id":  "gigas_clearing",
+                                                    "tile_x":  53,
+                                                    "tile_y":  24,
+                                                    "goal":  "检查斧柄，以稳定节奏继续砍伐古誓树"
+                                                },
+                                  "evening":  {
+                                                  "location":  "table",
+                                                  "scene_id":  "home_hearth",
+                                                  "tile_x":  12,
+                                                  "tile_y":  27,
+                                                  "goal":  "回到餐桌讨论今天的事"
+                                              },
+                                  "night":  {
+                                                "location":  "home",
+                                                "scene_id":  "home_hearth",
+                                                "tile_x":  12,
+                                                "tile_y":  27,
+                                                "goal":  "在小屋休息"
+                                            }
+                              }
+              },
+    "selka":  {
+                  "default":  {
+                                  "morning":  {
+                                                  "location":  "home",
+                                                  "scene_id":  "home_hearth",
+                                                  "tile_x":  14,
+                                                  "tile_y":  27,
+                                                  "goal":  "帮忙整理晨间药草和餐具，留意大家有没有受伤"
+                                              },
+                                  "afternoon":  {
+                                                    "location":  "library",
+                                                    "scene_id":  "church_library",
+                                                    "tile_x":  15,
+                                                    "tile_y":  14,
+                                                    "goal":  "在书库抄写疗愈祈句，并偷听大人如何谈北境律令"
+                                                },
+                                  "evening":  {
+                                                  "location":  "table",
+                                                  "scene_id":  "home_hearth",
+                                                  "tile_x":  13,
+                                                  "tile_y":  27,
+                                                  "goal":  "把药草汤端回炉火边，观察今天谁显得不安"
+                                              },
+                                  "night":  {
+                                                "location":  "home",
+                                                "scene_id":  "home_hearth",
+                                                "tile_x":  14,
+                                                "tile_y":  27,
+                                                "goal":  "在小屋休息，睡前复诵疗愈祈句"
+                                            }
+                              }
+              },
+    "garret":  {
+                   "default":  {
+                                   "morning":  {
+                                                   "location":  "bench",
+                                                   "scene_id":  "north_gate",
+                                                   "tile_x":  66,
+                                                   "tile_y":  24,
+                                                   "goal":  "检查北门路标、风向和边界标记是否被移动"
+                                               },
+                                   "afternoon":  {
+                                                     "location":  "bench",
+                                                     "scene_id":  "village_square",
+                                                     "tile_x":  29,
+                                                     "tile_y":  25,
+                                                     "goal":  "在广场听村民传闻，判断北境异常是否开始扩散"
+                                                 },
+                                   "evening":  {
+                                                   "location":  "table",
+                                                   "scene_id":  "home_hearth",
+                                                   "tile_x":  16,
+                                                   "tile_y":  27,
+                                                   "goal":  "向村务长汇报北门巡查，提醒年轻人不要独自越线"
+                                               },
+                                   "night":  {
+                                                 "location":  "bench",
+                                                 "scene_id":  "north_gate",
+                                                 "tile_x":  66,
+                                                 "tile_y":  24,
+                                                 "goal":  "做最后一轮北门夜巡，记录风声是否突然断开"
+                                             }
+                               }
+               },
+    "rulid_elder":  {
+                        "default":  {
+                                        "morning":  {
+                                                        "location":  "table",
+                                                        "scene_id":  "village_square",
+                                                        "tile_x":  27,
+                                                        "tile_y":  25,
+                                                        "goal":  "处理村务板和巡查安排，确认年轻人的日常分工"
+                                                    },
+                                        "afternoon":  {
+                                                          "location":  "table",
+                                                          "scene_id":  "church_library",
+                                                          "tile_x":  12,
+                                                          "tile_y":  15,
+                                                          "goal":  "翻看旧记录，寻找北境律令中被忽略的注释"
+                                                      },
+                                        "evening":  {
+                                                        "location":  "table",
+                                                        "scene_id":  "home_hearth",
+                                                        "tile_x":  13,
+                                                        "tile_y":  27,
+                                                        "goal":  "在炉火旁听取巡守报告，判断是否需要上报异常"
+                                                    },
+                                        "night":  {
+                                                      "location":  "home",
+                                                      "scene_id":  "home_hearth",
+                                                      "tile_x":  13,
+                                                      "tile_y":  27,
+                                                      "goal":  "整理村务记录，暂时压下会引起恐慌的传闻"
+                                                  }
+                                    }
+                    }
 }

@@ -29,6 +29,11 @@ dist/
 frontend/dist/
 frontend/test-results/
 frontend/playwright-report/
+cocos-client/Library/
+cocos-client/Temp/
+cocos-client/build/
+cocos-client/local/
+cocos-client/profiles/
 
 # Local runtime state
 runs/

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -85,6 +85,24 @@ class RelationshipState(BaseModel):
     mood_note: str = "平稳"
 
 
+class NpcIntent(BaseModel):
+    id: str
+    npc_id: str
+    kind: str
+    title: str
+    description: str = ""
+    scene_id: str
+    map_id: str = "novice_open"
+    tile_x: int
+    tile_y: int
+    priority: int = 50
+    reason: str = ""
+    action: dict[str, Any] = Field(default_factory=dict)
+    stakes: list[str] = Field(default_factory=list)
+    response_options: list[dict[str, Any]] = Field(default_factory=list)
+    expires_at_tick: int | None = None
+
+
 class WorldState(BaseModel):
     tick: int = 0
     day: int = 1
@@ -105,6 +123,7 @@ class WorldState(BaseModel):
     completed_event_ids: list[str] = Field(default_factory=list)
     chapter_ending_id: str | None = None
     player: PlayerState = Field(default_factory=PlayerState)
+    npc_intents: list[NpcIntent] = Field(default_factory=list)
     unlocked_scenes: list[str] = Field(
         default_factory=lambda: [
             "reading_hall",

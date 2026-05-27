@@ -9,7 +9,7 @@
 更重要的是保持边界清楚：
 
 - 后端保存权威世界状态、合法行动、剧情后果、NPC 位置和记忆。
-- 前端只负责渲染、输入、动画、面板和镜头体验。
+- Vue/Phaser 与 Cocos 客户端都只负责渲染、输入、动画、面板和镜头体验。
 - AI 负责角色表达，不直接决定关键世界事实。
 - 新地图、新场景、新 NPC、新事件优先走配置，不优先改核心循环。
 
@@ -23,6 +23,7 @@
 | 前端注册 | `frontend/src/field/sceneRegistry.js` | map_id、scene_id、背景、模式、未来切换方式 |
 | 地图渲染 | `frontend/src/field/createWorldFieldScene.js` | Phaser 探索地图、移动、NPC、事件点 |
 | 地图容器 | `frontend/src/components/FieldSlice.vue` | 根据玩家 `map_id` 加载地图并重建 Phaser 场景 |
+| Cocos 客户端 | `cocos-client/assets/scripts/field/` | 并行客户端读取同一地图/API，先复刻 Day 1 地图纵切片 |
 | 后端地图 API | `GET /api/world/maps/{map_id}` | 按 map_id 读取地图，默认仍兼容 `/api/world/map` |
 | NPC 日程 | `data/world/schedules.json` | NPC 按时间段进入不同 map/scene/tile |
 | 主线事件 | `data/story/events_chapter_01.json` | 事件地点、参与者、选择、后果 |
@@ -91,10 +92,10 @@
 6. 跑：
 
 ```bat
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\backend
+cd /d F:\usefultool39\02-UW小镇\backend
 python -m pytest -q
 
-cd /d C:\Users\liang\Downloads\30小镇\30小镇\frontend
+cd /d F:\usefultool39\02-UW小镇\frontend
 npm.cmd run build
 ```
 
@@ -105,4 +106,4 @@ npm.cmd run build
 - 不要让 LLM 动态生成关键地图结构。
 - 不要把战斗逻辑写进 `createWorldFieldScene.js`。
 
-当前最稳的路线是：先把卢利特村第一章做深，再加一个小洞窟或边界副本作为第二个场景切换样板。
+当前最稳的路线是：先把露茵村第一章做深，再加一个小洞窟或边界副本作为第二个场景切换样板。

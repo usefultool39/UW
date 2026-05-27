@@ -1,6 +1,6 @@
 <template>
   <div class="game-container" :class="{ 'field-mode': appTab === 'field' }">
-    <nav class="app-tabs" aria-label="视图切换">
+    <nav v-if="showDevTabs" class="app-tabs" aria-label="视图切换">
       <button
         type="button"
         class="tab-btn"
@@ -34,6 +34,7 @@
       :fetch-regions="fetchRegions"
       :fetch-world-map="fetchWorldMap"
       :fetch-scene-activities="fetchSceneActivities"
+      :fetch-month-plan="fetchMonthPlan"
       :refresh="refresh"
     />
 
@@ -150,10 +151,15 @@ const {
   importSave,
   fetchRegions,
   fetchWorldMap,
-  fetchSceneActivities
+  fetchSceneActivities,
+  fetchMonthPlan
 } = useGameApi()
 
 const appTab = ref('field')
+const showDevTabs = computed(() => {
+  if (typeof window === 'undefined') return false
+  return new URLSearchParams(window.location.search).get('dev') === '1'
+})
 
 const {
   narrative,

@@ -1,0 +1,8 @@
+Library/
+library/
+Temp/
+temp/
+build/
+local/
+profiles/
+*.log

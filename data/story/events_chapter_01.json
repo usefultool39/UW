@@ -14,14 +14,14 @@
         "time_bands": ["morning", "afternoon"],
         "forbidden_flags": { "clue_boundary_record": 1 }
       },
-      "location": { "scene_id": "reading_hall", "tile_x": 13, "tile_y": 14 },
+      "location": { "scene_id": "church_library", "tile_x": 13, "tile_y": 14 },
       "participants": ["alice"],
       "choices": [
         {
           "id": "ask_alice",
-          "label": "把记录告诉爱丽丝",
+          "label": "把记录告诉艾琳",
           "hint": "信任她，也让她开始担心边界。",
-          "result_text": "爱丽丝听完后没有立刻回答，只是把书页合上，问你有没有听见北边今天太安静。",
+          "result_text": "艾琳听完后没有立刻回答，只是把书页合上，问你有没有听见北边今天太安静。",
           "effects": {
             "flags": {
               "clue_boundary_record": 1,
@@ -35,7 +35,7 @@
             "memory": {
               "alice": {
                 "type": "choice",
-                "summary": "玩家在第一天把书库里的边界记录告诉了爱丽丝。",
+                "summary": "玩家在第一天把书库里的边界记录告诉了艾琳。",
                 "weight": 4
               }
             }
@@ -44,7 +44,7 @@
         {
           "id": "keep_note",
           "label": "先把线索记在心里",
-          "hint": "你保留了主动权，但爱丽丝暂时不知道。",
+          "hint": "你保留了主动权，但艾琳暂时不知道。",
           "result_text": "你记下书页边角的符号，决定先观察村子和森林的变化。",
           "effects": {
             "flags": {
@@ -58,7 +58,7 @@
             "memory": {
               "alice": {
                 "type": "choice",
-                "summary": "玩家读到边界记录后没有立刻告诉爱丽丝。",
+                "summary": "玩家读到边界记录后没有立刻告诉艾琳。",
                 "weight": 3
               }
             }
@@ -71,7 +71,7 @@
       "chapter": "chapter_01",
       "kind": "training",
       "title": "巨树旁的训练",
-      "description": "优吉欧在巨树旁整理斧柄。他说训练不只是力气，也是确认世界每天仍按规则运转的方式。",
+      "description": "尤里在巨树旁整理斧柄。他说训练不只是力气，也是确认世界每天仍按规则运转的方式。",
       "trigger": {
         "day_min": 1,
         "day_max": 1,
@@ -83,9 +83,9 @@
       "choices": [
         {
           "id": "steady_training",
-          "label": "按优吉欧的节奏训练",
+          "label": "按尤里的节奏训练",
           "hint": "稳住日常，建立并肩感。",
-          "result_text": "优吉欧放慢动作教你找回节奏。巨树没有明显变化，但你们之间的沉默轻了一点。",
+          "result_text": "尤里放慢动作教你找回节奏。巨树没有明显变化，但你们之间的沉默轻了一点。",
           "effects": {
             "flags": {
               "trained_with_eugeo": 1
@@ -97,7 +97,7 @@
             "memory": {
               "eugeo": {
                 "type": "choice",
-                "summary": "玩家第一天选择按优吉欧的节奏训练，而不是急着突破规则。",
+                "summary": "玩家第一天选择按尤里的节奏训练，而不是急着突破规则。",
                 "weight": 4
               }
             }
@@ -107,7 +107,7 @@
           "id": "ask_boundary",
           "label": "训练时追问北方边界",
           "hint": "你把日常训练和异常线索连起来。",
-          "result_text": "优吉欧的斧头停了一下。他说北边不是没人想过，只是很少有人会继续问。",
+          "result_text": "尤里的斧头停了一下。他说北边不是没人想过，只是很少有人会继续问。",
           "effects": {
             "flags": {
               "trained_with_eugeo": 1,
@@ -120,7 +120,7 @@
             "memory": {
               "eugeo": {
                 "type": "choice",
-                "summary": "玩家在训练时追问北方边界，让优吉欧开始认真看待异常。",
+                "summary": "玩家在训练时追问北方边界，让尤里开始认真看待异常。",
                 "weight": 4
               }
             }
@@ -134,6 +134,38 @@
       "kind": "anomaly",
       "title": "森林忽然安静",
       "description": "第二天，巨树清场附近的风声断了一瞬。不是普通的安静，更像一条看不见的线划过森林。",
+      "variants": [
+        {
+          "id": "from_day1_eugeo_promise",
+          "when": { "required_flags": { "dinner_sided_eugeo_day1": 1 } },
+          "description": "第二天，你和尤里都记得昨晚餐桌上的约定。巨树清场附近的风声断了一瞬，像静默线在回应你们。",
+          "choice_overrides": {
+            "investigate_together": {
+              "hint": "兑现昨晚的承诺，但艾琳会确认你们有没有越过安全距离。"
+            }
+          }
+        },
+        {
+          "id": "from_day1_alice_caution",
+          "when": { "required_flags": { "dinner_sided_alice_day1": 1 } },
+          "description": "第二天，昨晚餐桌上那句“先守住北境律令”还留在艾琳眼里。巨树清场附近的风声断了一瞬，但她先看向你脚下的安全距离。",
+          "choice_overrides": {
+            "investigate_together": {
+              "hint": "按艾琳昨晚在意的方式确认异常：一起去，但不越线。"
+            }
+          }
+        },
+        {
+          "id": "from_day1_calm_table",
+          "when": { "required_flags": { "dinner_kept_calm_day1": 1 } },
+          "description": "第二天，餐桌上的沉默没有消失。巨树清场附近的风声断了一瞬，你意识到昨晚没说出口的话已经跟到了森林边。",
+          "choice_overrides": {
+            "press_alone": {
+              "hint": "打破沉默会推进调查，也会让两人重新审视你。"
+            }
+          }
+        }
+      ],
       "trigger": {
         "day_min": 2,
         "day_max": 2,
@@ -145,10 +177,79 @@
       "participants": ["alice", "eugeo"],
       "choices": [
         {
+          "id": "honor_alice_caution",
+          "label": "按昨晚约定：先让艾琳确认安全距离",
+          "hint": "只有 Day 1 晚餐偏向艾琳时出现。稳住关系，但调查会更慢。",
+          "conditions": { "required_flags": { "dinner_sided_alice_day1": 1 } },
+          "result_text": "你先停在艾琳画出的距离外。她看了你一眼，像是确认你没有把昨晚的话当成敷衍。",
+          "effects": {
+            "flags": {
+              "forest_anomaly_seen": 1,
+              "honored_alice_caution_day2": 1
+            },
+            "story_node_id": "ch1_day2_anomaly",
+            "relationship": {
+              "alice.trust": 6,
+              "alice.tension": -1,
+              "eugeo.tension": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家在第二天森林异常出现时兑现了昨晚对艾琳的谨慎态度。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "choice",
+                "summary": "玩家在第二天先让艾琳确认安全距离，尤里觉得调查被放慢但没有被否定。",
+                "weight": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "follow_eugeo_promise",
+          "label": "兑现昨晚承诺：和尤里先确认静默线",
+          "hint": "只有 Day 1 晚餐偏向尤里时出现。推进调查，但艾琳会更紧张。",
+          "conditions": { "required_flags": { "dinner_sided_eugeo_day1": 1 } },
+          "result_text": "你没有绕开昨晚的承诺，先和尤里确认风声断开的方向。艾琳没有阻止，但她的手已经按在记录本上。",
+          "effects": {
+            "flags": {
+              "forest_anomaly_seen": 1,
+              "promise_investigate_with_eugeo": 1,
+              "honored_eugeo_promise_day2": 1
+            },
+            "story_node_id": "ch1_day2_anomaly",
+            "relationship": {
+              "eugeo.trust": 7,
+              "eugeo.affinity": 2,
+              "alice.tension": 4
+            },
+            "promises": {
+              "eugeo": "玩家在第二天兑现了晚餐时一起确认静默线的承诺。"
+            },
+            "tensions": {
+              "alice": "玩家第二天优先兑现与尤里的调查承诺，艾琳担心他们会越走越远。"
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家在第二天优先和尤里确认静默线，让艾琳更担心边界风险。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "choice",
+                "summary": "玩家在第二天兑现昨晚承诺，和尤里先确认静默线。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
           "id": "investigate_together",
           "label": "叫上两人一起确认异常",
           "hint": "稳妥，但会让所有人都被卷入。",
-          "result_text": "你们一起走到清场边缘。爱丽丝盯着地面，优吉欧则记住了风声消失的位置。",
+          "result_text": "你们一起走到清场边缘。艾琳盯着地面，尤里则记住了风声消失的位置。",
           "effects": {
             "flags": {
               "forest_anomaly_seen": 1,
@@ -171,7 +272,7 @@
               },
               "eugeo": {
                 "type": "choice",
-                "summary": "玩家在森林异常出现时没有独自行动，而是让优吉欧一同确认。",
+                "summary": "玩家在森林异常出现时没有独自行动，而是让尤里一同确认。",
                 "weight": 4
               }
             }
@@ -181,7 +282,7 @@
           "id": "press_alone",
           "label": "独自靠近异常方向",
           "hint": "更冒险，也会让同伴不安。",
-          "result_text": "你往前多走了几步。优吉欧叫住你，爱丽丝的声音比平时冷静得多。",
+          "result_text": "你往前多走了几步。尤里叫住你，艾琳的声音比平时冷静得多。",
           "effects": {
             "flags": {
               "forest_anomaly_seen": 1,
@@ -200,12 +301,12 @@
             "memory": {
               "alice": {
                 "type": "choice",
-                "summary": "玩家在森林异常出现时独自靠近危险方向，让爱丽丝明显不安。",
+                "summary": "玩家在森林异常出现时独自靠近危险方向，让艾琳明显不安。",
                 "weight": 5
               },
               "eugeo": {
                 "type": "choice",
-                "summary": "玩家在森林异常出现时冒险前进，优吉欧记住了这份冲动。",
+                "summary": "玩家在森林异常出现时冒险前进，尤里记住了这份冲动。",
                 "weight": 4
               }
             }
@@ -218,7 +319,7 @@
       "chapter": "chapter_01",
       "kind": "conflict",
       "title": "晚餐桌边的分歧",
-      "description": "傍晚，异常变成了桌边没说出口的话。爱丽丝倾向报告大人，优吉欧则想再确认一次。",
+      "description": "傍晚，异常变成了桌边没说出口的话。艾琳倾向报告大人，尤里则想再确认一次。",
       "trigger": {
         "day_min": 2,
         "day_max": 2,
@@ -226,14 +327,14 @@
         "required_flags": { "forest_anomaly_seen": 1 },
         "forbidden_flags": { "npc_disagreement_resolved": 1 }
       },
-      "location": { "scene_id": "reading_hall", "tile_x": 15, "tile_y": 15 },
+      "location": { "scene_id": "home_hearth", "tile_x": 11, "tile_y": 27 },
       "participants": ["alice", "eugeo"],
       "choices": [
         {
           "id": "side_with_caution",
-          "label": "支持爱丽丝：先遵守规则",
-          "hint": "降低风险，但优吉欧会觉得你们停得太早。",
-          "result_text": "爱丽丝松了一口气。优吉欧没有反驳，只是把杯子转了半圈。",
+          "label": "支持艾琳：先遵守规则",
+          "hint": "降低风险，但尤里会觉得你们停得太早。",
+          "result_text": "艾琳松了一口气。尤里没有反驳，只是把杯子转了半圈。",
           "effects": {
             "flags": {
               "npc_disagreement_resolved": 1,
@@ -247,12 +348,12 @@
             "memory": {
               "alice": {
                 "type": "choice",
-                "summary": "玩家在第二天晚餐时支持爱丽丝先遵守规则。",
+                "summary": "玩家在第二天晚餐时支持艾琳先遵守规则。",
                 "weight": 4
               },
               "eugeo": {
                 "type": "choice",
-                "summary": "玩家在第二天晚餐时倾向谨慎，优吉欧觉得调查被推迟了。",
+                "summary": "玩家在第二天晚餐时倾向谨慎，尤里觉得调查被推迟了。",
                 "weight": 3
               }
             }
@@ -260,9 +361,9 @@
         },
         {
           "id": "side_with_inquiry",
-          "label": "支持优吉欧：明天确认边界",
-          "hint": "推进调查，但爱丽丝会更担心。",
-          "result_text": "优吉欧点头得很慢。爱丽丝看着你们，像是在判断这是不是一个错误的开始。",
+          "label": "支持尤里：明天确认边界",
+          "hint": "推进调查，但艾琳会更担心。",
+          "result_text": "尤里点头得很慢。艾琳看着你们，像是在判断这是不是一个错误的开始。",
           "effects": {
             "flags": {
               "npc_disagreement_resolved": 1,
@@ -278,12 +379,12 @@
             "memory": {
               "alice": {
                 "type": "choice",
-                "summary": "玩家在第二天晚餐时支持继续确认边界，爱丽丝因此更担心。",
+                "summary": "玩家在第二天晚餐时支持继续确认边界，艾琳因此更担心。",
                 "weight": 4
               },
               "eugeo": {
                 "type": "choice",
-                "summary": "玩家在第二天晚餐时支持优吉欧继续调查边界异常。",
+                "summary": "玩家在第二天晚餐时支持尤里继续调查边界异常。",
                 "weight": 5
               }
             }
@@ -297,6 +398,34 @@
       "kind": "final_choice",
       "title": "第三天：边界线前",
       "description": "你们终于站到那条看不见的边界前。规则没有声音，却比任何命令都更清楚地压在每个人心上。",
+      "variants": [
+        {
+          "id": "from_day2_together",
+          "when": { "required_flags": { "promise_investigate_with_eugeo": 1 } },
+          "description": "你们终于站到那条看不见的边界前。第二天一起确认过的静默线仍在脚下延伸，尤里等你把共同调查推进到最后一步，艾琳则盯着你们有没有越过约定的安全距离。",
+          "choice_overrides": {
+            "cross_boundary": {
+              "hint": "兑现共同调查的终点，最接近真相，也最容易让艾琳紧张。"
+            },
+            "obey_order": {
+              "hint": "把昨天的共同调查带回村里，让异常成为可以被报告的事实。"
+            }
+          }
+        },
+        {
+          "id": "from_day2_risk",
+          "when": { "required_flags": { "boundary_risk_taken": 1 } },
+          "description": "你们终于站到那条看不见的边界前。第二天你独自靠近异常的事还留在两人眼里：尤里没有阻止你往前看，艾琳却比昨天更安静。",
+          "choice_overrides": {
+            "cross_boundary": {
+              "hint": "继续冒险会更接近源头，但这一次同伴会清楚知道你选择了越线。"
+            },
+            "hide_anomaly": {
+              "hint": "把昨天的鲁莽压回沉默里，短期能降温，长期会留下裂痕。"
+            }
+          }
+        }
+      ],
       "trigger": {
         "day_min": 3,
         "day_max": 3,
@@ -304,7 +433,7 @@
         "required_flags": { "forest_anomaly_seen": 1 },
         "forbidden_flags": { "boundary_incident_resolved": 1 }
       },
-      "location": { "scene_id": "gigas_clearing", "tile_x": 61, "tile_y": 16 },
+      "location": { "scene_id": "gigas_clearing", "tile_x": 61, "tile_y": 17 },
       "participants": ["alice", "eugeo"],
       "choices": [
         {
@@ -332,7 +461,7 @@
               },
               "eugeo": {
                 "type": "ending",
-                "summary": "玩家在边界线前选择回村报告，优吉欧记住了这个谨慎结局。",
+                "summary": "玩家在边界线前选择回村报告，尤里记住了这个谨慎结局。",
                 "weight": 4
               }
             }
@@ -360,12 +489,12 @@
             "memory": {
               "alice": {
                 "type": "ending",
-                "summary": "玩家在第三天越过边界确认异常，爱丽丝既信任又担心。",
+                "summary": "玩家在第三天越过边界确认异常，艾琳既信任又担心。",
                 "weight": 5
               },
               "eugeo": {
                 "type": "ending",
-                "summary": "玩家在第三天越过边界，优吉欧把这视为第一次真正的共同冒险。",
+                "summary": "玩家在第三天越过边界，尤里把这视为第一次真正的共同冒险。",
                 "weight": 5
               }
             }
@@ -395,13 +524,571 @@
             "memory": {
               "alice": {
                 "type": "ending",
-                "summary": "玩家在第三天选择隐瞒边界异常，爱丽丝隐约察觉了不完整的沉默。",
+                "summary": "玩家在第三天选择隐瞒边界异常，艾琳隐约察觉了不完整的沉默。",
                 "weight": 5
               },
               "eugeo": {
                 "type": "ending",
                 "summary": "玩家在第三天没有完整说明边界前发生了什么。",
                 "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d4_after_boundary_debrief",
+      "chapter": "chapter_01",
+      "kind": "debrief",
+      "title": "第四天：书库复盘",
+      "description": "边界事件没有因为你们回到村里就结束。艾琳摊开记录本，尤里把清场边的风声位置重新画了一遍，等你决定这件事该如何留下。",
+      "variants": [
+        {
+          "id": "after_cross",
+          "when": { "required_flags": { "ending_cross": 1 } },
+          "description": "第四天，越过边界那一步还压在每个人心里。艾琳把记录本摊开，尤里则把你们听见风声回流的位置画在纸上。"
+        },
+        {
+          "id": "after_order",
+          "when": { "required_flags": { "ending_order": 1 } },
+          "description": "第四天，你们遵守规则回村报告后的余波仍在。艾琳准备把事实整理成可提交记录，尤里想知道记录里会不会保留你们真正看见的异常。"
+        },
+        {
+          "id": "after_hide",
+          "when": { "required_flags": { "ending_hide": 1 } },
+          "description": "第四天，隐瞒异常后的沉默还在桌边。艾琳没有追问，尤里也没有逼你说明，但记录本空着的位置正在等一个答案。"
+        }
+      ],
+      "trigger": {
+        "day_min": 4,
+        "day_max": 6,
+        "time_bands": ["morning", "afternoon"],
+        "required_flags": { "boundary_incident_resolved": 1 },
+        "forbidden_flags": { "month01_debrief_done": 1 }
+      },
+      "location": { "scene_id": "church_library", "tile_x": 14, "tile_y": 14 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "write_truth",
+          "label": "把事实写成巡查记录",
+          "hint": "偏向秩序和长期可信度。艾琳会更安心，尤里会确认记录没有掩盖异常。",
+          "result_text": "你把听见的断风、看见的距离和同伴的判断都写进记录。艾琳在页角补上北境律令，尤里则把静默线的位置标成可复查的点。",
+          "effects": {
+            "flags": {
+              "month01_debrief_done": 1,
+              "month01_record_truth": 1
+            },
+            "relationship": {
+              "alice.trust": 5,
+              "eugeo.trust": 3,
+              "alice.tension": -1
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在第四天选择把边界事件写成可提交的真实巡查记录。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家在第四天没有抹掉静默线证据，而是把它写成可复查记录。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "protect_friends",
+          "label": "先保护同伴，只写最低风险版本",
+          "hint": "短期降温，但可能留下不完整记录。",
+          "result_text": "你删去了最危险的细节，只保留需要复查的异常。艾琳看出你在保护大家，尤里也看出你没有把话说满。",
+          "effects": {
+            "flags": {
+              "month01_debrief_done": 1,
+              "month01_protective_account": 1
+            },
+            "relationship": {
+              "alice.affinity": 3,
+              "alice.tension": 2,
+              "eugeo.tension": 2
+            },
+            "tensions": {
+              "alice": "第四天的记录被玩家写得更保守，艾琳担心这会影响后续判断。",
+              "eugeo": "玩家保护了同伴，却没有把边界前的全部细节写出来。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在第四天选择用较保守的记录保护同伴。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家在第四天没有完整写出边界事件，尤里记住了这份保护和保留。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "trace_source",
+          "label": "把重点放在异常源头",
+          "hint": "偏向调查路线，推动后续巡查更主动。",
+          "result_text": "你没有急着争论该不该报告，而是把所有线索指向同一个问题：静默线为什么会回应你们。尤里眼神亮了，艾琳则提醒你必须先有安全流程。",
+          "effects": {
+            "flags": {
+              "month01_debrief_done": 1,
+              "month01_trace_source": 1
+            },
+            "relationship": {
+              "eugeo.trust": 5,
+              "alice.trust": 2,
+              "alice.tension": 3
+            },
+            "promises": {
+              "alice": "玩家答应艾琳，后续调查必须先确认安全流程。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在第四天把复盘重点放在异常源头，但答应先建立安全流程。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家在第四天主动追问静默线源头，让尤里看到后续调查的方向。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d7_first_boundary_drill",
+      "chapter": "chapter_01",
+      "kind": "drill",
+      "title": "第七天：北门巡查演练",
+      "description": "北门外的路标被风吹得轻响。今天不是越界，而是把边界前的距离、信号和撤退路线变成三个人都能执行的流程。",
+      "trigger": {
+        "day_min": 7,
+        "day_max": 10,
+        "time_bands": ["morning", "afternoon"],
+        "required_flags": { "month01_debrief_done": 1 },
+        "forbidden_flags": { "month01_drill_done": 1 }
+      },
+      "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "mark_safe_route",
+          "label": "用刻印标出安全距离",
+          "hint": "偏向艾琳的规则流程，后续更稳。",
+          "result_text": "你把刻印压进路边石缝，标出风声断开前最后的安全点。艾琳立刻补上记录，尤里试着按标记走了一遍。",
+          "effects": {
+            "flags": {
+              "month01_drill_done": 1,
+              "month01_route_marked": 1
+            },
+            "relationship": {
+              "alice.trust": 5,
+              "eugeo.trust": 2,
+              "eugeo.tension": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在第一场北门巡查演练中用刻印标出了安全距离。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家在北门演练中选择先立安全标记，尤里接受了这套流程。",
+                "weight": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "rotate_watch",
+          "label": "让三人轮换判定风声",
+          "hint": "偏向同伴协作，能强化共同调查感。",
+          "result_text": "你们轮流站在风声最弱的位置。每个人说出听见的变化，再由另两人复核。静默线第一次变成可以共同描述的东西。",
+          "effects": {
+            "flags": {
+              "month01_drill_done": 1,
+              "month01_guard_rotation": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 5,
+              "alice.tension": 1
+            },
+            "promises": {
+              "eugeo": "玩家和尤里约定以后每次巡查都要留下共同复核结果。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在北门演练中让三人轮换复核风声变化。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家把静默线判定变成共同调查流程，尤里很重视这份信任。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d12_village_trust",
+      "chapter": "chapter_01",
+      "kind": "village",
+      "title": "第十二天：把巡查变成村务",
+      "description": "村广场上有人开始谈论北门巡查。你可以把它做成稳妥的村务，也可以把它保留为你们三个人更主动的调查。",
+      "trigger": {
+        "day_min": 12,
+        "day_max": 16,
+        "time_bands": ["morning", "afternoon", "evening"],
+        "required_flags": { "month01_drill_done": 1 },
+        "forbidden_flags": { "month01_village_trust": 1 }
+      },
+      "location": { "scene_id": "village_square", "tile_x": 28, "tile_y": 25 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "public_patrol_board",
+          "label": "公开巡查板，让村里一起记录",
+          "hint": "提高村内信任，降低艾琳压力。",
+          "result_text": "你把巡查时间、风向和异常记录贴到广场木板上。村民开始用自己的方式补充天气和路况，艾琳终于不用独自承担全部解释。",
+          "effects": {
+            "flags": {
+              "month01_village_trust": 1,
+              "month01_public_patrol": 1
+            },
+            "relationship": {
+              "alice.trust": 6,
+              "alice.tension": -2,
+              "eugeo.affinity": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家把北门巡查公开成村务，让更多人参与记录。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家把巡查板放到广场，尤里看到村子开始接受这件事。",
+                "weight": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "quiet_supply_route",
+          "label": "低调筹备补给，继续三人调查",
+          "hint": "更像远征前置，会让调查推进更快。",
+          "result_text": "你没有把所有细节公开，只请几户人家帮忙准备绳索、干粮和标记粉。尤里明白你在为更远的路做准备，艾琳则要求你把清单交给她复核。",
+          "effects": {
+            "flags": {
+              "month01_village_trust": 1,
+              "month01_supply_route": 1
+            },
+            "relationship": {
+              "eugeo.trust": 5,
+              "alice.trust": 3,
+              "alice.tension": 2
+            },
+            "promises": {
+              "alice": "玩家答应艾琳，所有补给和路线都要先经过复核。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家低调筹备边境补给，并答应把清单交给艾琳复核。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家开始为更远的边境调查准备补给，尤里把这看成远征前奏。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d18_silent_line_rehearsal",
+      "chapter": "chapter_01",
+      "kind": "rehearsal",
+      "title": "第十八天：静默线演练",
+      "description": "北门外的风又一次断开。不同的是，这次你们带着记录、刻印和明确分工来到边界前。",
+      "trigger": {
+        "day_min": 18,
+        "day_max": 22,
+        "time_bands": ["morning", "afternoon"],
+        "required_flags": { "month01_village_trust": 1 },
+        "forbidden_flags": { "month01_silent_line_rehearsed": 1 }
+      },
+      "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "calibrate_sacred_arts",
+          "label": "按北境律令校准刻印术",
+          "hint": "稳妥确认异常，让规则也成为工具。",
+          "result_text": "你按记录复诵律令，把刻印术压到最小范围。风声在边缘停了一息，但没有吞掉你们的退路。艾琳第一次承认这套流程可以继续。",
+          "effects": {
+            "flags": {
+              "month01_silent_line_rehearsed": 1,
+              "month01_calibrated_arts": 1
+            },
+            "relationship": {
+              "alice.trust": 6,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在静默线演练中按北境律令校准刻印术，让流程更安全。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家把规则变成确认静默线的工具，尤里看到调查可以更稳地推进。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "trust_companion_call",
+          "label": "把最终判定交给同伴复核",
+          "hint": "强化队伍羁绊，但要承担意见不一致。",
+          "result_text": "你没有独自下判定，而是让艾琳记录、尤里听风、你负责退路。三个人给出的答案第一次完全重合：静默线正在向北门靠近。",
+          "effects": {
+            "flags": {
+              "month01_silent_line_rehearsed": 1,
+              "month01_companion_verdict": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "eugeo.trust": 6,
+              "alice.affinity": 2,
+              "eugeo.affinity": 2
+            },
+            "promises": {
+              "eugeo": "玩家把静默线的最终判定交给同伴共同复核。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在静默线演练中没有独断，而是让同伴共同复核。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家信任尤里的听风判定，把静默线结论交给队伍共同确认。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d24_expedition_pack",
+      "chapter": "chapter_01",
+      "kind": "preparation",
+      "title": "第二十四天：远征包",
+      "description": "小屋的桌上堆着绳索、干粮、记录本和标记粉。第一次正式远征还没开始，但你们已经在用选择决定它会是什么样子。",
+      "trigger": {
+        "day_min": 24,
+        "day_max": 27,
+        "time_bands": ["morning", "afternoon", "evening"],
+        "required_flags": { "month01_silent_line_rehearsed": 1 },
+        "forbidden_flags": { "month01_expedition_ready": 1 }
+      },
+      "location": { "scene_id": "home_hearth", "tile_x": 12, "tile_y": 27 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "pack_for_safety",
+          "label": "优先带安全绳、记录本和退路标记",
+          "hint": "偏向稳妥远征，艾琳会更放心。",
+          "result_text": "你把最占重量的位置留给安全绳和记录本。艾琳把每段绳结重新检查了一遍，尤里则把标记粉分成三份。",
+          "effects": {
+            "flags": {
+              "month01_expedition_ready": 1,
+              "month01_pack_safety": 1
+            },
+            "relationship": {
+              "alice.trust": 6,
+              "alice.tension": -2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在远征包准备中优先选择安全绳、记录本和退路标记。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家把远征包做成稳妥配置，尤里接受了这种准备。",
+                "weight": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "pack_for_range",
+          "label": "优先带干粮、备用刻印和测距粉",
+          "hint": "偏向更远的调查路线，尤里会更兴奋。",
+          "result_text": "你把远征包留给更长路线需要的东西。尤里主动背起最重的那袋测距粉，艾琳没有阻止，只把撤退标记塞进你手里。",
+          "effects": {
+            "flags": {
+              "month01_expedition_ready": 1,
+              "month01_pack_range": 1
+            },
+            "relationship": {
+              "eugeo.trust": 6,
+              "eugeo.affinity": 2,
+              "alice.trust": 2,
+              "alice.tension": 2
+            },
+            "promises": {
+              "alice": "玩家收下了艾琳给的撤退标记，答应远征时保留退路。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在远征包准备中偏向更长调查路线，但收下艾琳的撤退标记。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家为更远的边境路线准备补给，尤里主动承担了最重的测距粉。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d30_first_month_gate",
+      "chapter": "chapter_01",
+      "kind": "month_final",
+      "title": "第三十天：北门前夜",
+      "description": "第一个月的最后一晚，你们站在北门前。风声、记录、承诺和没说出口的担心都在这里汇合，等你决定第二个月要走向哪里。",
+      "trigger": {
+        "day_min": 28,
+        "day_max": 30,
+        "time_bands": ["morning", "afternoon", "evening", "night"],
+        "required_flags": { "month01_expedition_ready": 1 },
+        "forbidden_flags": { "month01_gate_resolved": 1 }
+      },
+      "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "route_report_first",
+          "label": "第二月先走报告与许可路线",
+          "hint": "秩序路线：村内资源更稳，远征节奏更慢。",
+          "result_text": "你决定先把记录交上去，换取正式许可和更多村内支持。艾琳点头，尤里把视线从北门移回你们身上。",
+          "effects": {
+            "flags": {
+              "month01_gate_resolved": 1,
+              "month01_route_order": 1
+            },
+            "relationship": {
+              "alice.trust": 7,
+              "alice.tension": -2,
+              "eugeo.tension": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month01_final",
+                "summary": "第一月末，玩家选择第二月先走报告与许可路线。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month01_final",
+                "summary": "第一月末，玩家选择更稳的许可路线，尤里接受但仍惦记北门外的真相。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "route_joint_expedition",
+          "label": "第二月以三人远征为主线",
+          "hint": "同伴路线：更接近真相，也更依赖关系和准备。",
+          "result_text": "你决定第二个月就以三人远征为主。尤里没有隐藏笑意，艾琳沉默片刻后把最后一条退路标记交给你。",
+          "effects": {
+            "flags": {
+              "month01_gate_resolved": 1,
+              "month01_route_expedition": 1
+            },
+            "relationship": {
+              "eugeo.trust": 7,
+              "alice.trust": 4,
+              "alice.tension": 3
+            },
+            "promises": {
+              "alice": "第一月末，玩家答应艾琳第二月远征必须保留退路。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month01_final",
+                "summary": "第一月末，玩家选择三人远征路线，并收下艾琳准备的退路标记。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month01_final",
+                "summary": "第一月末，玩家选择把第二月主线推向三人远征。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "route_quiet_probe",
+          "label": "第二月先暗中确认静默线源头",
+          "hint": "隐秘路线：风险集中在关系暗线和信息不对称。",
+          "result_text": "你决定先不扩大声势，第二月从暗中复核静默线源头开始。艾琳看着你，像是在判断这次你会不会把话说完整；尤里则轻声说他会跟上。",
+          "effects": {
+            "flags": {
+              "month01_gate_resolved": 1,
+              "month01_route_quiet": 1
+            },
+            "relationship": {
+              "eugeo.trust": 5,
+              "alice.tension": 5,
+              "alice.trust": 1
+            },
+            "tensions": {
+              "alice": "第一月末，玩家选择第二月先暗中确认静默线源头，艾琳担心信息再次不完整。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month01_final",
+                "summary": "第一月末，玩家选择第二月先暗中确认静默线源头，艾琳对信息完整性仍有担心。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month01_final",
+                "summary": "第一月末，玩家选择安静推进调查，尤里答应会跟上。",
+                "weight": 5
               }
             }
           }

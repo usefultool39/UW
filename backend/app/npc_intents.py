@@ -1,0 +1,446 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+from .models import AgentState, NpcIntent, WorldState
+
+
+def _flag(state: WorldState, key: str) -> int:
+    return int((state.flags or {}).get(key, 0))
+
+
+def _done_today(state: WorldState, activity_id: str) -> bool:
+    return _flag(state, f"activity_day.{activity_id}") == int(state.day)
+
+
+def _completed(state: WorldState, event_id: str) -> bool:
+    return event_id in (state.completed_event_ids or [])
+
+
+def _agent(state: WorldState, npc_id: str) -> AgentState | None:
+    for agent in state.agents or []:
+        if agent.id == npc_id:
+            return agent
+    return None
+
+
+def _tile(state: WorldState, npc_id: str, fallback: tuple[int, int, str]) -> tuple[int, int, str]:
+    agent = _agent(state, npc_id)
+    if agent is None:
+        return fallback
+    return int(agent.tile_x), int(agent.tile_y), str(agent.scene_id or fallback[2])
+
+
+def _intent(
+    *,
+    state: WorldState,
+    npc_id: str,
+    intent_id: str,
+    kind: str,
+    title: str,
+    description: str,
+    priority: int,
+    reason: str,
+    action: dict,
+    fallback: tuple[int, int, str],
+    stakes: list[str] | None = None,
+    response_options: list[dict] | None = None,
+    scene_id: str | None = None,
+    tile_x: int | None = None,
+    tile_y: int | None = None,
+) -> NpcIntent:
+    ax, ay, agent_scene = _tile(state, npc_id, fallback)
+    return NpcIntent(
+        id=intent_id,
+        npc_id=npc_id,
+        kind=kind,
+        title=title,
+        description=description,
+        scene_id=scene_id or agent_scene,
+        map_id="novice_open",
+        tile_x=int(tile_x if tile_x is not None else ax),
+        tile_y=int(tile_y if tile_y is not None else ay),
+        priority=priority,
+        reason=reason,
+        action=action,
+        stakes=stakes or [],
+        response_options=_available_response_options(
+            state,
+            intent_id,
+            response_options or [],
+        ),
+    )
+
+
+def _response_flag(intent_id: str, response_id: str) -> str:
+    return f"npc_intent_response.{intent_id}.{response_id}"
+
+
+def _available_response_options(
+    state: WorldState,
+    intent_id: str,
+    options: list[dict],
+) -> list[dict]:
+    out: list[dict] = []
+    for option in options:
+        if not isinstance(option, dict):
+            continue
+        response_id = str(option.get("id") or "").strip()
+        if not response_id:
+            continue
+        if bool(option.get("once", True)) and _flag(state, _response_flag(intent_id, response_id)) > 0:
+            continue
+        out.append(option)
+    return out
+
+
+def _social_response(
+    *,
+    response_id: str,
+    label: str,
+    hint: str,
+    result_text: str,
+    effects: dict,
+    tone: str = "steady",
+) -> dict:
+    return {
+        "id": response_id,
+        "label": label,
+        "hint": hint,
+        "tone": tone,
+        "result_text": result_text,
+        "once": True,
+        "effects": effects,
+    }
+
+
+def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
+    _ = project_root
+    intents: list[NpcIntent] = []
+    day = int(state.day)
+    band = state.time_band
+
+    if day == 1 and band in {"morning", "afternoon"}:
+        if _flag(state, "prologue_reading_done") < 1:
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id="alice",
+                    intent_id="alice_invites_reading",
+                    kind="npc_invite",
+                    title="艾琳想让你先看旧记录",
+                    description="她在书库那边留了记号，等你把刻印术笔记和边界旧记录拼起来。",
+                    priority=96,
+                    reason="Day 1 的第一步应让玩家自然进入书库调查。",
+                    action={"type": "scene_activity", "activity_id": "church_read_sacred_arts"},
+                    stakes=[
+                        "艾琳想确认你会不会把旧记录当成普通作业。",
+                        "回应她会提前改变她对你是否可靠的判断。",
+                    ],
+                    response_options=[
+                        _social_response(
+                            response_id="accept_reading_note",
+                            label="告诉艾琳：我会先查旧记录",
+                            hint="给她一个明确回应，建立基础信任。",
+                            result_text="艾琳把书签推到你手边，声音放轻了一点：她相信你至少会把旧记录看完。",
+                            tone="reassure",
+                            effects={
+                                "flags": {"alice_reading_invite_ack": 1},
+                                "relationship": {"alice.trust": 2},
+                                "memory": {
+                                    "alice": {
+                                        "type": "npc_intent_response",
+                                        "summary": "玩家回应艾琳的提醒，答应先去查书库旧记录。",
+                                        "weight": 3,
+                                    }
+                                },
+                            },
+                        ),
+                        _social_response(
+                            response_id="ask_why_worried",
+                            label="追问艾琳：你为什么这么在意？",
+                            hint="让她知道你注意到了她的异常担心。",
+                            result_text="艾琳没有直接回答，只说旧记录里有些边角字迹不像是普通抄写。她开始意识到你会追问。",
+                            tone="probe",
+                            effects={
+                                "flags": {"alice_worry_noticed": 1},
+                                "relationship": {"alice.trust": 1, "alice.tension": 1},
+                                "memory": {
+                                    "alice": {
+                                        "type": "npc_intent_response",
+                                        "summary": "玩家没有只接任务，而是追问艾琳为什么在意旧记录。",
+                                        "weight": 3,
+                                    }
+                                },
+                            },
+                        ),
+                    ],
+                    fallback=(14, 14, "reading_hall"),
+                    scene_id="reading_hall",
+                    tile_x=14,
+                    tile_y=14,
+                )
+            )
+        elif _flag(state, "clue_boundary_record") < 1 and not _completed(state, "ch1_d1_reading_clue"):
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id="alice",
+                    intent_id="alice_reacts_to_boundary_record",
+                    kind="npc_reaction",
+                    title="艾琳注意到你的书库线索",
+                    description="她想知道你读到的静默线到底意味着什么，告诉她或暂时隐瞒都会被记住。",
+                    priority=98,
+                    reason="玩家完成读书玩法后，NPC 应主动接住线索。",
+                    action={"type": "story_event", "event_id": "ch1_d1_reading_clue"},
+                    stakes=[
+                        "艾琳已经察觉你读到了异常，但还不知道你准备怎么处理。",
+                        "你先安抚、直接说出或继续试探，会改变她的紧张来源。",
+                    ],
+                    response_options=[
+                        _social_response(
+                            response_id="calm_before_telling",
+                            label="先安抚艾琳：我不会一个人靠近北边",
+                            hint="降低她的戒备，再进入线索事件。",
+                            result_text="艾琳的肩膀松了一点。她还在担心，但愿意听你把书页上的话说完。",
+                            tone="reassure",
+                            effects={
+                                "flags": {"alice_reassured_before_boundary_record": 1},
+                                "relationship": {"alice.trust": 2, "alice.tension": -1},
+                                "memory": {
+                                    "alice": {
+                                        "type": "npc_intent_response",
+                                        "summary": "玩家在说出边界记录前先向艾琳保证不会独自冒险。",
+                                        "weight": 4,
+                                    }
+                                },
+                            },
+                        ),
+                        _social_response(
+                            response_id="press_for_truth",
+                            label="直接问：你是不是早就知道静默线？",
+                            hint="推进真相感，但会让她感到被逼问。",
+                            result_text="艾琳握紧书脊。她没有否认，只提醒你：有些线索一旦说出口，就会牵动所有人。",
+                            tone="pressure",
+                            effects={
+                                "flags": {"pressed_alice_about_silence_line": 1},
+                                "relationship": {"alice.trust": 1, "alice.tension": 2},
+                                "memory": {
+                                    "alice": {
+                                        "type": "npc_intent_response",
+                                        "summary": "玩家在书库里直接追问艾琳是否早就知道静默线。",
+                                        "weight": 4,
+                                    }
+                                },
+                            },
+                        ),
+                    ],
+                    fallback=(14, 14, "reading_hall"),
+                    scene_id="reading_hall",
+                    tile_x=14,
+                    tile_y=14,
+                )
+            )
+
+        if _flag(state, "prologue_reading_done") >= 1 and not _done_today(state, "church_ask_alice_lunch"):
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id="alice",
+                    intent_id="alice_lunch_basket_choice",
+                    kind="npc_prompt",
+                    title="艾琳在等你决定午餐篮",
+                    description="午餐怎么分，会让她和尤里都看出你更在意什么。",
+                    priority=72,
+                    reason="用日常选择把关系变化从剧情事件带回生活。",
+                    action={"type": "scene_activity", "activity_id": "church_ask_alice_lunch"},
+                    stakes=[
+                        "午餐不是资源管理，而是两人判断你是否会照顾别人。",
+                        "回应艾琳会影响她之后如何解读你的餐桌态度。",
+                    ],
+                    response_options=[
+                        _social_response(
+                            response_id="ask_who_needs_more",
+                            label="问艾琳：今天谁更需要这份午餐？",
+                            hint="把日常选择交给关系判断。",
+                            result_text="艾琳看了一眼巨树方向，说尤里不会主动说累，但斧柄上的水迹已经说明很多。",
+                            effects={
+                                "flags": {"asked_alice_about_lunch_needs": 1},
+                                "relationship": {"alice.affinity": 1, "alice.trust": 1},
+                                "memory": {
+                                    "alice": {
+                                        "type": "npc_intent_response",
+                                        "summary": "玩家在分午餐前询问艾琳谁更需要照顾。",
+                                        "weight": 3,
+                                    }
+                                },
+                            },
+                        ),
+                    ],
+                    fallback=(14, 14, "reading_hall"),
+                    scene_id="reading_hall",
+                    tile_x=14,
+                    tile_y=14,
+                )
+            )
+
+        if _flag(state, "trained_with_eugeo") < 1 and not _completed(state, "ch1_d1_training_with_eugeo"):
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id="eugeo",
+                    intent_id="eugeo_invites_training",
+                    kind="npc_invite",
+                    title="尤里示意你来巨树旁训练",
+                    description="他把训练看成确认世界仍按规则运转的方式，也会听见你对北边的追问。",
+                    priority=90,
+                    reason="Day 1 必须让尤里用行动邀请玩家，而不是只等事件按钮。",
+                    action={"type": "story_event", "event_id": "ch1_d1_training_with_eugeo"},
+                    stakes=[
+                        "尤里用训练试探你是否能跟上他的节奏。",
+                        "回应他的邀约，会影响他把你当作旁观者还是并肩者。",
+                    ],
+                    response_options=[
+                        _social_response(
+                            response_id="match_training_rhythm",
+                            label="回应尤里：我跟你的节奏来",
+                            hint="先建立并肩感，再开始训练。",
+                            result_text="尤里点了点头，把第一下挥斧的节奏放慢到你能接住的位置。",
+                            tone="bond",
+                            effects={
+                                "flags": {"eugeo_training_invite_ack": 1},
+                                "relationship": {"eugeo.affinity": 2, "eugeo.trust": 1},
+                                "memory": {
+                                    "eugeo": {
+                                        "type": "npc_intent_response",
+                                        "summary": "玩家回应尤里的训练邀约，表示愿意按他的节奏来。",
+                                        "weight": 3,
+                                    }
+                                },
+                            },
+                        ),
+                        _social_response(
+                            response_id="ask_tree_as_rule",
+                            label="问尤里：巨树训练真的能证明规则还在吗？",
+                            hint="把日常训练和世界异常连起来。",
+                            result_text="尤里的斧头在半空停了一下。他说如果连每天最固定的事都变了，那北边就不只是传闻。",
+                            tone="probe",
+                            effects={
+                                "flags": {"eugeo_tree_rule_questioned": 1},
+                                "relationship": {"eugeo.trust": 2, "eugeo.tension": 1},
+                                "memory": {
+                                    "eugeo": {
+                                        "type": "npc_intent_response",
+                                        "summary": "玩家把巨树训练和世界规则是否稳定联系起来问尤里。",
+                                        "weight": 4,
+                                    }
+                                },
+                            },
+                        ),
+                    ],
+                    fallback=(54, 22, "gigas_clearing"),
+                    scene_id="gigas_clearing",
+                    tile_x=54,
+                    tile_y=22,
+                )
+            )
+
+    if day == 1 and band in {"evening", "night"} and not _done_today(state, "home_evening_meal"):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_evening_meal_prompt",
+                kind="npc_prompt",
+                title="炉火边的晚餐还在等你表态",
+                description="今天的读书、训练和隐瞒都会在餐桌边变成关系变化。",
+                priority=82,
+                reason="用晚餐把 Day 1 的关系线收束到日结算前。",
+                action={"type": "scene_activity", "activity_id": "home_evening_meal"},
+                stakes=[
+                    "晚餐会把今天的读书、训练和隐瞒汇总成关系判断。",
+                    "先回应艾琳的担心，会改变餐桌选择的情绪底色。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="name_the_tension",
+                        label="先说出口：今天大家都在担心北边",
+                        hint="让晚餐分歧变得更坦诚。",
+                        result_text="炉火轻轻响了一下。艾琳没有反驳，尤里也没有低头，这让晚餐前的沉默短了一些。",
+                        tone="honest",
+                        effects={
+                            "flags": {"named_evening_boundary_tension": 1},
+                            "relationship": {"alice.trust": 1, "eugeo.trust": 1},
+                            "memory": {
+                                "alice": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家在晚餐前主动说出大家都在担心北边。",
+                                    "weight": 3,
+                                },
+                                "eugeo": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家没有回避晚餐前的紧张，而是先把北边的担心说出口。",
+                                    "weight": 3,
+                                },
+                            },
+                        },
+                    ),
+                ],
+                fallback=(11, 27, "home_hearth"),
+                scene_id="home_hearth",
+                tile_x=11,
+                tile_y=27,
+            )
+        )
+
+    if day == 2 and band in {"morning", "afternoon"} and _flag(state, "clue_boundary_record") >= 1 and _flag(state, "forest_anomaly_seen") < 1:
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_points_to_forest_anomaly",
+                kind="npc_concern",
+                title="尤里想确认森林忽然安静的原因",
+                description="Day 1 留下的线索已经变成现实，他想和你一起去古誓树附近确认。",
+                priority=94,
+                reason="让 Day 2 的异常从 NPC 行动自然冒出来。",
+                action={"type": "story_event", "event_id": "ch1_d2_forest_anomaly"},
+                stakes=[
+                    "尤里把 Day 1 的线索当成现实异常，而不是普通传闻。",
+                    "你是否约定不独自行动，会改变两人对 Day 2 调查的信任。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="promise_not_alone",
+                        label="答应尤里：我们一起确认，不单独越线",
+                        hint="把调查推进和安全边界同时说清楚。",
+                        result_text="尤里看向古誓树后方，点头很慢。这个承诺让调查像一件可以一起承担的事。",
+                        tone="promise",
+                        effects={
+                            "flags": {"promised_eugeo_not_alone_day2": 1},
+                            "relationship": {"eugeo.trust": 3, "alice.tension": -1},
+                            "promises": {
+                                "eugeo": "玩家在 Day 2 森林异常前答应和尤里一起确认，不单独越线。"
+                            },
+                            "memory": {
+                                "eugeo": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家在森林异常前答应尤里一起确认，不单独越线。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    ),
+                ],
+                fallback=(54, 22, "gigas_clearing"),
+                scene_id="gigas_clearing",
+                tile_x=54,
+                tile_y=22,
+            )
+        )
+
+    return sorted(intents, key=lambda item: (-int(item.priority), item.id))
+
+
+def attach_npc_intents(project_root: Path, state: WorldState) -> WorldState:
+    return state.model_copy(update={"npc_intents": build_npc_intents(project_root, state)})

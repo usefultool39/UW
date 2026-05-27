@@ -40,6 +40,9 @@
         >
           <strong>{{ choice.label }}</strong>
           <span v-if="choice.hint">{{ choice.hint }}</span>
+          <div v-if="choicePreview(choice).length" class="choice-preview">
+            <small v-for="item in choicePreview(choice)" :key="item">{{ item }}</small>
+          </div>
         </button>
       </div>
     </section>
@@ -63,6 +66,39 @@ const participantLabel = computed(() => {
   const participants = Array.isArray(props.event?.participants) ? props.event.participants : []
   return participants.map((id) => getAgentLabel(id)).join('、')
 })
+
+const FIELD_LABELS = {
+  affinity: '好感',
+  trust: '信任',
+  tension: '紧张'
+}
+
+function relationshipPreviewText(relationship) {
+  const rel = relationship && typeof relationship === 'object' ? relationship : {}
+  return Object.entries(rel)
+    .map(([path, value]) => {
+      const [npcId, fieldId] = String(path).split('.')
+      const delta = Number(value || 0)
+      if (!npcId || !fieldId || !Number.isFinite(delta) || delta === 0) return ''
+      const sign = delta > 0 ? '+' : ''
+      return `${getAgentLabel(npcId)} ${FIELD_LABELS[fieldId] || fieldId} ${sign}${delta}`
+    })
+    .filter(Boolean)
+}
+
+function choicePreview(choice) {
+  const preview = choice?.preview || {}
+  const lines = []
+  const remembered = Array.isArray(preview.remembered_by) ? preview.remembered_by : []
+  const promises = Array.isArray(preview.promises) ? preview.promises : []
+  const tensions = Array.isArray(preview.tensions) ? preview.tensions : []
+  if (remembered.length) lines.push(`${remembered.map(getAgentLabel).join('、')}会记住`)
+  lines.push(...relationshipPreviewText(preview.relationship).slice(0, 3))
+  if (promises.length) lines.push(`${promises.map(getAgentLabel).join('、')}会留下承诺`)
+  if (tensions.length) lines.push(`${tensions.map(getAgentLabel).join('、')}会留下不安`)
+  if (preview.ending_id) lines.push('可能收束章节')
+  return lines.slice(0, 5)
+}
 </script>
 
 <style scoped>
@@ -182,6 +218,23 @@ const participantLabel = computed(() => {
   color: #cbd5e1;
   font-size: 0.9rem;
   line-height: 1.55;
+}
+
+.choice-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.32rem;
+  margin-top: 0.62rem;
+}
+
+.choice-preview small {
+  padding: 0.2rem 0.42rem;
+  border-radius: 999px;
+  color: #fff7d6;
+  background: rgba(120, 83, 35, 0.34);
+  border: 1px solid rgba(246, 211, 110, 0.22);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .event-choice:disabled {

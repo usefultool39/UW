@@ -1,6 +1,10 @@
 import pytest
+from pathlib import Path
 from app.world import initial_world, apply_action, advance_tick
 from app.models import Action, ActionName, Location, TreeState
+from app.agent_registry import load_agent_profiles
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def _agent(state, aid: str):
@@ -14,12 +18,13 @@ class TestInitialWorld:
         assert state.day == 1
         assert state.tree.hp == 200
         assert state.tree.state == TreeState.standing
-        assert len(state.agents) == 2
+        assert len(state.agents) == len(load_agent_profiles(ROOT))
 
     def test_agents_have_correct_ids(self):
         state = initial_world()
         agent_ids = {a.id for a in state.agents}
-        assert agent_ids == {"alice", "eugeo"}
+        assert {"alice", "eugeo"}.issubset(agent_ids)
+        assert agent_ids == set(load_agent_profiles(ROOT))
 
     def test_eugeo_starts_at_tree(self):
         state = initial_world()

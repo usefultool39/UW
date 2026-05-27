@@ -4,24 +4,57 @@
     {
       "id": "alice",
       "display": "爱丽丝",
-      "role": "卢利特村 · 村长之女 / 神圣术见习（童年期）",
+      "role": "露茵村 · 村长之女 / 刻印术见习",
       "behavior_role": "logistics",
       "initial_location": "home",
       "enabled": true,
-      "color": "#4ecca3",
+      "color": "#f6d36e",
       "img": "/characters/alice.svg",
       "imgFallback": "/characters/alice.svg"
     },
     {
       "id": "eugeo",
-      "display": "优吉欧",
-      "role": "卢利特村 · 巨树清场 / 天命劳作（童年期）",
+      "display": "悠吉欧",
+      "role": "露茵村 · 古誓树清场 / 日常劳作",
       "behavior_role": "field",
       "initial_location": "at_tree",
       "enabled": true,
-      "color": "#533483",
+      "color": "#7dd3fc",
       "img": "/ugo.svg",
       "imgFallback": "/ugo.svg"
+    },
+    {
+      "id": "selka",
+      "display": "赛尔卡",
+      "role": "露茵村 · 见习疗愈者 / 书库帮手",
+      "behavior_role": "healer",
+      "initial_location": "home",
+      "enabled": true,
+      "color": "#f7b7c8",
+      "img": "/characters/selka.svg",
+      "imgFallback": "/characters/selka.svg"
+    },
+    {
+      "id": "garret",
+      "display": "加雷特",
+      "role": "露茵村 · 北门巡守 / 边界见证者",
+      "behavior_role": "patrol",
+      "initial_location": "bench",
+      "enabled": true,
+      "color": "#b9d57a",
+      "img": "/characters/garret.svg",
+      "imgFallback": "/characters/garret.svg"
+    },
+    {
+      "id": "rulid_elder",
+      "display": "罗温",
+      "role": "露茵村 · 村务长 / 律令解释者",
+      "behavior_role": "elder",
+      "initial_location": "table",
+      "enabled": true,
+      "color": "#d8b889",
+      "img": "/characters/rulid_elder.svg",
+      "imgFallback": "/characters/rulid_elder.svg"
     }
   ]
 }

@@ -65,6 +65,37 @@ def _matches_relationships(state: WorldState, required: dict[str, Any] | None) -
     return True
 
 
+def _matches_conditions(state: WorldState, conditions: dict[str, Any] | None) -> bool:
+    if not conditions:
+        return True
+
+    day_min = conditions.get("day_min")
+    day_max = conditions.get("day_max")
+    if day_min is not None and state.day < int(day_min):
+        return False
+    if day_max is not None and state.day > int(day_max):
+        return False
+
+    time_bands = conditions.get("time_bands")
+    if time_bands is None and conditions.get("time_band") is not None:
+        time_bands = [conditions.get("time_band")]
+    if isinstance(time_bands, list) and time_bands and state.time_band not in time_bands:
+        return False
+
+    story_nodes = conditions.get("story_nodes")
+    if isinstance(story_nodes, list) and story_nodes and state.story_node_id not in story_nodes:
+        return False
+
+    if not _matches_required_flags(state, conditions.get("required_flags")):
+        return False
+    if not _matches_forbidden_flags(state, conditions.get("forbidden_flags")):
+        return False
+    if not _matches_relationships(state, conditions.get("required_relationship")):
+        return False
+
+    return True
+
+
 def event_is_available(state: WorldState, event: dict[str, Any]) -> bool:
     if event.get("chapter") and event.get("chapter") != state.chapter_id:
         return False
@@ -75,59 +106,88 @@ def event_is_available(state: WorldState, event: dict[str, Any]) -> bool:
         return False
 
     trigger = event.get("trigger") if isinstance(event.get("trigger"), dict) else {}
-    day_min = trigger.get("day_min")
-    day_max = trigger.get("day_max")
-    if day_min is not None and state.day < int(day_min):
-        return False
-    if day_max is not None and state.day > int(day_max):
-        return False
-
-    time_bands = trigger.get("time_bands")
-    if time_bands is None and trigger.get("time_band") is not None:
-        time_bands = [trigger.get("time_band")]
-    if isinstance(time_bands, list) and time_bands and state.time_band not in time_bands:
-        return False
-
-    story_nodes = trigger.get("story_nodes")
-    if isinstance(story_nodes, list) and story_nodes and state.story_node_id not in story_nodes:
-        return False
-
-    if not _matches_required_flags(state, trigger.get("required_flags")):
-        return False
-    if not _matches_forbidden_flags(state, trigger.get("forbidden_flags")):
-        return False
-    if not _matches_relationships(state, trigger.get("required_relationship")):
+    if not _matches_conditions(state, trigger):
         return False
 
     return True
 
 
-def public_event_view(event: dict[str, Any]) -> dict[str, Any]:
+def choice_is_available(state: WorldState | None, choice: dict[str, Any]) -> bool:
+    if state is None:
+        return True
+    conditions = choice.get("conditions") or choice.get("trigger")
+    if not isinstance(conditions, dict):
+        return True
+    return _matches_conditions(state, conditions)
+
+
+def _event_variant(event: dict[str, Any], state: WorldState | None) -> dict[str, Any]:
+    if state is None:
+        return {}
+    variants = event.get("variants") if isinstance(event.get("variants"), list) else []
+    for variant in variants:
+        if not isinstance(variant, dict):
+            continue
+        when = variant.get("when") if isinstance(variant.get("when"), dict) else {}
+        if _matches_conditions(state, when):
+            return variant
+    return {}
+
+
+def public_event_view(event: dict[str, Any], state: WorldState | None = None) -> dict[str, Any]:
+    variant = _event_variant(event, state)
     choices = event.get("choices") if isinstance(event.get("choices"), list) else []
+    choice_overrides = variant.get("choice_overrides") if isinstance(variant.get("choice_overrides"), dict) else {}
+
+    def choice_preview(choice: dict[str, Any]) -> dict[str, Any]:
+        effects = choice.get("effects") if isinstance(choice.get("effects"), dict) else {}
+        relationship = effects.get("relationship") if isinstance(effects.get("relationship"), dict) else {}
+        memory = effects.get("memory") if isinstance(effects.get("memory"), dict) else {}
+        promises = effects.get("promises") if isinstance(effects.get("promises"), dict) else {}
+        tensions = effects.get("tensions") if isinstance(effects.get("tensions"), dict) else {}
+        return {
+            "relationship": relationship,
+            "remembered_by": list(memory.keys()),
+            "promises": list(promises.keys()),
+            "tensions": list(tensions.keys()),
+            "ending_id": effects.get("ending_id"),
+        }
+
+    description = variant.get("description") or event.get("description")
+    if variant.get("append_description"):
+        description = f"{description} {variant.get('append_description')}"
+
     return {
         "id": event.get("id"),
         "chapter": event.get("chapter"),
-        "title": event.get("title"),
-        "description": event.get("description"),
+        "title": variant.get("title") or event.get("title"),
+        "description": description,
+        "day": (event.get("trigger") or {}).get("day_min") if isinstance(event.get("trigger"), dict) else None,
+        "day_range": [
+            (event.get("trigger") or {}).get("day_min"),
+            (event.get("trigger") or {}).get("day_max"),
+        ] if isinstance(event.get("trigger"), dict) else None,
         "location": event.get("location") or {},
         "participants": event.get("participants") or [],
         "kind": event.get("kind") or "event",
         "choices": [
             {
                 "id": c.get("id"),
-                "label": c.get("label"),
-                "hint": c.get("hint"),
+                "label": (choice_overrides.get(str(c.get("id") or "")) or {}).get("label") or c.get("label"),
+                "hint": (choice_overrides.get(str(c.get("id") or "")) or {}).get("hint") or c.get("hint"),
+                "preview": choice_preview(c),
             }
             for c in choices
-            if isinstance(c, dict)
+            if isinstance(c, dict) and choice_is_available(state, c)
         ],
+        "variant_id": variant.get("id"),
     }
 
 
 def available_events(project_root: Path, state: WorldState) -> list[dict[str, Any]]:
     state = ensure_relationships(state)
     events = load_story_events(project_root, state.chapter_id)
-    return [public_event_view(e) for e in events if event_is_available(state, e)]
+    return [public_event_view(e, state) for e in events if event_is_available(state, e)]
 
 
 def _apply_flags(flags: dict[str, int], effects: dict[str, Any]) -> dict[str, int]:
@@ -175,7 +235,8 @@ def choose_event(
     if not event_is_available(state, event):
         return state, {"ok": False, "error": "event_not_available"}
 
-    choices = event.get("choices") if isinstance(event.get("choices"), list) else []
+    raw_choices = event.get("choices") if isinstance(event.get("choices"), list) else []
+    choices = [c for c in raw_choices if isinstance(c, dict) and choice_is_available(state, c)]
     choice = next((c for c in choices if isinstance(c, dict) and c.get("id") == choice_id), None)
     if choice is None:
         return state, {"ok": False, "error": "unknown_choice"}
@@ -220,7 +281,7 @@ def choose_event(
 
     result = {
         "ok": True,
-        "event": public_event_view(event),
+        "event": public_event_view(event, state),
         "choice": {
             "id": choice.get("id"),
             "label": choice.get("label"),

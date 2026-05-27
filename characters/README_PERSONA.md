@@ -1,7 +1,7 @@
 # 角色 Persona 与阶段叠加
 
-- **`persona.md`**：角色核心设定（当前默认 **卢利特村童年期**）。
-- **`overlay_<阶段键>.md`**：由后端 `persona_phase_key(state)` 选择并拼接到 Persona 末尾；用于主线/旗标推进后的**语气与心理微调**，不换年龄、不跳越到整合骑士等后期人设，除非将来单独增加阶段键与 overlay。
+- **`persona.md`**：角色核心设定（当前默认 **露茵村童年期**）。
+- **`overlay_<阶段键>.md`**：由后端 `persona_phase_key(state)` 选择并拼接到 Persona 末尾；用于主线/旗标推进后的**语气与心理微调**，不换年龄、不跳越到记录院骑士等后期人设，除非将来单独增加阶段键与 overlay。
 
 ## 阶段键一览（`backend/app/persona_phase.py`）
 

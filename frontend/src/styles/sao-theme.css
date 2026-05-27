@@ -1,28 +1,32 @@
-/* SAO-inspired UI tokens (original styling, not official assets) */
+/* Original fantasy RPG UI tokens. */
 
 :root {
-  --bg: #070a12;
-  --bg-mid: #0d1528;
-  --paper: rgba(10, 18, 34, 0.78);
-  --ink: #eef2fb;
-  --muted: #8b9ab8;
-  --line: #2a3a55;
-  --accent: #e94560;
-  --forest: #0f3460;
-  --river: #6b5b9a;
-  --ok: #4ecca3;
-  --bad: #ff6b6b;
-  --shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
-  --sao-cyan: #5ecfff;
-  --sao-gold: #d4af37;
-  --sao-gold-dim: rgba(201, 162, 39, 0.35);
-  --sao-border: rgba(94, 207, 255, 0.45);
-  --sao-border-dim: rgba(94, 207, 255, 0.18);
-  --sao-glow: 0 0 18px rgba(94, 207, 255, 0.35);
-  --sao-green: #4ecca3;
-  --sao-green-dim: rgba(78, 204, 163, 0.35);
-  --field-deep: #0b1220;
-  --field-frame: rgba(94, 207, 255, 0.22);
+  --bg: #141914;
+  --bg-mid: #223328;
+  --paper: rgba(37, 42, 31, 0.78);
+  --ink: #fff7df;
+  --muted: #c8bda2;
+  --line: #5a674f;
+  --accent: #bd6b42;
+  --forest: #31533a;
+  --river: #4f8a92;
+  --ok: #86c06c;
+  --bad: #df6d5f;
+  --shadow: 0 18px 40px rgba(19, 17, 10, 0.42);
+  --sao-cyan: #9bd5d7;
+  --sao-gold: #f1c76b;
+  --sao-gold-dim: rgba(241, 199, 107, 0.35);
+  --sao-border: rgba(241, 199, 107, 0.42);
+  --sao-border-dim: rgba(255, 239, 198, 0.18);
+  --sao-glow: 0 0 18px rgba(241, 199, 107, 0.24);
+  --sao-green: #86c06c;
+  --sao-green-dim: rgba(134, 192, 108, 0.35);
+  --field-deep: #263324;
+  --field-frame: rgba(255, 239, 198, 0.22);
+  --wood-panel: rgba(50, 38, 24, 0.78);
+  --wood-panel-soft: rgba(77, 57, 34, 0.56);
+  --cream-panel: rgba(255, 247, 222, 0.9);
+  --cream-ink: #2e2418;
   font-family: system-ui, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
 }
 
@@ -47,9 +51,9 @@ body {
   text-rendering: optimizeLegibility;
   background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(126, 169, 194, 0.12), transparent 58%),
-    radial-gradient(ellipse 70% 50% at 100% 80%, rgba(93, 111, 84, 0.08), transparent 48%),
-    linear-gradient(180deg, #101929 0%, #071019 100%);
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(243, 196, 112, 0.12), transparent 58%),
+    radial-gradient(ellipse 70% 50% at 100% 80%, rgba(98, 145, 94, 0.1), transparent 48%),
+    linear-gradient(180deg, #243526 0%, #111811 100%);
 }
 
 /* Corner bracket frame */
@@ -59,9 +63,9 @@ body {
   border: 1px solid var(--sao-border-dim);
   border-radius: 14px;
   background: var(--paper);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 247, 214, 0.08);
 }
 
 .sao-window::before,
@@ -79,9 +83,9 @@ body {
 .sao-window::before {
   top: 6px;
   left: 6px;
-  border-top: 2px solid var(--sao-cyan);
-  border-left: 2px solid var(--sao-cyan);
-  opacity: 0.75;
+  border-top: 2px solid var(--sao-gold);
+  border-left: 2px solid var(--sao-gold);
+  opacity: 0.62;
 }
 
 .sao-panel::before,
@@ -93,9 +97,9 @@ body {
 .sao-panel::before {
   top: 5px;
   left: 5px;
-  border-top: 2px solid var(--sao-cyan);
-  border-left: 2px solid var(--sao-cyan);
-  opacity: 0.65;
+  border-top: 2px solid var(--sao-gold);
+  border-left: 2px solid var(--sao-gold);
+  opacity: 0.56;
 }
 
 .sao-window::after {
@@ -118,12 +122,12 @@ body {
   position: relative;
   isolation: isolate;
   background: var(--paper);
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 1rem;
   border: 1px solid var(--sao-border-dim);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 247, 214, 0.08);
   overflow: hidden;
 }
 
@@ -135,13 +139,13 @@ body {
   border-radius: inherit;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.06;
+  opacity: 0.04;
   background: repeating-linear-gradient(
     0deg,
     transparent,
     transparent 3px,
-    rgba(94, 207, 255, 0.08) 3px,
-    rgba(94, 207, 255, 0.08) 4px
+    rgba(255, 239, 198, 0.09) 3px,
+    rgba(255, 239, 198, 0.09) 4px
   );
 }
 
@@ -152,7 +156,7 @@ body {
 
 .card-title {
   font-size: 0.72rem;
-  color: var(--sao-cyan);
+  color: var(--sao-gold);
   margin-bottom: 0.55rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -167,7 +171,7 @@ body {
 
 button {
   border: 1px solid var(--sao-border);
-  background: rgba(94, 207, 255, 0.08);
+  background: rgba(255, 239, 198, 0.1);
   color: var(--ink);
   font-weight: 600;
   border-radius: 6px;
@@ -178,9 +182,9 @@ button {
 }
 
 button:hover {
-  border-color: var(--sao-cyan);
+  border-color: var(--sao-gold);
   box-shadow: var(--sao-glow);
-  background: rgba(94, 207, 255, 0.14);
+  background: rgba(255, 239, 198, 0.16);
 }
 
 button:active {
@@ -201,7 +205,7 @@ button.primary:hover {
 input,
 select {
   border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(20, 16, 10, 0.35);
   color: var(--ink);
   border-radius: 6px;
   padding: 0.4rem 0.55rem;
@@ -212,7 +216,7 @@ input:focus,
 select:focus {
   outline: none;
   border-color: var(--sao-cyan);
-  box-shadow: 0 0 0 1px rgba(94, 207, 255, 0.25);
+  box-shadow: 0 0 0 1px rgba(241, 199, 107, 0.24);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -259,27 +263,27 @@ select:focus {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(28, 22, 13, 0.25);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(94, 207, 255, 0.3);
+  background: rgba(241, 199, 107, 0.34);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(94, 207, 255, 0.5);
+  background: rgba(241, 199, 107, 0.55);
 }
 
 /* ===== Text selection ===== */
 ::selection {
-  background: rgba(94, 207, 255, 0.25);
+  background: rgba(241, 199, 107, 0.28);
   color: #fff;
 }
 
 /* ===== Focus visible ===== */
 :focus-visible {
-  outline: 2px solid var(--sao-cyan);
+  outline: 2px solid var(--sao-gold);
   outline-offset: 2px;
 }

@@ -2,7 +2,7 @@
 
 SCENE_ID = "gigas_clearing"
 
-# 原著向：巨树血量可完成章节剧情，3天砍树+NPC贡献约150-200伤害。
+# 原型向：巨树血量可完成章节剧情，3天砍树+NPC贡献约150-200伤害。
 TREE_HP_MAX = 200
 CHOP_DAMAGE = 10
 CHOP_STAMINA_COST = 8

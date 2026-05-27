@@ -1,4 +1,4 @@
-/** 开放世界地块绘制与地图美术（Phaser Graphics 用） */
+/** 寮€鏀句笘鐣屽湴鍧楃粯鍒朵笌鍦板浘缇庢湳锛圥haser Graphics 鐢級 */
 
 import {
   AGENT_ART_KEYS,
@@ -22,7 +22,7 @@ export const MINI_COL = {
 
 export { AGENT_ART_KEYS }
 
-/** 伪随机 0..1，与坐标绑定，保证贴图细节稳定。 */
+/** 浼殢鏈?0..1锛屼笌鍧愭爣缁戝畾锛屼繚璇佽创鍥剧粏鑺傜ǔ瀹氥€?*/
 export function tileHash(x, y, salt = 0) {
   let n = x * 374761393 + y * 668265263 + salt * 1442695041
   n = (n ^ (n >>> 13)) >>> 0
@@ -49,12 +49,12 @@ export function drawStyledTile(g, x, y, ts, code) {
   const h = ts
   const h0 = tileHash(x, y)
 
-  if (code === 0) {
-    g.fillStyle(h0 > 0.48 ? 0x6a9362 : 0x668e60, 1)
+  const drawGrassBase = () => {
+    g.fillStyle(0x6d9565, 1)
     g.fillRect(px + pad, py + pad, w, h)
-    g.fillStyle(0xb9d28e, 0.045)
+    g.fillStyle(0xb9d28e, 0.026)
     g.fillTriangle(px, py, px + w * 0.9, py, px, py + h * 0.62)
-    g.fillStyle(0x314d35, 0.045)
+    g.fillStyle(0x314d35, 0.025)
     g.fillTriangle(px + w, py + h, px + w * 0.15, py + h, px + w, py + h * 0.24)
     if (h0 > 0.64) {
       strokeGrassBlade(g, px + ts * (0.22 + h0 * 0.18), py + ts * 0.74, ts, 0x31583c, 0.18)
@@ -63,6 +63,10 @@ export function drawStyledTile(g, x, y, ts, code) {
       g.fillStyle(h0 > 0.91 ? 0xd9c474 : 0xc5d99c, 0.56)
       g.fillCircle(px + ts * 0.68, py + ts * 0.42, Math.max(1.2, ts * 0.045))
     }
+  }
+
+  if (code === 0) {
+    drawGrassBase()
   } else if (code === 1) {
     g.fillStyle(0x223a2b, 1)
     g.fillRect(px, py, w, h)
@@ -77,34 +81,42 @@ export function drawStyledTile(g, x, y, ts, code) {
     g.fillCircle(px + ts * 0.64, py + ts * 0.45, ts * 0.19)
     g.fillStyle(0xc6d58f, 0.12)
     g.fillCircle(px + ts * 0.39, py + ts * 0.24, ts * 0.1)
+    g.lineStyle(Math.max(1, ts * 0.035), 0x132017, 0.34)
+    g.lineBetween(px + ts * 0.38, py + ts * 0.67, px + ts * 0.25, py + ts * 0.82)
+    g.lineBetween(px + ts * 0.57, py + ts * 0.66, px + ts * 0.72, py + ts * 0.81)
   } else if (code === 2) {
     g.fillStyle(0x4b8fa0, 1)
     g.fillRect(px, py, w, h)
     g.fillStyle(0x275f73, 0.32)
     g.fillTriangle(px + w, py + h, px + w * 0.2, py + h, px + w, py + h * 0.2)
+    g.fillStyle(0x1f6b83, 0.18)
+    g.fillEllipse(px + ts * 0.5, py + ts * 0.52, ts * 0.88, ts * 0.5)
     g.lineStyle(Math.max(1, ts * 0.04), 0xc0e3e8, 0.17)
     const wave = ((x + y) % 3) * ts * 0.08
     g.lineBetween(px + ts * 0.14, py + ts * 0.32 + wave, px + ts * 0.86, py + ts * 0.28 + wave)
     g.lineStyle(Math.max(1, ts * 0.03), 0xd8f3f3, 0.13)
     g.lineBetween(px + ts * 0.22, py + ts * 0.62, px + ts * 0.68, py + ts * 0.58)
   } else if (code === 3) {
-    g.fillStyle(0xb7a47f, 1)
-    g.fillRect(px, py, w, h)
-    g.fillStyle(0xd1c29a, 0.22)
-    g.fillTriangle(px, py, px + w * 0.7, py, px, py + h * 0.52)
-    g.fillStyle(0x756342, 0.1)
-    g.fillTriangle(px + w, py + h, px + w * 0.12, py + h, px + w, py + h * 0.36)
-    if (h0 > 0.35) {
-      g.fillStyle(0x74624a, 0.16)
-      g.fillEllipse(px + ts * (0.24 + h0 * 0.4), py + ts * (0.2 + h0 * 0.5), ts * 0.12, ts * 0.06)
+    drawGrassBase()
+    g.fillStyle(0x9b8157, 1)
+    g.fillRoundedRect(px + ts * 0.18, py + ts * 0.18, ts * 0.64, ts * 0.64, Math.max(3, ts * 0.16))
+    g.fillStyle(0xd2bf91, 0.18)
+    g.fillRoundedRect(px + ts * 0.27, py + ts * 0.22, ts * 0.46, ts * 0.18, Math.max(2, ts * 0.08))
+    g.fillStyle(0x6b573b, 0.12)
+    g.fillRoundedRect(px + ts * 0.24, py + ts * 0.59, ts * 0.5, ts * 0.15, Math.max(2, ts * 0.07))
+    if (h0 > 0.7) {
+      g.fillStyle(0x5f5139, 0.22)
+      g.fillCircle(px + ts * 0.68, py + ts * 0.72, Math.max(1.2, ts * 0.035))
     }
   } else {
-    g.fillStyle(0x716e66, 1)
+    g.fillStyle(0x6d6a62, 1)
     g.fillRect(px, py, w, h)
-    g.fillStyle(0x938b7a, 0.46)
+    g.fillStyle(0x938b7a, 0.5)
     g.fillTriangle(px + ts * 0.13, py + ts * 0.82, px + ts * 0.54, py + ts * 0.16, px + ts * 0.92, py + ts * 0.78)
     g.fillStyle(0x47423a, 0.22)
     g.fillTriangle(px + ts * 0.54, py + ts * 0.16, px + ts * 0.92, py + ts * 0.78, px + ts * 0.58, py + ts * 0.72)
+    g.fillStyle(0xb8b19e, 0.35)
+    g.fillCircle(px + ts * 0.27, py + ts * 0.32, ts * 0.08)
   }
 }
 
@@ -119,7 +131,7 @@ export function drawTerrainOverlays(scene, map, ts) {
       const py = y * ts
       const h0 = tileHash(x, y, 3)
 
-      if (code === 0) {
+      if (code === 0 || code === 3) {
         const northWater = codeAt(rows, x, y - 1) === 2
         const southWater = codeAt(rows, x, y + 1) === 2
         const westWater = codeAt(rows, x - 1, y) === 2
@@ -130,20 +142,116 @@ export function drawTerrainOverlays(scene, map, ts) {
           if (southWater) g.fillRect(px, py + ts * 0.82, ts, ts * 0.18)
           if (westWater) g.fillRect(px, py, ts * 0.18, ts)
           if (eastWater) g.fillRect(px + ts * 0.82, py, ts * 0.18, ts)
+          g.lineStyle(Math.max(1, ts * 0.032), 0xeff6c6, 0.22)
+          if (northWater) g.lineBetween(px + ts * 0.18, py + ts * 0.08, px + ts * 0.82, py + ts * 0.08)
+          if (southWater) g.lineBetween(px + ts * 0.18, py + ts * 0.92, px + ts * 0.82, py + ts * 0.92)
+          if (westWater) g.lineBetween(px + ts * 0.08, py + ts * 0.18, px + ts * 0.08, py + ts * 0.82)
+          if (eastWater) g.lineBetween(px + ts * 0.92, py + ts * 0.18, px + ts * 0.92, py + ts * 0.82)
+          if (h0 > 0.72) {
+            g.lineStyle(Math.max(1, ts * 0.035), 0x2f5d3c, 0.32)
+            g.lineBetween(px + ts * 0.3, py + ts * 0.84, px + ts * 0.34, py + ts * 0.58)
+            g.lineBetween(px + ts * 0.39, py + ts * 0.84, px + ts * 0.32, py + ts * 0.61)
+          }
         }
-        if (h0 > 0.78) {
+        if (code === 0 && h0 > 0.78) {
           strokeGrassBlade(g, px + ts * 0.22, py + ts * 0.78, ts, 0x31583c, 0.2)
           strokeGrassBlade(g, px + ts * 0.72, py + ts * 0.58, ts * 0.8, 0x3d6545, 0.16)
         }
       }
 
       if (code === 3) {
-        g.lineStyle(Math.max(1, ts * 0.04), 0x776b55, 0.12)
-        if (codeAt(rows, x, y - 1) !== 3) g.lineBetween(px, py + 1, px + ts, py + 1)
-        if (codeAt(rows, x, y + 1) !== 3) g.lineBetween(px, py + ts - 1, px + ts, py + ts - 1)
-        if (codeAt(rows, x - 1, y) !== 3) g.lineBetween(px + 1, py, px + 1, py + ts)
-        if (codeAt(rows, x + 1, y) !== 3) g.lineBetween(px + ts - 1, py, px + ts - 1, py + ts)
+        const centerX = px + ts * 0.5
+        const centerY = py + ts * 0.5
+        const half = ts * 0.28
+        const northRoad = codeAt(rows, x, y - 1) === 3
+        const southRoad = codeAt(rows, x, y + 1) === 3
+        const westRoad = codeAt(rows, x - 1, y) === 3
+        const eastRoad = codeAt(rows, x + 1, y) === 3
+        g.fillStyle(0x9b8157, 1)
+        if (northRoad) g.fillRect(centerX - half, py, half * 2, ts * 0.5)
+        if (southRoad) g.fillRect(centerX - half, centerY, half * 2, ts * 0.5)
+        if (westRoad) g.fillRect(px, centerY - half, ts * 0.5, half * 2)
+        if (eastRoad) g.fillRect(centerX, centerY - half, ts * 0.5, half * 2)
+        g.fillRoundedRect(centerX - half, centerY - half, half * 2, half * 2, Math.max(3, ts * 0.14))
+
+        g.lineStyle(Math.max(1, ts * 0.035), 0xf3dfa8, 0.28)
+        if (!northRoad) g.lineBetween(px + ts * 0.22, py + ts * 0.2, px + ts * 0.78, py + ts * 0.2)
+        if (!southRoad) g.lineBetween(px + ts * 0.22, py + ts * 0.8, px + ts * 0.78, py + ts * 0.8)
+        if (!westRoad) g.lineBetween(px + ts * 0.2, py + ts * 0.22, px + ts * 0.2, py + ts * 0.78)
+        if (!eastRoad) g.lineBetween(px + ts * 0.8, py + ts * 0.22, px + ts * 0.8, py + ts * 0.78)
+
+        if (h0 > 0.38) {
+          g.fillStyle(0x5f5139, 0.18)
+          g.fillEllipse(px + ts * (0.25 + h0 * 0.42), py + ts * (0.22 + h0 * 0.48), ts * 0.13, ts * 0.06)
+        }
       }
+
+      if (code === 1) {
+        const northOpen = [0, 3].includes(codeAt(rows, x, y - 1))
+        const southOpen = [0, 3].includes(codeAt(rows, x, y + 1))
+        const westOpen = [0, 3].includes(codeAt(rows, x - 1, y))
+        const eastOpen = [0, 3].includes(codeAt(rows, x + 1, y))
+        const nearOpen = northOpen || southOpen || westOpen || eastOpen
+        if (nearOpen) {
+          g.fillStyle(0x102116, 0.28)
+          if (northOpen) g.fillRect(px, py, ts, ts * 0.16)
+          if (southOpen) g.fillRect(px, py + ts * 0.84, ts, ts * 0.16)
+          if (westOpen) g.fillRect(px, py, ts * 0.16, ts)
+          if (eastOpen) g.fillRect(px + ts * 0.84, py, ts * 0.16, ts)
+          g.lineStyle(Math.max(1, ts * 0.04), 0x9fce80, 0.22)
+          g.strokeCircle(px + ts * 0.5, py + ts * 0.44, ts * 0.34)
+          if (h0 > 0.5) {
+            g.fillStyle(0x7db66a, 0.2)
+            g.fillCircle(px + ts * 0.22, py + ts * 0.68, ts * 0.05)
+            g.fillCircle(px + ts * 0.77, py + ts * 0.61, ts * 0.045)
+          }
+        }
+      }
+    }
+  }
+  return g
+}
+
+export function drawNavigationOverlay(scene, map, ts) {
+  const rows = map.rows || []
+  const walkable = new Set((map.walkable || [0, 3]).map((v) => Number(v)))
+  const g = scene.add.graphics().setDepth(46)
+  for (let y = 0; y < rows.length; y++) {
+    const row = rows[y] || ''
+    for (let x = 0; x < row.length; x++) {
+      const code = codeAt(rows, x, y)
+      const px = x * ts
+      const py = y * ts
+      if (walkable.has(code)) {
+        g.fillStyle(0x22c55e, 0.13)
+        g.fillRect(px + 2, py + 2, ts - 4, ts - 4)
+      } else {
+        g.fillStyle(code === 2 ? 0x38bdf8 : 0xef4444, 0.16)
+        g.fillRect(px + 2, py + 2, ts - 4, ts - 4)
+      }
+    }
+  }
+  return g
+}
+
+export function drawWaterRipples(g, map, ts, timeMs = 0) {
+  const rows = map.rows || []
+  g.clear()
+  const phase = timeMs / 650
+  for (let y = 0; y < rows.length; y++) {
+    const row = rows[y] || ''
+    for (let x = 0; x < row.length; x++) {
+      if (codeAt(rows, x, y) !== 2) continue
+      const h0 = tileHash(x, y, 11)
+      if (h0 < 0.42) continue
+      const px = x * ts
+      const py = y * ts
+      const offset = Math.sin(phase + h0 * 6.28) * ts * 0.04
+      const len = ts * (0.34 + h0 * 0.28)
+      const cx = px + ts * (0.24 + h0 * 0.5)
+      const cy = py + ts * (0.3 + tileHash(x, y, 12) * 0.42) + offset
+      g.lineStyle(Math.max(1, ts * 0.028), 0xdff8ff, 0.11 + h0 * 0.08)
+      g.lineBetween(cx - len * 0.5, cy, cx + len * 0.5, cy - ts * 0.03)
     }
   }
   return g
@@ -151,8 +259,10 @@ export function drawTerrainOverlays(scene, map, ts) {
 
 const REGION_STYLE = {
   interact: { color: 0x38bdf8, roleLabel: '互动区', alpha: 0.08, strokeAlpha: 0.64 },
-  work: { color: 0xfacc15, roleLabel: '工作区', alpha: 0.12, strokeAlpha: 0.82 },
+  work: { color: 0xfacc15, roleLabel: '训练区', alpha: 0.12, strokeAlpha: 0.82 },
   rest: { color: 0xf59e0b, roleLabel: '休息区', alpha: 0.12, strokeAlpha: 0.78 },
+  travel: { color: 0x8b5cf6, roleLabel: '传送阵', alpha: 0.1, strokeAlpha: 0.76 },
+  boundary: { color: 0xfb7185, roleLabel: '边界', alpha: 0.08, strokeAlpha: 0.72 },
   locked: { color: 0xf472b6, roleLabel: '未开放', alpha: 0.08, strokeAlpha: 0.72 },
   forbidden: { color: 0xef4444, roleLabel: '禁止区', alpha: 0.08, strokeAlpha: 0.72 }
 }
@@ -308,31 +418,108 @@ export function drawExplorationAtmosphere(scene, map, ts) {
 }
 
 function makeCharacterTexture(scene, key, p) {
-  if (scene.textures.exists(key)) return
+  if (scene.textures.exists(key)) scene.textures.remove(key)
   const g = scene.make.graphics({ x: 0, y: 0, add: false })
-  g.fillStyle(0x000000, 0.22)
-  g.fillEllipse(32, 68, 30, 9)
-  g.fillStyle(p.cape, 1)
-  g.fillTriangle(17, 61, 32, 31, 47, 61)
-  g.fillStyle(p.body, 1)
-  g.fillRoundedRect(22, 36, 20, 26, 6)
-  g.fillStyle(p.accent, 0.92)
-  g.fillRoundedRect(25, 41, 14, 5, 2)
-  g.fillStyle(p.skin, 1)
-  g.fillEllipse(32, 25, 19, 21)
-  g.fillStyle(p.hair, 1)
-  g.fillEllipse(32, 18, 22, 15)
-  g.fillRoundedRect(21, 19, 8, 17, 5)
-  g.fillRoundedRect(35, 19, 9, 18, 5)
-  g.fillStyle(0x1b2230, 0.9)
-  g.fillRect(27, 27, 2, 2)
-  g.fillRect(36, 27, 2, 2)
-  g.fillStyle(0xf9fafb, 0.75)
-  g.fillCircle(29, 26, 0.8)
-  g.fillCircle(38, 26, 0.8)
-  g.lineStyle(2, 0xf7d37b, 0.86)
-  g.strokeCircle(32, 30, 22)
-  g.generateTexture(key, 64, 76)
+
+  const outline = p.outline ?? 0x121826
+  const body = p.body ?? 0x273449
+  const cape = p.cape ?? body
+  const accent = p.accent ?? 0xf6d36e
+  const hair = p.hair ?? 0x29313f
+  const skin = p.skin ?? 0xe6c7a4
+  const boots = p.boots ?? outline
+  const weapon = p.weapon ?? accent
+  const style = p.style || 'traveler'
+  const w = 44
+  const h = 52
+
+  g.fillStyle(0x000000, 0.2)
+  g.fillEllipse(22, 46, 24, 6)
+
+  if (style === 'dual_blades') {
+    g.lineStyle(3, outline, 0.92)
+    g.lineBetween(10, 11, 32, 40)
+    g.lineBetween(34, 11, 12, 40)
+    g.lineStyle(1, weapon, 0.95)
+    g.lineBetween(10, 11, 32, 40)
+    g.lineBetween(34, 11, 12, 40)
+  } else if (style === 'blue_rose') {
+    g.lineStyle(4, outline, 0.9)
+    g.lineBetween(35, 9, 18, 43)
+    g.lineStyle(2, weapon, 0.96)
+    g.lineBetween(35, 9, 18, 43)
+    g.fillStyle(0xbfdbfe, 0.86)
+    g.fillCircle(31, 18, 2)
+    g.fillCircle(33, 22, 1.6)
+  } else if (style === 'gold_knight') {
+    g.lineStyle(4, outline, 0.92)
+    g.lineBetween(35, 13, 30, 42)
+    g.lineStyle(2, weapon, 0.96)
+    g.lineBetween(35, 13, 30, 42)
+  }
+
+  g.fillStyle(outline, 1)
+  g.fillRoundedRect(10, 20, 24, 22, 4)
+  g.fillRect(8, 24, 5, 13)
+  g.fillRect(31, 24, 5, 13)
+  g.fillRect(13, 40, 7, 7)
+  g.fillRect(24, 40, 7, 7)
+
+  g.fillStyle(cape, 1)
+  g.fillRoundedRect(11, 19, 22, 25, 5)
+  if (style === 'gold_knight') {
+    g.fillStyle(0xf8fafc, 1)
+    g.fillRoundedRect(13, 20, 18, 20, 3)
+    g.fillStyle(accent, 1)
+    g.fillRect(14, 21, 16, 3)
+    g.fillRect(19, 23, 6, 16)
+    g.fillStyle(0xfde68a, 0.72)
+    g.fillRect(15, 27, 14, 2)
+  } else {
+    g.fillStyle(body, 1)
+    g.fillRoundedRect(13, 20, 18, 20, 3)
+    g.fillStyle(accent, 1)
+    g.fillRect(15, 23, 14, 2)
+    g.fillRect(20, 26, 4, 12)
+  }
+
+  g.fillStyle(skin, 1)
+  g.fillRoundedRect(15, 9, 14, 12, 3)
+  g.fillRect(8, 27, 4, 7)
+  g.fillRect(32, 27, 4, 7)
+
+  g.fillStyle(hair, 1)
+  if (style === 'gold_knight') {
+    g.fillRoundedRect(12, 4, 20, 9, 4)
+    g.fillRect(10, 9, 5, 16)
+    g.fillRect(29, 9, 5, 17)
+    g.fillRect(17, 3, 11, 3)
+  } else if (style === 'blue_rose') {
+    g.fillRoundedRect(13, 5, 18, 8, 3)
+    g.fillRect(11, 9, 5, 10)
+    g.fillRect(28, 9, 4, 9)
+    g.fillRect(20, 4, 9, 3)
+  } else {
+    g.fillRoundedRect(13, 5, 18, 8, 3)
+    g.fillRect(11, 9, 6, 10)
+    g.fillRect(27, 9, 6, 10)
+    g.fillRect(18, 4, 11, 3)
+  }
+
+  g.fillStyle(0x0f172a, 1)
+  g.fillRect(17, 14, 2, 2)
+  g.fillRect(25, 14, 2, 2)
+  g.fillStyle(0xf8fafc, 0.72)
+  g.fillRect(18, 13, 1, 1)
+  g.fillRect(26, 13, 1, 1)
+
+  g.fillStyle(boots, 1)
+  g.fillRect(12, 46, 9, 3)
+  g.fillRect(23, 46, 9, 3)
+  g.fillStyle(accent, style === 'gold_knight' ? 0.72 : 0.44)
+  g.fillRect(15, 39, 14, 1)
+
+  g.generateTexture(key, w, h)
   g.destroy()
 }
 
@@ -428,7 +615,102 @@ function addGigasTree(scene, layer, ts, tx, ty) {
   g.lineStyle(3 * s, 0xd8b567, 0.78)
   g.strokeCircle(0, -40 * s, 54 * s)
   c.add(g)
-  addSmallLabel(scene, c, 0, -97 * s, '巨树', '#fef08a')
+  addSmallLabel(scene, c, 0, -97 * s, '古誓树', '#fef08a')
+  layer.add(c)
+}
+
+function compactLandmarkLabel(text, max = 5) {
+  const value = String(text || '').replace(/\s+/g, '').trim()
+  if (!value) return ''
+  return value.length > max ? `${value.slice(0, max)}…` : value
+}
+
+function addTeleportGate(scene, layer, ts, tx, ty) {
+  const c = scene.add.container((tx + 0.5) * ts, (ty + 0.5) * ts)
+  const g = scene.add.graphics()
+  const s = ts / 34
+  g.fillStyle(0x000000, 0.28)
+  g.fillEllipse(0, 25 * s, 92 * s, 28 * s)
+  g.fillStyle(0x40375f, 1)
+  g.fillRoundedRect(-36 * s, -6 * s, 72 * s, 22 * s, 4 * s)
+  g.fillStyle(0x6d5fa8, 0.92)
+  g.fillRoundedRect(-30 * s, -10 * s, 60 * s, 18 * s, 4 * s)
+  g.lineStyle(5 * s, 0xd8c48a, 0.9)
+  g.beginPath()
+  g.arc(0, -10 * s, 27 * s, Math.PI, 0, false)
+  g.strokePath()
+  g.lineStyle(3 * s, 0x3b2f5f, 0.9)
+  g.lineBetween(-27 * s, -9 * s, -27 * s, 15 * s)
+  g.lineBetween(27 * s, -9 * s, 27 * s, 15 * s)
+  g.fillStyle(0x5eead4, 0.18)
+  g.fillEllipse(0, -12 * s, 42 * s, 52 * s)
+  g.lineStyle(2 * s, 0x93c5fd, 0.68)
+  g.strokeEllipse(0, -12 * s, 37 * s, 48 * s)
+  g.lineStyle(1 * s, 0xfef9c3, 0.46)
+  g.strokeEllipse(0, -12 * s, 22 * s, 31 * s)
+  c.add(g)
+
+  const core = scene.add.ellipse(0, -12 * s, 18 * s, 32 * s, 0x67e8f9, 0.18)
+  const ring = scene.add.ellipse(0, -12 * s, 45 * s, 57 * s, 0x8b5cf6, 0).setStrokeStyle(2 * s, 0xddd6fe, 0.6)
+  c.add([core, ring])
+  scene.tweens.add({
+    targets: [core, ring],
+    scaleX: 1.1,
+    scaleY: 1.06,
+    alpha: 0.62,
+    duration: 1200,
+    yoyo: true,
+    repeat: -1,
+    ease: 'Sine.easeInOut'
+  })
+  addSmallLabel(scene, c, 0, -57 * s, '传送阵', '#ddd6fe')
+  layer.add(c)
+}
+
+function addBoundaryGate(scene, layer, ts, tx, ty, poi = {}) {
+  const c = scene.add.container((tx + 0.5) * ts, (ty + 0.5) * ts)
+  const g = scene.add.graphics()
+  const s = ts / 34
+  g.fillStyle(0x000000, 0.3)
+  g.fillEllipse(0, 21 * s, 92 * s, 24 * s)
+  g.fillStyle(0x5a3b2a, 1)
+  g.fillRoundedRect(-34 * s, -20 * s, 9 * s, 43 * s, 3 * s)
+  g.fillRoundedRect(25 * s, -20 * s, 9 * s, 43 * s, 3 * s)
+  g.fillStyle(0x8b5a3c, 1)
+  g.fillRoundedRect(-41 * s, -24 * s, 82 * s, 14 * s, 4 * s)
+  g.fillRoundedRect(-37 * s, -5 * s, 74 * s, 12 * s, 4 * s)
+  g.lineStyle(2 * s, 0xf6d36e, 0.54)
+  g.lineBetween(-28 * s, 3 * s, 28 * s, -16 * s)
+  g.lineBetween(-28 * s, -16 * s, 28 * s, 3 * s)
+  g.fillStyle(0x0f172a, 0.62)
+  g.fillRoundedRect(-30 * s, -38 * s, 60 * s, 18 * s, 4 * s)
+  g.lineStyle(1.5 * s, 0xfde68a, 0.6)
+  g.strokeRoundedRect(-30 * s, -38 * s, 60 * s, 18 * s, 4 * s)
+  c.add(g)
+  addSmallLabel(scene, c, 0, -29 * s, compactLandmarkLabel(poi.label || '边界门'), '#fde68a')
+  layer.add(c)
+}
+
+function addFerryGate(scene, layer, ts, tx, ty, poi = {}) {
+  const c = scene.add.container((tx + 0.5) * ts, (ty + 0.5) * ts)
+  const g = scene.add.graphics()
+  const s = ts / 34
+  g.fillStyle(0x000000, 0.24)
+  g.fillEllipse(0, 23 * s, 88 * s, 24 * s)
+  g.fillStyle(0x2f5f73, 0.92)
+  g.fillEllipse(0, 7 * s, 70 * s, 18 * s)
+  g.fillStyle(0x7c5438, 1)
+  g.fillRoundedRect(-34 * s, -4 * s, 68 * s, 12 * s, 3 * s)
+  g.fillRoundedRect(-30 * s, 8 * s, 8 * s, 18 * s, 2 * s)
+  g.fillRoundedRect(22 * s, 8 * s, 8 * s, 18 * s, 2 * s)
+  g.lineStyle(2 * s, 0xd6b16f, 0.72)
+  for (let x = -24; x <= 24; x += 12) g.lineBetween(x * s, -4 * s, x * s, 8 * s)
+  g.fillStyle(0x0f172a, 0.68)
+  g.fillRoundedRect(-27 * s, -31 * s, 54 * s, 17 * s, 4 * s)
+  g.lineStyle(1.5 * s, 0x5eead4, 0.72)
+  g.strokeRoundedRect(-27 * s, -31 * s, 54 * s, 17 * s, 4 * s)
+  c.add(g)
+  addSmallLabel(scene, c, 0, -22 * s, compactLandmarkLabel(poi.label || '旧渡口'), '#ccfbf1')
   layer.add(c)
 }
 
@@ -438,13 +720,16 @@ export function drawLandmarkArt(scene, map, ts) {
   const renderers = {
     library: addLibrary,
     home: addHome,
-    gigasTree: addGigasTree
+    gigasTree: addGigasTree,
+    teleportGate: addTeleportGate,
+    boundaryGate: addBoundaryGate,
+    ferryGate: addFerryGate
   }
   for (const cfg of LANDMARK_ART_CONFIGS) {
     const poi = pois.find((p) => cfg.poiIds?.includes(p.id))
     const renderer = renderers[cfg.renderer]
     if (!poi || !renderer) continue
-    renderer(scene, layer, ts, Number(poi.tile_x) || 0, Number(poi.tile_y) || 0)
+    renderer(scene, layer, ts, Number(poi.tile_x) || 0, Number(poi.tile_y) || 0, poi)
   }
   return layer
 }

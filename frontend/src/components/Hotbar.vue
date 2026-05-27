@@ -7,8 +7,10 @@
       :disabled="busy || (action.requiresEvents && !hasEvents)"
       @click="$emit('action', action.id)"
       :title="action.desc"
+      :class="`action-${action.id}`"
     >
       <kbd>{{ action.key }}</kbd>
+      <span class="action-icon" aria-hidden="true">{{ action.icon }}</span>
       <span>{{ action.label }}</span>
     </button>
   </nav>
@@ -23,11 +25,11 @@ defineProps({
 defineEmits(['action'])
 
 const actions = [
-  { id: 'talk',  key: '1', label: '对话',  desc: '与附近的 NPC 对话' },
-  { id: 'read',  key: '2', label: '读书',  desc: '阅读书页，了解规则与边界' },
-  { id: 'train', key: '3', label: '训练',  desc: '消耗一个时刻进行训练' },
-  { id: 'rest',  key: '4', label: '休息',  desc: '回小屋休息，推进到第二天' },
-  { id: 'event', key: '5', label: '事件',  desc: '触发章节剧情事件', requiresEvents: true }
+  { id: 'talk', key: '1', icon: '话', label: '对话', desc: '与附近的 NPC 对话' },
+  { id: 'read', key: '2', icon: '查', label: '调查', desc: '阅读书页，了解规则与边界' },
+  { id: 'train', key: '3', icon: '剑', label: '训练', desc: '进行古誓树训练' },
+  { id: 'rest', key: '4', icon: '眠', label: '休息', desc: '回小屋休息，推进到第二天' },
+  { id: 'journal', key: '5', icon: '志', label: '日志', desc: '查看线索手册、NPC 记忆和关系暗线' }
 ]
 </script>
 
@@ -41,32 +43,35 @@ const actions = [
   display: grid;
   grid-template-columns: repeat(5, minmax(4.4rem, 1fr));
   gap: 0.55rem;
-  width: min(680px, calc(100% - 1.5rem));
-  padding: 0.55rem;
-  border-radius: 12px;
-  background: rgba(4, 8, 18, 0.82);
-  border: 1px solid rgba(229, 196, 92, 0.3);
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  width: min(620px, calc(100% - 1.5rem));
+  padding: 0.46rem;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(4, 8, 18, 0.84), rgba(10, 16, 28, 0.72));
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .action-hotbar button {
-  min-height: 3.55rem;
-  padding: 0.35rem 0.28rem;
-  border-radius: 8px;
+  min-height: 3.25rem;
+  padding: 0.32rem 0.28rem;
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.18rem;
-  background: linear-gradient(180deg, rgba(82, 63, 35, 0.92), rgba(18, 25, 38, 0.96));
-  border-color: rgba(245, 208, 112, 0.34);
+  gap: 0.12rem;
+  background: linear-gradient(180deg, rgba(22, 36, 58, 0.92), rgba(9, 14, 24, 0.96));
+  border-color: rgba(125, 211, 252, 0.24);
   color: #f8fafc;
   font-size: 0.82rem;
   font-weight: 800;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
   will-change: transform;
+}
+
+.action-hotbar button.action-event:not(:disabled) {
+  border-color: rgba(253, 224, 71, 0.7);
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.18);
 }
 
 .action-hotbar button:hover:not(:disabled) {
@@ -85,6 +90,9 @@ const actions = [
 }
 
 .action-hotbar kbd {
+  position: absolute;
+  top: 0.32rem;
+  left: 0.38rem;
   min-width: 1.2rem;
   height: 1.2rem;
   display: inline-grid;
@@ -96,6 +104,21 @@ const actions = [
   font-size: 0.68rem;
   font-weight: 900;
   font-family: inherit;
+}
+
+.action-icon {
+  width: 1.65rem;
+  height: 1.65rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #dff7ff;
+  background: rgba(94, 207, 255, 0.12);
+  border: 1px solid rgba(125, 211, 252, 0.28);
+  font-size: 0.92rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 @media (max-width: 900px) {
@@ -116,3 +139,4 @@ const actions = [
   }
 }
 </style>
+

@@ -228,7 +228,7 @@ def build_user_message(state: WorldState, agent_id: str, events: list[dict]) -> 
     circ_en = circadian_band_name_en(state.tick)
     lines = [
         f"天数={state.day}, 回合={state.tick}",
-        f"人格阶段键={phase}（卢利特村童年线；随主线/旗标自动叠加 overlay）",
+        f"人格阶段键={phase}（露茵村第一章线；随主线/旗标自动叠加 overlay）",
         f"昼夜氛围={circ}（{circ_en}）",
         f"你的ID={agent_id}",
         f"你:",

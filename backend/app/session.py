@@ -11,13 +11,23 @@ from .dialogue_agent import dialogue_reply
 from .heuristic import choose_action
 from .llm_agent import llm_choose_action
 from .memory_store import MemoryStore
-from .models import Location, PlayerState, SimEvent, TreeState, WorldState
+from .models import Location, SimEvent, TreeState, WorldState
+from .npc_intents import attach_npc_intents
+from .player_actions import (
+    PLAYER_ACTIONS,
+    camera_for_player as _camera_for_player,
+    merge_activity_effects as _merge_activity_effects,
+    normalize_player_action_kind,
+    player_at_location as _player_at_location,
+    poi_by_id as _poi_by_id,
+    rejected_action_envelope,
+    zone_for_scene as _zone_for_scene,
+)
 from .relationship import apply_relationship_effects, ensure_relationships, npc_profile
 from .scene_activities import find_scene_activity
 from .story_director import available_events, choose_event
 from .story_catalog import can_enter_node, default_catalog_path, load_main_nodes
 from .world import (
-    LOCATION_MAP_ANCHORS,
     advance_tick,
     apply_action,
     apply_environment,
@@ -25,67 +35,6 @@ from .world import (
     initial_world,
 )
 from .world_map import bfs_path, is_blocked_zone, load_world_map, map_path_for_id, scene_for_tile, zone_for_tile
-
-
-PLAYER_ACTIONS = {
-    "move_world",
-    "move_map",
-    "move_scene",
-    "enter_scene",
-    "interact_with_hub",
-    "set_location",
-    "set_flag",
-    "scene_activity",
-    "daily_tick",
-    "compound_sleep",
-    "rest_until_next_day",
-}
-
-ACTION_ALIASES = {
-    "enter_scene": "move_scene",
-}
-
-
-def _player_at_location(player: PlayerState, loc: Location) -> PlayerState:
-    updates: dict[str, object] = {"location": loc}
-    anchor = LOCATION_MAP_ANCHORS.get(loc)
-    if anchor:
-        updates.update(
-            {
-                "tile_x": int(anchor["tile_x"]),
-                "tile_y": int(anchor["tile_y"]),
-                "scene_id": str(anchor["scene_id"]),
-                "map_id": "novice_open",
-            }
-        )
-    return player.model_copy(update=updates)
-
-
-def _camera_for_player(player: PlayerState) -> dict[str, Any]:
-    return {
-        "mode": "follow_player",
-        "focus_tile": {"x": int(player.tile_x), "y": int(player.tile_y)},
-        "map_id": player.map_id,
-        "scene_id": player.scene_id,
-    }
-
-
-def _zone_for_scene(world_map: dict[str, Any], scene_id: str | None) -> dict[str, Any] | None:
-    if not scene_id:
-        return None
-    for zone in world_map.get("scene_zones") or []:
-        if isinstance(zone, dict) and zone.get("scene_id") == scene_id:
-            return dict(zone)
-    return None
-
-
-def _poi_by_id(world_map: dict[str, Any], poi_id: str | None) -> dict[str, Any] | None:
-    if not poi_id:
-        return None
-    for poi in world_map.get("pois") or []:
-        if isinstance(poi, dict) and poi.get("id") == poi_id:
-            return dict(poi)
-    return None
 
 
 class Session:
@@ -101,6 +50,7 @@ class Session:
         self._runs_dir = self.root / "runs"
         self._runs_dir.mkdir(exist_ok=True)
         self._lock = threading.Lock()
+        self.state = attach_npc_intents(self.root, self.state)
 
     def _append_jsonl(self, row: dict) -> None:
         self._pending_jsonl.append(row)
@@ -117,6 +67,14 @@ class Session:
             for npc_id, event_row, run_id in self._pending_memory:
                 self.memory_store.append_event(npc_id, event_row, run_id)
             self._pending_memory.clear()
+
+    def _refresh_runtime_views(self) -> None:
+        self.state = attach_npc_intents(self.root, ensure_relationships(self.state))
+
+    def public_state(self) -> WorldState:
+        with self._lock:
+            self._refresh_runtime_views()
+            return self.state
 
     def export_save(self) -> dict:
         with self._lock:
@@ -150,6 +108,7 @@ class Session:
                 return {"ok": False, "error": f"invalid_state: {exc}"}
 
             self.state = restored
+            self._refresh_runtime_views()
             raw_events = payload.get("events")
             self.events = [e for e in raw_events[-500:] if isinstance(e, dict)] if isinstance(raw_events, list) else []
 
@@ -223,6 +182,7 @@ class Session:
                 )
 
             self.state = advance_tick(self.state)
+            self._refresh_runtime_views()
             self._append_jsonl(
                 {
                     "kind": "tick_end",
@@ -250,6 +210,9 @@ class Session:
         flag_key: str | None = None,
         flag_value: int | None = None,
         activity_id: str | None = None,
+        activity_choice: str | None = None,
+        intent_id: str | None = None,
+        response_id: str | None = None,
         tile_x: int | None = None,
         tile_y: int | None = None,
         n: int | None = None,
@@ -257,14 +220,13 @@ class Session:
     ) -> dict:
         with self._lock:
             self.state = ensure_relationships(self.state)
-            original_kind = str(kind or "").strip()
-            kind = ACTION_ALIASES.get(original_kind, original_kind)
-            if kind == "interact_with_hub" and activity_id:
-                kind = "scene_activity"
+            self._refresh_runtime_views()
+            original_kind, kind = normalize_player_action_kind(kind, activity_id=activity_id)
             before_player = self.state.player
             action_events: list[dict[str, Any]] = []
             path_payload: list[dict[str, int]] | None = None
             activity_result: dict | None = None
+            intent_result: dict | None = None
             relationship_changes: list[dict] = []
             memory_written: list[dict] = []
 
@@ -289,23 +251,14 @@ class Session:
                 }
 
             def fail(error: str, **extra: Any) -> dict:
-                return {
-                    "ok": False,
-                    "error": error,
-                    "state": self.state.model_dump(mode="json"),
-                    "events": [
-                        {
-                            "type": "action_rejected",
-                            "action": original_kind,
-                            "normalized_action": kind,
-                            "reason": error,
-                        }
-                    ],
-                    "camera": _camera_for_player(self.state.player),
-                    "scene_update": response_scene_update(False, error),
-                    "allowed_actions": sorted(PLAYER_ACTIONS),
-                    **extra,
-                }
+                return rejected_action_envelope(
+                    state=self.state,
+                    original_kind=original_kind,
+                    normalized_kind=kind,
+                    error=error,
+                    scene_update=response_scene_update(False, error),
+                    extra=extra,
+                )
 
             if kind not in PLAYER_ACTIONS:
                 return fail("unknown_action_kind")
@@ -424,6 +377,88 @@ class Session:
                 flags[flag_key] = int(flag_value)
                 self.state = self.state.model_copy(update={"flags": flags})
                 action_events.append({"type": "flag_set", "key": flag_key, "value": int(flag_value)})
+            elif kind == "respond_npc_intent":
+                if not intent_id or not response_id:
+                    return fail("missing_npc_intent_response")
+                self._refresh_runtime_views()
+                intent = next(
+                    (item for item in self.state.npc_intents if item.id == intent_id),
+                    None,
+                )
+                if intent is None:
+                    return fail("unknown_npc_intent")
+                option: dict[str, Any] | None = None
+                for raw_option in intent.response_options or []:
+                    row = dict(raw_option)
+                    if str(row.get("id") or "") == response_id:
+                        option = row
+                        break
+                if option is None:
+                    return fail("unknown_npc_intent_response")
+
+                response_flag = f"npc_intent_response.{intent_id}.{response_id}"
+                if bool(option.get("once", True)) and int(self.state.flags.get(response_flag, 0)) > 0:
+                    return fail("npc_intent_response_already_done")
+
+                effects = option.get("effects") if isinstance(option.get("effects"), dict) else {}
+                flags = dict(self.state.flags)
+                for key, val in (effects.get("flags") or {}).items():
+                    flags[str(key)] = int(val)
+                flags[response_flag] = int(self.state.day)
+                self.state = self.state.model_copy(update={"flags": flags})
+
+                self.state, relationship_changes = apply_relationship_effects(
+                    self.state,
+                    effects.get("relationship") if isinstance(effects.get("relationship"), dict) else {},
+                )
+
+                for npc_id, memory in (effects.get("memory") or {}).items():
+                    if not isinstance(memory, dict):
+                        continue
+                    stored = self.memory_store.append_important_memory(
+                        str(npc_id),
+                        {
+                            "day": self.state.day,
+                            "type": memory.get("type") or "npc_intent_response",
+                            "summary": memory.get("summary") or "",
+                            "weight": memory.get("weight") or 3,
+                            "source_event": f"{intent_id}:{response_id}",
+                        },
+                        self.run_id,
+                    )
+                    memory_written.append({"npc_id": str(npc_id), **stored})
+
+                promises = effects.get("promises") if isinstance(effects.get("promises"), dict) else {}
+                tensions = effects.get("tensions") if isinstance(effects.get("tensions"), dict) else {}
+                for npc_id, text in promises.items():
+                    self.memory_store.add_promise(str(npc_id), str(text), self.run_id)
+                for npc_id, text in tensions.items():
+                    self.memory_store.add_tension(str(npc_id), str(text), self.run_id)
+
+                intent_result = {
+                    "kind": "npc_intent_response",
+                    "event_title": intent.title,
+                    "npc_id": intent.npc_id,
+                    "intent_id": intent.id,
+                    "choice": {
+                        "id": option.get("id"),
+                        "label": option.get("label") or "回应 NPC",
+                        "result_text": option.get("result_text") or intent.description,
+                    },
+                    "result_text": option.get("result_text") or intent.description or "你的回应被对方记住了。",
+                    "relationship_changes": relationship_changes,
+                    "memory_written": memory_written,
+                    "promises": promises,
+                    "tensions": tensions,
+                }
+                action_events.append(
+                    {
+                        "type": "npc_intent_responded",
+                        "intent_id": intent.id,
+                        "response_id": response_id,
+                        "npc_id": intent.npc_id,
+                    }
+                )
             elif kind == "daily_tick":
                 steps = max(1, min(24, int(n or daily_n or 1)))
                 for _ in range(steps):
@@ -466,6 +501,23 @@ class Session:
                 effects = activity.get("effects") or {}
                 if not isinstance(effects, dict):
                     effects = {}
+                selected_choice: dict[str, Any] | None = None
+                choice_id = str(activity_choice or "").strip()
+                choices = activity.get("choices") if isinstance(activity.get("choices"), list) else []
+                if choice_id:
+                    selected_choice = next(
+                        (
+                            c
+                            for c in choices
+                            if isinstance(c, dict) and str(c.get("id") or "") == choice_id
+                        ),
+                        None,
+                    )
+                    if selected_choice is None:
+                        return fail("unknown_activity_choice", activity_id=activity_id, activity_choice=choice_id)
+                    choice_effects = selected_choice.get("effects")
+                    if isinstance(choice_effects, dict):
+                        effects = _merge_activity_effects(effects, choice_effects)
 
                 flags = dict(self.state.flags)
                 repeat = str(activity.get("repeat") or "free")
@@ -521,11 +573,18 @@ class Session:
                             "type": memory.get("type") or "scene_activity",
                             "summary": memory.get("summary") or "",
                             "weight": memory.get("weight") or 3,
-                            "source_event": activity_id,
+                            "source_event": f"{activity_id}:{choice_id}" if choice_id else activity_id,
                         },
                         self.run_id,
                     )
                     memory_written.append({"npc_id": str(npc_id), **stored})
+
+                promises = effects.get("promises") if isinstance(effects.get("promises"), dict) else {}
+                tensions = effects.get("tensions") if isinstance(effects.get("tensions"), dict) else {}
+                for npc_id, text in promises.items():
+                    self.memory_store.add_promise(str(npc_id), str(text), self.run_id)
+                for npc_id, text in tensions.items():
+                    self.memory_store.add_tension(str(npc_id), str(text), self.run_id)
 
                 if effects.get("sleep_until_morning") is True:
                     pl = _player_at_location(self.state.player, Location.home)
@@ -551,13 +610,25 @@ class Session:
                         "title": activity.get("title"),
                         "label": activity.get("label"),
                     },
-                    "result_text": activity.get("result_text") or "这段日常被今天记住了。",
+                    "activity_choice": {
+                        "id": selected_choice.get("id"),
+                        "label": selected_choice.get("label"),
+                        "hint": selected_choice.get("hint"),
+                    } if selected_choice else None,
+                    "result_text": (
+                        (selected_choice or {}).get("result_text")
+                        or effects.get("result_text")
+                        or activity.get("result_text")
+                        or "这段日常被今天记住了。"
+                    ),
                     "time_cost": time_cost,
                     "tree_damage": tree_damage,
                     "stamina_cost": stamina_cost,
                     "repeat": repeat,
                     "relationship_changes": relationship_changes,
                     "memory_written": memory_written,
+                    "promises": promises,
+                    "tensions": tensions,
                 }
                 action_events.append(
                     {
@@ -596,12 +667,16 @@ class Session:
                     "flag_key": flag_key,
                     "flag_value": flag_value,
                     "activity_id": activity_id,
+                    "activity_choice": activity_choice,
+                    "intent_id": intent_id,
+                    "response_id": response_id,
                     "tile_x": tile_x,
                     "tile_y": tile_y,
                     "n": n,
                     "daily_n": daily_n,
                 },
                 "activity_result": activity_result,
+                "intent_result": intent_result,
                 "events": action_events,
                 "tick": self.state.tick,
                 "day": self.state.day,
@@ -609,6 +684,7 @@ class Session:
             self.events.append(row)
             self._append_jsonl(row)
             self._flush_writes()
+            self._refresh_runtime_views()
             scene_changed = (
                 before_player.map_id != self.state.player.map_id
                 or before_player.scene_id != self.state.player.scene_id
@@ -626,6 +702,10 @@ class Session:
                 out["activity_result"] = activity_result
                 out["relationship_changes"] = relationship_changes
                 out["memory_written"] = memory_written
+            if intent_result is not None:
+                out["intent_result"] = intent_result
+                out["relationship_changes"] = relationship_changes
+                out["memory_written"] = memory_written
             return out
 
     def available_story_events(self) -> dict:
@@ -634,6 +714,7 @@ class Session:
             events = available_events(self.root, self.state)
             active_ids = [str(e.get("id")) for e in events if e.get("id")]
             self.state = self.state.model_copy(update={"active_event_ids": active_ids})
+            self._refresh_runtime_views()
             return {
                 "ok": True,
                 "events": events,
@@ -656,6 +737,7 @@ class Session:
                 }
 
             self.state = next_state
+            self._refresh_runtime_views()
             memory_written: list[dict] = []
             for npc_id, memory in result.pop("memory_writes", []):
                 stored = self.memory_store.append_important_memory(
@@ -693,6 +775,7 @@ class Session:
                     ]
                 }
             )
+            self._refresh_runtime_views()
             return {
                 **result,
                 "memory_written": memory_written,
@@ -703,6 +786,7 @@ class Session:
     def npc_profile(self, npc_id: str) -> dict:
         with self._lock:
             self.state = ensure_relationships(self.state)
+            self._refresh_runtime_views()
             npc_ids = {a.id for a in self.state.agents}
             if npc_id not in npc_ids:
                 return {"ok": False, "error": "unknown_npc"}
@@ -735,6 +819,7 @@ class Session:
                 }
             prev = self.state.story_node_id
             self.state = self.state.model_copy(update={"story_node_id": target_id})
+            self._refresh_runtime_views()
             row = {
                 "kind": "story_advance",
                 "from": prev,

@@ -4,26 +4,42 @@
     {
       "id": "gigas_chop_rhythm",
       "scene_id": "gigas_clearing",
-      "scene_ids": ["gigas_clearing"],
+      "scene_ids": [
+        "gigas_clearing"
+      ],
       "poi_id": "ix_gigas_tree",
-      "title": "巨树清场 · 稳定挥斧",
-      "label": "按尤吉欧的节奏砍树",
-      "description": "把注意力放在斧角、呼吸和树干回震上。巨树不会立刻倒下，但日常会慢慢变得可信。",
-      "result_text": "斧刃切进基家斯西达的表皮，回声沿着手臂传来。尤吉欧点头，说今天的节奏比昨天稳。",
+      "title": "古誓树清场 · 稳定挥斧",
+      "label": "按尤里的节奏砍树",
+      "description": "把注意力放在斧角、呼吸和树干回震上。古誓树不会立刻倒下，但日常会慢慢变得可信。",
+      "result_text": "斧刃切进古誓树的表皮，回声沿着手臂传来。尤里点头，说今天的节奏比昨天稳。",
       "time_cost": 3,
       "repeat": "daily",
-      "time_bands": ["morning", "afternoon"],
-      "participants": ["eugeo"],
-      "tags": ["training", "canon_daily"],
+      "time_bands": [
+        "morning",
+        "afternoon"
+      ],
+      "participants": [
+        "eugeo"
+      ],
+      "tags": [
+        "training",
+        "daily"
+      ],
       "effects": {
-        "flags": { "worked_gigas_today": 1 },
+        "flags": {
+          "worked_gigas_today": 1,
+          "trained_with_eugeo": 1
+        },
         "tree_damage": 8,
         "stamina_cost": 8,
-        "relationship": { "eugeo.affinity": 2, "eugeo.trust": 1 },
+        "relationship": {
+          "eugeo.affinity": 2,
+          "eugeo.trust": 1
+        },
         "memory": {
           "eugeo": {
             "type": "scene_activity",
-            "summary": "玩家在巨树清场按尤吉欧的节奏挥斧，没有急着逞强。",
+            "summary": "玩家在古誓树清场按尤里的节奏挥斧，没有急着逞强。",
             "weight": 3
           }
         }
@@ -32,25 +48,42 @@
     {
       "id": "gigas_listen_to_forest",
       "scene_id": "gigas_clearing",
-      "scene_ids": ["gigas_clearing", "north_gate"],
+      "scene_ids": [
+        "gigas_clearing",
+        "north_gate"
+      ],
       "poi_id": "ix_gigas_tree",
-      "title": "巨树清场 · 听森林",
+      "title": "古誓树清场 · 听森林",
       "label": "停下来听北边的风",
       "description": "不挥斧，只听树冠、鸟声、水渠和远处山脉之间是否有异样的断点。",
-      "result_text": "你停在斧痕旁边。风声有一瞬像被压低了，尤吉欧没有催你，只顺着你的视线看向北方。",
+      "result_text": "你停在斧痕旁边。风声有一瞬像被压低了，尤里没有催你，只顺着你的视线看向北方。",
       "time_cost": 1,
       "repeat": "once",
-      "time_bands": ["morning", "afternoon", "evening"],
-      "participants": ["eugeo"],
-      "tags": ["anomaly", "foreshadowing"],
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "eugeo"
+      ],
+      "tags": [
+        "anomaly",
+        "foreshadowing"
+      ],
       "effects": {
-        "flags": { "listened_to_forest": 1 },
+        "flags": {
+          "listened_to_forest": 1
+        },
         "stamina_cost": 3,
-        "relationship": { "eugeo.trust": 2, "eugeo.tension": 1 },
+        "relationship": {
+          "eugeo.trust": 2,
+          "eugeo.tension": 1
+        },
         "memory": {
           "eugeo": {
             "type": "scene_activity",
-            "summary": "玩家在巨树旁停下来听北方森林的异常安静。",
+            "summary": "玩家在古誓树旁停下来听北方森林的异常安静。",
             "weight": 4
           }
         }
@@ -59,25 +92,115 @@
     {
       "id": "church_read_sacred_arts",
       "scene_id": "reading_hall",
-      "scene_ids": ["reading_hall", "church_library"],
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
       "poi_id": "ix_reading_desk",
-      "title": "教会书库 · 神圣术笔记",
-      "label": "研读神圣术和旧记录",
-      "description": "把书库里的祈句、村史和边界记录对照起来，试着理解这个世界的规则如何落到日常生活里。",
-      "result_text": "旧纸页上的神圣文字让人想起清晨的教会钟声。爱丽丝把你读错的地方轻轻指出来，然后问你是不是也在想北边。",
+      "title": "村西书库 · 刻印术笔记",
+      "label": "拼接刻印术和旧记录线索",
+      "description": "把书库里的祈句、村史和边界记录对照起来，试着理解世界规则如何落到日常生活里。",
+      "result_text": "旧纸页上的刻印文字让人想起清晨钟声。艾琳把你读错的地方轻轻指出来，然后问你是不是也在想北边。",
       "time_cost": 2,
       "repeat": "once",
-      "time_bands": ["morning", "afternoon"],
-      "participants": ["alice"],
-      "tags": ["reading", "sacred_arts", "canon_daily"],
+      "time_bands": [
+        "morning",
+        "afternoon"
+      ],
+      "participants": [
+        "alice"
+      ],
+      "tags": [
+        "reading",
+        "inscription_arts",
+        "daily"
+      ],
+      "interaction_kind": "reading_keywords",
+      "choices": [
+        {
+          "id": "trace_silence",
+          "label": "鸟声消失 + 静默线 + 北境律令",
+          "hint": "把书页异常和村外边界规则连起来。",
+          "tone": "clue",
+          "result_text": "三个词扣在一起时，纸页上的空白像一条线。艾琳没有否定你，只把声音压低：北边今天确实太安静了。",
+          "effects": {
+            "flags": {
+              "reading_keyword_silence": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "alice.tension": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "reading_choice",
+                "summary": "玩家在书库把鸟声消失、静默线和北境律令拼成同一条异常线索。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "map_boundary",
+          "label": "古誓树 + 北境律令 + 村史断页",
+          "hint": "先把异常定位到村庄日常和边界规则之间。",
+          "tone": "cautious",
+          "result_text": "你先把线索落回村史。艾琳看向窗外的树影，说如果规则真的松动，最先变奇怪的会是日常。",
+          "effects": {
+            "flags": {
+              "reading_keyword_boundary": 1
+            },
+            "relationship": {
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "reading_choice",
+                "summary": "玩家在书库把古誓树、北境律令和村史断页联系起来，谨慎定位异常。",
+                "weight": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "quiet_observe",
+          "label": "钟声残页 + 静默线 + 空白注记",
+          "hint": "保留疑问，先观察艾琳和村子的反应。",
+          "tone": "observe",
+          "result_text": "你没有急着下结论，只把空白注记折进书页。艾琳注意到了这个动作，却没有追问。",
+          "effects": {
+            "flags": {
+              "reading_keyword_observe": 1,
+              "kept_boundary_note": 1
+            },
+            "relationship": {
+              "alice.affinity": 1,
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "reading_choice",
+                "summary": "玩家在书库没有急着下结论，而是把静默线和空白注记先记下。",
+                "weight": 3
+              }
+            }
+          }
+        }
+      ],
       "effects": {
-        "flags": { "studied_sacred_arts": 1, "prologue_reading_done": 1 },
+        "flags": {
+          "studied_sacred_arts": 1,
+          "prologue_reading_done": 1
+        },
         "stamina_cost": 5,
-        "relationship": { "alice.trust": 2, "alice.affinity": 1 },
+        "relationship": {
+          "alice.trust": 2,
+          "alice.affinity": 1
+        },
         "memory": {
           "alice": {
             "type": "scene_activity",
-            "summary": "玩家在教会书库认真研读神圣术和边界旧记录。",
+            "summary": "玩家在村西书库认真研读刻印术和边界旧记录。",
             "weight": 4
           }
         }
@@ -86,25 +209,119 @@
     {
       "id": "church_ask_alice_lunch",
       "scene_id": "reading_hall",
-      "scene_ids": ["reading_hall", "church_library"],
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
       "poi_id": "ix_reading_desk",
-      "title": "教会书库 · 午餐篮",
-      "label": "帮爱丽丝准备午餐篮",
-      "description": "把面包、热汤和给巨树清场的干粮收好。它不是任务奖励，而是三人日常的一部分。",
-      "result_text": "爱丽丝检查篮布时故意说你包得太松，但最后还是笑了一下。她说等会儿要把午餐送去巨树那边。",
+      "title": "村西书库 · 午餐篮",
+      "label": "决定午餐篮怎么准备",
+      "description": "把面包、热汤和给古誓树清场的干粮收好。它不是任务奖励，而是三人日常的一部分。",
+      "result_text": "艾琳检查篮布时故意说你包得太松，但最后还是笑了一下。她说等会儿要把午餐送去古誓树那边。",
       "time_cost": 1,
       "repeat": "daily",
-      "time_bands": ["morning", "afternoon"],
-      "participants": ["alice"],
-      "tags": ["slice_of_life", "relationship"],
+      "time_bands": [
+        "morning",
+        "afternoon"
+      ],
+      "participants": [
+        "alice"
+      ],
+      "tags": [
+        "slice_of_life",
+        "relationship"
+      ],
+      "interaction_kind": "meal_choice",
+      "choices": [
+        {
+          "id": "support_alice",
+          "label": "帮艾琳把篮子重新扎紧",
+          "hint": "让她知道你愿意照看这些细节。",
+          "tone": "warm",
+          "result_text": "你按艾琳的习惯重新扎紧篮布。她没有夸你，只把最热的一碗汤放到你面前那侧。",
+          "effects": {
+            "flags": {
+              "lunch_supported_alice": 1
+            },
+            "relationship": {
+              "alice.affinity": 2,
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "meal_choice",
+                "summary": "玩家准备午餐篮时先照顾艾琳在意的细节。",
+                "weight": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "support_eugeo",
+          "label": "给尤里多留一份干粮",
+          "hint": "把古誓树清场的消耗放在前面。",
+          "tone": "steady",
+          "result_text": "你多塞了一份干粮。艾琳看见后没有反对，只提醒你别让尤里觉得能一直硬撑。",
+          "effects": {
+            "flags": {
+              "lunch_packed_for_eugeo": 1
+            },
+            "relationship": {
+              "eugeo.affinity": 2,
+              "eugeo.trust": 1,
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "meal_choice",
+                "summary": "玩家准备午餐篮时记得尤里在古誓树清场的体力消耗。",
+                "weight": 3
+              },
+              "eugeo": {
+                "type": "meal_choice",
+                "summary": "玩家在午餐篮里多给尤里留了一份干粮。",
+                "weight": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "quiet_observe",
+          "label": "保持沉默，观察两人的习惯",
+          "hint": "少表态，多记住他们的日常分工。",
+          "tone": "observe",
+          "result_text": "你没有插手太多，只记下谁会先看汤碗，谁会先检查斧伤。沉默也成了今天的一种记录。",
+          "effects": {
+            "flags": {
+              "lunch_observed_routine": 1
+            },
+            "relationship": {
+              "alice.trust": 1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "meal_choice",
+                "summary": "玩家准备午餐篮时保持沉默，认真观察艾琳和尤里的日常分工。",
+                "weight": 3
+              }
+            }
+          }
+        }
+      ],
       "effects": {
-        "flags": { "helped_alice_lunch_basket": 1 },
+        "flags": {
+          "helped_alice_lunch_basket": 1
+        },
         "stamina_cost": 3,
-        "relationship": { "alice.affinity": 3, "alice.trust": 1 },
+        "relationship": {
+          "alice.affinity": 3,
+          "alice.trust": 1
+        },
         "memory": {
           "alice": {
             "type": "scene_activity",
-            "summary": "玩家帮爱丽丝准备要送去巨树清场的午餐篮。",
+            "summary": "玩家帮艾琳准备要送去古誓树清场的午餐篮。",
             "weight": 3
           }
         }
@@ -112,20 +329,135 @@
     },
     {
       "id": "home_evening_meal",
-      "scene_id": "reading_hall",
-      "scene_ids": ["reading_hall", "home_hearth"],
+      "scene_id": "home_hearth",
+      "scene_ids": [
+        "home_hearth",
+        "reading_hall"
+      ],
       "poi_id": "ix_home_bed",
       "title": "家中炉火 · 晚餐",
       "label": "围着炉火吃晚饭",
       "description": "把一天的训练、读书和不安都带回餐桌。晚餐会推进时间，也会让同伴记住你今天说过什么。",
-      "result_text": "汤碗的热气让屋子安静下来。爱丽丝问巨树那边的进度，尤吉欧则把今天听到的风声记在心里。",
+      "result_text": "汤碗的热气让屋子安静下来。艾琳问古誓树那边的进度，尤里则把今天听到的风声记在心里。",
       "time_cost": 3,
       "repeat": "daily",
-      "time_bands": ["evening", "night"],
-      "participants": ["alice", "eugeo"],
-      "tags": ["meal", "relationship", "daily_loop"],
+      "time_bands": [
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "meal",
+        "relationship",
+        "daily_loop"
+      ],
+      "interaction_kind": "meal_choice",
+      "choices": [
+        {
+          "id": "side_alice",
+          "label": "偏向艾琳：先守住北境律令",
+          "hint": "降低当晚风险，但尤里会觉得调查被放慢。",
+          "tone": "cautious",
+          "result_text": "你说先把规则放在前面。艾琳肩膀松了一点，尤里没有反驳，只把汤匙停在碗沿。",
+          "effects": {
+            "flags": {
+              "dinner_sided_alice_day1": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.tension": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "meal_choice",
+                "summary": "玩家在晚餐时偏向艾琳，认为应先守住北境律令。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "meal_choice",
+                "summary": "玩家在晚餐时偏向谨慎，尤里觉得边界调查被放慢。",
+                "weight": 3
+              }
+            },
+            "tensions": {
+              "eugeo": "玩家今晚选择先守住北境律令，尤里担心异常会被拖到太晚。"
+            }
+          }
+        },
+        {
+          "id": "side_eugeo",
+          "label": "偏向尤里：明天再确认静默线",
+          "hint": "推进调查，但艾琳会更担心。",
+          "tone": "curious",
+          "result_text": "你把书库线索和清场风声连在一起。尤里慢慢点头，艾琳看着你们，像是在判断这是不是错误的开始。",
+          "effects": {
+            "flags": {
+              "dinner_sided_eugeo_day1": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "eugeo.affinity": 1,
+              "alice.tension": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "meal_choice",
+                "summary": "玩家在晚餐时支持尤里明天继续确认静默线，让艾琳明显担心。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "meal_choice",
+                "summary": "玩家在晚餐时支持尤里继续确认北境静默线。",
+                "weight": 4
+              }
+            },
+            "promises": {
+              "eugeo": "明天一起再确认北境静默线。"
+            },
+            "tensions": {
+              "alice": "玩家今晚支持继续确认静默线，艾琳担心这会把大家带向边界。"
+            }
+          }
+        },
+        {
+          "id": "keep_table_calm",
+          "label": "保持沉默，把话题拉回日常",
+          "hint": "缓和当下气氛，同时保留观察空间。",
+          "tone": "calm",
+          "result_text": "你把话题拉回明天的汤和斧柄。艾琳没有继续追问，尤里也顺着沉默把风声记在心里。",
+          "effects": {
+            "flags": {
+              "dinner_kept_calm_day1": 1
+            },
+            "relationship": {
+              "alice.affinity": 1,
+              "eugeo.affinity": 1,
+              "alice.tension": -1,
+              "eugeo.tension": -1
+            },
+            "memory": {
+              "alice": {
+                "type": "meal_choice",
+                "summary": "玩家在晚餐时把紧张话题拉回日常，让餐桌暂时安静下来。",
+                "weight": 3
+              },
+              "eugeo": {
+                "type": "meal_choice",
+                "summary": "玩家在晚餐时保持观察，没有直接站到任何一边。",
+                "weight": 3
+              }
+            }
+          }
+        }
+      ],
       "effects": {
-        "flags": { "shared_evening_meal": 1 },
+        "flags": {
+          "shared_evening_meal": 1
+        },
         "stamina_cost": 5,
         "relationship": {
           "alice.affinity": 2,
@@ -149,48 +481,83 @@
     },
     {
       "id": "home_sleep_until_morning",
-      "scene_id": "reading_hall",
-      "scene_ids": ["reading_hall", "home_hearth"],
+      "scene_id": "home_hearth",
+      "scene_ids": [
+        "home_hearth",
+        "reading_hall"
+      ],
       "poi_id": "ix_home_bed",
       "title": "家中床铺 · 入睡",
       "label": "睡到第二天清晨",
       "description": "结束今天。炉火熄下去之后，梦和记忆会把一天压成更安静的东西。",
-      "result_text": "夜色从窗缝里退去。等你睁开眼，北境新手村又回到清晨，但昨天的选择没有消失。",
+      "result_text": "夜色从窗缝里退去。等你睁开眼，露茵村又回到清晨，但昨天的选择没有消失。",
       "time_cost": 0,
       "repeat": "daily",
-      "time_bands": ["evening", "night"],
-      "participants": ["alice", "eugeo"],
-      "tags": ["sleep", "day_cycle"],
+      "time_bands": [
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "sleep",
+        "day_cycle"
+      ],
       "effects": {
-        "flags": { "slept_at_home": 1 },
+        "flags": {
+          "slept_at_home": 1
+        },
         "stamina_cost": 0,
         "sleep_until_morning": true
       }
     },
     {
       "id": "village_square_listen",
-      "scene_id": "reading_hall",
-      "scene_ids": ["reading_hall", "village_square"],
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square",
+        "reading_hall"
+      ],
       "poi_id": "ix_village_square",
       "title": "村道广场 · 听传闻",
       "label": "听村民谈北方山脉",
-      "description": "在水渠和村道交汇处停一会儿，听老人、孩子和巡逻者怎么谈禁忌目录与山脉边界。",
+      "description": "在水渠和村道交汇处停一会儿，听老人、孩子和巡逻者怎么谈北境律令与山脉边界。",
       "result_text": "你听到几个零碎词：山脉、洞窟、不能越界。它们没有组成答案，却让北方边界变得更近了。",
       "time_cost": 1,
       "repeat": "daily",
-      "time_bands": ["morning", "afternoon", "evening"],
-      "participants": ["alice", "eugeo"],
-      "tags": ["rumor", "worldbuilding"],
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "rumor",
+        "worldbuilding"
+      ],
       "effects": {
-        "flags": { "heard_village_rumor": 1 },
+        "flags": {
+          "heard_village_rumor": 1
+        },
         "stamina_cost": 2,
-        "relationship": { "alice.trust": 1, "eugeo.trust": 1 }
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
       }
     },
     {
       "id": "north_gate_survey",
-      "scene_id": "gigas_clearing",
-      "scene_ids": ["gigas_clearing", "north_gate"],
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate",
+        "gigas_clearing"
+      ],
       "poi_id": "ix_north_gate",
       "title": "北境边门 · 远望",
       "label": "远望边界线",
@@ -198,13 +565,26 @@
       "result_text": "边界之外没有立刻出现怪物，只有一种过分整齐的安静。你意识到这里以后应该成为独立场景，而不只是背景角落。",
       "time_cost": 2,
       "repeat": "once",
-      "time_bands": ["afternoon", "evening"],
-      "participants": ["eugeo"],
-      "tags": ["boundary", "future_instance"],
+      "time_bands": [
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "eugeo"
+      ],
+      "tags": [
+        "boundary",
+        "future_instance"
+      ],
       "effects": {
-        "flags": { "surveyed_north_gate": 1 },
+        "flags": {
+          "surveyed_north_gate": 1
+        },
         "stamina_cost": 5,
-        "relationship": { "eugeo.trust": 2, "eugeo.tension": 2 },
+        "relationship": {
+          "eugeo.trust": 2,
+          "eugeo.tension": 2
+        },
         "memory": {
           "eugeo": {
             "type": "scene_activity",

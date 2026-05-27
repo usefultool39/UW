@@ -1,4 +1,4 @@
-"""根据主线节点与旗标解析「人格阶段」，用于叠加角色 overlay 文本（原著时间线）。"""
+"""根据主线节点与旗标解析「人格阶段」，用于叠加角色 overlay 文本（原型时间线）。"""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ _STORIA_ACADEMY_STORY_IDS: frozenset[str] = frozenset({"mq02_future_stub"})
 def persona_phase_key(state: WorldState) -> str:
     """
     返回稳定键名；对应 `characters/<agent_id>/overlay_<key>.md`（可选）。
-    当前模拟锚定在卢利特村 **童年期**；后续可增 academy / integrity_knight 等阶段。
+    当前模拟锚定在露茵村第一章；后续可增 academy / boundary 等阶段。
     """
     nid = (state.story_node_id or "").strip()
     flags = state.flags or {}
