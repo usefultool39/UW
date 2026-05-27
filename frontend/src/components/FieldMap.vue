@@ -108,6 +108,7 @@ const props = defineProps({
   timeBandLabel: { type: String, default: '清晨' },
   sceneLabel: { type: String, default: '未知地点' },
   busy: { type: Boolean, default: false },
+  devMode: { type: Boolean, default: false },
   nearbyInteract: { type: Object, default: null }
 })
 
@@ -295,6 +296,7 @@ async function bootPhaser() {
     getNearbyInteractPoi: () => props.nearbyInteract,
     getStoryEvents: () => props.storyEvents,
     openStoryEventPanel: (eventId) => emit('event-click', eventId),
+    isDevMode: () => props.devMode,
     onBlockedTilePick: (payload) => emit('blocked-click', payload)
   })
 

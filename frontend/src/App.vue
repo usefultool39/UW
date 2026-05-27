@@ -22,6 +22,7 @@
     <FieldSlice
       v-if="appTab === 'field'"
       :sim-state="state"
+      :dev-mode="showDevTabs"
       :daily-tick="dailyTick"
       :player-action="playerAction"
       :story-advance="storyAdvance"

@@ -47,6 +47,7 @@
         :time-band-label="timeBandLabel"
         :busy="busy"
         :nearby-interact="effectiveNearbyInteract"
+        :dev-mode="devMode"
         @tile-click="onTileClick"
         @npc-click="onNpcClick"
         @interact-click="openInteractPanel"
@@ -89,7 +90,7 @@
     </div>
 
     <!-- Debug drawer (collapsed by default) -->
-    <details class="debug-drawer">
+    <details v-if="devMode" class="debug-drawer">
       <summary>开发调试与操作说明</summary>
       <div class="field-toolbar">
         <div class="tb-group">
@@ -104,7 +105,7 @@
     </details>
 
     <!-- Regions JSON (dev only) -->
-    <details v-if="regionsJson" class="regions-details">
+    <details v-if="devMode && regionsJson" class="regions-details">
       <summary>区域表 JSON</summary>
       <pre class="regions-pre">{{ regionsJson }}</pre>
     </details>
@@ -226,6 +227,7 @@ const { toastMessage, toastType, toastOpen, showToast, clearToastTimer } = useFi
 
 const props = defineProps({
   simState: { type: Object, required: true },
+  devMode: { type: Boolean, default: false },
   dailyTick: { type: Function, required: true },
   playerAction: { type: Function, required: true },
   storyAdvance: { type: Function, required: true },
@@ -1199,7 +1201,7 @@ function handleHotkey(e) {
   if (tag === 'input' || tag === 'textarea' || tag === 'select') return
   if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value || storyEventOpen.value || storyResultOpen.value || npcProfileOpen.value || journalOpen.value || trainingGameOpen.value || boundaryProbeOpen.value || boundaryVerdictOpen.value || readingGameOpen.value || mealChoiceOpen.value) return
   const key = String(e.key || '').toLowerCase()
-  if (key === 'v' && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+  if (props.devMode && key === 'v' && (e.ctrlKey || e.metaKey || e.shiftKey)) {
     e.preventDefault()
     sceneInstance?.toggleNavigationOverlay?.()
     showToast('已切换可走层调试视图。绿色可走，蓝色水域，红色阻挡。')
@@ -1293,10 +1295,12 @@ function buildDaySettlementResult(state, nextEvents = [], beforeDay = 1) {
 onMounted(async () => {
   window.addEventListener('keydown', handleHotkey)
   await nextTick()
-  try {
-    const r = await props.fetchRegions()
-    regionsJson.value = JSON.stringify(r, null, 2)
-  } catch { regionsJson.value = '(regions 加载失败)' }
+  if (props.devMode) {
+    try {
+      const r = await props.fetchRegions()
+      regionsJson.value = JSON.stringify(r, null, 2)
+    } catch { regionsJson.value = '(regions 加载失败)' }
+  }
   await loadSceneActivities()
   await loadWorldMap(activeMapId.value)
   await refreshStoryEvents()

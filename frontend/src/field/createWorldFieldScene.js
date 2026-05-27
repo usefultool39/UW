@@ -580,6 +580,7 @@ function characterFormationOffset(agentId, slot, sameTileWithPlayer) {
  *   getNearbyInteractPoi: () => object | null,
  *   getStoryEvents?: () => object[],
  *   openStoryEventPanel?: (eventId: string) => void,
+ *   isDevMode?: () => boolean,
  *   onBlockedTilePick?: (payload: object) => void
  * }} deps
  */
@@ -596,6 +597,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
     getNearbyInteractPoi,
     getStoryEvents = () => [],
     openStoryEventPanel = () => {},
+    isDevMode = () => false,
     onBlockedTilePick = () => {}
   } = deps
 
@@ -1416,7 +1418,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         const key = event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight'
           ? event.key
           : String(event.key || '').toLowerCase()
-        if (key === 'v' && (event.ctrlKey || event.metaKey)) {
+        if (isDevMode() && key === 'v' && (event.ctrlKey || event.metaKey)) {
           event.preventDefault?.()
           this.toggleNavigationOverlay?.()
           return
