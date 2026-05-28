@@ -156,6 +156,9 @@ export function getQuestGuide(simState) {
   if (!simState) return '加载中'
   const ending = simState.chapter_ending_id
   const flags = simState.flags || {}
+  const sceneId = simState.player?.scene_id || simState.scene_id || ''
+  const day = Number(simState.day || 1)
+  const sceneHint = sceneId ? `你现在在${getSceneLabel(sceneId)}。` : ''
   if (ending && !flags.month01_debrief_done) return '第一章已经收束。休息到第四天后，在书库把边界事件复盘成第一月路线。'
   if (flags.month01_debrief_done && !flags.month01_drill_done) return '第一月推进中：休息到第七天后去北门，把安全距离和撤退信号演练成流程。'
   if (flags.month01_drill_done && !flags.month01_village_trust) return '第一月推进中：第十二天起到村广场处理巡查公开度和补给问题。'
@@ -164,11 +167,17 @@ export function getQuestGuide(simState) {
   if (flags.month01_expedition_ready && !flags.month01_gate_resolved) return '第一月末：第二十八天后去北门前夜，选择第二月路线。'
   if (flags.month01_gate_resolved) return '第一月已经收束：第二月边境远征入口已经埋好。'
   const active = simState.active_event_ids || []
-  if (active.length) return '村子里有事件正在等你回应：书库旧记录，以及古誓树旁的训练。'
+  if (active.length) return `${sceneHint}村子里有新的抉择在等你：靠近金色标记，或先回应附近同伴的主动邀约。`.trim()
+  const intents = Array.isArray(simState.npc_intents) ? simState.npc_intents : []
+  if (intents.length) {
+    const intent = intents[0]
+    return `${sceneHint}${getAgentLabel(intent.npc_id)}正在等你的回应：${intent.title}。走近同伴，先把这一步说清楚。`.trim()
+  }
   const node = simState.story_node_id || ''
   const doneRead = flags.prologue_reading_done === 1
   if (node === 'mq00_tutorial' && !doneRead) return '细雨刚停。先去村西书库看看旧记录，或沿主路去古誓树清场找尤里。'
   if (node === 'mq00_tutorial' && doneRead) return '书页里的边界记录让人不安。把这件事告诉谁，会改变今天的气氛。'
   if (node === 'mq01_tree_arc' || String(node).startsWith('mq01')) return '到古誓树旁找尤里。训练只是表面，真正的问题是北边为什么突然安静下来。'
-  return '顺着村道继续探索。留意 NPC 的位置、金色线索，以及那些过分安静的地方。'
+  if (day <= 3) return `${sceneHint}沿主路在书库、古誓树和家中之间走一圈；若没有新线索，就休息推进到下一个时段。`.trim()
+  return `${sceneHint}查看日志里的第一月路线，去北门、村广场或小屋寻找下一处金色标记；没有新事时先休息推进时间。`.trim()
 }

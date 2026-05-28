@@ -126,6 +126,7 @@ async function submit() {
   background: linear-gradient(180deg, rgba(4, 8, 18, 0.35), rgba(4, 8, 18, 0.86));
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
+  animation: modal-backdrop-in 0.18s ease-out both;
 }
 
 .dialogue-panel {
@@ -138,6 +139,23 @@ async function submit() {
   background: rgba(9, 14, 26, 0.96);
   border: 1px solid rgba(94, 207, 255, 0.34);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.58), 0 0 24px rgba(94, 207, 255, 0.12);
+  animation: dialogue-rise-in 0.22s ease-out both;
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dialogue-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .dialogue-header {

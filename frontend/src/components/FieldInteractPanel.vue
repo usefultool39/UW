@@ -105,6 +105,7 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   background: rgba(4, 8, 18, 0.78);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+  animation: modal-backdrop-in 0.18s ease-out both;
 }
 
 .interact-card {
@@ -117,6 +118,23 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   background: linear-gradient(165deg, rgba(30, 41, 59, 0.95), rgba(7, 10, 18, 0.98));
   border: 1px solid var(--sao-border);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 24px rgba(94, 207, 255, 0.08);
+  animation: modal-rise-in 0.22s ease-out both;
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .interact-card-hd {

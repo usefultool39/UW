@@ -113,6 +113,7 @@ function choicePreview(choice) {
   background: rgba(4, 8, 18, 0.78);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+  animation: modal-backdrop-in 0.18s ease-out both;
 }
 
 .event-panel {
@@ -124,6 +125,23 @@ function choicePreview(choice) {
   background: linear-gradient(165deg, rgba(27, 38, 58, 0.97), rgba(8, 12, 22, 0.98));
   border: 1px solid rgba(246, 211, 110, 0.34);
   box-shadow: 0 26px 68px rgba(0, 0, 0, 0.56), 0 0 26px rgba(246, 211, 110, 0.1);
+  animation: modal-rise-in 0.22s ease-out both;
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .event-header {
