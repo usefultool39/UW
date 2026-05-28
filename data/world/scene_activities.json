@@ -688,6 +688,197 @@
           "eugeo.trust": 1
         }
       }
+    },
+    {
+      "id": "village_patrol_board_review",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square",
+        "reading_hall"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "村道广场 · 巡查板复核",
+      "label": "把北门巡查写成村务记录",
+      "description": "艾琳把空白木牌放在广场边。你可以把北门演练整理成村民能理解的巡查记录，也可以先只公开安全流程。",
+      "result_text": "木牌上多了风向、时间和撤退点。几个村民停下来读完，没有立刻追问，却开始把自己见过的天气变化补到旁边。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month01_drill_done": 1
+        }
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "village",
+        "trust",
+        "boundary"
+      ],
+      "interaction_kind": "public_record",
+      "choices": [
+        {
+          "id": "publish_safe_summary",
+          "label": "公开安全流程",
+          "hint": "让村里先理解如何避险，降低恐慌。",
+          "tone": "steady",
+          "result_text": "你先写下安全距离、撤退手势和复核顺序。艾琳点头，因为这让北门不再只是传闻。",
+          "effects": {
+            "flags": {
+              "village_patrol_board_reviewed": 1,
+              "village_safe_summary_published": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "alice.tension": -1
+            },
+            "memory": {
+              "alice": {
+                "type": "scene_activity",
+                "summary": "玩家在村广场优先公开北门巡查的安全流程，让村民先理解避险方式。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "invite_village_notes",
+          "label": "邀请村民补充异常记录",
+          "hint": "扩大线索来源，但会让北门异常更难保持安静。",
+          "tone": "open",
+          "result_text": "你在木牌边留下空格，请村民写下听见风声变化的时间。尤里看着那些新笔迹，意识到调查开始属于整个村子。",
+          "effects": {
+            "flags": {
+              "village_patrol_board_reviewed": 1,
+              "village_notes_invited": 1
+            },
+            "relationship": {
+              "alice.trust": 1,
+              "eugeo.trust": 2,
+              "alice.tension": 1
+            },
+            "memory": {
+              "eugeo": {
+                "type": "scene_activity",
+                "summary": "玩家在村广场邀请村民补充北门异常记录，让调查从三人小队扩展到村务。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ],
+      "effects": {
+        "flags": {
+          "village_patrol_board_started": 1
+        },
+        "stamina_cost": 4,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      }
+    },
+    {
+      "id": "north_gate_silent_line_recheck",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate",
+        "gigas_clearing"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "北境边门 · 静默线复核",
+      "label": "复核静默线的靠近距离",
+      "description": "带着巡查板、刻印标记和三人的分工回到北门。今天不是越界，而是确认静默线有没有向村子靠近。",
+      "result_text": "风声在同一块石缝前断开，比上次更靠近北门。艾琳写下时间，尤里记下方向，你则确认退路还在。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month01_village_trust": 1
+        }
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "boundary",
+        "rehearsal",
+        "teamwork"
+      ],
+      "interaction_kind": "silent_line_check",
+      "choices": [
+        {
+          "id": "calibrate_by_record",
+          "label": "按记录校准刻印",
+          "hint": "让规则和记录先承担风险。",
+          "tone": "precise",
+          "result_text": "你按记录把刻印压到最小范围。静默线没有吞掉声音，只在边缘短暂收紧了一下。",
+          "effects": {
+            "flags": {
+              "silent_line_recheck_done": 1,
+              "silent_line_record_calibrated": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "scene_activity",
+                "summary": "玩家在北门复核静默线时按巡查记录校准刻印，让规则成为安全工具。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "three_person_call",
+          "label": "三人同时下判定",
+          "hint": "强化队伍共同复核，减少独断风险。",
+          "tone": "cooperate",
+          "result_text": "你们各自说出风声断开的瞬间。三个答案第一次完全重合，静默线不再只是某个人的感觉。",
+          "effects": {
+            "flags": {
+              "silent_line_recheck_done": 1,
+              "silent_line_three_person_call": 1
+            },
+            "relationship": {
+              "alice.trust": 1,
+              "eugeo.trust": 2,
+              "eugeo.affinity": 1
+            },
+            "memory": {
+              "eugeo": {
+                "type": "scene_activity",
+                "summary": "玩家在北门复核中让三人同时下判定，把静默线结论变成共同结果。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ],
+      "effects": {
+        "flags": {
+          "silent_line_recheck_started": 1
+        },
+        "stamina_cost": 5,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      }
     }
   ]
 }

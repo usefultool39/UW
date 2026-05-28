@@ -126,3 +126,43 @@ def test_day_seven_drill_intent_guides_player_to_north_gate():
         "event_id": "ch1_d7_first_boundary_drill",
     }
     assert intents["eugeo_pushes_north_gate_drill"].scene_id == "north_gate"
+
+
+def test_day_twelve_village_intent_guides_player_to_square():
+    sess = Session(run_id="test-day12-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 12,
+            "time_band": "evening",
+            "flags": {"month01_drill_done": 1},
+        }
+    )
+
+    state = sess.public_state()
+    intents = {item.id: item for item in state.npc_intents}
+
+    assert intents["alice_guides_village_trust"].action == {
+        "type": "story_event",
+        "event_id": "ch1_d12_village_trust",
+    }
+    assert intents["alice_guides_village_trust"].scene_id == "village_square"
+
+
+def test_day_eighteen_silent_line_intent_guides_player_to_north_gate():
+    sess = Session(run_id="test-day18-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 18,
+            "time_band": "morning",
+            "flags": {"month01_village_trust": 1},
+        }
+    )
+
+    state = sess.public_state()
+    intents = {item.id: item for item in state.npc_intents}
+
+    assert intents["eugeo_calls_silent_line_rehearsal"].action == {
+        "type": "story_event",
+        "event_id": "ch1_d18_silent_line_rehearsal",
+    }
+    assert intents["eugeo_calls_silent_line_rehearsal"].scene_id == "north_gate"

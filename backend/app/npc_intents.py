@@ -538,6 +538,105 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        12 <= day <= 16
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month01_drill_done") >= 1
+        and _flag(state, "month01_village_trust") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_guides_village_trust",
+                kind="npc_invite",
+                title="艾琳想把巡查变成村务",
+                description="北门演练不能只留在三个人之间。艾琳在村广场整理巡查板，等你决定要公开多少。",
+                priority=88,
+                reason="Day 12-16 需要 NPC 主动把玩家从小队调查带到村务信任阶段。",
+                action={"type": "story_event", "event_id": "ch1_d12_village_trust"},
+                stakes=[
+                    "公开巡查能提高村内信任，也会让更多人意识到北门异常。",
+                    "低调筹备能推进调查，但艾琳会要求你把补给和路线交给她复核。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="offer_patrol_summary",
+                        label="先把北门演练写成村民能看懂的记录",
+                        hint="把调查语言转成村务语言。",
+                        result_text="艾琳把巡查板上的空格让给你。她说如果村里要一起承担这件事，第一行就不能只写给你们三个人看。",
+                        tone="steady",
+                        effects={
+                            "flags": {"alice_village_board_summary_started": 1},
+                            "relationship": {"alice.trust": 2, "eugeo.affinity": 1},
+                            "memory": {
+                                "alice": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家在村务信任阶段前，答应先把北门演练写成村民能看懂的记录。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    )
+                ],
+                fallback=(28, 25, "village_square"),
+                scene_id="village_square",
+                tile_x=28,
+                tile_y=25,
+            )
+        )
+
+    if (
+        18 <= day <= 22
+        and band in {"morning", "afternoon"}
+        and _flag(state, "month01_village_trust") >= 1
+        and _flag(state, "month01_silent_line_rehearsed") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_calls_silent_line_rehearsal",
+                kind="npc_concern",
+                title="尤里想复核静默线",
+                description="巡查板已经贴出去，北门的风声却又断了一次。尤里想趁记录还新，把静默线复核成真正的队伍流程。",
+                priority=86,
+                reason="Day 18-22 需要从村务信任自然推进到静默线演练。",
+                action={"type": "story_event", "event_id": "ch1_d18_silent_line_rehearsal"},
+                stakes=[
+                    "这次复核会决定规则、同伴判断和撤退路线能否同时成立。",
+                    "如果复核失败，远征包准备会缺少最关键的安全依据。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="ask_for_three_person_verdict",
+                        label="告诉尤里：这次三个人一起下判定",
+                        hint="强化共同复核，而不是让任何一个人独自承担。",
+                        result_text="尤里把听风位置重新画了一遍，留下最后一格给艾琳的记录。你们都明白，这次不能靠一个人的直觉。",
+                        tone="cooperate",
+                        effects={
+                            "flags": {"eugeo_three_person_verdict_agreed": 1},
+                            "relationship": {"eugeo.trust": 2, "alice.trust": 1},
+                            "promises": {
+                                "eugeo": "玩家在静默线演练前答应尤里，这次由三个人共同下判定。"
+                            },
+                            "memory": {
+                                "eugeo": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家答应尤里在静默线演练中让三个人共同复核最终判定。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    )
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 
