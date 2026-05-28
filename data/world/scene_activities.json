@@ -593,6 +593,101 @@
           }
         }
       }
+    },
+    {
+      "id": "north_gate_drill_walkthrough",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate",
+        "gigas_clearing"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "北境边门 · 演练路线",
+      "label": "和同伴走一遍撤退路线",
+      "description": "在真正靠近静默线以前，先把安全距离、撤退手势和风声复核顺序走熟。艾琳负责记录，尤里负责听风，你负责确认退路。",
+      "result_text": "你们沿着北门前的石缝走了一圈。标记粉落在退路边缘，风声短暂压低，又被三个人同时记住。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month01_debrief_done": 1
+        }
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "boundary",
+        "drill",
+        "teamwork"
+      ],
+      "interaction_kind": "route_drill",
+      "choices": [
+        {
+          "id": "mark_retreat_points",
+          "label": "优先标出撤退点",
+          "hint": "让演练偏向稳妥流程，艾琳会更放心。",
+          "tone": "cautious",
+          "result_text": "你先把撤退点标出来，再让尤里确认听风位置。艾琳把每个标记都写进记录本，北门第一次像一条可返回的路。",
+          "effects": {
+            "flags": {
+              "north_gate_drill_walkthrough_done": 1,
+              "north_gate_retreat_points_marked": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "scene_activity",
+                "summary": "玩家在北门演练时优先标出撤退点，让巡查流程更稳。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "rotate_wind_check",
+          "label": "三人轮换听风",
+          "hint": "让演练偏向队伍协作，尤里会更投入。",
+          "tone": "cooperate",
+          "result_text": "你们轮流停在风声最弱的位置，用同一个手势确认听见的断点。尤里没有急着往前走，因为这次答案来自三个人。",
+          "effects": {
+            "flags": {
+              "north_gate_drill_walkthrough_done": 1,
+              "north_gate_wind_rotation_practiced": 1
+            },
+            "relationship": {
+              "alice.trust": 1,
+              "eugeo.trust": 2,
+              "eugeo.affinity": 1
+            },
+            "memory": {
+              "eugeo": {
+                "type": "scene_activity",
+                "summary": "玩家在北门演练中让三人轮换听风，把静默线判断变成共同流程。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ],
+      "effects": {
+        "flags": {
+          "north_gate_drill_walkthrough_started": 1
+        },
+        "stamina_cost": 5,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      }
     }
   ]
 }

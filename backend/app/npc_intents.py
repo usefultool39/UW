@@ -439,6 +439,105 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        4 <= day <= 6
+        and band in {"morning", "afternoon"}
+        and _flag(state, "boundary_incident_resolved") >= 1
+        and _flag(state, "month01_debrief_done") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_calls_boundary_debrief",
+                kind="npc_invite",
+                title="艾琳想把边界事件写成记录",
+                description="边界前的风声没有随着回村消失。艾琳已经摊开记录本，等你决定这件事该如何留下。",
+                priority=92,
+                reason="Day 4-6 需要由 NPC 主动把玩家带回书库复盘，而不是只依赖事件列表。",
+                action={"type": "story_event", "event_id": "ch1_d4_after_boundary_debrief"},
+                stakes=[
+                    "这份记录会决定后续巡查是公开、保守，还是继续追查异常源头。",
+                    "艾琳在意安全流程，尤里在意异常真相；你的写法会影响两人的判断。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="promise_complete_record",
+                        label="答应艾琳：这次把事实写完整",
+                        hint="先稳住记录流程，再进入第四天复盘。",
+                        result_text="艾琳把空白页推到你面前，神情放松了一点。她不要求你立刻下结论，只要求你不要再让关键细节消失。",
+                        tone="steady",
+                        effects={
+                            "flags": {"alice_debrief_record_promised": 1},
+                            "relationship": {"alice.trust": 2, "eugeo.trust": 1},
+                            "memory": {
+                                "alice": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家在第四天复盘前答应艾琳，会把边界事件写成完整记录。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    )
+                ],
+                fallback=(14, 14, "reading_hall"),
+                scene_id="reading_hall",
+                tile_x=14,
+                tile_y=14,
+            )
+        )
+
+    if (
+        7 <= day <= 10
+        and band in {"morning", "afternoon"}
+        and _flag(state, "month01_debrief_done") >= 1
+        and _flag(state, "month01_drill_done") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_pushes_north_gate_drill",
+                kind="npc_prompt",
+                title="尤里想把复盘变成北门演练",
+                description="复盘已经写下来了，但尤里不想让它停在纸上。他在北门等你，把路线、风声和撤退信号走一遍。",
+                priority=90,
+                reason="Day 7-10 的第一次北门演练应该由同伴主动提出，形成从记录到行动的过渡。",
+                action={"type": "story_event", "event_id": "ch1_d7_first_boundary_drill"},
+                stakes=[
+                    "演练会决定后续巡查更偏向安全流程，还是更偏向三人协作。",
+                    "如果一直拖延，北门异常会停留在记录里，缺少可执行的队伍规则。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="agree_to_walk_route",
+                        label="告诉尤里：先走一遍撤退路线",
+                        hint="把主动调查压进安全流程里。",
+                        result_text="尤里把斧柄往肩上一搭，点头说先走退路也算前进。北门那边的风声像是在等你们靠近。",
+                        tone="promise",
+                        effects={
+                            "flags": {"eugeo_drill_route_agreed": 1},
+                            "relationship": {"eugeo.trust": 2, "alice.trust": 1},
+                            "promises": {
+                                "eugeo": "玩家在第一次北门演练前答应尤里，先走一遍撤退路线。"
+                            },
+                            "memory": {
+                                "eugeo": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家同意和尤里把北门撤退路线先演练一遍。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    )
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.session import Session
 
 
 def test_state_exposes_day1_npc_intents():
@@ -84,3 +85,44 @@ def test_npc_profile_exposes_mind_snapshot():
     assert profile["mind"]["current_goal"]
     assert profile["mind"]["active_focus"] == "艾琳想让你先看旧记录"
     assert isinstance(profile["mind"]["beliefs"], list)
+
+
+def test_day_four_debrief_intent_guides_player_back_to_library():
+    sess = Session(run_id="test-day4-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 4,
+            "time_band": "morning",
+            "flags": {"boundary_incident_resolved": 1},
+        }
+    )
+
+    state = sess.public_state()
+    intents = {item.id: item for item in state.npc_intents}
+
+    assert intents["alice_calls_boundary_debrief"].action == {
+        "type": "story_event",
+        "event_id": "ch1_d4_after_boundary_debrief",
+    }
+    assert intents["alice_calls_boundary_debrief"].response_options
+    assert intents["alice_calls_boundary_debrief"].scene_id == "reading_hall"
+
+
+def test_day_seven_drill_intent_guides_player_to_north_gate():
+    sess = Session(run_id="test-day7-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 7,
+            "time_band": "afternoon",
+            "flags": {"month01_debrief_done": 1},
+        }
+    )
+
+    state = sess.public_state()
+    intents = {item.id: item for item in state.npc_intents}
+
+    assert intents["eugeo_pushes_north_gate_drill"].action == {
+        "type": "story_event",
+        "event_id": "ch1_d7_first_boundary_drill",
+    }
+    assert intents["eugeo_pushes_north_gate_drill"].scene_id == "north_gate"
