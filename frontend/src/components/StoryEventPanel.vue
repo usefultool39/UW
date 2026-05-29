@@ -97,6 +97,7 @@ function choicePreview(choice) {
   if (promises.length) lines.push(`${promises.map(getAgentLabel).join('、')}会留下承诺`)
   if (tensions.length) lines.push(`${tensions.map(getAgentLabel).join('、')}会留下不安`)
   if (preview.ending_id) lines.push('可能收束章节')
+  if (!lines.length) lines.push('这个选择会影响后续回应')
   return lines.slice(0, 5)
 }
 </script>
