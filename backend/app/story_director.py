@@ -140,17 +140,19 @@ def public_event_view(event: dict[str, Any], state: WorldState | None = None) ->
     choice_overrides = variant.get("choice_overrides") if isinstance(variant.get("choice_overrides"), dict) else {}
 
     def choice_preview(choice: dict[str, Any]) -> dict[str, Any]:
+        explicit = choice.get("preview") if isinstance(choice.get("preview"), dict) else {}
         effects = choice.get("effects") if isinstance(choice.get("effects"), dict) else {}
         relationship = effects.get("relationship") if isinstance(effects.get("relationship"), dict) else {}
         memory = effects.get("memory") if isinstance(effects.get("memory"), dict) else {}
         promises = effects.get("promises") if isinstance(effects.get("promises"), dict) else {}
         tensions = effects.get("tensions") if isinstance(effects.get("tensions"), dict) else {}
         return {
-            "relationship": relationship,
-            "remembered_by": list(memory.keys()),
-            "promises": list(promises.keys()),
-            "tensions": list(tensions.keys()),
-            "ending_id": effects.get("ending_id"),
+            "relationship": explicit.get("relationship") if isinstance(explicit.get("relationship"), dict) else relationship,
+            "remembered_by": explicit.get("remembered_by") if isinstance(explicit.get("remembered_by"), list) else list(memory.keys()),
+            "promises": explicit.get("promises") if isinstance(explicit.get("promises"), list) else list(promises.keys()),
+            "tensions": explicit.get("tensions") if isinstance(explicit.get("tensions"), list) else list(tensions.keys()),
+            "consequences": explicit.get("consequences") if isinstance(explicit.get("consequences"), list) else [],
+            "ending_id": explicit.get("ending_id", effects.get("ending_id")),
         }
 
     description = variant.get("description") or event.get("description")

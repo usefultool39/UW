@@ -24,6 +24,32 @@ async function storyChoose(request, body) {
   return json
 }
 
+async function restToDay(request, day) {
+  let state = await (await request.get(`${API}/api/state`)).json()
+  while (Number(state.day || 1) < day) {
+    const out = await playerAction(request, { kind: 'rest_until_next_day' })
+    state = out.state
+  }
+}
+
+async function advanceToExpeditionPrep(request) {
+  await storyChoose(request, { event_id: 'ch1_d1_reading_clue', choice_id: 'ask_alice' })
+  await playerAction(request, { kind: 'rest_until_next_day' })
+  await storyChoose(request, { event_id: 'ch1_d2_forest_anomaly', choice_id: 'investigate_together' })
+  await playerAction(request, { kind: 'rest_until_next_day' })
+  await storyChoose(request, { event_id: 'ch1_d3_boundary_choice', choice_id: 'cross_boundary' })
+  await restToDay(request, 4)
+  await storyChoose(request, { event_id: 'ch1_d4_after_boundary_debrief', choice_id: 'write_truth' })
+  await restToDay(request, 7)
+  await storyChoose(request, { event_id: 'ch1_d7_first_boundary_drill', choice_id: 'mark_safe_route' })
+  await restToDay(request, 12)
+  await storyChoose(request, { event_id: 'ch1_d12_village_trust', choice_id: 'public_patrol_board' })
+  await restToDay(request, 18)
+  await storyChoose(request, { event_id: 'ch1_d18_silent_line_rehearsal', choice_id: 'calibrate_sacred_arts' })
+  await restToDay(request, 24)
+  await playerAction(request, { kind: 'move_scene', scene_id: 'home_hearth' })
+}
+
 async function dismissOpeningBrief(page) {
   const btn = page.getByRole('button', { name: '开始行动' })
   await btn.click({ timeout: 1_500 }).catch(() => {})
@@ -202,5 +228,19 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.journal-panel')).toContainText('第一月路线')
     await expect(page.locator('.month-plan-entry').filter({ hasText: '第 1 周：线索与信任' })).toBeVisible()
     await expect(page.locator('.milestone-row').filter({ hasText: 'Day 4-6' })).toBeVisible()
+  })
+
+  test('Day 24 远征准备显示 NPC 关注和选择后果预览', async ({ page, request }) => {
+    await advanceToExpeditionPrep(request)
+    await page.goto('/')
+
+    await expect(page.locator('.quest-tracker')).toContainText('NPC 关注')
+    await expect(page.locator('.quest-tracker')).toContainText('远征包')
+    await expect(page.locator('.event-btn').filter({ hasText: '第二十四天：远征包' })).toBeVisible()
+
+    await page.locator('.event-btn').filter({ hasText: '第二十四天：远征包' }).click()
+    await expect(page.locator('.event-panel')).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '第二月撤退路线更稳定' })).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '第二月调查范围更远' })).toBeVisible()
   })
 })
