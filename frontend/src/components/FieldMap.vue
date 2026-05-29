@@ -396,7 +396,25 @@ watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep:
 .atmosphere-layer.mist { opacity: 0.28; background: linear-gradient(100deg, rgba(226, 232, 240, 0.24), transparent 34%, rgba(226, 232, 240, 0.16) 68%, transparent); }
 .atmosphere-layer.drizzle { opacity: 0.24; background: repeating-linear-gradient(110deg, rgba(226, 232, 240, 0.16) 0 1px, transparent 1px 13px); }
 
-.weather-note { display: none; }
+.weather-note {
+  position: absolute;
+  left: 0.8rem;
+  top: 3.2rem;
+  z-index: 30;
+  max-width: min(360px, calc(100% - 2rem));
+  padding: 0.34rem 0.58rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+  background: rgba(3, 7, 18, 0.72);
+  color: rgba(226, 232, 240, 0.86);
+  box-shadow: 0 8px 18px rgba(2, 6, 23, 0.22);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.35;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
 
 .dom-minimap {
   position: absolute;
@@ -504,6 +522,7 @@ watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep:
 
 @media (max-width: 900px) {
   .scene-badge { top: 0.55rem; left: 0.55rem; right: auto; transform: none; font-size: 0.66rem; padding: 0.32rem 0.55rem; }
+  .weather-note { top: 2.85rem; left: 0.55rem; max-width: calc(100% - 9.5rem); font-size: 0.64rem; padding: 0.28rem 0.46rem; }
   .dom-minimap { top: 3.5rem; right: 0.55rem; width: 136px; min-width: 136px; padding: 0.28rem; }
   .dom-minimap-legend,
   .dom-minimap-foot { display: none; }
