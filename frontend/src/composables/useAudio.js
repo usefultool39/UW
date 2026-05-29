@@ -4,6 +4,10 @@ const STORAGE_KEY = 'uw-audio-muted'
 const VOLUME_STORAGE_KEY = 'uw-audio-volume'
 const missingAudioUrls = new Set()
 const warnedAudioUrls = new Set()
+const PROCEDURAL_SFX_URLS = new Set([
+  '/assets/audio/sfx_step.mp3',
+  '/assets/audio/sfx_activity.mp3'
+])
 
 function loadSettings() {
   try {
@@ -46,6 +50,44 @@ async function fetchAudioBuffer(url) {
     warnMissingAudio(url)
     return null
   }
+}
+
+function hasProceduralSfx(url) {
+  return PROCEDURAL_SFX_URLS.has(String(url || ''))
+}
+
+function createStepSfx(ctx) {
+  const length = Math.floor(ctx.sampleRate * 0.22)
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate)
+  const data = buffer.getChannelData(0)
+  for (let i = 0; i < length; i += 1) {
+    const t = i / ctx.sampleRate
+    const env = Math.exp(-t * 18)
+    const thump = Math.sin(2 * Math.PI * 95 * t) * 0.26
+    const grit = (Math.random() * 2 - 1) * 0.11
+    data[i] = (thump + grit) * env
+  }
+  return buffer
+}
+
+function createActivitySfx(ctx) {
+  const length = Math.floor(ctx.sampleRate * 0.55)
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate)
+  const data = buffer.getChannelData(0)
+  for (let i = 0; i < length; i += 1) {
+    const t = i / ctx.sampleRate
+    const env = Math.min(1, t / 0.035) * Math.exp(-t * 4.2)
+    const bell = Math.sin(2 * Math.PI * 660 * t) * 0.18
+    const overtone = Math.sin(2 * Math.PI * 990 * t) * 0.08
+    data[i] = (bell + overtone) * env
+  }
+  return buffer
+}
+
+function createProceduralSfx(ctx, url) {
+  if (url === '/assets/audio/sfx_step.mp3') return createStepSfx(ctx)
+  if (url === '/assets/audio/sfx_activity.mp3') return createActivitySfx(ctx)
+  return null
 }
 
 export function useAudio() {
@@ -117,13 +159,15 @@ export function useAudio() {
 
   // --- SFX ---
   async function playSfx(url) {
-    if (muted.value || !url || missingAudioUrls.has(url)) return
+    if (muted.value || !url || (!hasProceduralSfx(url) && missingAudioUrls.has(url))) return
     ensureResumed()
     try {
       const ctx = getCtx()
-      const arrayBuffer = await fetchAudioBuffer(url)
-      if (!arrayBuffer) return
-      const audioBuffer = await ctx.decodeAudioData(arrayBuffer)
+      const audioBuffer = createProceduralSfx(ctx, url) || await (async () => {
+        const arrayBuffer = await fetchAudioBuffer(url)
+        return arrayBuffer ? ctx.decodeAudioData(arrayBuffer) : null
+      })()
+      if (!audioBuffer) return
       const source = ctx.createBufferSource()
       source.buffer = audioBuffer
       const gain = ctx.createGain()
