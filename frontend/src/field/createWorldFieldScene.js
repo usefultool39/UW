@@ -435,9 +435,9 @@ function addStoryBeacon(scene, cont, label, ts, opts = {}) {
   const baseW = ts * (important ? 0.94 : 0.72)
 
   const beam = scene.add.graphics()
-  beam.fillStyle(0xfbbf24, active ? 0.11 : 0.04)
+  beam.fillStyle(0xfbbf24, active ? (important ? 0.16 : 0.12) : 0.04)
   beam.fillTriangle(0, -height, -baseW * 0.5, -ts * 0.05, baseW * 0.5, -ts * 0.05)
-  beam.fillStyle(0xfff7d6, active ? 0.08 : 0.03)
+  beam.fillStyle(0xfff7d6, active ? (important ? 0.12 : 0.08) : 0.03)
   beam.fillEllipse(0, -height * 0.52, baseW * 0.58, height * 0.82)
 
   const shadow = scene.add.ellipse(0, ts * 0.08, ts * 1.04, ts * 0.34, 0x020617, 0.28)
@@ -445,9 +445,9 @@ function addStoryBeacon(scene, cont, label, ts, opts = {}) {
     .ellipse(0, 0, ts * (important ? 1.26 : 1.04), ts * 0.38, 0xfbbf24, active ? 0.13 : 0.04)
     .setStrokeStyle(2, 0xfde047, active ? 0.72 : 0.22)
   const core = scene.add
-    .circle(0, -ts * 0.52, ts * (important ? 0.21 : 0.17), 0xfff7d6, active ? 0.88 : 0.22)
-    .setStrokeStyle(2, 0xfbbf24, active ? 0.82 : 0.22)
-  const spark = scene.add.star(0, -ts * 0.52, 4, ts * 0.06, ts * 0.18, 0xfff7d6, active ? 0.88 : 0.2)
+    .circle(0, -ts * 0.52, ts * (important ? 0.28 : 0.22), 0xfff7d6, active ? 0.92 : 0.22)
+    .setStrokeStyle(important ? 2.5 : 2, 0xfbbf24, active ? 0.9 : 0.22)
+  const spark = scene.add.star(0, -ts * 0.52, 4, ts * 0.07, ts * (important ? 0.22 : 0.18), 0xfff7d6, active ? 0.9 : 0.2)
   const icon = scene.add
     .text(0, -ts * 0.55, important ? '!' : '•', {
       fontSize: important ? '15px' : '12px',
