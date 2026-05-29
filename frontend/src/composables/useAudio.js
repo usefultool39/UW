@@ -2,6 +2,8 @@ import { ref, computed } from 'vue'
 
 const STORAGE_KEY = 'uw-audio-muted'
 const VOLUME_STORAGE_KEY = 'uw-audio-volume'
+const missingAudioUrls = new Set()
+const warnedAudioUrls = new Set()
 
 function loadSettings() {
   try {
@@ -20,6 +22,29 @@ function saveSettings(muted, volume) {
     localStorage.setItem(VOLUME_STORAGE_KEY, String(volume))
   } catch {
     // ignore
+  }
+}
+
+function warnMissingAudio(url) {
+  if (!url || warnedAudioUrls.has(url)) return
+  warnedAudioUrls.add(url)
+  console.warn(`[useAudio] audio asset missing, skipping: ${url}`)
+}
+
+async function fetchAudioBuffer(url) {
+  if (!url || missingAudioUrls.has(url)) return null
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      missingAudioUrls.add(url)
+      warnMissingAudio(url)
+      return null
+    }
+    return await response.arrayBuffer()
+  } catch {
+    missingAudioUrls.add(url)
+    warnMissingAudio(url)
+    return null
   }
 }
 
@@ -54,7 +79,7 @@ export function useAudio() {
 
   // --- BGM ---
   async function playBgm(url) {
-    if (muted.value) return
+    if (muted.value || !url || missingAudioUrls.has(url)) return
     ensureResumed()
     try {
       const ctx = getCtx()
@@ -67,8 +92,8 @@ export function useAudio() {
         bgmGain.connect(ctx.destination)
       }
       bgmGain.gain.setValueAtTime(volume.value, ctx.currentTime)
-      const response = await fetch(url)
-      const arrayBuffer = await response.arrayBuffer()
+      const arrayBuffer = await fetchAudioBuffer(url)
+      if (!arrayBuffer) return
       const audioBuffer = await ctx.decodeAudioData(arrayBuffer)
       const source = ctx.createBufferSource()
       source.buffer = audioBuffer
@@ -92,12 +117,12 @@ export function useAudio() {
 
   // --- SFX ---
   async function playSfx(url) {
-    if (muted.value) return
+    if (muted.value || !url || missingAudioUrls.has(url)) return
     ensureResumed()
     try {
       const ctx = getCtx()
-      const response = await fetch(url)
-      const arrayBuffer = await response.arrayBuffer()
+      const arrayBuffer = await fetchAudioBuffer(url)
+      if (!arrayBuffer) return
       const audioBuffer = await ctx.decodeAudioData(arrayBuffer)
       const source = ctx.createBufferSource()
       source.buffer = audioBuffer
