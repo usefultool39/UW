@@ -522,7 +522,7 @@ watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep:
 
 @media (max-width: 900px) {
   .scene-badge { top: 0.55rem; left: 0.55rem; right: auto; transform: none; font-size: 0.66rem; padding: 0.32rem 0.55rem; }
-  .weather-note { top: 2.85rem; left: 0.55rem; max-width: calc(100% - 9.5rem); font-size: 0.64rem; padding: 0.28rem 0.46rem; }
+  .weather-note { display: none; }
   .dom-minimap { top: 3.5rem; right: 0.55rem; width: 136px; min-width: 136px; padding: 0.28rem; }
   .dom-minimap-legend,
   .dom-minimap-foot { display: none; }
