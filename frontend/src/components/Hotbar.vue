@@ -4,9 +4,10 @@
       v-for="action in actions"
       :key="action.key"
       type="button"
-      :disabled="busy || (action.requiresEvents && !hasEvents)"
+      :disabled="isActionDisabled(action)"
       @click="$emit('action', action.id)"
-      :title="action.desc"
+      :title="getActionTitle(action)"
+      :aria-label="getActionAriaLabel(action)"
       :class="`action-${action.id}`"
     >
       <kbd>{{ action.key }}</kbd>
@@ -20,7 +21,7 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   busy: { type: Boolean, default: false },
   hasEvents: { type: Boolean, default: false }
 })
@@ -34,6 +35,25 @@ const actions = [
   { id: 'rest', key: '4', icon: '眠', label: '休息', desc: '回小屋休息，推进到第二天' },
   { id: 'journal', key: '5', icon: '志', label: '日志', desc: '查看线索手册、NPC 记忆和关系暗线' }
 ]
+
+function getDisabledReason(action) {
+  if (props.busy) return '系统正忙，请稍候'
+  if (action.requiresEvents && !props.hasEvents) return '附近暂无可处理线索'
+  return ''
+}
+
+function isActionDisabled(action) {
+  return !!getDisabledReason(action)
+}
+
+function getActionTitle(action) {
+  return getDisabledReason(action) || action.desc
+}
+
+function getActionAriaLabel(action) {
+  const reason = getDisabledReason(action)
+  return reason ? `${action.label}不可用：${reason}` : `${action.label}：${action.desc}`
+}
 </script>
 
 <style scoped>
