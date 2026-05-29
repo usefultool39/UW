@@ -50,6 +50,13 @@ async function advanceToExpeditionPrep(request) {
   await playerAction(request, { kind: 'move_scene', scene_id: 'home_hearth' })
 }
 
+async function advanceToMonthGate(request) {
+  await advanceToExpeditionPrep(request)
+  await storyChoose(request, { event_id: 'ch1_d24_expedition_pack', choice_id: 'pack_for_safety' })
+  await restToDay(request, 28)
+  await playerAction(request, { kind: 'move_scene', scene_id: 'north_gate' })
+}
+
 async function dismissOpeningBrief(page) {
   const btn = page.getByRole('button', { name: '开始行动' })
   await btn.click({ timeout: 1_500 }).catch(() => {})
@@ -242,5 +249,17 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.event-panel')).toBeVisible()
     await expect(page.locator('.event-choice').filter({ hasText: '第二月撤退路线更稳定' })).toBeVisible()
     await expect(page.locator('.event-choice').filter({ hasText: '第二月调查范围更远' })).toBeVisible()
+  })
+
+  test('Day 28 北门前夜显示第二月路线后果预览', async ({ page, request }) => {
+    await advanceToMonthGate(request)
+    await page.goto('/')
+
+    await expect(page.locator('.event-btn').filter({ hasText: '第三十天：北门前夜' })).toBeVisible()
+    await page.locator('.event-btn').filter({ hasText: '第三十天：北门前夜' }).click()
+    await expect(page.locator('.event-panel')).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '第二月村内支持更稳' })).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '第二月远征推进更快' })).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '第二月调查更隐蔽' })).toBeVisible()
   })
 })
