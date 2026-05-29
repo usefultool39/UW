@@ -924,6 +924,15 @@
           "id": "pack_for_safety",
           "label": "优先带安全绳、记录本和退路标记",
           "hint": "偏向稳妥远征，艾琳会更放心。",
+          "preview": {
+            "remembered_by": ["alice", "eugeo"],
+            "relationship": {
+              "alice.trust": 6,
+              "alice.tension": -2,
+              "eugeo.trust": 2
+            },
+            "consequences": ["第二月撤退路线更稳定", "调查推进会更谨慎"]
+          },
           "result_text": "你把最占重量的位置留给安全绳和记录本。艾琳把每段绳结重新检查了一遍，尤里则把标记粉分成三份。",
           "effects": {
             "flags": {
@@ -953,6 +962,17 @@
           "id": "pack_for_range",
           "label": "优先带干粮、备用刻印和测距粉",
           "hint": "偏向更远的调查路线，尤里会更兴奋。",
+          "preview": {
+            "remembered_by": ["alice", "eugeo"],
+            "relationship": {
+              "eugeo.trust": 6,
+              "eugeo.affinity": 2,
+              "alice.trust": 2,
+              "alice.tension": 2
+            },
+            "promises": ["alice"],
+            "consequences": ["第二月调查范围更远", "撤退压力会更明显"]
+          },
           "result_text": "你把远征包留给更长路线需要的东西。尤里主动背起最重的那袋测距粉，艾琳没有阻止，只把撤退标记塞进你手里。",
           "effects": {
             "flags": {

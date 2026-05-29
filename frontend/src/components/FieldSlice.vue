@@ -467,6 +467,9 @@ function buildIntentQuestGuide(intent) {
 }
 
 function buildEventQuestGuide(event) {
+  if (event?.id === 'ch1_d24_expedition_pack') {
+    return '远征准备：去小屋整理远征包。这个选择会决定第二月偏稳妥推进，还是扩大调查范围。'
+  }
   const title = compactGuideText(event?.title || '新的线索', 30)
   const scene = event?.location?.scene_id ? getSceneLabel(event.location.scene_id) : ''
   const placeHint = scene ? `去${scene}` : '靠近金色标记'
@@ -602,6 +605,7 @@ function enrichInteractAction(action) {
 
 function naturalStoryEventLabel(event) {
   const kind = String(event?.kind || '')
+  if (event?.id === 'ch1_d24_expedition_pack') return '整理远征包'
   if (kind === 'clue') return '调查边界记录'
   if (kind === 'training') return '开始巨树训练'
   if (kind === 'anomaly') return '确认森林异常'

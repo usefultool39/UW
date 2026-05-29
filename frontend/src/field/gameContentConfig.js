@@ -111,7 +111,7 @@ export const STORY_EVENT_HINTS = {
   ch1_d7_first_boundary_drill: { title: '北门巡查演练', clue: '你们把安全距离、信号和撤退路线变成三人流程。', scene_id: 'north_gate', day: 7 },
   ch1_d12_village_trust: { title: '把巡查变成村务', clue: '北门巡查开始影响村里对你们的信任。', scene_id: 'village_square', day: 12 },
   ch1_d18_silent_line_rehearsal: { title: '静默线演练', clue: '你们用记录、刻印和同伴分工复核静默线。', scene_id: 'north_gate', day: 18 },
-  ch1_d24_expedition_pack: { title: '远征包', clue: '补给选择决定第二月远征偏稳妥还是偏深入。', scene_id: 'home_hearth', day: 24 },
+  ch1_d24_expedition_pack: { title: '第二十四天：远征包', clue: '静默线演练结束，第一次正式远征已经近在眼前。小屋里的补给选择会决定第二月是稳妥推进，还是深入调查。', scene_id: 'home_hearth', day: 24 },
   ch1_d30_first_month_gate: { title: '北门前夜', clue: '第一月的结尾会把第二月路线定下来。', scene_id: 'north_gate', day: 30 }
 }
 
@@ -163,7 +163,7 @@ export function getQuestGuide(simState) {
   if (flags.month01_debrief_done && !flags.month01_drill_done) return '第一月推进中：休息到第七天后去北门，把安全距离和撤退信号演练成流程。'
   if (flags.month01_drill_done && !flags.month01_village_trust) return '第一月推进中：第十二天起到村广场处理巡查公开度和补给问题。'
   if (flags.month01_village_trust && !flags.month01_silent_line_rehearsed) return '第一月推进中：第十八天起回到北门，复核静默线和同伴分工。'
-  if (flags.month01_silent_line_rehearsed && !flags.month01_expedition_ready) return '第一月推进中：第二十四天起在小屋整理远征包，决定稳妥或深入。'
+  if (flags.month01_silent_line_rehearsed && !flags.month01_expedition_ready) return '远征准备：静默线演练已经结束。第二十四天起回小屋整理远征包，先确认同伴担心，再决定第二月走稳妥路线还是深入调查。'
   if (flags.month01_expedition_ready && !flags.month01_gate_resolved) return '第一月末：第二十八天后去北门前夜，选择第二月路线。'
   if (flags.month01_gate_resolved) return '第一月已经收束：第二月边境远征入口已经埋好。'
   const active = simState.active_event_ids || []

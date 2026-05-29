@@ -34,6 +34,21 @@
       <strong>可以交谈</strong>
     </div>
 
+    <div v-if="activeNpcIntents.length" class="npc-attention">
+      <div class="npc-attention-label">NPC 关注</div>
+      <button
+        v-for="intent in activeNpcIntents"
+        :key="intent.id"
+        type="button"
+        class="npc-attention-btn"
+        :disabled="busy"
+        @click="$emit('open-interact')"
+      >
+        <strong>{{ intentTitle(intent) }}</strong>
+        <small>{{ intentMeta(intent) }}</small>
+      </button>
+    </div>
+
     <Transition name="event-fade">
       <div v-if="safeStoryEvents.length" class="event-strip">
         <div class="event-label">当前线索</div>
@@ -69,7 +84,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { getSceneLabel } from '../field/gameContentConfig.js'
+import { getAgentLabel, getSceneLabel } from '../field/gameContentConfig.js'
 
 const props = defineProps({
   simState: { type: Object, default: null },
@@ -107,6 +122,22 @@ const safeQuestGuide = computed(() => canonText(props.questGuide || '在村中�
 const safeNearbyNpcLabel = computed(() => canonText(props.nearbyNpcLabel || '暂无 NPC'))
 const safeNearbyInteractTitle = computed(() => canonText(props.nearbyInteractTitle || '暂无地点'))
 const hasNearbyNpc = computed(() => safeNearbyNpcLabel.value !== '暂无 NPC')
+const activeNpcIntents = computed(() =>
+  (Array.isArray(props.simState?.npc_intents) ? props.simState.npc_intents : [])
+    .slice()
+    .sort((a, b) => Number(b?.priority || 0) - Number(a?.priority || 0))
+    .slice(0, 2)
+)
+
+function intentTitle(intent) {
+  return canonText(intent?.title || '同伴正在等你回应')
+}
+
+function intentMeta(intent) {
+  const agent = canonText(intent?.npc_id ? getAgentLabel(intent.npc_id) : 'NPC')
+  const scene = intent?.scene_id ? getSceneLabel(intent.scene_id) : ''
+  return canonText([agent, scene, intent?.reason || '主动邀约'].filter(Boolean).join(' · '))
+}
 
 function eventMeta(event) {
   const scene = getSceneLabel(event?.location?.scene_id || '')
@@ -264,6 +295,58 @@ function eventMeta(event) {
   color: #fff7d6;
   font-size: 0.72rem;
   line-height: 1.3;
+}
+
+.npc-attention {
+  margin-top: 0.46rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.npc-attention-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--sao-gold);
+  font-weight: 800;
+}
+
+.npc-attention-btn {
+  width: 100%;
+  padding: 0.36rem 0.44rem;
+  border-radius: 6px;
+  border: 1px solid rgba(246, 211, 110, 0.22);
+  background: rgba(35, 28, 18, 0.42);
+  color: #fff7d6;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  gap: 0.12rem;
+}
+
+.npc-attention-btn:hover:not(:disabled) {
+  border-color: rgba(253, 224, 71, 0.58);
+  background: rgba(56, 43, 24, 0.58);
+}
+
+.npc-attention-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.npc-attention-btn strong {
+  font-size: 0.7rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.npc-attention-btn small {
+  color: #bae6fd;
+  font-size: 0.6rem;
+  line-height: 1.25;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .event-strip {

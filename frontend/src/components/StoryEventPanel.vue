@@ -92,10 +92,12 @@ function choicePreview(choice) {
   const remembered = Array.isArray(preview.remembered_by) ? preview.remembered_by : []
   const promises = Array.isArray(preview.promises) ? preview.promises : []
   const tensions = Array.isArray(preview.tensions) ? preview.tensions : []
+  const consequences = Array.isArray(preview.consequences) ? preview.consequences : []
   if (remembered.length) lines.push(`${remembered.map(getAgentLabel).join('、')}会记住`)
   lines.push(...relationshipPreviewText(preview.relationship).slice(0, 3))
   if (promises.length) lines.push(`${promises.map(getAgentLabel).join('、')}会留下承诺`)
   if (tensions.length) lines.push(`${tensions.map(getAgentLabel).join('、')}会留下不安`)
+  lines.push(...consequences.slice(0, 2))
   if (preview.ending_id) lines.push('可能收束章节')
   if (!lines.length) lines.push('这个选择会影响后续回应')
   return lines.slice(0, 5)
