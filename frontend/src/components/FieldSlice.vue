@@ -451,14 +451,35 @@ const nearbyActionPreview = computed(() =>
   }))
 )
 
+function compactGuideText(value, maxLength = 30) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim()
+  if (!text) return ''
+  return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text
+}
+
+function buildIntentQuestGuide(intent) {
+  const agent = getAgentLabel(intent?.npc_id)
+  const title = compactGuideText(intent?.title || intent?.reason || '回应这次主动邀约', 28)
+  const scene = intent?.scene_id ? getSceneLabel(intent.scene_id) : ''
+  const placeHint = scene ? `去${scene}` : '走近同伴'
+  const action = intent?.action?.type === 'training' ? '开始训练' : '打开互动回应'
+  return `${agent}在等你：${title}。${placeHint}，${action}。`
+}
+
+function buildEventQuestGuide(event) {
+  const title = compactGuideText(event?.title || '新的线索', 30)
+  const scene = event?.location?.scene_id ? getSceneLabel(event.location.scene_id) : ''
+  const placeHint = scene ? `去${scene}` : '靠近金色标记'
+  return `${title}：${placeHint}处理这条线索。`
+}
+
 const questGuide = computed(() => {
   const intent = nearbyNpcIntents.value[0] || npcIntents.value[0]
   if (intent) {
-    return `${getAgentLabel(intent.npc_id)}正在推动下一步：${intent.title}。${intent.description || ''}`.trim()
+    return buildIntentQuestGuide(intent)
   }
   if (storyEvents.value.length) {
-    const event = storyEvents.value[0]
-    return `${event.title || '新的线索'}：${event.description || '靠近金色线索后可触发。'}`
+    return buildEventQuestGuide(storyEvents.value[0])
   }
   return getQuestGuide(props.simState)
 })
