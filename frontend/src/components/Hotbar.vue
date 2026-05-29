@@ -10,7 +10,10 @@
       :class="`action-${action.id}`"
     >
       <kbd>{{ action.key }}</kbd>
-      <span class="action-icon" aria-hidden="true">{{ action.icon }}</span>
+      <span class="action-icon" aria-hidden="true">
+        <span class="icon-symbol"></span>
+        <span class="icon-fallback">{{ action.icon }}</span>
+      </span>
       <span>{{ action.label }}</span>
     </button>
   </nav>
@@ -52,6 +55,7 @@ const actions = [
 }
 
 .action-hotbar button {
+  position: relative;
   min-height: 3.25rem;
   padding: 0.32rem 0.28rem;
   border-radius: 6px;
@@ -65,9 +69,17 @@ const actions = [
   color: #f8fafc;
   font-size: 0.82rem;
   font-weight: 800;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+  --action-accent: #7dd3fc;
+  --action-glow: rgba(125, 211, 252, 0.24);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease, background 0.18s ease;
   will-change: transform;
 }
+
+.action-hotbar button.action-talk { --action-accent: #22d3ee; --action-glow: rgba(34, 211, 238, 0.28); }
+.action-hotbar button.action-read { --action-accent: #fde047; --action-glow: rgba(253, 224, 71, 0.28); }
+.action-hotbar button.action-train { --action-accent: #fbbf24; --action-glow: rgba(251, 191, 36, 0.3); }
+.action-hotbar button.action-rest { --action-accent: #a78bfa; --action-glow: rgba(167, 139, 250, 0.3); }
+.action-hotbar button.action-journal { --action-accent: #c4b5fd; --action-glow: rgba(196, 181, 253, 0.28); }
 
 .action-hotbar button.action-event:not(:disabled) {
   border-color: rgba(253, 224, 71, 0.7);
@@ -75,8 +87,8 @@ const actions = [
 }
 
 .action-hotbar button:hover:not(:disabled) {
-  border-color: rgba(253, 224, 71, 0.8);
-  box-shadow: 0 0 18px rgba(212, 175, 55, 0.34);
+  border-color: color-mix(in srgb, var(--action-accent) 82%, white 18%);
+  box-shadow: 0 0 18px var(--action-glow);
   transform: translateY(-1px);
 }
 
@@ -111,14 +123,124 @@ const actions = [
   height: 1.65rem;
   display: grid;
   place-items: center;
+  position: relative;
+  border-radius: 8px;
+  color: var(--action-accent);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(2, 6, 23, 0.04)),
+    rgba(94, 207, 255, 0.1);
+  border: 1px solid color-mix(in srgb, var(--action-accent) 42%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 12px var(--action-glow);
+}
+
+.icon-symbol,
+.icon-symbol::before,
+.icon-symbol::after {
+  box-sizing: border-box;
+  position: absolute;
+  content: '';
+  display: block;
+}
+
+.icon-fallback {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  font-size: 0.01px;
+}
+
+.action-talk .icon-symbol {
+  width: 1rem;
+  height: 0.72rem;
+  border: 2px solid currentColor;
+  border-radius: 0.4rem;
+}
+
+.action-talk .icon-symbol::after {
+  right: 0.1rem;
+  bottom: -0.32rem;
+  width: 0.36rem;
+  height: 0.36rem;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-18deg);
+}
+
+.action-read .icon-symbol {
+  width: 1.08rem;
+  height: 0.72rem;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+}
+
+.action-read .icon-symbol::before {
+  inset: 0.2rem 0.38rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.action-train .icon-symbol {
+  width: 0.16rem;
+  height: 1.12rem;
+  border-radius: 999px;
+  background: currentColor;
+  transform: rotate(42deg);
+}
+
+.action-train .icon-symbol::before {
+  left: -0.33rem;
+  top: 0.4rem;
+  width: 0.82rem;
+  height: 0.16rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.action-rest .icon-symbol {
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
-  color: #dff7ff;
-  background: rgba(94, 207, 255, 0.12);
-  border: 1px solid rgba(125, 211, 252, 0.28);
-  font-size: 0.92rem;
-  font-weight: 900;
-  line-height: 1;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: currentColor;
+}
+
+.action-rest .icon-symbol::after {
+  right: -0.14rem;
+  top: -0.04rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: #0a101c;
+}
+
+.action-journal .icon-symbol {
+  width: 0.95rem;
+  height: 1.05rem;
+  border: 2px solid currentColor;
+  border-radius: 0.16rem;
+}
+
+.action-journal .icon-symbol::before,
+.action-journal .icon-symbol::after {
+  left: 0.18rem;
+  width: 0.5rem;
+  height: 0.1rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.action-journal .icon-symbol::before { top: 0.28rem; }
+.action-journal .icon-symbol::after { top: 0.55rem; }
+
+@supports not (color: color-mix(in srgb, white, black)) {
+  .action-hotbar button:hover:not(:disabled) {
+    border-color: rgba(253, 224, 71, 0.8);
+  }
+
+  .action-icon {
+    border-color: rgba(125, 211, 252, 0.32);
+  }
 }
 
 @media (max-width: 900px) {
