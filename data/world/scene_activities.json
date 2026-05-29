@@ -879,6 +879,214 @@
           "eugeo.trust": 1
         }
       }
+    },
+    {
+      "id": "home_expedition_bridge_talk",
+      "scene_id": "home_hearth",
+      "scene_ids": [
+        "home_hearth",
+        "reading_hall"
+      ],
+      "poi_id": "ix_home_bed",
+      "title": "家中炉火 · 远征前夜",
+      "label": "把远征前的问题过一遍",
+      "description": "静默线复核之后，炉火边只剩下最后几个问题：谁背记录本，谁守退路，谁在风声断开时先喊停。",
+      "result_text": "你们把桌上的纸页摊开。艾琳先写下退路，尤里把听风位置圈出来，你则把还没回答的问题留到远征包旁边。",
+      "time_cost": 1,
+      "repeat": "once",
+      "time_bands": [
+        "evening",
+        "night"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month01_silent_line_rehearsed": 1
+        }
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month01",
+        "bridge",
+        "expedition"
+      ],
+      "effects": {
+        "flags": {
+          "month01_expedition_bridge_talk": 1
+        },
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1,
+          "alice.tension": -1
+        },
+        "memory": {
+          "alice": {
+            "type": "month01",
+            "summary": "玩家在远征前夜和同伴把退路、记录本和停步信号重新过了一遍。",
+            "weight": 4
+          },
+          "eugeo": {
+            "type": "month01",
+            "summary": "玩家没有急着出发，而是在炉火边确认远征前的最后分工。",
+            "weight": 4
+          }
+        }
+      }
+    },
+    {
+      "id": "home_expedition_pack_review",
+      "scene_id": "home_hearth",
+      "scene_ids": [
+        "home_hearth",
+        "reading_hall"
+      ],
+      "poi_id": "ix_home_bed",
+      "title": "家中炉火 · 远征包复核",
+      "label": "复核绳索、干粮和标记粉",
+      "description": "正式远征还没有开始，但绳索、干粮、记录本和标记粉已经把第二月的路线摆在桌上。",
+      "result_text": "你把绳索压在记录本旁边，又把标记粉分成三份。远征包没有变轻，但它终于像一件可以出发的东西。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month01_silent_line_rehearsed": 1
+        }
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month01",
+        "expedition",
+        "supplies"
+      ],
+      "interaction_kind": "expedition_pack",
+      "choices": [
+        {
+          "id": "review_safe_pack",
+          "label": "优先复核退路和记录本",
+          "hint": "把远征包整理成稳妥配置。",
+          "tone": "cautious",
+          "result_text": "你先检查绳结、记录本和退路标记。艾琳把每个结重新收紧，确认它们能在慌乱时也被看懂。",
+          "effects": {
+            "flags": {
+              "month01_pack_reviewed": 1,
+              "month01_pack_review_safe": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在远征包复核中优先确认退路、绳索和记录本。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "review_range_pack",
+          "label": "优先复核干粮和测距粉",
+          "hint": "把远征包整理成更长调查路线。",
+          "tone": "curious",
+          "result_text": "你把干粮和测距粉排到最顺手的位置。尤里看着那条更远的路线，没有催促，只把最重的一袋移到自己那侧。",
+          "effects": {
+            "flags": {
+              "month01_pack_reviewed": 1,
+              "month01_pack_review_range": 1
+            },
+            "relationship": {
+              "eugeo.trust": 2,
+              "eugeo.affinity": 1,
+              "alice.trust": 1
+            },
+            "memory": {
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家在远征包复核中偏向更长调查路线，尤里主动承担更重的补给。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ],
+      "effects": {
+        "flags": {
+          "month01_expedition_pack_review_started": 1
+        },
+        "stamina_cost": 4,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      }
+    },
+    {
+      "id": "village_expedition_sendoff",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "村道广场 · 远征送行",
+      "label": "让村里知道你们要准备出发",
+      "description": "远征包已经压好，村道广场却还有人想知道你们会不会真的走到北门外面去。",
+      "result_text": "你没有把所有细节说出来，只把安全距离和撤退信号留在巡查板旁。几个村民沉默地记住了那两个手势。",
+      "time_cost": 1,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month01_expedition_ready": 1
+        }
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month01",
+        "village",
+        "expedition"
+      ],
+      "effects": {
+        "flags": {
+          "month01_village_sendoff_done": 1
+        },
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        },
+        "memory": {
+          "alice": {
+            "type": "month01",
+            "summary": "玩家在村道广场把远征前的安全距离和撤退信号留给村民。",
+            "weight": 4
+          },
+          "eugeo": {
+            "type": "month01",
+            "summary": "玩家让远征不再只是三个人的秘密，而是有村里可以理解的安全手势。",
+            "weight": 4
+          }
+        }
+      }
     }
   ]
 }
