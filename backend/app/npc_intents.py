@@ -637,6 +637,152 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        23 <= day <= 27
+        and band in {"evening", "night"}
+        and _flag(state, "month01_silent_line_rehearsed") >= 1
+        and _flag(state, "month01_expedition_bridge_talk") < 1
+        and _flag(state, "month01_expedition_ready") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_sets_expedition_bridge_talk",
+                kind="npc_concern",
+                title="艾琳想把远征前夜说清楚",
+                description="静默线复核结束后，艾琳不想让远征包只剩物品清单。她想在炉火边确认退路、记录本和停步信号。",
+                priority=84,
+                reason="Day 23-27 需要从静默线演练自然过渡到远征包准备。",
+                action={"type": "scene_activity", "activity_id": "home_expedition_bridge_talk"},
+                stakes=[
+                    "远征前夜会决定第二月远征是带着共同分工出发，还是只靠临时判断。",
+                    "如果不先说清楚，远征包准备会缺少情感和安全铺垫。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="agree_to_hearth_review",
+                        label="答应艾琳：先在炉火边把分工过一遍",
+                        hint="把远征前的问题从物品清单拉回同伴分工。",
+                        result_text="艾琳把记录本放到桌中央。她没有要求你立刻决定路线，只要求每个人先知道谁负责停下。",
+                        tone="cautious",
+                        effects={
+                            "flags": {"alice_expedition_bridge_agreed": 1},
+                            "relationship": {"alice.trust": 2, "eugeo.trust": 1},
+                            "memory": {
+                                "alice": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家答应艾琳先在炉火边确认远征前的退路、记录本和停步信号。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    )
+                ],
+                fallback=(11, 27, "home_hearth"),
+                scene_id="home_hearth",
+                tile_x=11,
+                tile_y=27,
+            )
+        )
+
+    if (
+        24 <= day <= 27
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month01_silent_line_rehearsed") >= 1
+        and _flag(state, "month01_pack_reviewed") < 1
+        and _flag(state, "month01_expedition_ready") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_checks_expedition_pack",
+                kind="npc_plan",
+                title="艾琳要复核远征包",
+                description="绳索、记录本和标记粉已经摆在桌上。艾琳想先确认这不是一次冲动出发，而是一套能撤回来的准备。",
+                priority=87,
+                reason="Day 24-27 需要把远征包从计划文字落实为小屋中的可操作活动。",
+                action={"type": "scene_activity", "activity_id": "home_expedition_pack_review"},
+                stakes=[
+                    "远征包的取舍会影响艾琳对路线安全性的判断。",
+                    "这一步会给正式的远征包剧情事件提供清晰的物品和情绪铺垫。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="start_pack_review",
+                        label="让艾琳先检查退路和记录本",
+                        hint="偏向稳妥准备，让远征包先变得可靠。",
+                        result_text="艾琳没有急着装包，只先把记录本翻到空白页。她说只要退路写清楚，出发就不再只是胆量问题。",
+                        tone="steady",
+                        effects={
+                            "flags": {"alice_pack_review_started": 1},
+                            "relationship": {"alice.trust": 2, "alice.tension": -1},
+                            "memory": {
+                                "alice": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家让艾琳先检查远征包中的退路、记录本和安全标记。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    )
+                ],
+                fallback=(11, 27, "home_hearth"),
+                scene_id="home_hearth",
+                tile_x=11,
+                tile_y=27,
+            )
+        )
+
+    if (
+        24 <= day <= 27
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month01_expedition_ready") >= 1
+        and _flag(state, "month01_village_sendoff_done") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_brings_pack_to_square",
+                kind="npc_plan",
+                title="尤里想把远征信号留给村里",
+                description="远征包已经压好，尤里却停在村道广场边。他想让村里至少知道安全距离和撤退信号，而不是只看着你们离开。",
+                priority=82,
+                reason="Day 24-27 完成远征包后，需要把准备结果连接到村庄共同记忆。",
+                action={"type": "scene_activity", "activity_id": "village_expedition_sendoff"},
+                stakes=[
+                    "送行活动会把远征从三人秘密扩展成村庄可理解的安全流程。",
+                    "如果不做这一步，Day 28-30 的北门前夜会缺少村庄侧反馈。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="leave_signal_with_square",
+                        label="同意尤里：把撤退信号留在广场",
+                        hint="让村民知道最少必要的安全信息。",
+                        result_text="尤里把手势画在巡查板边缘，没有写下静默线的全部细节。这样够少，也够让人看懂。",
+                        tone="open",
+                        effects={
+                            "flags": {"eugeo_sendoff_signal_agreed": 1},
+                            "relationship": {"eugeo.trust": 2, "alice.trust": 1},
+                            "memory": {
+                                "eugeo": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家同意尤里在村道广场留下远征前的安全距离和撤退信号。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    )
+                ],
+                fallback=(28, 25, "village_square"),
+                scene_id="village_square",
+                tile_x=28,
+                tile_y=25,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

@@ -166,3 +166,63 @@ def test_day_eighteen_silent_line_intent_guides_player_to_north_gate():
         "event_id": "ch1_d18_silent_line_rehearsal",
     }
     assert intents["eugeo_calls_silent_line_rehearsal"].scene_id == "north_gate"
+
+
+def test_day_twenty_four_pack_intent_guides_player_home():
+    sess = Session(run_id="test-day24-pack-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 24,
+            "time_band": "morning",
+            "flags": {"month01_silent_line_rehearsed": 1},
+        }
+    )
+
+    state = sess.public_state()
+    intents = {item.id: item for item in state.npc_intents}
+
+    assert intents["alice_checks_expedition_pack"].action == {
+        "type": "scene_activity",
+        "activity_id": "home_expedition_pack_review",
+    }
+    assert intents["alice_checks_expedition_pack"].scene_id == "home_hearth"
+
+
+def test_day_twenty_four_bridge_intent_guides_evening_hearth_talk():
+    sess = Session(run_id="test-day24-bridge-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 24,
+            "time_band": "evening",
+            "flags": {"month01_silent_line_rehearsed": 1},
+        }
+    )
+
+    state = sess.public_state()
+    intents = {item.id: item for item in state.npc_intents}
+
+    assert intents["alice_sets_expedition_bridge_talk"].action == {
+        "type": "scene_activity",
+        "activity_id": "home_expedition_bridge_talk",
+    }
+    assert intents["alice_sets_expedition_bridge_talk"].scene_id == "home_hearth"
+
+
+def test_day_twenty_five_sendoff_intent_guides_player_to_square():
+    sess = Session(run_id="test-day25-sendoff-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 25,
+            "time_band": "afternoon",
+            "flags": {"month01_expedition_ready": 1},
+        }
+    )
+
+    state = sess.public_state()
+    intents = {item.id: item for item in state.npc_intents}
+
+    assert intents["eugeo_brings_pack_to_square"].action == {
+        "type": "scene_activity",
+        "activity_id": "village_expedition_sendoff",
+    }
+    assert intents["eugeo_brings_pack_to_square"].scene_id == "village_square"
