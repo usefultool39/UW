@@ -832,6 +832,132 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        day == 32
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month02_day31_entry_done") >= 1
+        and _flag(state, "month02_route_order") >= 1
+        and _flag(state, "activity_done.church_month02_briefing") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_introduces_month02_duty",
+                kind="npc_plan",
+                title="艾琳在书库等你整理第二月稳守简报",
+                description="第二月已经从稳守北门展开。艾琳把记录本摊在书桌上，等你把巡查公开度、补给线和撤退信号整理成村务能执行的第一步。",
+                priority=86,
+                reason="Day 32 order route should turn the month route flag into a concrete scene action.",
+                action={"type": "scene_activity", "activity_id": "church_month02_briefing"},
+                stakes=[
+                    "这一步会把第二月稳守路线接到村务协同，而不是停留在第一月末的选择结果。",
+                    "如果不做，order 路线缺少第一个玩家可执行动作。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="write_order_briefing",
+                        label="和艾琳整理第二月稳守简报",
+                        hint="把稳守路线拆成巡查、补给和撤退信号。",
+                        result_text="艾琳点头，把空白页留给你写下第二月第一周的执行顺序。",
+                        tone="steady",
+                        effects={
+                            "flags": {"alice_month02_order_briefing_agreed": 1},
+                            "relationship": {"alice.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(42, 18, "reading_hall"),
+                scene_id="reading_hall",
+                tile_x=42,
+                tile_y=18,
+            )
+        )
+
+    if (
+        day == 32
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month02_day31_entry_done") >= 1
+        and _flag(state, "month02_route_expedition") >= 1
+        and _flag(state, "activity_done.north_gate_expedition_check") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_suggests_month02_expedition",
+                kind="npc_plan",
+                title="尤里想复核第二月第一段远征线",
+                description="第二月远征路线已经定下。尤里带着测距粉在北门等你，想先把第一段路线和撤退标记复核清楚。",
+                priority=86,
+                reason="Day 32 expedition route should create a concrete north gate follow-up activity.",
+                action={"type": "scene_activity", "activity_id": "north_gate_expedition_check"},
+                stakes=[
+                    "这一步会把远征路线转成可重复的路线复核，而不是直接跳到越界冒险。",
+                    "如果不做，expedition 路线缺少安全节拍。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="walk_expedition_check",
+                        label="和尤里复核北门远征路线",
+                        hint="先走第一段路线和撤退标记。",
+                        result_text="尤里把测距粉递给你，等你确认第一段路线从哪里开始。",
+                        tone="cooperate",
+                        effects={
+                            "flags": {"eugeo_month02_expedition_check_agreed": 1},
+                            "relationship": {"eugeo.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
+    if (
+        day == 32
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month02_day31_entry_done") >= 1
+        and _flag(state, "month02_route_quiet") >= 1
+        and _flag(state, "activity_done.reading_hall_silent_record") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_raises_silent_line_recheck",
+                kind="npc_plan",
+                title="艾琳要求把静默线频率写成记录",
+                description="静默观察路线需要先能复查。艾琳在书桌旁等你，把异常频率、风声断点和见证人都写清楚。",
+                priority=86,
+                reason="Day 32 quiet route should reduce ambiguity with a concrete record activity.",
+                action={"type": "scene_activity", "activity_id": "reading_hall_silent_record"},
+                stakes=[
+                    "这一步会把静默路线从暗线判断转成可复查记录。",
+                    "如果不做，quiet 路线容易继续变成信息不对称。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="write_silent_record",
+                        label="和艾琳整理静默线频率",
+                        hint="把异常频率、位置和见证人写清楚。",
+                        result_text="艾琳没有反驳你的判断，只要求每一次沉默都能被复查。",
+                        tone="careful",
+                        effects={
+                            "flags": {"alice_month02_silent_record_agreed": 1},
+                            "relationship": {"alice.trust": 1, "alice.tension": -1},
+                        },
+                    )
+                ],
+                fallback=(42, 18, "reading_hall"),
+                scene_id="reading_hall",
+                tile_x=42,
+                tile_y=18,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

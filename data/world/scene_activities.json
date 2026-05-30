@@ -1183,6 +1183,153 @@
           "eugeo.trust": 1
         }
       }
+    },
+    {
+      "id": "church_month02_briefing",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第二月 · 村务协同简报",
+      "label": "和艾琳整理第二月稳守简报",
+      "description": "把第一月末的稳守路线写成村务可执行的三项：公开巡查、补给线和撤退信号。",
+      "result_text": "艾琳把记录本推到桌中央。你们把第二月第一周拆成巡查公开度、补给线确认和北门撤退信号三栏，村务协同终于有了可以执行的起点。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice"
+      ],
+      "tags": [
+        "month02",
+        "route_order",
+        "npc_intent"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month02_route_order": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_order_briefing_done": 1
+        },
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 2
+        },
+        "memory": {
+          "alice": {
+            "type": "month02",
+            "summary": "第二月第二天，玩家和艾琳把稳守北门路线整理成村务协同简报。",
+            "weight": 4
+          }
+        }
+      }
+    },
+    {
+      "id": "north_gate_expedition_check",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第二月 · 远征前复核",
+      "label": "和尤里复核北门远征路线",
+      "description": "第二月远征路线已经定下。尤里想趁记录还新，把北门外第一段路线和撤退标记再核一遍。",
+      "result_text": "尤里把测距粉交到你手里。你们没有立刻越过北门，只把第一段路线、绳标和回撤点重走一遍，让第二月远征有了第一个稳定节拍。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "route_expedition",
+        "npc_intent"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month02_route_expedition": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_expedition_check_done": 1
+        },
+        "stamina_cost": 3,
+        "relationship": {
+          "eugeo.trust": 2
+        },
+        "memory": {
+          "eugeo": {
+            "type": "month02",
+            "summary": "第二月第二天，玩家和尤里复核了北门远征第一段路线和撤退标记。",
+            "weight": 4
+          }
+        }
+      }
+    },
+    {
+      "id": "reading_hall_silent_record",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第二月 · 静默线记录",
+      "label": "和艾琳整理静默线频率",
+      "description": "静默观察路线需要先把异常频率、风声断点和同伴反应写成可复查的记录。",
+      "result_text": "艾琳没有催你解释所有判断，只要求每一次沉默都能被复查。记录本上多出频率、位置和见证人三栏，第二月的暗线调查先有了边界。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice"
+      ],
+      "tags": [
+        "month02",
+        "route_quiet",
+        "npc_intent"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month02_route_quiet": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_quiet_record_done": 1
+        },
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 1,
+          "alice.tension": -1
+        },
+        "memory": {
+          "alice": {
+            "type": "month02",
+            "summary": "第二月第二天，玩家和艾琳把静默线异常整理成可复查记录。",
+            "weight": 4
+          }
+        }
+      }
     }
   ]
 }

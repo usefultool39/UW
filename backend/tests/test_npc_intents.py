@@ -246,3 +246,45 @@ def test_day_twenty_eight_gate_vigil_intent_guides_player_to_north_gate():
         "activity_id": "north_gate_month_end_vigil",
     }
     assert intents["alice_marks_month_gate_vigil"].scene_id == "north_gate"
+
+
+def test_day_thirty_two_month_two_route_intents_are_route_specific():
+    cases = [
+        (
+            "month02_route_order",
+            "alice_introduces_month02_duty",
+            "reading_hall",
+            {"type": "scene_activity", "activity_id": "church_month02_briefing"},
+        ),
+        (
+            "month02_route_expedition",
+            "eugeo_suggests_month02_expedition",
+            "north_gate",
+            {"type": "scene_activity", "activity_id": "north_gate_expedition_check"},
+        ),
+        (
+            "month02_route_quiet",
+            "alice_raises_silent_line_recheck",
+            "reading_hall",
+            {"type": "scene_activity", "activity_id": "reading_hall_silent_record"},
+        ),
+    ]
+
+    for route_flag, intent_id, scene_id, action in cases:
+        sess = Session(run_id=f"test-day32-{route_flag}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 32,
+                "time_band": "morning",
+                "flags": {
+                    "month02_day31_entry_done": 1,
+                    route_flag: 1,
+                },
+            }
+        )
+
+        intents = {item.id: item for item in sess.public_state().npc_intents}
+
+        assert intents[intent_id].scene_id == scene_id
+        assert intents[intent_id].action == action
+        assert intents[intent_id].response_options
