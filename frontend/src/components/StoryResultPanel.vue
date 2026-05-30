@@ -6,7 +6,7 @@
     aria-modal="true"
     @click.self="emit('update:modelValue', false)"
   >
-    <section class="result-panel" @click.stop>
+    <section class="result-panel" :class="{ 'month-final': isMonthFinal }" @click.stop>
       <header class="result-header">
         <div>
           <p class="result-kicker">{{ resultKicker }}</p>
@@ -128,10 +128,13 @@ const ACTION_LABELS = {
   go_home: '回家'
 }
 
+const isMonthFinal = computed(() => props.result?.event?.kind === 'month_final')
+
 const resultKicker = computed(() => {
   if (props.result?.kind === 'daily_summary') return '时间流动'
   if (props.result?.kind === 'day_settlement') return '日结算'
   if (props.result?.kind === 'npc_intent_response') return 'NPC 回应'
+  if (isMonthFinal.value) return '第一月收束'
   return props.result?.ending_id ? '章节收束' : '选择结果'
 })
 
@@ -145,6 +148,7 @@ const resultTitle = computed(() => {
   if (activity) return activity
   const choice = props.result?.choice?.label
   const eventTitle = props.result?.event?.title || props.result?.event_title
+  if (isMonthFinal.value && choice) return `第二月路线 · ${choice}`
   if (choice && eventTitle) return `${eventTitle} · ${choice}`
   return choice || eventTitle || '这件事留下了痕迹'
 })
@@ -159,6 +163,9 @@ const emotionalSummary = computed(() => {
   }
   if (props.result?.kind === 'day_settlement') {
     return '今天的行动已经结算。被记住的事会留在关系里，未解决的线索会推着明天继续发生。'
+  }
+  if (isMonthFinal.value) {
+    return '第一个月的记录、撤退线和同伴承诺已经汇成第二月的起点。这个路线选择会改变后续远征的节奏。'
   }
   if (memoryLines.value.length && relationshipLines.value.length) {
     return '这不是一次孤立选择。有人记住了你的做法，你和他们之间的距离也变了。'
@@ -180,6 +187,9 @@ const impactLines = computed(() => {
   const anomaly = props.result?.anomaly_result
   const final = props.result?.final_result
   const activityChoice = props.result?.activity_choice
+  if (isMonthFinal.value && props.result?.choice?.label) {
+    lines.push({ label: '第一月路线', value: props.result.choice.label })
+  }
   if (timeCost > 0) lines.push({ label: '时间推进', value: `${timeCost} 刻` })
   if (treeDamage > 0) lines.push({ label: '巨树损伤', value: `-${treeDamage}` })
   if (training?.label) lines.push({ label: '训练表现', value: `${training.label} · ${training.score || 0}` })
@@ -395,6 +405,14 @@ const agentImpactCards = computed(() => {
   color: #f8fafc;
   line-height: 1.68;
   font-size: 1.05rem;
+}
+
+.result-panel.month-final {
+  border-color: rgba(125, 211, 252, 0.46);
+  background:
+    linear-gradient(160deg, rgba(21, 37, 59, 0.98), rgba(6, 14, 26, 0.99)),
+    radial-gradient(circle at 18% 0%, rgba(125, 211, 252, 0.12), transparent 36%);
+  box-shadow: 0 30px 78px rgba(0, 0, 0, 0.62), 0 0 32px rgba(125, 211, 252, 0.12);
 }
 
 .result-aftertaste {

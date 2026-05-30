@@ -6,10 +6,10 @@
     aria-modal="true"
     @click.self="emit('update:modelValue', false)"
   >
-    <section class="event-panel" @click.stop>
+    <section class="event-panel" :class="{ 'month-final': isMonthFinal }" @click.stop>
       <header class="event-header">
         <div>
-          <p class="event-kicker">章节事件</p>
+          <p class="event-kicker">{{ eventKicker }}</p>
           <h3>{{ event?.title }}</h3>
         </div>
         <button
@@ -62,6 +62,12 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'choose'])
 
 const sceneLabel = computed(() => getSceneLabel(props.event?.location?.scene_id))
+const isMonthFinal = computed(() => props.event?.kind === 'month_final')
+const eventKicker = computed(() => {
+  if (isMonthFinal.value) return '第一月路线抉择'
+  if (props.event?.kind === 'final_choice') return '章节收束'
+  return '章节事件'
+})
 const participantLabel = computed(() => {
   const participants = Array.isArray(props.event?.participants) ? props.event.participants : []
   return participants.map((id) => getAgentLabel(id)).join('、')
@@ -129,6 +135,14 @@ function choicePreview(choice) {
   border: 1px solid rgba(246, 211, 110, 0.34);
   box-shadow: 0 26px 68px rgba(0, 0, 0, 0.56), 0 0 26px rgba(246, 211, 110, 0.1);
   animation: modal-rise-in 0.22s ease-out both;
+}
+
+.event-panel.month-final {
+  border-color: rgba(125, 211, 252, 0.42);
+  background:
+    linear-gradient(165deg, rgba(24, 42, 63, 0.98), rgba(8, 15, 28, 0.99)),
+    radial-gradient(circle at 20% 0%, rgba(125, 211, 252, 0.12), transparent 34%);
+  box-shadow: 0 30px 78px rgba(0, 0, 0, 0.6), 0 0 30px rgba(125, 211, 252, 0.12);
 }
 
 @keyframes modal-backdrop-in {
