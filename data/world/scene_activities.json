@@ -1285,7 +1285,8 @@
       "id": "reading_hall_silent_record",
       "scene_id": "reading_hall",
       "scene_ids": [
-        "reading_hall"
+        "reading_hall",
+        "church_library"
       ],
       "poi_id": "ix_reading_desk",
       "title": "第二月 · 静默线记录",
@@ -1444,7 +1445,8 @@
       "id": "reading_hall_quiet_frequency_crosscheck",
       "scene_id": "reading_hall",
       "scene_ids": [
-        "reading_hall"
+        "reading_hall",
+        "church_library"
       ],
       "poi_id": "ix_reading_desk",
       "title": "第二月 · 静默线频率复核",
@@ -1497,7 +1499,8 @@
       "id": "boundary_anomaly_convergence",
       "scene_id": "reading_hall",
       "scene_ids": [
-        "reading_hall"
+        "reading_hall",
+        "church_library"
       ],
       "poi_id": "ix_reading_desk",
       "title": "第二月 · 异常信号收束",

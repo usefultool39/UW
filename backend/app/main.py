@@ -274,6 +274,7 @@ def player_action(request: Request, body: PlayerActionBody):
             response_id=body.response_id,
             tile_x=body.tile_x,
             tile_y=body.tile_y,
+            day=body.day,
             n=body.n,
             daily_n=body.daily_n,
         )

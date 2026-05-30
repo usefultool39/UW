@@ -25,6 +25,7 @@ class PlayerActionBody(BaseModel):
     response_id: str | None = None
     tile_x: int | None = None
     tile_y: int | None = None
+    day: int | None = None
     n: int | None = None
     daily_n: int | None = None
 

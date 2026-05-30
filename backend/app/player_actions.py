@@ -14,6 +14,7 @@ PLAYER_ACTIONS = {
     "interact_with_hub",
     "set_location",
     "set_flag",
+    "set_day",
     "scene_activity",
     "respond_npc_intent",
     "daily_tick",

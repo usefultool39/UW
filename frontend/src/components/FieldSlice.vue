@@ -332,7 +332,7 @@ const nearbyNpcIntents = computed(() => {
       if (!Number.isFinite(tx) || !Number.isFinite(ty)) return null
       const dist = Math.max(Math.abs(px - tx), Math.abs(py - ty))
       const sameScene = sceneId && sceneId === playerScene
-      if (dist > 4 && !(sameScene && dist <= 8)) return null
+      if (dist > 4 && !sameScene) return null
       return { intent, dist }
     })
     .filter(Boolean)

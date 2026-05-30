@@ -32,6 +32,12 @@ async function restToDay(request, day) {
   }
 }
 
+async function setFlags(request, flags) {
+  for (const flag of flags) {
+    await playerAction(request, { kind: 'set_flag', flag_key: flag, flag_value: 1 })
+  }
+}
+
 async function advanceToExpeditionPrep(request) {
   await storyChoose(request, { event_id: 'ch1_d1_reading_clue', choice_id: 'ask_alice' })
   await playerAction(request, { kind: 'rest_until_next_day' })
@@ -308,5 +314,35 @@ test.describe('开放世界质量 smoke', () => {
     await monthTwoPlanRequest
     await expect(page.locator('.journal-panel')).toBeVisible()
     await expect(page.locator('.month-plan-entry').first()).toBeVisible()
+  })
+
+  test('Day 46 Week07 shared anomaly convergence smoke', async ({ page, request }) => {
+    await setFlags(request, [
+      'month02_day31_entry_done',
+      'month02_route_order',
+      'month02_order_patrol_standby_done'
+    ])
+    await playerAction(request, { kind: 'set_day', day: 46 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'reading_hall' })
+
+    const state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.day).toBe(46)
+    const intent = state.npc_intents.find((item) => item.id === 'alice_calls_anomaly_convergence')
+    expect(intent).toBeTruthy()
+    expect(intent.scene_id).toBe('reading_hall')
+    expect(intent.action).toEqual({
+      type: 'scene_activity',
+      activity_id: 'boundary_anomaly_convergence'
+    })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    await page.locator('.interact-action[data-activity-id="boundary_anomaly_convergence"]').click()
+    await expect(page.locator('.result-panel')).toBeVisible()
+
+    const after = await (await request.get(`${API}/api/state`)).json()
+    expect(after.flags.month02_anomaly_convergence_done).toBe(1)
+    expect(after.flags.month02_anomaly_source_documented).toBe(1)
   })
 })

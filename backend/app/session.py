@@ -215,6 +215,7 @@ class Session:
         response_id: str | None = None,
         tile_x: int | None = None,
         tile_y: int | None = None,
+        day: int | None = None,
         n: int | None = None,
         daily_n: int | None = None,
     ) -> dict:
@@ -377,6 +378,15 @@ class Session:
                 flags[flag_key] = int(flag_value)
                 self.state = self.state.model_copy(update={"flags": flags})
                 action_events.append({"type": "flag_set", "key": flag_key, "value": int(flag_value)})
+            elif kind == "set_day":
+                if day is None:
+                    return fail("missing_day")
+                target_day = max(1, min(999, int(day)))
+                self.state = self.state.model_copy(
+                    update={"day": target_day, "tick": 0, "time_band": "morning"}
+                )
+                self.state = apply_npc_schedules(apply_environment(self.state), self.root)
+                action_events.append({"type": "day_set", "day": target_day, "time_band": self.state.time_band})
             elif kind == "respond_npc_intent":
                 if not intent_id or not response_id:
                     return fail("missing_npc_intent_response")

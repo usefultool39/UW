@@ -99,6 +99,18 @@ def test_story_advance_ok_after_set_flag():
     assert body["state"]["story_node_id"] == "mq01_tree_arc"
 
 
+def test_player_action_set_day_refreshes_runtime_state():
+    client = TestClient(app)
+    client.post("/api/reset")
+    r = client.post("/api/player/action", json={"kind": "set_day", "day": 46})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["state"]["day"] == 46
+    assert body["state"]["time_band"] == "morning"
+    assert body["events"][0]["type"] == "day_set"
+
+
 def test_player_move_scene_locked():
     client = TestClient(app)
     client.post("/api/reset")
