@@ -165,7 +165,12 @@ export function getQuestGuide(simState) {
   if (flags.month01_village_trust && !flags.month01_silent_line_rehearsed) return '第一月推进中：第十八天起回到北门，复核静默线和同伴分工。'
   if (flags.month01_silent_line_rehearsed && !flags.month01_expedition_ready) return '远征准备：静默线演练已经结束。第二十四天起回小屋整理远征包，先确认同伴担心，再决定第二月走稳妥路线还是深入调查。'
   if (flags.month01_expedition_ready && !flags.month01_gate_resolved) return '第一月末：第二十八天后去北门前夜。先回应同伴的最后复核，再把第二月路线定下来。'
-  if (flags.month01_gate_resolved) return '第一月已经收束：第二月边境远征入口已经埋好。'
+  if (flags.month01_gate_resolved) {
+    if (flags.month01_route_order) return '第一月已经收束：第二月从稳守北门和村务协同展开。先确认巡查公开度、补给线和同伴分工。'
+    if (flags.month01_route_expedition) return '第一月已经收束：第二月从边境远征展开。先确认远征包、撤退路线和静默线复核。'
+    if (flags.month01_route_quiet) return '第一月已经收束：第二月从静默观察展开。先整理记录、标注异常频率，再决定是否越过北门。'
+    return '第一月已经收束：第二月边境远征入口已经埋好。'
+  }
   const active = simState.active_event_ids || []
   if (active.length) return `${sceneHint}村子里有新的抉择在等你：靠近金色标记，或先回应附近同伴的主动邀约。`.trim()
   const intents = Array.isArray(simState.npc_intents) ? simState.npc_intents : []
