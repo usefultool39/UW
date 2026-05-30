@@ -1040,6 +1040,47 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        39 <= day <= 45
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month02_quiet_record_done") >= 1
+        and _flag(state, "activity_done.reading_hall_quiet_frequency_crosscheck") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_conducts_quiet_frequency_crosscheck",
+                kind="npc_plan",
+                title="艾丽丝要复核静默线频率的第二周数据",
+                description="上次整理的频率记录已经过了一周。艾丽丝在书桌等你，把新见到的风声断点与第一周记录对照，确认异常是在靠近还是在漂移。",
+                priority=85,
+                reason="Week 06 quiet route needs a frequency crosscheck after the Day 32 record.",
+                action={"type": "scene_activity", "activity_id": "reading_hall_quiet_frequency_crosscheck"},
+                stakes=[
+                    "这一步会把静默线从单周记录推进到两周对比。",
+                    "如果不做，静默线缺少 Day 39-45 的可执行目标，后续判断会继续停在猜测层。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="crosscheck_frequency_table",
+                        label="和艾丽丝复核两周频率记录",
+                        hint="对比风声断点、时间带和见证人。",
+                        result_text="艾丽丝把两页记录并排摊开，等你把新的静默点标到上一周频率表旁边。",
+                        tone="careful",
+                        effects={
+                            "flags": {"alice_month02_quiet_crosscheck_agreed": 1},
+                            "relationship": {"alice.trust": 1, "alice.tension": -1},
+                        },
+                    )
+                ],
+                fallback=(42, 18, "reading_hall"),
+                scene_id="reading_hall",
+                tile_x=42,
+                tile_y=18,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

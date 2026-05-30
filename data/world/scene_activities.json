@@ -1439,6 +1439,59 @@
           }
         }
       }
+    },
+    {
+      "id": "reading_hall_quiet_frequency_crosscheck",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第二月 · 静默线频率复核",
+      "label": "和艾丽丝复核两周频率记录",
+      "description": "静默线已经完成第一周记录。艾丽丝想把新见到的风声断点和上一周频率表对照，确认异常是在靠近、漂移，还是被记录方式放大。",
+      "result_text": "艾丽丝把两页记录并排放好。你们把风声断点、时间带和见证人逐项对照，发现静默线并没有消失，而是比上一周更接近北门。记录第一次给出了方向，而不只是疑问。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice"
+      ],
+      "tags": [
+        "month02",
+        "route_quiet",
+        "reading_hall",
+        "npc_intent"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month02_route_quiet": 1,
+          "month02_quiet_record_done": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_quiet_frequency_crosscheck_done": 1,
+          "month02_quiet_frequency_crosschecked": 1
+        },
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 2,
+          "alice.tension": -1
+        },
+        "memory": {
+          "alice": {
+            "type": "month02",
+            "summary": "第二月中段，玩家和艾丽丝在书库对照两周静默线频率记录，确认异常比上一周更接近北门。",
+            "weight": 5
+          }
+        }
+      }
     }
   ]
 }

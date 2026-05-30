@@ -336,3 +336,27 @@ def test_day_thirty_nine_expedition_supply_intent_guides_player_to_north_gate():
         "activity_id": "north_gate_expedition_supply_review",
     }
     assert intents["eugeo_reviews_expedition_supplies"].response_options
+
+
+def test_day_thirty_nine_quiet_frequency_intent_guides_player_to_reading_hall():
+    sess = Session(run_id="test-day39-quiet-crosscheck")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 39,
+            "time_band": "morning",
+            "flags": {
+                "month02_day31_entry_done": 1,
+                "month02_route_quiet": 1,
+                "month02_quiet_record_done": 1,
+            },
+        }
+    )
+
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+
+    assert intents["alice_conducts_quiet_frequency_crosscheck"].scene_id == "reading_hall"
+    assert intents["alice_conducts_quiet_frequency_crosscheck"].action == {
+        "type": "scene_activity",
+        "activity_id": "reading_hall_quiet_frequency_crosscheck",
+    }
+    assert intents["alice_conducts_quiet_frequency_crosscheck"].response_options

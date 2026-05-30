@@ -86,6 +86,17 @@
           "requirements": { "required_flags": { "month02_expedition_check_done": 1 } },
           "goals": ["确认干粮和标记粉余量", "把补给缺口记入同伴记忆", "决定下一次越界前的最低携带量"],
           "reward": "远征线进入补给确认阶段。"
+        },
+        {
+          "id": "m02_quiet_frequency_crosscheck",
+          "title": "Day 39-45：静默线频率复核",
+          "day_range": [39, 45],
+          "scene_id": "reading_hall",
+          "related_activity_id": "reading_hall_quiet_frequency_crosscheck",
+          "completed_flag": "month02_quiet_frequency_crosscheck_done",
+          "requirements": { "required_flags": { "month02_quiet_record_done": 1 } },
+          "goals": ["对比两周频率数据", "确认静默线是否移动", "更新记录可复查性"],
+          "reward": "静默线进入两周频率对比阶段。"
         }
       ]
     },
