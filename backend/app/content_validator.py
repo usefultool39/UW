@@ -241,6 +241,7 @@ def _validate_conditions(
                     )
 
     _validate_int_map(conditions.get("required_flags"), f"{path}.required_flags", errors)
+    _validate_int_map(conditions.get("required_any_flags"), f"{path}.required_any_flags", errors)
     _validate_int_map(conditions.get("forbidden_flags"), f"{path}.forbidden_flags", errors)
     _validate_relationship_map(
         conditions.get("required_relationship"),

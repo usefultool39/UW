@@ -356,3 +356,51 @@ def test_month_two_week_six_quiet_frequency_milestone_is_active_and_completes():
     completed_milestones = {item["id"]: item for item in completed_week["milestones"]}
 
     assert completed_milestones["m02_quiet_frequency_crosscheck"]["status"] == "completed"
+
+
+def test_month_two_week_seven_convergence_milestone_accepts_any_week_six_route():
+    cases = [
+        "month02_order_patrol_standby_done",
+        "month02_expedition_supply_review_done",
+        "month02_quiet_frequency_crosscheck_done",
+    ]
+
+    for flag in cases:
+        sess = Session(run_id=f"test-month-two-week-seven-{flag}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 46,
+                "time_band": "morning",
+                "flags": {
+                    "month02_day31_entry_done": 1,
+                    flag: 1,
+                },
+            }
+        )
+
+        plan = public_month_plan(sess.root, sess.state, month_id="month_02")
+        week = next(item for item in plan["weeks"] if item["id"] == "week_07")
+        milestones = {item["id"]: item for item in week["milestones"]}
+
+        assert plan["current"]["week_id"] == "week_07"
+        assert plan["current"]["active_milestone_id"] == "m02_anomaly_convergence"
+        assert milestones["m02_anomaly_convergence"]["status"] == "active"
+
+
+def test_month_two_week_seven_convergence_activity_requires_any_week_six_route():
+    sess = Session(run_id="test-month-two-week-seven-activity")
+    sess.state = sess.state.model_copy(update={"day": 46, "time_band": "morning"})
+    sess.player_action(kind="move_scene", scene_id="reading_hall")
+
+    locked = sess.player_action(kind="scene_activity", activity_id="boundary_anomaly_convergence")
+    assert locked["ok"] is False
+    assert locked["error"] == "requirements_not_met"
+
+    sess.state = sess.state.model_copy(
+        update={"flags": {**sess.state.flags, "month02_order_patrol_standby_done": 1}}
+    )
+    done = sess.player_action(kind="scene_activity", activity_id="boundary_anomaly_convergence")
+
+    assert done["ok"] is True
+    assert done["state"]["flags"]["month02_anomaly_convergence_done"] == 1
+    assert done["state"]["flags"]["month02_anomaly_source_documented"] == 1

@@ -1492,6 +1492,67 @@
           }
         }
       }
+    },
+    {
+      "id": "boundary_anomaly_convergence",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第二月 · 异常信号收束",
+      "label": "把三条路线的异常信号合并复核",
+      "description": "第二月中段的三条路线都留下了异常痕迹。把村务报告、远征补给和静默频率表并排放到书桌上，确认它们是否指向同一个源头。",
+      "result_text": "三份记录在同一张桌上重叠：村民报告的时间、补给消耗的位置、静默线移动的方向都指向北门外同一片空白。艾丽丝没有立刻下结论，尤吉欧却先把撤退口令写在页角。第二月第一次有了共同的异常核心。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "shared",
+        "convergence",
+        "npc_intent"
+      ],
+      "requirements": {
+        "required_any_flags": {
+          "month02_order_patrol_standby_done": 1,
+          "month02_expedition_supply_review_done": 1,
+          "month02_quiet_frequency_crosscheck_done": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_anomaly_convergence_done": 1,
+          "month02_anomaly_source_documented": 1
+        },
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1,
+          "alice.tension": 1
+        },
+        "memory": {
+          "alice": {
+            "type": "month02",
+            "summary": "第二月后段，玩家把三条路线的异常记录合并复核，确认它们都指向北门外同一片空白。",
+            "weight": 5
+          },
+          "eugeo": {
+            "type": "month02",
+            "summary": "第二月后段，玩家和同伴确认三条路线的异常信号正在收束，尤吉欧把撤退口令写进共同记录。",
+            "weight": 5
+          }
+        }
+      }
     }
   ]
 }

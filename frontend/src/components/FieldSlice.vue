@@ -576,6 +576,16 @@ function activityAvailability(activity) {
     }
   }
 
+  const requiredAnyFlags = activity.requirements?.required_any_flags || {}
+  if (Object.keys(requiredAnyFlags).length) {
+    const anyMet = Object.entries(requiredAnyFlags).some(
+      ([key, value]) => Number(flags[key] || 0) >= Number(value || 0)
+    )
+    if (!anyMet) {
+      return { ok: false, reason: '需要先完成任一前置线索' }
+    }
+  }
+
   const repeat = activity.repeat || 'free'
   if (repeat === 'once' && Number(flags[`activity_done.${activity.id}`] || 0) >= 1) {
     return { ok: false, reason: '已经完成' }

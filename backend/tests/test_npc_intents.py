@@ -360,3 +360,48 @@ def test_day_thirty_nine_quiet_frequency_intent_guides_player_to_reading_hall():
         "activity_id": "reading_hall_quiet_frequency_crosscheck",
     }
     assert intents["alice_conducts_quiet_frequency_crosscheck"].response_options
+
+
+def test_day_forty_six_shared_convergence_intent_appears_after_any_week_six_route():
+    cases = [
+        "month02_order_patrol_standby_done",
+        "month02_expedition_supply_review_done",
+        "month02_quiet_frequency_crosscheck_done",
+    ]
+
+    for flag in cases:
+        sess = Session(run_id=f"test-day46-convergence-{flag}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 46,
+                "time_band": "morning",
+                "flags": {
+                    "month02_day31_entry_done": 1,
+                    flag: 1,
+                },
+            }
+        )
+
+        intents = {item.id: item for item in sess.public_state().npc_intents}
+
+        assert intents["alice_calls_anomaly_convergence"].scene_id == "reading_hall"
+        assert intents["alice_calls_anomaly_convergence"].action == {
+            "type": "scene_activity",
+            "activity_id": "boundary_anomaly_convergence",
+        }
+        assert intents["alice_calls_anomaly_convergence"].response_options
+
+
+def test_day_forty_six_shared_convergence_intent_stays_locked_without_week_six_route():
+    sess = Session(run_id="test-day46-convergence-locked")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 46,
+            "time_band": "morning",
+            "flags": {"month02_day31_entry_done": 1},
+        }
+    )
+
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+
+    assert "alice_calls_anomaly_convergence" not in intents

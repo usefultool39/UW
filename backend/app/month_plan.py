@@ -34,6 +34,11 @@ def _requirements_met(state: WorldState, requirements: dict[str, Any] | None) ->
         if _flag_value(state, str(key)) < int(expected):
             return False, f"需要先完成：{key}"
 
+    required_any = requirements.get("required_any_flags") or {}
+    if isinstance(required_any, dict) and required_any:
+        if not any(_flag_value(state, str(key)) >= int(expected) for key, expected in required_any.items()):
+            return False, "需要先完成任一前置线索"
+
     for key, value in (requirements.get("forbidden_flags") or {}).items():
         if _flag_value(state, str(key)) >= int(value):
             return False, f"已被状态锁定：{key}"

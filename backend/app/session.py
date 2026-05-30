@@ -497,6 +497,13 @@ class Session:
                     for key, val in required_flags.items():
                         if int(self.state.flags.get(str(key), 0)) < int(val):
                             return fail("requirements_not_met", required_flags=required_flags)
+                required_any_flags = requirements.get("required_any_flags") or {}
+                if isinstance(required_any_flags, dict) and required_any_flags:
+                    if not any(
+                        int(self.state.flags.get(str(key), 0)) >= int(val)
+                        for key, val in required_any_flags.items()
+                    ):
+                        return fail("requirements_not_met", required_any_flags=required_any_flags)
 
                 effects = activity.get("effects") or {}
                 if not isinstance(effects, dict):

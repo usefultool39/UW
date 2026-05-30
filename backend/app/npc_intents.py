@@ -9,6 +9,10 @@ def _flag(state: WorldState, key: str) -> int:
     return int((state.flags or {}).get(key, 0))
 
 
+def _any_flag(state: WorldState, keys: list[str]) -> bool:
+    return any(_flag(state, key) >= 1 for key in keys)
+
+
 def _done_today(state: WorldState, activity_id: str) -> bool:
     return _flag(state, f"activity_day.{activity_id}") == int(state.day)
 
@@ -1071,6 +1075,54 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                         effects={
                             "flags": {"alice_month02_quiet_crosscheck_agreed": 1},
                             "relationship": {"alice.trust": 1, "alice.tension": -1},
+                        },
+                    )
+                ],
+                fallback=(42, 18, "reading_hall"),
+                scene_id="reading_hall",
+                tile_x=42,
+                tile_y=18,
+            )
+        )
+
+    if (
+        46 <= day <= 52
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _any_flag(
+            state,
+            [
+                "month02_order_patrol_standby_done",
+                "month02_expedition_supply_review_done",
+                "month02_quiet_frequency_crosscheck_done",
+            ],
+        )
+        and _flag(state, "activity_done.boundary_anomaly_convergence") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_calls_anomaly_convergence",
+                kind="npc_plan",
+                title="艾丽丝要把三条路线的异常信号合到同一张记录上",
+                description="第二月中段的发现开始指向同一个方向。艾丽丝在书库等你，把村务报告、远征补给和静默频率表并排核对，确认异常是否正在靠近北门。",
+                priority=87,
+                reason="Week 07 needs a shared convergence objective after any Week 06 route slice is completed.",
+                action={"type": "scene_activity", "activity_id": "boundary_anomaly_convergence"},
+                stakes=[
+                    "这一步会把三条路线从平行推进收束到同一个边境异常核心。",
+                    "如果不做，第二月 Week 07 会缺少玩家可执行的共同目标。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="compare_route_records",
+                        label="和艾丽丝核对三条路线的异常信号",
+                        hint="把村务、远征和静默记录放到同一张表里。",
+                        result_text="艾丽丝把三份记录推到桌面中央，等你指出哪些信号其实来自同一个方向。",
+                        tone="careful",
+                        effects={
+                            "flags": {"alice_month02_convergence_agreed": 1},
+                            "relationship": {"alice.trust": 1},
                         },
                     )
                 ],

@@ -108,7 +108,25 @@
       "summary": "后续版本在这里把三条路线的发现收束到共同的边境异常核心。",
       "goals": ["收束路线差异", "确认异常源头线索", "准备第二月末选择"],
       "play_hooks": ["共同线索", "同伴分歧", "世界观察器"],
-      "milestones": []
+      "milestones": [
+        {
+          "id": "m02_anomaly_convergence",
+          "title": "Day 46-52：异常信号收束",
+          "day_range": [46, 52],
+          "scene_id": "reading_hall",
+          "related_activity_id": "boundary_anomaly_convergence",
+          "completed_flag": "month02_anomaly_convergence_done",
+          "requirements": {
+            "required_any_flags": {
+              "month02_order_patrol_standby_done": 1,
+              "month02_expedition_supply_review_done": 1,
+              "month02_quiet_frequency_crosscheck_done": 1
+            }
+          },
+          "goals": ["把三条路线的异常发现写成共同记录", "确认异常是否指向同一个源头", "让同伴对异常判断形成共同认知"],
+          "reward": "三条路线在异常源头上完成初步共识。"
+        }
+      ]
     },
     {
       "id": "week_08",
