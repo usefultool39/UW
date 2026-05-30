@@ -64,7 +64,19 @@
       "summary": "后续版本在这里加入三条路线的第一组专属事件。",
       "goals": ["扩展路线专属事件", "补充场景活动", "建立第二月中段质量门"],
       "play_hooks": ["路线事件", "场景验证", "关系压力"],
-      "milestones": []
+      "milestones": [
+        {
+          "id": "m02_order_patrol_standby",
+          "title": "Day 39-45：稳守线巡逻板正式运营",
+          "day_range": [39, 45],
+          "scene_id": "village_square",
+          "related_activity_id": "village_month02_patrol_standby",
+          "completed_flag": "month02_order_patrol_standby_done",
+          "requirements": { "required_flags": { "month02_order_briefing_done": 1 } },
+          "goals": ["公开第二月巡逻轮值", "把北门撤退信号写进村务流程", "让村民知道何时报告异常"],
+          "reward": "稳守线进入村务协同运营阶段。"
+        }
+      ]
     },
     {
       "id": "week_07",

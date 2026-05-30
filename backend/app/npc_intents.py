@@ -958,6 +958,47 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        39 <= day <= 45
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month02_order_briefing_done") >= 1
+        and _flag(state, "activity_done.village_month02_patrol_standby") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_formalizes_month02_patrol_board",
+                kind="npc_plan",
+                title="艾丽丝要把第二月巡逻板交给村务执行",
+                description="稳守线已经从书库简报走到中段。艾丽丝在村道广场等你，把北门巡逻、撤退信号和异常上报整理成村民能照着执行的轮值表。",
+                priority=85,
+                reason="Week 06 order route needs a concrete village-operation follow-up after the Day 32 briefing.",
+                action={"type": "scene_activity", "activity_id": "village_month02_patrol_standby"},
+                stakes=[
+                    "这一步会让稳守线从三人的计划变成全村可执行的村务流程。",
+                    "如果不做，第二月稳守线会停在简报层，缺少 Day 39-45 的玩家可执行目标。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="formalize_patrol_board",
+                        label="和艾丽丝把巡逻板交给村务执行",
+                        hint="公开轮值、撤退信号和异常上报格式。",
+                        result_text="艾丽丝把轮值栏钉到木牌上，等你确认哪些信号可以公开，哪些只写给巡逻队。",
+                        tone="steady",
+                        effects={
+                            "flags": {"alice_month02_patrol_board_agreed": 1},
+                            "relationship": {"alice.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(28, 25, "village_square"),
+                scene_id="village_square",
+                tile_x=28,
+                tile_y=25,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

@@ -1330,6 +1330,64 @@
           }
         }
       }
+    },
+    {
+      "id": "village_month02_patrol_standby",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square",
+        "reading_hall"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第二月 · 巡逻板正式运营",
+      "label": "把稳守线巡逻板交给村务执行",
+      "description": "第二月稳守线已经完成简报。现在需要把北门巡逻、撤退信号和异常上报写成村民看得懂、能照着做的轮值表。",
+      "result_text": "木牌不再只是提醒危险。艾丽丝把轮值栏钉上去，尤吉欧补上撤退手势，你把异常上报的时间和地点写成固定格式。稳守线第一次从三个人的计划变成了村务流程。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "route_order",
+        "village",
+        "npc_intent"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month02_order_briefing_done": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_order_patrol_standby_done": 1,
+          "month02_order_patrol_public": 1
+        },
+        "stamina_cost": 3,
+        "relationship": {
+          "alice.trust": 2,
+          "eugeo.trust": 1
+        },
+        "memory": {
+          "alice": {
+            "type": "month02",
+            "summary": "第二月中段，玩家把稳守线巡逻板交给村务执行，让北门巡逻、撤退信号和异常上报有了公开流程。",
+            "weight": 5
+          },
+          "eugeo": {
+            "type": "month02",
+            "summary": "第二月中段，玩家让尤吉欧把撤退手势写进巡逻板，稳守线开始从计划变成全村能执行的流程。",
+            "weight": 4
+          }
+        }
+      }
     }
   ]
 }

@@ -288,3 +288,27 @@ def test_day_thirty_two_month_two_route_intents_are_route_specific():
         assert intents[intent_id].scene_id == scene_id
         assert intents[intent_id].action == action
         assert intents[intent_id].response_options
+
+
+def test_day_thirty_nine_order_patrol_board_intent_guides_player_to_square():
+    sess = Session(run_id="test-day39-order-patrol")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 39,
+            "time_band": "morning",
+            "flags": {
+                "month02_day31_entry_done": 1,
+                "month02_route_order": 1,
+                "month02_order_briefing_done": 1,
+            },
+        }
+    )
+
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+
+    assert intents["alice_formalizes_month02_patrol_board"].scene_id == "village_square"
+    assert intents["alice_formalizes_month02_patrol_board"].action == {
+        "type": "scene_activity",
+        "activity_id": "village_month02_patrol_standby",
+    }
+    assert intents["alice_formalizes_month02_patrol_board"].response_options
