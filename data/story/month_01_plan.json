@@ -4,7 +4,7 @@
   "title": "第一月：北境静默线",
   "subtitle": "30 日可玩路线",
   "summary": "第一个月围绕书库线索、古誓树训练、北境律令和同伴信任展开。前三天确定边界事件，之后用巡查、村务、演练和远征准备把关系暗线转成长期玩法。",
-  "day_range": [1, 30],
+  "day_range": [1, 31],
   "ending_paths": {
     "unresolved": "第三天选择还没有收束。先把边界线前的决定做完，第一月路线会根据结果切换侧重点。",
     "order": "你选择遵守规则。第一月会偏向记录、报告、村内信任和稳妥巡查。",
@@ -102,7 +102,7 @@
     {
       "id": "week_04",
       "week": 4,
-      "day_range": [22, 30],
+      "day_range": [22, 31],
       "title": "第 4 周：第一次远征准备",
       "summary": "第一个月最后把资源、关系和路线选择收束为一次正式边境行动。",
       "goals": ["整理远征包", "决定队伍路线", "为第二月的边境副本埋下入口"],
@@ -122,7 +122,7 @@
         {
           "id": "m01_month_gate",
           "title": "Day 28-30：北门前夜",
-          "day_range": [28, 30],
+          "day_range": [28, 31],
           "scene_id": "north_gate",
           "related_event_id": "ch1_d30_first_month_gate",
           "completed_flag": "month01_gate_resolved",

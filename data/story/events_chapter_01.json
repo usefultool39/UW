@@ -1143,6 +1143,143 @@
           }
         }
       ]
+    },
+    {
+      "id": "ch1_d31_month_transition",
+      "chapter": "chapter_01",
+      "kind": "month_bridge",
+      "title": "第三十一天：第二月交接",
+      "description": "第一月的路线已经定下。清晨的北门不再只是终点，你需要把昨夜的决定写成第二月第一条行动准则。",
+      "trigger": {
+        "day_min": 31,
+        "day_max": 31,
+        "time_bands": ["morning", "afternoon", "evening", "night"],
+        "required_flags": { "month01_gate_resolved": 1 },
+        "forbidden_flags": { "month02_day31_entry_done": 1 }
+      },
+      "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "confirm_order_route",
+          "label": "把第二月写成稳守北门的协同计划",
+          "hint": "稳守路线：先巩固村务、巡查公开度和补给线。",
+          "conditions": { "required_flags": { "month01_route_order": 1 } },
+          "preview": {
+            "remembered_by": ["alice", "eugeo"],
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 1
+            },
+            "consequences": ["第二月村内支持更稳", "远征推进会更谨慎"]
+          },
+          "result_text": "你把北门记录交给同伴复核，把第二月第一条准则定为稳守与协同。艾琳先确认撤退信号，尤里负责把巡查公开度写成村务流程。",
+          "effects": {
+            "flags": {
+              "month02_day31_entry_done": 1,
+              "month02_route_order": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_entry",
+                "summary": "第二月第一天，玩家把路线定为稳守北门和村务协同。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_entry",
+                "summary": "第二月第一天，玩家要求尤里把巡查流程写进村务安排。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "confirm_expedition_route",
+          "label": "把第二月写成三人边境远征计划",
+          "hint": "远征路线：优先推进边境调查，但每次推进前确认退路。",
+          "conditions": { "required_flags": { "month01_route_expedition": 1 } },
+          "preview": {
+            "remembered_by": ["alice", "eugeo"],
+            "relationship": {
+              "eugeo.trust": 2,
+              "alice.tension": 1
+            },
+            "promises": ["alice"],
+            "consequences": ["第二月远征推进更快", "同伴压力会更高"]
+          },
+          "result_text": "你把第二月第一条准则定为三人远征。尤里把测距粉和绳标重新分包，艾琳则要求每次越过北门前都先确认撤退路线。",
+          "effects": {
+            "flags": {
+              "month02_day31_entry_done": 1,
+              "month02_route_expedition": 1
+            },
+            "relationship": {
+              "eugeo.trust": 2,
+              "alice.tension": 1
+            },
+            "promises": {
+              "alice": "第二月第一天，玩家答应每次远征前先确认撤退路线。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_entry",
+                "summary": "第二月第一天，玩家把路线定为三人边境远征，并承诺保留退路。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_entry",
+                "summary": "第二月第一天，玩家把路线定为更主动的边境远征。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "confirm_quiet_route",
+          "label": "把第二月写成静默观察和暗线复核计划",
+          "hint": "静默路线：先整理记录和异常频率，再决定是否越过北门。",
+          "conditions": { "required_flags": { "month01_route_quiet": 1 } },
+          "preview": {
+            "remembered_by": ["alice", "eugeo"],
+            "relationship": {
+              "eugeo.trust": 1,
+              "alice.tension": 2
+            },
+            "tensions": ["alice"],
+            "consequences": ["第二月调查更隐蔽", "信息不对称风险更高"]
+          },
+          "result_text": "你把第二月第一条准则定为静默观察。记录本上多出异常频率、风声断点和同伴反应三栏，艾琳提醒你这一次不能再让信息缺口扩大。",
+          "effects": {
+            "flags": {
+              "month02_day31_entry_done": 1,
+              "month02_route_quiet": 1
+            },
+            "relationship": {
+              "eugeo.trust": 1,
+              "alice.tension": 2
+            },
+            "tensions": {
+              "alice": "第二月第一天，玩家选择静默观察路线，艾琳担心信息缺口继续扩大。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_entry",
+                "summary": "第二月第一天，玩家把路线定为静默观察和暗线复核。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_entry",
+                "summary": "第二月第一天，玩家选择先整理异常频率，再决定是否越过北门。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

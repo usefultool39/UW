@@ -18,6 +18,27 @@ def _rest_to_day(sess: Session, day: int) -> None:
         sess.player_action(kind="rest_until_next_day")
 
 
+def _reach_month_gate_after_vigil(sess: Session) -> None:
+    _finish_first_three_days(sess)
+    _rest_to_day(sess, 4)
+    assert sess.choose_story_event("ch1_d4_after_boundary_debrief", "write_truth")["ok"] is True
+    _rest_to_day(sess, 7)
+    assert sess.choose_story_event("ch1_d7_first_boundary_drill", "mark_safe_route")["ok"] is True
+    _rest_to_day(sess, 12)
+    assert sess.choose_story_event("ch1_d12_village_trust", "public_patrol_board")["ok"] is True
+    _rest_to_day(sess, 18)
+    assert sess.choose_story_event("ch1_d18_silent_line_rehearsal", "calibrate_sacred_arts")["ok"] is True
+    _rest_to_day(sess, 24)
+    assert sess.choose_story_event("ch1_d24_expedition_pack", "pack_for_safety")["ok"] is True
+    _rest_to_day(sess, 28)
+    sess.player_action(kind="move_scene", scene_id="north_gate")
+    vigil = sess.player_action(
+        kind="scene_activity",
+        activity_id="north_gate_month_end_vigil",
+    )
+    assert vigil["ok"] is True
+
+
 def test_month_plan_starts_with_opening_milestone_active():
     sess = Session(run_id="test-month-plan-start")
 
@@ -66,36 +87,39 @@ def test_first_month_events_chain_to_week_two_drill():
 
 def test_first_month_event_chain_can_reach_north_gate_finale():
     sess = Session(run_id="test-month-plan-full-chain")
-    _finish_first_three_days(sess)
-
-    _rest_to_day(sess, 4)
-    assert sess.choose_story_event("ch1_d4_after_boundary_debrief", "write_truth")["ok"] is True
-    _rest_to_day(sess, 7)
-    assert sess.choose_story_event("ch1_d7_first_boundary_drill", "mark_safe_route")["ok"] is True
-    _rest_to_day(sess, 12)
-    assert sess.choose_story_event("ch1_d12_village_trust", "public_patrol_board")["ok"] is True
-    _rest_to_day(sess, 18)
-    assert sess.choose_story_event("ch1_d18_silent_line_rehearsal", "calibrate_sacred_arts")["ok"] is True
-    _rest_to_day(sess, 24)
-    assert sess.choose_story_event("ch1_d24_expedition_pack", "pack_for_safety")["ok"] is True
-    _rest_to_day(sess, 28)
+    _reach_month_gate_after_vigil(sess)
 
     blocked = sess.choose_story_event("ch1_d30_first_month_gate", "route_report_first")
-    assert blocked["ok"] is False
-
-    sess.player_action(kind="move_scene", scene_id="north_gate")
-    vigil = sess.player_action(
-        kind="scene_activity",
-        activity_id="north_gate_month_end_vigil",
-    )
-    assert vigil["ok"] is True
-    assert vigil["state"]["flags"]["month01_gate_vigil_done"] == 1
-    assert sess.choose_story_event("ch1_d30_first_month_gate", "route_report_first")["ok"] is True
+    assert blocked["ok"] is True
 
     plan = public_month_plan(sess.root, sess.state)
 
     assert sess.state.flags["month01_gate_resolved"] == 1
     assert plan["weeks"][-1]["milestones"][-1]["status"] == "completed"
+
+
+def test_day_thirty_one_month_transition_uses_first_month_route_flags():
+    cases = [
+        ("route_report_first", "confirm_order_route", "month02_route_order"),
+        ("route_joint_expedition", "confirm_expedition_route", "month02_route_expedition"),
+        ("route_quiet_probe", "confirm_quiet_route", "month02_route_quiet"),
+    ]
+
+    for month_gate_choice, day31_choice, route_flag in cases:
+        sess = Session(run_id=f"test-day31-{route_flag}")
+        _reach_month_gate_after_vigil(sess)
+        assert sess.choose_story_event("ch1_d30_first_month_gate", month_gate_choice)["ok"] is True
+        _rest_to_day(sess, 31)
+
+        events = sess.available_story_events()["events"]
+        event = next(item for item in events if item["id"] == "ch1_d31_month_transition")
+        choice_ids = {choice["id"] for choice in event["choices"]}
+
+        assert choice_ids == {day31_choice}
+        out = sess.choose_story_event("ch1_d31_month_transition", day31_choice)
+        assert out["ok"] is True
+        assert sess.state.flags["month02_day31_entry_done"] == 1
+        assert sess.state.flags[route_flag] == 1
 
 
 def test_day_twenty_four_expedition_preparation_is_playable():

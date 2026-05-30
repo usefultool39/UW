@@ -57,6 +57,14 @@ async function advanceToMonthGate(request) {
   await playerAction(request, { kind: 'move_scene', scene_id: 'north_gate' })
 }
 
+async function advanceToDay31OrderRoute(request) {
+  await advanceToMonthGate(request)
+  await playerAction(request, { kind: 'scene_activity', activity_id: 'north_gate_month_end_vigil' })
+  await storyChoose(request, { event_id: 'ch1_d30_first_month_gate', choice_id: 'route_report_first' })
+  await restToDay(request, 31)
+  await playerAction(request, { kind: 'move_scene', scene_id: 'north_gate' })
+}
+
 async function dismissOpeningBrief(page) {
   const btn = page.getByRole('button', { name: '开始行动' })
   await btn.click({ timeout: 1_500 }).catch(() => {})
@@ -274,5 +282,22 @@ test.describe('开放世界质量 smoke', () => {
     await page.locator('.event-choice').filter({ hasText: '第二月村内支持更稳' }).click()
     await expect(page.locator('.result-kicker')).toContainText('第一月收束')
     await expect(page.locator('.impact-chip').filter({ hasText: '第一月路线' })).toBeVisible()
+  })
+
+  test('Day 31 第二月入口按第一月路线解锁单一路线确认', async ({ page, request }) => {
+    await advanceToDay31OrderRoute(request)
+    await page.goto('/')
+
+    await expect(page.locator('.event-btn').filter({ hasText: '第三十一天' })).toBeVisible()
+    await page.locator('.event-btn').filter({ hasText: '第三十一天' }).click()
+    await expect(page.locator('.event-panel')).toBeVisible()
+    await expect(page.locator('.event-choice')).toHaveCount(1)
+    await expect(page.locator('.event-choice').filter({ hasText: '第二月村内支持更稳' })).toBeVisible()
+    await page.locator('.event-choice').filter({ hasText: '第二月村内支持更稳' }).click()
+    await expect(page.locator('.result-panel')).toBeVisible()
+
+    const state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month02_day31_entry_done).toBe(1)
+    expect(state.flags.month02_route_order).toBe(1)
   })
 })
