@@ -209,3 +209,51 @@ def test_month_plan_endpoint_returns_current_route():
     assert body["id"] == "month_01"
     assert body["current"]["day"] == 1
     assert body["weeks"][0]["milestones"][0]["status"] == "active"
+
+
+def test_month_two_plan_exposes_route_specific_day32_entry():
+    sess = Session(run_id="test-month-two-plan")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 32,
+            "time_band": "morning",
+            "flags": {
+                "month02_day31_entry_done": 1,
+                "month02_route_order": 1,
+            },
+        }
+    )
+
+    plan = public_month_plan(sess.root, sess.state, month_id="month_02")
+    week = plan["weeks"][0]
+    milestones = {item["id"]: item for item in week["milestones"]}
+
+    assert plan["ok"] is True
+    assert plan["id"] == "month_02"
+    assert plan["current"]["ending_path"] == "order"
+    assert plan["current"]["active_milestone_id"] == "m02_order_briefing"
+    assert week["status"] == "active"
+    assert milestones["m02_order_briefing"]["status"] == "active"
+    assert milestones["m02_expedition_check"]["status"] == "locked"
+    assert milestones["m02_quiet_record"]["status"] == "locked"
+
+
+def test_month_two_plan_marks_day32_route_activity_completed():
+    sess = Session(run_id="test-month-two-plan-completed")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 32,
+            "time_band": "morning",
+            "flags": {
+                "month02_day31_entry_done": 1,
+                "month02_route_expedition": 1,
+                "month02_expedition_check_done": 1,
+            },
+        }
+    )
+
+    plan = public_month_plan(sess.root, sess.state, month_id="month_02")
+    milestones = {item["id"]: item for item in plan["weeks"][0]["milestones"]}
+
+    assert plan["current"]["ending_path"] == "expedition"
+    assert milestones["m02_expedition_check"]["status"] == "completed"

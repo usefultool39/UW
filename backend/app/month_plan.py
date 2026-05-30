@@ -78,6 +78,18 @@ def _status_label(status: str) -> str:
     }.get(status, status)
 
 
+def _month_ending_path(state: WorldState, month_id: str) -> str:
+    if month_id == "month_02":
+        if _flag_value(state, "month02_route_order") > 0:
+            return "order"
+        if _flag_value(state, "month02_route_expedition") > 0:
+            return "expedition"
+        if _flag_value(state, "month02_route_quiet") > 0:
+            return "quiet"
+        return "unresolved"
+    return state.chapter_ending_id or "unresolved"
+
+
 def _milestone_view(state: WorldState, raw: dict[str, Any]) -> dict[str, Any]:
     start, end = _day_range(raw.get("day_range"))
     completed = _is_completed(state, raw)
@@ -157,7 +169,7 @@ def public_month_plan(
     if not current_week_id and weeks_out:
         current_week_id = str(weeks_out[-1 if state.day > int(weeks_out[-1]["day_end"]) else 0].get("id") or "")
 
-    ending_path = state.chapter_ending_id or "unresolved"
+    ending_path = _month_ending_path(state, str(plan.get("id") or month_id))
     ending_notes = plan.get("ending_paths") if isinstance(plan.get("ending_paths"), dict) else {}
 
     return {

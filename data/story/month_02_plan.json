@@ -1,0 +1,90 @@
+{
+  "v": 1,
+  "id": "month_02",
+  "title": "第二月：边境远征线",
+  "subtitle": "三路线并行入口",
+  "summary": "第二月从第一月末的路线选择展开。稳守线先把北门行动接入村务，远征线先复核北门外第一段路线，静默线先把异常频率整理成可复查记录。",
+  "day_range": [32, 61],
+  "ending_paths": {
+    "unresolved": "第二月路线还没有写入。先完成第三十一天的第二月交接。",
+    "order": "第二月从稳守北门和村务协同展开。重点是公开巡查、补给线和许可远征。",
+    "expedition": "第二月从三人边境远征展开。重点是北门外路线、撤退标记和异常源头。",
+    "quiet": "第二月从静默观察和暗线复核展开。重点是异常频率、记录完整性和同伴信任。"
+  },
+  "weeks": [
+    {
+      "id": "week_05",
+      "week": 5,
+      "day_range": [32, 38],
+      "title": "第 5 周：第二月路线入口",
+      "summary": "把第一月末的决定转成第二月第一组可执行动作，让玩家立刻看到三条路线的差异。",
+      "goals": ["完成对应路线的 Day 32 承接活动", "让同伴主动把路线变成行动", "为第二月后续事件留下明确 flag"],
+      "play_hooks": ["NPC 主动意图", "路线专属场景活动", "同伴记忆"],
+      "milestones": [
+        {
+          "id": "m02_order_briefing",
+          "title": "Day 32：稳守线村务简报",
+          "day_range": [32, 32],
+          "scene_id": "reading_hall",
+          "related_activity_id": "church_month02_briefing",
+          "completed_flag": "month02_order_briefing_done",
+          "requirements": { "required_flags": { "month02_route_order": 1 } },
+          "goals": ["整理巡查公开度", "确认补给线", "把撤退信号写成村务流程"],
+          "reward": "稳守线进入村务协同阶段。"
+        },
+        {
+          "id": "m02_expedition_check",
+          "title": "Day 32：远征线北门复核",
+          "day_range": [32, 32],
+          "scene_id": "north_gate",
+          "related_activity_id": "north_gate_expedition_check",
+          "completed_flag": "month02_expedition_check_done",
+          "requirements": { "required_flags": { "month02_route_expedition": 1 } },
+          "goals": ["复核第一段路线", "确认测距粉和绳标", "把撤退点写入同伴记忆"],
+          "reward": "远征线进入北门外路线复核阶段。"
+        },
+        {
+          "id": "m02_quiet_record",
+          "title": "Day 32：静默线频率记录",
+          "day_range": [32, 32],
+          "scene_id": "reading_hall",
+          "related_activity_id": "reading_hall_silent_record",
+          "completed_flag": "month02_quiet_record_done",
+          "requirements": { "required_flags": { "month02_route_quiet": 1 } },
+          "goals": ["整理异常频率", "记录风声断点", "明确见证人和信息缺口"],
+          "reward": "静默线进入可复查记录阶段。"
+        }
+      ]
+    },
+    {
+      "id": "week_06",
+      "week": 6,
+      "day_range": [39, 45],
+      "title": "第 6 周：路线深化",
+      "summary": "后续版本在这里加入三条路线的第一组专属事件。",
+      "goals": ["扩展路线专属事件", "补充场景活动", "建立第二月中段质量门"],
+      "play_hooks": ["路线事件", "场景验证", "关系压力"],
+      "milestones": []
+    },
+    {
+      "id": "week_07",
+      "week": 7,
+      "day_range": [46, 52],
+      "title": "第 7 周：路线收敛",
+      "summary": "后续版本在这里把三条路线的发现收束到共同的边境异常核心。",
+      "goals": ["收束路线差异", "确认异常源头线索", "准备第二月末选择"],
+      "play_hooks": ["共同线索", "同伴分歧", "世界观察器"],
+      "milestones": []
+    },
+    {
+      "id": "week_08",
+      "week": 8,
+      "day_range": [53, 61],
+      "title": "第 8 周：第二月收束",
+      "summary": "后续版本在这里加入第二月末的路线结果和第三月入口。",
+      "goals": ["完成第二月路线结果", "写入长期 flags", "打开第三月入口"],
+      "play_hooks": ["月末路线选择", "关系结算", "新区域入口"],
+      "milestones": []
+    }
+  ]
+}
