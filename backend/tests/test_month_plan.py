@@ -144,6 +144,23 @@ def test_day_twenty_four_expedition_preparation_is_playable():
     assert sendoff["state"]["flags"]["month01_village_sendoff_done"] == 1
     assert any(item["npc_id"] == "eugeo" for item in sendoff["memory_written"])
 
+    sess.state = sess.state.model_copy(update={"day": 28, "time_band": "evening"})
+    sess.player_action(kind="move_scene", scene_id="north_gate")
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    assert intents["alice_marks_month_gate_vigil"].action == {
+        "type": "scene_activity",
+        "activity_id": "north_gate_month_end_vigil",
+    }
+    vigil = sess.player_action(
+        kind="scene_activity",
+        activity_id="north_gate_month_end_vigil",
+        activity_choice="review_promises",
+    )
+    assert vigil["ok"] is True
+    assert vigil["state"]["flags"]["month01_gate_vigil_done"] == 1
+    assert vigil["state"]["flags"]["month01_gate_promises_reviewed"] == 1
+    assert any(item["npc_id"] == "alice" for item in vigil["memory_written"])
+
 
 def test_month_plan_endpoint_returns_current_route():
     client = TestClient(app)

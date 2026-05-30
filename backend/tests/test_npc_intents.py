@@ -226,3 +226,23 @@ def test_day_twenty_five_sendoff_intent_guides_player_to_square():
         "activity_id": "village_expedition_sendoff",
     }
     assert intents["eugeo_brings_pack_to_square"].scene_id == "village_square"
+
+
+def test_day_twenty_eight_gate_vigil_intent_guides_player_to_north_gate():
+    sess = Session(run_id="test-day28-gate-vigil-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 28,
+            "time_band": "evening",
+            "flags": {"month01_expedition_ready": 1},
+        }
+    )
+
+    state = sess.public_state()
+    intents = {item.id: item for item in state.npc_intents}
+
+    assert intents["alice_marks_month_gate_vigil"].action == {
+        "type": "scene_activity",
+        "activity_id": "north_gate_month_end_vigil",
+    }
+    assert intents["alice_marks_month_gate_vigil"].scene_id == "north_gate"

@@ -1087,6 +1087,101 @@
           }
         }
       }
+    },
+    {
+      "id": "north_gate_month_end_vigil",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "北门前夜 · 第一月收束",
+      "label": "把第一个月的承诺带到北门",
+      "description": "远征包、村里的送行和静默线记录都已经准备好。真正做选择前，你们需要确认第二月不是凭冲动开始。",
+      "result_text": "北门外的风把火光压得很低。艾琳逐条核对记录，尤里重新踩过撤退线，你把没说完的担心留在门内，把要承担的路线放到门外。",
+      "time_cost": 1,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month01_expedition_ready": 1
+        }
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month01",
+        "north_gate",
+        "ceremony"
+      ],
+      "interaction_kind": "month_gate_vigil",
+      "choices": [
+        {
+          "id": "review_promises",
+          "label": "让艾琳复核记录与承诺",
+          "hint": "强化秩序和许可路线的情感铺垫。",
+          "tone": "steady",
+          "result_text": "艾琳把记录本翻到空白页，写下你们已经确认过的撤退信号、村内支持和远征风险。她说这不是拖慢脚步，而是让脚步能回来。",
+          "effects": {
+            "flags": {
+              "month01_gate_vigil_done": 1,
+              "month01_gate_promises_reviewed": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month01",
+                "summary": "玩家在北门前夜让艾琳复核第一月记录与远征承诺，把第二月路线先落到可执行的安全流程上。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "walk_retreat_line",
+          "label": "和尤里再走一遍撤退线",
+          "hint": "强化远征行动和三人协作路线的情感铺垫。",
+          "tone": "cooperate",
+          "result_text": "尤里没有急着越过门，只沿着撤退线往返走了一遍。等你们三个人在同一块石缝前停下，他才点头说第二月可以从这里开始。",
+          "effects": {
+            "flags": {
+              "month01_gate_vigil_done": 1,
+              "month01_gate_retreat_line_walked": 1
+            },
+            "relationship": {
+              "eugeo.trust": 2,
+              "alice.trust": 1
+            },
+            "memory": {
+              "eugeo": {
+                "type": "month01",
+                "summary": "玩家在北门前夜和尤里复走撤退线，让第二月远征先建立在可撤回、可协作的动作上。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ],
+      "effects": {
+        "flags": {
+          "month01_gate_vigil_started": 1
+        },
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      }
     }
   ]
 }

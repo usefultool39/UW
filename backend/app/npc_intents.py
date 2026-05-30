@@ -783,6 +783,55 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        28 <= day <= 30
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month01_expedition_ready") >= 1
+        and _flag(state, "month01_gate_resolved") < 1
+        and _flag(state, "activity_done.north_gate_month_end_vigil") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_marks_month_gate_vigil",
+                kind="npc_plan",
+                title="艾琳想在北门前复核第一月承诺",
+                description="远征包已经准备好，但艾琳没有急着让你选择路线。她把记录本带到北门，想先确认撤退线、村里支持和每个人没说出口的担心。",
+                priority=89,
+                reason="Day 28-30 的第一月收束需要同伴主动把玩家带入北门仪式，而不是只点击路线选择。",
+                action={"type": "scene_activity", "activity_id": "north_gate_month_end_vigil"},
+                stakes=[
+                    "这一步会把第一月的记录、远征包和村内支持重新汇合到北门场景。",
+                    "如果跳过，第二月路线选择会更像普通菜单，缺少告别第一月的情绪重量。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="agree_to_gate_vigil",
+                        label="答应艾琳：先把第一个月复核完",
+                        hint="在路线选择前补上记录、撤退线和同伴担心。",
+                        result_text="艾琳合上记录本，语气比平时更轻：「那就先确认能回来，再决定要往哪里走。」",
+                        tone="steady",
+                        effects={
+                            "flags": {"alice_gate_vigil_agreed": 1},
+                            "relationship": {"alice.trust": 2, "eugeo.trust": 1},
+                            "memory": {
+                                "alice": {
+                                    "type": "npc_intent_response",
+                                    "summary": "玩家答应艾琳，在第一月收束路线选择前先到北门复核记录、撤退线和远征承诺。",
+                                    "weight": 4,
+                                }
+                            },
+                        },
+                    )
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 
