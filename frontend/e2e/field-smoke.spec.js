@@ -258,8 +258,9 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.quest-tracker')).toContainText('NPC 关注')
     await expect(page.locator('.quest-tracker')).toContainText('北门前复核第一月承诺')
     await page.locator('.nearby-enter-btn').click()
-    await page.locator('.interact-action').filter({ hasText: '艾琳想在北门前复核第一月承诺' }).click()
-    await page.getByRole('button', { name: '继续行动' }).click({ timeout: 2_000 }).catch(() => {})
+    await page.locator('.interact-action[data-activity-id="north_gate_month_end_vigil"]').click()
+    await expect(page.locator('.result-panel')).toBeVisible()
+    await page.getByRole('button', { name: '继续行动' }).click()
 
     if (!(await page.locator('.event-panel').isVisible())) {
       await expect(page.locator('.event-btn').filter({ hasText: '第三十天：北门前夜' })).toBeVisible()

@@ -79,6 +79,17 @@ def test_first_month_event_chain_can_reach_north_gate_finale():
     _rest_to_day(sess, 24)
     assert sess.choose_story_event("ch1_d24_expedition_pack", "pack_for_safety")["ok"] is True
     _rest_to_day(sess, 28)
+
+    blocked = sess.choose_story_event("ch1_d30_first_month_gate", "route_report_first")
+    assert blocked["ok"] is False
+
+    sess.player_action(kind="move_scene", scene_id="north_gate")
+    vigil = sess.player_action(
+        kind="scene_activity",
+        activity_id="north_gate_month_end_vigil",
+    )
+    assert vigil["ok"] is True
+    assert vigil["state"]["flags"]["month01_gate_vigil_done"] == 1
     assert sess.choose_story_event("ch1_d30_first_month_gate", "route_report_first")["ok"] is True
 
     plan = public_month_plan(sess.root, sess.state)

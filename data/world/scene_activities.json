@@ -1174,7 +1174,8 @@
       ],
       "effects": {
         "flags": {
-          "month01_gate_vigil_started": 1
+          "month01_gate_vigil_started": 1,
+          "month01_gate_vigil_done": 1
         },
         "stamina_cost": 2,
         "relationship": {

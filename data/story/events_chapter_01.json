@@ -1014,7 +1014,7 @@
         "day_min": 28,
         "day_max": 30,
         "time_bands": ["morning", "afternoon", "evening", "night"],
-        "required_flags": { "month01_expedition_ready": 1 },
+        "required_flags": { "month01_expedition_ready": 1, "month01_gate_vigil_done": 1 },
         "forbidden_flags": { "month01_gate_resolved": 1 }
       },
       "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
@@ -1033,7 +1033,7 @@
             },
             "consequences": ["第二月村内支持更稳", "远征节奏会放慢"]
           },
-          "result_text": "你决定先把记录交上去，换取正式许可和更多村内支持。艾琳点头，尤里把视线从北门移回你们身上。",
+          "result_text": "你决定先把记录交上去，换取正式许可和更多村内支持。艾琳把北门前夜那一页压平，在许可路线旁画下清晰的回程箭头；尤里最后看了一眼门外，点头承认这不是退缩，而是把第二月的第一步踩稳。",
           "effects": {
             "flags": {
               "month01_gate_resolved": 1,
@@ -1072,7 +1072,7 @@
             "promises": ["alice"],
             "consequences": ["第二月远征推进更快", "同伴关系压力更高"]
           },
-          "result_text": "你决定第二个月就以三人远征为主。尤里没有隐藏笑意，艾琳沉默片刻后把最后一条退路标记交给你。",
+          "result_text": "你决定第二个月就以三人远征为主。尤里没有隐藏笑意，先把脚尖对准门外；艾琳沉默片刻，把最后一条退路标记交到你手里，要求你在每次推进前都先确认它还亮着。",
           "effects": {
             "flags": {
               "month01_gate_resolved": 1,
@@ -1114,7 +1114,7 @@
             "tensions": ["alice"],
             "consequences": ["第二月调查更隐蔽", "信息不对称风险更高"]
           },
-          "result_text": "你决定先不扩大声势，第二月从暗中复核静默线源头开始。艾琳看着你，像是在判断这次你会不会把话说完整；尤里则轻声说他会跟上。",
+          "result_text": "你决定先不扩大声势，第二月从暗中复核静默线源头开始。北门外的风声像是短暂让出一条缝；艾琳看着你，像是在判断这次你会不会把话说完整；尤里则轻声说他会跟上，但要你把每一次沉默都写进记录。",
           "effects": {
             "flags": {
               "month01_gate_resolved": 1,
