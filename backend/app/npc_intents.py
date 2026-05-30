@@ -999,6 +999,47 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        39 <= day <= 45
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month02_expedition_check_done") >= 1
+        and _flag(state, "activity_done.north_gate_expedition_supply_review") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_reviews_expedition_supplies",
+                kind="npc_plan",
+                title="尤吉欧要复核第二月远征补给",
+                description="远征线已经确认第一段路线。尤吉欧在北门等你，把干粮、标记粉、绳结和撤退口令重新点清，避免下一次越界只靠临场判断。",
+                priority=85,
+                reason="Week 06 expedition route needs a supply review after the Day 32 route confirmation.",
+                action={"type": "scene_activity", "activity_id": "north_gate_expedition_supply_review"},
+                stakes=[
+                    "这一步会让远征线从路线复核进入补给确认，降低后续越界行动的风险。",
+                    "如果不做，远征线缺少 Day 39-45 的准备节奏，容易直接跳到高风险探索。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="confirm_supply_list",
+                        label="和尤吉欧复核远征补给",
+                        hint="点清干粮、标记粉、绳结和撤退口令。",
+                        result_text="尤吉欧把补给袋打开，等你决定哪些东西必须带，哪些东西只会拖慢撤退。",
+                        tone="cooperate",
+                        effects={
+                            "flags": {"eugeo_month02_supply_review_agreed": 1},
+                            "relationship": {"eugeo.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

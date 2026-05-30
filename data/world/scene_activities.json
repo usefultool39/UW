@@ -1388,6 +1388,57 @@
           }
         }
       }
+    },
+    {
+      "id": "north_gate_expedition_supply_review",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第二月 · 远征补给复核",
+      "label": "和尤吉欧复核远征补给",
+      "description": "远征线已经完成北门路线复核。尤吉欧想在下一次越界前，把干粮、标记粉、绳结和撤退口令重新点清。",
+      "result_text": "尤吉欧把补给袋摊在北门石阶上。你们把干粮分成往返两份，标记粉只留给关键岔路，绳结重新按撤退顺序绑好。远征线不再只是往外走，而是知道什么时候必须回来。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "route_expedition",
+        "north_gate",
+        "npc_intent"
+      ],
+      "requirements": {
+        "required_flags": {
+          "month02_expedition_check_done": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_expedition_supply_review_done": 1,
+          "month02_expedition_supplies_confirmed": 1
+        },
+        "stamina_cost": 3,
+        "relationship": {
+          "eugeo.trust": 2,
+          "alice.trust": 1
+        },
+        "memory": {
+          "eugeo": {
+            "type": "month02",
+            "summary": "第二月中段，玩家和尤吉欧在北门复核远征补给，把干粮、标记粉、绳结和撤退口令重新点清。",
+            "weight": 5
+          }
+        }
+      }
     }
   ]
 }

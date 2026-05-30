@@ -75,6 +75,17 @@
           "requirements": { "required_flags": { "month02_order_briefing_done": 1 } },
           "goals": ["公开第二月巡逻轮值", "把北门撤退信号写进村务流程", "让村民知道何时报告异常"],
           "reward": "稳守线进入村务协同运营阶段。"
+        },
+        {
+          "id": "m02_expedition_supply_check",
+          "title": "Day 39-45：远征线补给复核",
+          "day_range": [39, 45],
+          "scene_id": "north_gate",
+          "related_activity_id": "north_gate_expedition_supply_review",
+          "completed_flag": "month02_expedition_supply_review_done",
+          "requirements": { "required_flags": { "month02_expedition_check_done": 1 } },
+          "goals": ["确认干粮和标记粉余量", "把补给缺口记入同伴记忆", "决定下一次越界前的最低携带量"],
+          "reward": "远征线进入补给确认阶段。"
         }
       ]
     },

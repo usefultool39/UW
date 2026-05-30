@@ -289,3 +289,36 @@ def test_month_two_week_six_order_patrol_milestone_is_active_and_completes():
     completed_milestones = {item["id"]: item for item in completed_week["milestones"]}
 
     assert completed_milestones["m02_order_patrol_standby"]["status"] == "completed"
+
+
+def test_month_two_week_six_expedition_supply_milestone_is_active_and_completes():
+    sess = Session(run_id="test-month-two-week-six-expedition")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 39,
+            "time_band": "morning",
+            "flags": {
+                "month02_day31_entry_done": 1,
+                "month02_route_expedition": 1,
+                "month02_expedition_check_done": 1,
+            },
+        }
+    )
+
+    plan = public_month_plan(sess.root, sess.state, month_id="month_02")
+    week = next(item for item in plan["weeks"] if item["id"] == "week_06")
+    milestones = {item["id"]: item for item in week["milestones"]}
+
+    assert plan["current"]["week_id"] == "week_06"
+    assert plan["current"]["active_milestone_id"] == "m02_expedition_supply_check"
+    assert milestones["m02_order_patrol_standby"]["status"] == "locked"
+    assert milestones["m02_expedition_supply_check"]["status"] == "active"
+
+    sess.state = sess.state.model_copy(
+        update={"flags": {**sess.state.flags, "month02_expedition_supply_review_done": 1}}
+    )
+    completed = public_month_plan(sess.root, sess.state, month_id="month_02")
+    completed_week = next(item for item in completed["weeks"] if item["id"] == "week_06")
+    completed_milestones = {item["id"]: item for item in completed_week["milestones"]}
+
+    assert completed_milestones["m02_expedition_supply_check"]["status"] == "completed"
