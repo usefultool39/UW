@@ -510,9 +510,17 @@ async function refreshStoryEvents() {
   await refreshMonthPlan()
 }
 
+function getActiveMonthPlanId() {
+  const flags = props.simState?.flags || {}
+  if (Number(flags.month02_day31_entry_done || 0) > 0) {
+    return 'month_02'
+  }
+  return 'month_01'
+}
+
 async function refreshMonthPlan() {
   try {
-    const res = await props.fetchMonthPlan('month_01')
+    const res = await props.fetchMonthPlan(getActiveMonthPlanId())
     monthPlan.value = res?.ok === false ? null : res
   } catch {
     monthPlan.value = null

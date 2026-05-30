@@ -299,5 +299,14 @@ test.describe('开放世界质量 smoke', () => {
     const state = await (await request.get(`${API}/api/state`)).json()
     expect(state.flags.month02_day31_entry_done).toBe(1)
     expect(state.flags.month02_route_order).toBe(1)
+
+    await page.locator('.result-primary').click()
+    const monthTwoPlanRequest = page.waitForRequest((req) =>
+      req.url().includes('/api/story/month_plan') && req.url().includes('month_id=month_02')
+    )
+    await page.locator('.action-journal').click()
+    await monthTwoPlanRequest
+    await expect(page.locator('.journal-panel')).toBeVisible()
+    await expect(page.locator('.month-plan-entry').first()).toBeVisible()
   })
 })
