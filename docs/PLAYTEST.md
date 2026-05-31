@@ -57,6 +57,7 @@
 | 2026-06-01 | Day 1 首屏任务追踪 | 推荐线索按钮 | 远距离剧情触发 | P1 | 在村道广场跳过开场后点击“查看推荐线索” | 远距离只引导玩家前往书库附近，不直接打开书库剧情面板 | 已修复；远距离点击只提示“先去村西书库附近”，不再打开事件面板 |
 | 2026-06-01 | Day 4 家中炉火 / 村西书库 | Day 4-6 事后复盘 | 路线提示称呼不一致 | P2 | 完成 Day3 后休息到 Day4，观察右侧目标与书库事件 | 艾琳主动意图和当前线索都应明确指向同一个玩家目的地 | 已修复并复验；目标、NPC 关注和当前线索都指向“村西书库” |
 | 2026-06-01 | Day 4 村西书库 | Day 4-6 事后复盘 | 可玩性 | 通过 | 进入 `church_library`，打开 `ch1_d4_after_boundary_debrief`，选择 `write_truth` | 复盘事件可触发、可完成、可结算 | 通过；写入 `month01_debrief_done=1`、`month01_record_truth=1`，艾琳/尤里记忆更新，复盘意图消失 |
+| 2026-06-01 | Day 4 村西书库 | 艾琳复盘人物厚度 | 人物感增强 | 通过 | 选择 `ch1_d4_after_boundary_debrief.write_truth` | 艾琳坚持写完整记录时，应能看出这是为了让风险变成家人也能理解的日常安全流程 | 已补强；结果文本加入“莉娜也能看懂的安全边距”，记忆摘要同步写入保护日常生活 |
 | 2026-06-01 | Day 46 书库阅览台 | Week07 异常汇合 | 玩家可见旧名 | P1 | 设置 Month02 order 路线完成 flag 后触发 `boundary_anomaly_convergence` | 结算文本与当前角色名统一为艾琳 / 尤里 | 已修复并复验；旧名不再出现在 Day 46 汇合结果 |
 | 2026-06-01 | Day 46 书库阅览台 | 艾琳人物厚度 | 人物感增强 | 通过 | 触发 `boundary_anomaly_convergence` 后阅读结果面板和记忆摘要 | 艾琳不只是记录员，应体现刻印术、长期牵挂和“先确认能否回来”的判断方式 | 通过；结果文本加入三枚刻印标记、妹妹来信页角、能否让大家回来，艾琳记忆摘要同步 |
 | 2026-06-01 | Day39-45 村道广场 / 书库阅览台 | Month02 路线承接 | 玩家可见旧名 | P1 | 搜索 Day39 order / quiet 分支的 NPC 意图和场景活动文案 | Month02 玩家可见文案统一使用“艾琳”，保留内部 `alice` id 不变 | 已修复并测过；源内容 `data/backend/frontend` 中不再残留旧名 |
@@ -76,6 +77,7 @@
 - Day1 推荐线索远距离门控截图：`runs/automation/codex_verify_route_gate_20260601_0128_01_far_click.png`
 - Day4-6 复盘截图：`runs/automation/codex_day4_debrief_20260601_0205_01_day4_home.png` 到 `runs/automation/codex_day4_debrief_20260601_0205_04_result.png`
 - Day4-6 路线口径复验截图：`runs/automation/codex_day4_copy_unified_20260601_0232_01_day4_home.png`
+- Day4-6 艾琳人物厚度：`.venv\Scripts\python.exe -m pytest backend/tests/test_content_validator.py backend/tests/test_month_plan.py::test_first_month_events_chain_to_week_two_drill backend/tests/test_month_plan.py::test_month_plan_reflects_day_four_debrief_after_boundary_ending -q`，5 passed；故事/NPC 定向测试，9 passed；运行时 API 触发 `ch1_d4_after_boundary_debrief.write_truth` 复验通过
 - Day46 艾琳人物厚度复验截图：`runs/automation/codex_day46_ailin_depth_20260601_0300_01_result.png`
 - Day39-45 旧名清理：`rg -n "艾丽丝" data backend frontend` 无命中；`.venv\Scripts\python.exe -m pytest backend/tests/test_content_validator.py backend/tests/test_npc_intents.py -q`，21 passed；Day39 quiet / Day46 衔接定向测试，3 passed；运行时 API 复验通过（order intent / quiet intent / quiet activity 均无旧名）
 - Day1 艾琳人物厚度：`.venv\Scripts\python.exe -m pytest backend/tests/test_content_validator.py backend/tests/test_story_director_events.py backend/tests/test_npc_intents.py::test_state_exposes_day1_npc_intents backend/tests/test_npc_intents.py::test_reading_activity_changes_alice_intent_to_reaction -q`，13 passed；运行时 API 触发 `ch1_d1_reading_clue.ask_alice` 复验通过
@@ -104,5 +106,5 @@
 ## 当前状态
 
 - 版本基线：`321c28b`
-- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖
-- 下一步动作：继续围绕艾琳做 Day4-6 的人物厚度 pass，优先补复盘里的长期牵挂；随后提交并同步本轮存档兼容质量门
+- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2、Day4-6 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖
+- 下一步动作：提交并同步本轮 Day4-6 艾琳人物厚度；随后可做首屏视觉层级复查或 Week07 后续目标

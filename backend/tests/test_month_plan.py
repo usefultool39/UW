@@ -73,6 +73,8 @@ def test_first_month_events_chain_to_week_two_drill():
     sess.player_action(kind="rest_until_next_day")
     out = sess.choose_story_event("ch1_d4_after_boundary_debrief", "write_truth")
     assert out["ok"] is True
+    assert "莉娜也能看懂" in out["choice"]["result_text"]
+    assert "安全边距" in out["choice"]["result_text"]
 
     while sess.state.day < 7:
         sess.player_action(kind="rest_until_next_day")
