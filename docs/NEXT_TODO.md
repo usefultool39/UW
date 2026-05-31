@@ -23,7 +23,7 @@ This file is the handoff list after the May 30 automation watch cycle. The curre
 - [x] Add one full E2E route for Day39 quiet branch before Day46 convergence, covering NPC intent, UI entry, result panel, and completion flags.
 - [x] Add a save/load compatibility check after Month 02 flags and `required_any_flags` were introduced; imported Day46 quiet-route saves still unlock convergence.
 - [x] Tonight focus: make one core character feel stronger before adding more systems. Ailin now has anchored passes across Day1 library, Day2 anomaly, Day4-6 debrief, and Day46 convergence.
-- [ ] Review the first-screen visual hierarchy: objective text, available actions, map readability, and NPC intent visibility.
+- [x] Review the first-screen visual hierarchy: objective text, available actions, map readability, and NPC intent visibility. Desktop/mobile opening and HUD screenshots passed; mobile time-advance control proximity is a later polish note, not a blocker.
 - [ ] Improve player-facing text cleanup for any remaining development wording, internal ids, or garbled fallback copy.
 - [ ] Expand Week 07 after convergence into a concrete follow-up objective instead of ending at a shared signal.
 - [ ] Build a small visual/audio pass for the reading hall, north gate, village square, and home hearth so the core loop feels less prototype-like.

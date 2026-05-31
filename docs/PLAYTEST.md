@@ -52,6 +52,7 @@
 |---|---|---|---|---|---|---|---|
 | 2026-05-30 | | | | | | | |
 | 2026-06-01 | Day1 起始村道广场 | 首屏入场 | 首屏层级 | P2 | 打开 `http://127.0.0.1:3000`，跳过开场后观察右侧任务、底部按钮、引导气泡 | 玩家不用读文档也能知道先去村西书库 | 可读性基本成立；首屏信息量偏大，但不阻断 |
+| 2026-06-01 | Day1 起始村道广场 | 首屏视觉层级 | 浏览器基线 | 通过 / P2 | Playwright 分别截图桌面 1440x900 与移动 390x844，检查开场封面、HUD、任务追踪、热键、地图与 NPC 意图 | 首屏中文正常、核心 UI 不重叠，玩家能看到当前目标、可执行动作和地图方向 | 通过；开场封面桌面/移动观感稳定，HUD 核心区域无几何重叠。移动端底部时间推进按钮靠近热键，记录为后续 polish，不阻断 |
 | 2026-06-01 | Day1 村西书道 / 书库阅览台 | 读书与边界记录 | 交互入口重复 | P2 | 到书库打开附近互动，`church_read_sacred_arts` 同时以 NPC 主动和轻量玩法出现 | 同一关键动作最好只有一个主入口，或明确主次 | 功能可完成；后续做 Day1 引导整理时合并/降噪 |
 | 2026-06-01 | Day1-3 | 主线闭环 | 可玩性 | 通过 | 完成读书小游戏、`ch1_d1_reading_clue`、`ch1_d2_forest_anomaly`、`ch1_d3_boundary_choice` | Day1-3 可触发、可完成、可结算 | 通过；Day2 写入 `forest_anomaly_seen=1`，Day3 写入 `chapter_ending_id=cross` |
 | 2026-06-01 | Day 1 首屏任务追踪 | 推荐线索按钮 | 远距离剧情触发 | P1 | 在村道广场跳过开场后点击“查看推荐线索” | 远距离只引导玩家前往书库附近，不直接打开书库剧情面板 | 已修复；远距离点击只提示“先去村西书库附近”，不再打开事件面板 |
@@ -84,6 +85,7 @@
 - Day2 艾琳人物厚度：`.venv\Scripts\python.exe -m pytest backend/tests/test_content_validator.py backend/tests/test_story_director_events.py -q`，11 passed；`npm.cmd run test:e2e -- --grep "Day 2" --reporter=line`，4 passed；运行时 API 触发 `ch1_d2_forest_anomaly.investigate_together` 复验通过
 - Day39 静默线 E2E：`npm.cmd run test:e2e -- --grep "Day 39 quiet" --reporter=line`，1 passed；相关后端 Day39 / Month02 测试，2 passed；完整 E2E `npm.cmd run test:e2e -- --reporter=line`，9 passed
 - Save/load 兼容：`.venv\Scripts\python.exe -m pytest backend/tests/test_api_framework.py::test_save_import_preserves_month_two_required_any_flags_for_day_forty_six -q`，1 passed；Month02 / Day46 定向测试，2 passed；完整 API 框架测试，29 passed
+- 首屏视觉层级复查：Playwright 截图 `runs/automation/codex_first_screen_desktop_20260531_190137_initial.png`、`runs/automation/codex_first_screen_mobile_20260531_190137_initial.png`、`runs/automation/codex_first_hud_desktop_20260531_190259.png`、`runs/automation/codex_first_hud_mobile_20260531_190259.png`；核心 HUD overlap 检查为 0
 
 ## 今晚目标调节
 
@@ -105,6 +107,6 @@
 
 ## 当前状态
 
-- 版本基线：`321c28b`
-- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2、Day4-6 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖
-- 下一步动作：提交并同步本轮 Day4-6 艾琳人物厚度；随后可做首屏视觉层级复查或 Week07 后续目标
+- 版本基线：`a487210`
+- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2、Day4-6 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖；首屏开场与 HUD 视觉层级已做桌面/移动基线复查
+- 下一步动作：继续做玩家可见文案清理，或把 Week07 汇合后的后续目标补成一个可执行小闭环
