@@ -11,7 +11,7 @@ export const AGENT_ART_MODES = {
 
 export const AGENTS = {
   player: {
-    label: 'Kirito',
+    label: '凛斗',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_player_pixel',
     asset: '/assets/game/player-token-tv.png',
@@ -21,7 +21,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   alice: {
-    label: '爱丽丝',
+    label: '艾琳',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_alice_pixel',
     asset: '/assets/game/alice-token-tv.png',
@@ -31,7 +31,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   eugeo: {
-    label: '悠吉欧',
+    label: '尤里',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_eugeo_pixel',
     asset: '/assets/game/eugeo-token-tv.png',
@@ -68,7 +68,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   kirito: {
-    label: 'Kirito',
+    label: '凛斗',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_kirito_pixel',
     haloColor: 0x5ecfff,
@@ -107,7 +107,7 @@ export const STORY_EVENT_HINTS = {
   ch1_d2_forest_anomaly: { title: '森林忽然安静', clue: '古誓树清场附近的风声断了一瞬。', scene_id: 'gigas_clearing', day: 2 },
   ch1_d2_npc_disagreement: { title: '晚餐桌边的分歧', clue: '异常变成了餐桌边没说出口的话。', scene_id: 'home_hearth', day: 2 },
   ch1_d3_boundary_choice: { title: '第三天：边界线前', clue: '你们终于站到那条看不见的边界前。', scene_id: 'north_gate', day: 3 },
-  ch1_d4_after_boundary_debrief: { title: '第四天：书库复盘', clue: '边界事件被写成会影响后续一个月的记录。', scene_id: 'reading_hall', day: 4 },
+  ch1_d4_after_boundary_debrief: { title: '第四天：书库复盘', clue: '边界事件被写成会影响后续一个月的记录。', scene_id: 'church_library', day: 4 },
   ch1_d7_first_boundary_drill: { title: '北门巡查演练', clue: '你们把安全距离、信号和撤退路线变成三人流程。', scene_id: 'north_gate', day: 7 },
   ch1_d12_village_trust: { title: '把巡查变成村务', clue: '北门巡查开始影响村里对你们的信任。', scene_id: 'village_square', day: 12 },
   ch1_d18_silent_line_rehearsal: { title: '静默线演练', clue: '你们用记录、刻印和同伴分工复核静默线。', scene_id: 'north_gate', day: 18 },

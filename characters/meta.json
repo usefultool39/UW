@@ -3,7 +3,7 @@
   "agents": [
     {
       "id": "alice",
-      "display": "爱丽丝",
+      "display": "艾琳",
       "role": "露茵村 · 村长之女 / 刻印术见习",
       "behavior_role": "logistics",
       "initial_location": "home",
@@ -14,7 +14,7 @@
     },
     {
       "id": "eugeo",
-      "display": "悠吉欧",
+      "display": "尤里",
       "role": "露茵村 · 古誓树清场 / 日常劳作",
       "behavior_role": "field",
       "initial_location": "at_tree",

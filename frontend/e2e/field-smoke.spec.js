@@ -316,6 +316,41 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.month-plan-entry').first()).toBeVisible()
   })
 
+  test('Day 39 quiet route frequency crosscheck smoke', async ({ page, request }) => {
+    await setFlags(request, [
+      'month02_day31_entry_done',
+      'month02_route_quiet',
+      'month02_quiet_record_done'
+    ])
+    await playerAction(request, { kind: 'set_day', day: 39 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'reading_hall' })
+
+    const state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.day).toBe(39)
+    const intent = state.npc_intents.find((item) => item.id === 'alice_conducts_quiet_frequency_crosscheck')
+    expect(intent).toBeTruthy()
+    expect(intent.title).toContain('艾琳')
+    expect(intent.scene_id).toBe('reading_hall')
+    expect(intent.action).toEqual({
+      type: 'scene_activity',
+      activity_id: 'reading_hall_quiet_frequency_crosscheck'
+    })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const action = page.locator('.interact-action[data-activity-id="reading_hall_quiet_frequency_crosscheck"]')
+    await expect(action).toBeVisible()
+    await expect(action).toContainText('艾琳要复核静默线频率')
+    await action.click()
+    await expect(page.locator('.result-panel')).toBeVisible()
+    await expect(page.locator('.result-panel')).toContainText('更接近北门')
+
+    const after = await (await request.get(`${API}/api/state`)).json()
+    expect(after.flags.month02_quiet_frequency_crosscheck_done).toBe(1)
+    expect(after.flags.month02_quiet_frequency_crosschecked).toBe(1)
+  })
+
   test('Day 46 Week07 shared anomaly convergence smoke', async ({ page, request }) => {
     await setFlags(request, [
       'month02_day31_entry_done',

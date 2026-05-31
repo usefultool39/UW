@@ -1,7 +1,37 @@
 <template>
-  <aside class="quest-tracker" role="status">
-    <div class="quest-rail-title">任务追踪</div>
-    <p class="quest-rail-body">{{ safeQuestGuide }}</p>
+  <aside class="quest-tracker" :class="{ guided: highlightPrimary }" role="status">
+    <section class="quest-focus">
+      <div class="quest-rail-title">当前目标</div>
+      <p class="quest-rail-body">{{ safeQuestGuide }}</p>
+      <div v-if="routeHint" class="route-hint" aria-hidden="true">
+        <span class="route-pulse"></span>
+        <span>{{ routeHint }}</span>
+      </div>
+      <button
+        v-if="safeStoryEvents.length"
+        type="button"
+        class="quest-primary-btn"
+        :disabled="busy"
+        @click="$emit('open-event', safeStoryEvents[0].id)"
+      >
+        查看推荐线索
+      </button>
+      <button
+        v-else-if="actionPreview.length"
+        type="button"
+        class="quest-primary-btn"
+        :disabled="busy"
+        @click="$emit('open-interact')"
+      >
+        打开附近互动
+      </button>
+    </section>
+
+    <div class="guide-steps" aria-label="新手行动步骤">
+      <span>1 跟随光标</span>
+      <span>2 靠近地点</span>
+      <span>3 做出选择</span>
+    </div>
 
     <div v-if="actionPreview.length" class="nearby-actions">
       <div class="nearby-actions-head">
@@ -93,6 +123,8 @@ const props = defineProps({
   nearbyNpcLabel: { type: String, default: '暂无 NPC' },
   nearbyInteractTitle: { type: String, default: '暂无地点' },
   nearbyActionPreview: { type: Array, default: () => [] },
+  routeHint: { type: String, default: '' },
+  highlightPrimary: { type: Boolean, default: false },
   busy: { type: Boolean, default: false }
 })
 
@@ -100,9 +132,9 @@ defineEmits(['open-event', 'open-interact'])
 
 function canonText(value) {
   return String(value || '')
-    .replaceAll('艾琳', '爱丽丝')
-    .replaceAll('尤里', '悠吉欧')
-    .replaceAll('凛斗', 'Kirito')
+    .replaceAll('爱丽丝', '艾琳')
+    .replaceAll('悠吉欧', '尤里')
+    .replaceAll('Kirito', '凛斗')
 }
 
 const actionPreview = computed(() =>
@@ -151,42 +183,118 @@ function eventMeta(event) {
   position: absolute;
   z-index: 35;
   right: 0.8rem;
-  top: 11.6rem;
-  width: min(252px, calc(100% - 1.5rem));
-  max-height: calc(100vh - 17.2rem);
-  padding: 0.56rem 0.62rem;
+  top: 10.5rem;
+  width: min(312px, calc(100% - 1.5rem));
+  max-height: calc(100vh - 16.4rem);
+  padding: 0.68rem;
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(5, 10, 18, 0.82), rgba(5, 10, 18, 0.6)),
-    rgba(6, 12, 24, 0.56);
-  border: 1px solid rgba(125, 211, 252, 0.18);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22), inset 2px 0 0 rgba(246, 211, 110, 0.48);
+    linear-gradient(180deg, rgba(4, 8, 18, 0.9), rgba(6, 12, 24, 0.76)),
+    radial-gradient(circle at 0% 0%, rgba(246, 211, 110, 0.12), transparent 42%);
+  border: 1px solid rgba(246, 211, 110, 0.24);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28), inset 3px 0 0 rgba(246, 211, 110, 0.56);
   pointer-events: auto;
   overflow: auto;
 }
 
+.quest-tracker.guided {
+  border-color: rgba(253, 224, 71, 0.46);
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.32),
+    0 0 26px rgba(246, 211, 110, 0.12),
+    inset 3px 0 0 rgba(246, 211, 110, 0.72);
+}
+
+.quest-focus {
+  padding-bottom: 0.62rem;
+  border-bottom: 1px solid rgba(255, 239, 198, 0.12);
+}
+
 .quest-rail-title {
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   letter-spacing: 0.12em;
   color: var(--sao-gold);
-  margin-bottom: 0.26rem;
-  font-weight: 700;
+  margin-bottom: 0.32rem;
+  font-weight: 900;
 }
 
 .quest-rail-body {
   margin: 0;
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  font-size: 0.76rem;
-  line-height: 1.45;
+  font-size: 0.9rem;
+  line-height: 1.55;
   color: #f8fafc;
-  opacity: 0.9;
+  opacity: 0.96;
+}
+
+.quest-primary-btn {
+  width: 100%;
+  min-height: 2.35rem;
+  margin-top: 0.58rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 247, 214, 0.58);
+  color: #2e2113;
+  background: linear-gradient(180deg, #fff0b6, #d8913e);
+  box-shadow: 0 0 18px rgba(246, 211, 110, 0.18);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.quest-primary-btn:hover:not(:disabled) {
+  box-shadow: 0 0 24px rgba(246, 211, 110, 0.26);
+}
+
+.quest-tracker.guided .quest-primary-btn {
+  animation: quest-callout 1.75s ease-in-out infinite;
+}
+
+.route-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.38rem;
+  margin-top: 0.48rem;
+  padding: 0.36rem 0.42rem;
+  border-radius: 6px;
+  color: #dff7ff;
+  background: rgba(14, 116, 144, 0.2);
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  font-size: 0.64rem;
+  line-height: 1.25;
+  font-weight: 900;
+}
+
+.route-pulse {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #fde047;
+  box-shadow: 0 0 0 0 rgba(253, 224, 71, 0.45);
+  animation: route-pulse 1.5s ease-out infinite;
+  flex: 0 0 auto;
+}
+
+.guide-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.28rem;
+  margin-top: 0.56rem;
+}
+
+.guide-steps span {
+  min-height: 1.62rem;
+  display: grid;
+  place-items: center;
+  padding: 0.15rem 0.22rem;
+  border-radius: 6px;
+  color: #dbeafe;
+  background: rgba(14, 116, 144, 0.22);
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  font-size: 0.58rem;
+  font-weight: 900;
+  text-align: center;
 }
 
 .nearby-actions {
-  margin-top: 0.48rem;
+  margin-top: 0.6rem;
   display: grid;
   gap: 0.26rem;
 }
@@ -452,6 +560,21 @@ function eventMeta(event) {
   50% { transform: scale(1.12); opacity: 0.8; }
 }
 
+@keyframes quest-callout {
+  0%, 100% {
+    box-shadow: 0 0 18px rgba(246, 211, 110, 0.18);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(253, 224, 71, 0.36);
+  }
+}
+
+@keyframes route-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(253, 224, 71, 0.45); }
+  70% { box-shadow: 0 0 0 8px rgba(253, 224, 71, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(253, 224, 71, 0); }
+}
+
 .tracker-meta {
   display: flex;
   flex-wrap: wrap;
@@ -513,6 +636,16 @@ function eventMeta(event) {
     overflow: hidden;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    font-size: 0.78rem;
+  }
+
+  .guide-steps {
+    display: none;
+  }
+
+  .quest-primary-btn {
+    min-height: 2rem;
+    margin-top: 0.42rem;
   }
 }
 </style>

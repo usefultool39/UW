@@ -52,7 +52,7 @@ const avatarStyle = {
 }
 
 const playerName = computed(() =>
-  props.simState?.player?.name || `${AGENTS.player?.label || 'Kirito'} · Lv.1`
+  props.simState?.player?.name || `${AGENTS.player?.label || '凛斗'} · Lv.1`
 )
 
 const day = computed(() => props.simState?.day ?? 1)

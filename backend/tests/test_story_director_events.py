@@ -14,6 +14,8 @@ def test_choose_event_updates_flags_relationship_and_memory():
     sess = Session(run_id="test-story-choice")
     out = sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
     assert out["ok"] is True
+    assert "莉娜练习页" in out["choice"]["result_text"]
+    assert "刻印标记" in out["choice"]["result_text"]
     assert sess.state.flags["clue_boundary_record"] == 1
     assert sess.state.relationships["alice"].trust > 0
     assert "ch1_d1_reading_clue" in sess.state.completed_event_ids
@@ -86,7 +88,9 @@ def test_day_three_boundary_choice_reflects_day_two_joint_investigation():
     sess = Session(run_id="test-story-day3-joint-variant")
     sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
     sess.player_action(kind="rest_until_next_day")
-    sess.choose_story_event("ch1_d2_forest_anomaly", "investigate_together")
+    day_two = sess.choose_story_event("ch1_d2_forest_anomaly", "investigate_together")
+    assert "刻印标记" in day_two["choice"]["result_text"]
+    assert "安全距离" in day_two["choice"]["result_text"]
     sess.player_action(kind="rest_until_next_day")
 
     events = sess.available_story_events()["events"]

@@ -10,6 +10,12 @@
       @daily="onDaily"
     />
 
+    <OpeningCinematic
+      :model-value="openingCinematicVisible"
+      @focus-first-event="onOpeningFocusFirstEvent"
+      @skip="onOpeningSkip"
+    />
+
     <!-- Error banner -->
     <Transition name="err-slide">
       <div v-if="localError" class="field-err">
@@ -65,10 +71,23 @@
         :nearby-npc-label="nearbyNpcLabel"
         :nearby-interact-title="nearbyInteractTitle"
         :nearby-action-preview="nearbyActionPreview"
+        :route-hint="newcomerRouteHint"
+        :highlight-primary="newcomerGuideVisible"
         :busy="busy"
-        @open-event="openStoryEvent"
+        @open-event="openRecommendedStoryEvent"
         @open-interact="openInteractPanel"
       />
+
+      <Transition name="guide-fade">
+        <section v-if="newcomerGuideVisible" class="newcomer-guide" aria-live="polite">
+          <div class="newcomer-kicker">{{ newcomerGuide.kicker }}</div>
+          <h3>{{ newcomerGuide.title }}</h3>
+          <p>{{ newcomerGuide.body }}</p>
+          <button type="button" :disabled="busy" @click="onNewcomerGuideAction">
+            {{ newcomerGuide.actionLabel }}
+          </button>
+        </section>
+      </Transition>
 
       <!-- Bottom chat strip -->
       <div class="chat-strip">
@@ -209,6 +228,7 @@ import StoryEventPanel from './StoryEventPanel.vue'
 import StoryResultPanel from './StoryResultPanel.vue'
 import NpcProfilePanel from './NpcProfilePanel.vue'
 import ClueJournalPanel from './ClueJournalPanel.vue'
+import OpeningCinematic from './OpeningCinematic.vue'
 import TrainingMiniGamePanel from './TrainingMiniGamePanel.vue'
 import BoundaryProbeMiniGamePanel from './BoundaryProbeMiniGamePanel.vue'
 import BoundaryVerdictMiniGamePanel from './BoundaryVerdictMiniGamePanel.vue'
@@ -221,8 +241,8 @@ import { DEFAULT_MAP_ID } from '../field/sceneRegistry.js'
 import { useAudio } from '../composables/useAudio.js'
 import { useFieldToast } from '../composables/useFieldToast.js'
 
-// Audio composable for SFX on interactions
-const { playSfx } = useAudio()
+// Audio composable for field ambience and interaction feedback
+const { playSfx, startFieldAudio } = useAudio()
 const { toastMessage, toastType, toastOpen, showToast, clearToastTimer } = useFieldToast()
 
 const props = defineProps({
@@ -256,6 +276,7 @@ const storyEvents = ref([])
 const monthPlan = ref(null)
 const selectedStoryEventId = ref('')
 const selectedNpcId = ref('')
+const openingCinematicDismissed = ref(false)
 const openingBriefDismissed = ref(false)
 const journalOpen = ref(false)
 const journalProfiles = ref({})
@@ -451,6 +472,108 @@ const nearbyActionPreview = computed(() =>
   }))
 )
 
+const playerSceneId = computed(() => props.simState?.player?.scene_id || props.simState?.scene_id || '')
+
+function storyEventDistance(event) {
+  const p = props.simState?.player
+  const loc = event?.location || {}
+  const px = Number(p?.tile_x)
+  const py = Number(p?.tile_y)
+  const tx = Number(loc.tile_x)
+  const ty = Number(loc.tile_y)
+  if (![px, py, tx, ty].every(Number.isFinite)) return null
+  return Math.max(Math.abs(px - tx), Math.abs(py - ty))
+}
+
+function isStoryEventReachable(event) {
+  const loc = event?.location || {}
+  const eventScene = String(loc.scene_id || '')
+  const currentScene = String(playerSceneId.value || '')
+  if (eventScene && currentScene && eventScene !== currentScene) return false
+  const dist = storyEventDistance(event)
+  if (!Number.isFinite(dist)) return true
+  return dist <= 7
+}
+
+function focusStoryEventLocation(event) {
+  const loc = event?.location || {}
+  const tx = Number(loc.tile_x)
+  const ty = Number(loc.tile_y)
+  if (Number.isFinite(tx) && Number.isFinite(ty)) {
+    sceneInstance?.centerCameraOnTile?.(tx, ty)
+  }
+}
+
+function guideToStoryEvent(event) {
+  focusStoryEventLocation(event)
+  const scene = event?.location?.scene_id ? getSceneLabel(event.location.scene_id) : '线索地点'
+  showToast(`先去${scene}附近，再打开互动回应。`, 'info')
+}
+
+const primaryStoryEvent = computed(() => storyEvents.value[0] || null)
+
+const primaryEventDistance = computed(() => storyEventDistance(primaryStoryEvent.value))
+
+const primaryEventSameScene = computed(() => {
+  const loc = primaryStoryEvent.value?.location || {}
+  return !!loc.scene_id && String(loc.scene_id) === String(playerSceneId.value)
+})
+
+const newcomerRouteHint = computed(() => {
+  const event = primaryStoryEvent.value
+  if (!event) return ''
+  const scene = event?.location?.scene_id ? getSceneLabel(event.location.scene_id) : ''
+  const dist = primaryEventDistance.value
+  if (primaryEventSameScene.value && Number.isFinite(dist)) {
+    if (dist <= 4) return `${scene || '线索点'}就在附近`
+    return `${scene || '线索点'} · 约 ${dist} 格`
+  }
+  return scene ? `前往 ${scene}` : '跟随金色线索'
+})
+
+const anyModalOpen = computed(() =>
+  interactOpen.value ||
+  npcPanelOpen.value ||
+  dialogueOpen.value ||
+  storyEventOpen.value ||
+  storyResultOpen.value ||
+  npcProfileOpen.value ||
+  trainingGameOpen.value ||
+  boundaryProbeOpen.value ||
+  boundaryVerdictOpen.value ||
+  readingGameOpen.value ||
+  mealChoiceOpen.value ||
+  journalOpen.value
+)
+
+const newcomerGuide = computed(() => {
+  const event = primaryStoryEvent.value
+  const title = event?.title || '书库里的边界记录'
+  if (nearbyActionPreview.value.length && primaryEventSameScene.value && Number(primaryEventDistance.value || 99) <= 4) {
+    return {
+      kicker: '线索已靠近',
+      title: '可以处理眼前的线索',
+      body: '你已经走到关键地点附近。打开附近互动，先把第一条记录变成真正的选择。',
+      actionLabel: '打开附近互动',
+      action: 'interact'
+    }
+  }
+  return {
+    kicker: '路线追踪',
+    title: '先锁定第一条线索',
+    body: `${title}会把今天的目标串起来。跟着金色标记走，先确认村西书库的旧记录。`,
+    actionLabel: '前往推荐线索',
+    action: 'event'
+  }
+})
+
+const newcomerGuideVisible = computed(() =>
+  shouldShowDayOneOpening.value &&
+  !openingCinematicVisible.value &&
+  !openingBriefVisible.value &&
+  !anyModalOpen.value
+)
+
 function compactGuideText(value, maxLength = 30) {
   const text = String(value || '').replace(/\s+/g, ' ').trim()
   if (!text) return ''
@@ -487,12 +610,51 @@ const questGuide = computed(() => {
   return getQuestGuide(props.simState)
 })
 
-const openingBriefVisible = computed(() =>
-  !openingBriefDismissed.value &&
+const shouldShowDayOneOpening = computed(() =>
   Number(props.simState?.day || 1) === 1 &&
+  String(props.simState?.story_node_id || '') === 'mq00_tutorial' &&
+  String(playerSceneId.value) === 'village_square' &&
   !props.simState?.chapter_ending_id &&
   storyEvents.value.length > 0
 )
+
+const openingCinematicVisible = computed(() =>
+  !openingCinematicDismissed.value &&
+  shouldShowDayOneOpening.value
+)
+
+const openingBriefVisible = computed(() =>
+  openingCinematicDismissed.value &&
+  !openingBriefDismissed.value &&
+  shouldShowDayOneOpening.value
+)
+
+async function startOpeningAudio() {
+  await startFieldAudio(props.simState?.weather || 'drizzle')
+}
+
+async function onOpeningFocusFirstEvent() {
+  openingCinematicDismissed.value = true
+  openingBriefDismissed.value = true
+  await startOpeningAudio()
+  await nextTick()
+  focusFirstStoryEvent()
+}
+
+async function onOpeningSkip() {
+  openingCinematicDismissed.value = true
+  openingBriefDismissed.value = true
+  await startOpeningAudio()
+  showToast('跟随地面光标，先去村西书库确认旧记录。', 'info')
+}
+
+function onNewcomerGuideAction() {
+  if (newcomerGuide.value.action === 'interact' && nearbyActionPreview.value.length) {
+    openInteractPanel()
+    return
+  }
+  openRecommendedStoryEvent(primaryStoryEvent.value?.id)
+}
 
 // --- Scene ---
 function onSceneReady(sc) {
@@ -719,22 +881,32 @@ function enrichNpcIntentAction(intent) {
   return null
 }
 
-function openStoryEvent(eventId) {
+function openStoryEvent(eventId, options = {}) {
   selectedStoryEventId.value = eventId
   const event = storyEvents.value.find((e) => e.id === eventId) || selectedStoryEvent.value
+  if (options.requireReachable && !isStoryEventReachable(event)) {
+    guideToStoryEvent(event)
+    return false
+  }
   if (event?.kind === 'training') {
     trainingGameOpen.value = true
-    return
+    return true
   }
   if (event?.kind === 'anomaly') {
     boundaryProbeOpen.value = true
-    return
+    return true
   }
   if (event?.kind === 'final_choice') {
     boundaryVerdictOpen.value = true
-    return
+    return true
   }
   storyEventOpen.value = true
+  return true
+}
+
+function openRecommendedStoryEvent(eventId) {
+  if (!eventId) return false
+  return openStoryEvent(eventId, { requireReachable: true })
 }
 
 function openInteractPanel() {
@@ -756,15 +928,10 @@ function openInteractPanel() {
 
 function focusFirstStoryEvent() {
   const event = storyEvents.value[0]
-  const loc = event?.location || {}
-  const tx = Number(loc.tile_x)
-  const ty = Number(loc.tile_y)
-  if (Number.isFinite(tx) && Number.isFinite(ty)) {
-    sceneInstance?.centerCameraOnTile?.(tx, ty)
-  }
+  focusStoryEventLocation(event)
   openingBriefDismissed.value = true
   if (event?.id) {
-    window.setTimeout(() => openStoryEvent(event.id), 180)
+    window.setTimeout(() => openRecommendedStoryEvent(event.id), 180)
   }
 }
 
@@ -1490,9 +1657,97 @@ watch(activeMapId, async (mapId, oldMapId) => {
   box-shadow: none;
 }
 
+.newcomer-guide {
+  position: absolute;
+  z-index: 46;
+  left: 0.85rem;
+  top: 5.8rem;
+  width: min(350px, calc(100% - 2rem));
+  padding: 0.74rem 0.82rem 0.82rem;
+  border-radius: 8px;
+  color: #fff7df;
+  background:
+    linear-gradient(135deg, rgba(13, 25, 35, 0.9), rgba(31, 38, 25, 0.78)),
+    radial-gradient(circle at 6% 0%, rgba(125, 211, 252, 0.16), transparent 38%),
+    radial-gradient(circle at 100% 15%, rgba(246, 211, 110, 0.14), transparent 40%);
+  border: 1px solid rgba(180, 224, 255, 0.24);
+  box-shadow:
+    0 16px 38px rgba(2, 6, 23, 0.34),
+    inset 3px 0 0 rgba(125, 211, 252, 0.58);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  pointer-events: auto;
+}
+
+.newcomer-guide::after {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: -0.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(253, 224, 71, 0.7), transparent);
+  box-shadow: 0 0 18px rgba(253, 224, 71, 0.35);
+}
+
+.newcomer-kicker {
+  color: #7dd3fc;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  font-weight: 900;
+}
+
+.newcomer-guide h3 {
+  margin: 0.2rem 0 0.34rem;
+  color: #fff7df;
+  font-size: 1.02rem;
+  line-height: 1.25;
+}
+
+.newcomer-guide p {
+  margin: 0;
+  color: #dbeafe;
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.newcomer-guide button {
+  width: 100%;
+  min-height: 2.18rem;
+  margin-top: 0.68rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 247, 214, 0.66);
+  color: #2e2113;
+  background: linear-gradient(180deg, #fff0b6, #d8913e);
+  box-shadow: 0 0 20px rgba(246, 211, 110, 0.2);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.newcomer-guide button:hover:not(:disabled) {
+  box-shadow: 0 0 28px rgba(253, 224, 71, 0.32);
+  transform: translateY(-1px);
+}
+
+.newcomer-guide button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.guide-fade-enter-active,
+.guide-fade-leave-active {
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.guide-fade-enter-from,
+.guide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
 .field-slice :deep(.field-header) {
   position: absolute;
-  z-index: 90;
+  z-index: 50;
   top: 0.7rem;
   left: 0.8rem;
   right: 12rem;
@@ -1732,6 +1987,22 @@ watch(activeMapId, async (mapId, oldMapId) => {
   .opening-brief h3 { font-size: 0.94rem; }
   .opening-brief p { font-size: 0.74rem; }
   .brief-actions button { flex: 1; padding: 0 0.45rem; }
+  .newcomer-guide {
+    top: 12.7rem;
+    left: 0.55rem;
+    right: 0.55rem;
+    width: auto;
+    padding: 0.62rem 0.68rem 0.72rem;
+  }
+  .newcomer-guide h3 { font-size: 0.92rem; }
+  .newcomer-guide p {
+    font-size: 0.72rem;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .newcomer-guide button { min-height: 2rem; }
   .chat-strip { display: none; }
 }
 </style>

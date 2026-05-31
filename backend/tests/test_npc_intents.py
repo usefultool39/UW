@@ -105,7 +105,7 @@ def test_day_four_debrief_intent_guides_player_back_to_library():
         "event_id": "ch1_d4_after_boundary_debrief",
     }
     assert intents["alice_calls_boundary_debrief"].response_options
-    assert intents["alice_calls_boundary_debrief"].scene_id == "reading_hall"
+    assert intents["alice_calls_boundary_debrief"].scene_id == "church_library"
 
 
 def test_day_seven_drill_intent_guides_player_to_north_gate():

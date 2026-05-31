@@ -14,6 +14,24 @@
       <button type="button" class="tb tb-ghost sync-action" :disabled="busy" @click="$emit('refresh')">
         <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3v2a5 5 0 0 1 5.12 4.87l-1.02-1.74A3 3 0 1 0 14 10h2l-2-3-2 3H9a3 3 0 0 0 0 6 5 5 0 0 1 .12 9.95L10 17v-3H7l2-3 2 3h-1z"/></svg>同步
       </button>
+      <div class="audio-cluster">
+        <button type="button" class="tb tb-ghost audio-action" :title="audioTitle" @click="onAudioClick">
+          <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path v-if="isMuted" d="M4 7h3l4-4v14l-4-4H4V7zm10.6 2.4 1.4-1.4 1.5 1.5L19 8l1 1-1.5 1.5L20 12l-1 1-1.5-1.5L16 13l-1.4-1.4 1.5-1.6-1.5-1.6z"/>
+            <path v-else d="M3 7h4l5-4v14l-5-4H3V7zm11.2 1.1 1.2-1.2A4.7 4.7 0 0 1 17 10a4.7 4.7 0 0 1-1.6 3.1l-1.2-1.2A3 3 0 0 0 15.2 10a3 3 0 0 0-1-1.9z"/>
+          </svg>{{ audioLabel }}
+        </button>
+        <input
+          class="audio-volume"
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          :value="currentVolume"
+          aria-label="音量"
+          @input="setVolume(Number($event.target.value))"
+        />
+      </div>
       <button type="button" class="tb tb-primary" :disabled="busy" @click="$emit('daily')">
         <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M6 3l1.5 3.5L11 5l-1.5 3.5L14 11l-3.5 1.5L11 16l-.5-3.5L7 14l-3.5-1.5L4 9l3.5-1.5L6 3z"/></svg>时间推进
       </button>
@@ -29,7 +47,9 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { GAME_CHAPTER_INFO } from '../field/gameContentConfig.js'
+import { useAudio } from '../composables/useAudio.js'
 
 defineProps({
   busy: { type: Boolean, default: false }
@@ -42,6 +62,31 @@ defineEmits([
   'refresh',
   'daily'
 ])
+
+const { isMuted, currentVolume, bgmPlaying, toggleMute, setVolume, startFieldAudio } = useAudio()
+
+const audioLabel = computed(() => {
+  if (isMuted.value) return '恢复'
+  return bgmPlaying.value ? '声景' : '开启声景'
+})
+
+const audioTitle = computed(() => {
+  if (isMuted.value) return '恢复音乐和环境声'
+  return bgmPlaying.value ? '静音' : '开启清晨音乐和细雨环境声'
+})
+
+async function onAudioClick() {
+  if (isMuted.value) {
+    toggleMute()
+    await startFieldAudio('drizzle')
+    return
+  }
+  if (!bgmPlaying.value) {
+    await startFieldAudio('drizzle')
+    return
+  }
+  toggleMute()
+}
 </script>
 
 <style scoped>
@@ -125,6 +170,12 @@ defineEmits([
   background: rgba(43, 38, 25, 0.54);
 }
 
+.audio-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+}
+
 .tb-primary {
   background: linear-gradient(180deg, #c98242, #9f5b35);
   border-color: rgba(255, 226, 163, 0.42);
@@ -135,6 +186,11 @@ defineEmits([
 .tb-primary:hover:not(:disabled) {
   border-color: rgba(255, 226, 163, 0.78);
   box-shadow: 0 0 18px rgba(241, 199, 107, 0.28);
+}
+
+.audio-volume {
+  width: 4.6rem;
+  accent-color: var(--sao-gold);
 }
 
 .btn-icon {
@@ -155,7 +211,8 @@ defineEmits([
   }
 
   .save-action,
-  .sync-action {
+  .sync-action,
+  .audio-volume {
     display: none;
   }
 

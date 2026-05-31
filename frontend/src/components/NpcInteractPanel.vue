@@ -63,9 +63,9 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'talk', 'relationship'])
 
 const NAMES = {
-  alice: '爱丽丝',
-  eugeo: '悠吉欧',
-  kirito: 'Kirito'
+  alice: '艾琳',
+  eugeo: '尤里',
+  kirito: '凛斗'
 }
 
 const LOCATION_LABELS = {

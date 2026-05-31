@@ -361,6 +361,36 @@ watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep:
   will-change: transform;
 }
 
+.field-map-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg, transparent 0 18%, rgba(255, 247, 214, 0.08) 22%, transparent 32% 100%),
+    linear-gradient(68deg, transparent 0 58%, rgba(125, 211, 252, 0.05) 65%, transparent 76% 100%);
+  mix-blend-mode: screen;
+  opacity: 0.72;
+  animation: field-light-breathe 7s ease-in-out infinite;
+}
+
+.field-map-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 42%, transparent 0 46%, rgba(3, 7, 18, 0.1) 70%, rgba(3, 7, 18, 0.26) 100%),
+    linear-gradient(180deg, rgba(255, 247, 214, 0.05), transparent 28%, rgba(5, 10, 18, 0.12));
+}
+
+@keyframes field-light-breathe {
+  0%, 100% { opacity: 0.48; transform: translateX(-0.6%); }
+  50% { opacity: 0.78; transform: translateX(0.6%); }
+}
+
 .field-map-shell.shake { animation: map-shake 0.22s ease; }
 @keyframes map-shake {
   0%, 100% { transform: translate(0, 0); }
@@ -387,14 +417,25 @@ watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep:
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  opacity: 0.18;
+  opacity: 0.2;
 }
 .atmosphere-layer.morning { background: linear-gradient(180deg, rgba(255, 244, 214, 0.24), transparent 42%); }
 .atmosphere-layer.afternoon { background: linear-gradient(180deg, rgba(255, 226, 173, 0.16), transparent 48%); }
 .atmosphere-layer.evening { background: linear-gradient(180deg, rgba(245, 158, 85, 0.17), rgba(76, 58, 86, 0.16)); }
 .atmosphere-layer.night { opacity: 0.42; background: linear-gradient(180deg, rgba(24, 37, 72, 0.42), rgba(8, 17, 31, 0.55)); }
 .atmosphere-layer.mist { opacity: 0.28; background: linear-gradient(100deg, rgba(226, 232, 240, 0.24), transparent 34%, rgba(226, 232, 240, 0.16) 68%, transparent); }
-.atmosphere-layer.drizzle { opacity: 0.24; background: repeating-linear-gradient(110deg, rgba(226, 232, 240, 0.16) 0 1px, transparent 1px 13px); }
+.atmosphere-layer.drizzle {
+  opacity: 0.3;
+  background:
+    repeating-linear-gradient(110deg, rgba(226, 232, 240, 0.18) 0 1px, transparent 1px 13px),
+    radial-gradient(circle at 20% 12%, rgba(255, 247, 214, 0.08), transparent 28%);
+  animation: field-rain-slide 1.8s linear infinite;
+}
+
+@keyframes field-rain-slide {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: -24px 62px, 0 0; }
+}
 
 .weather-note {
   position: absolute;
@@ -426,8 +467,10 @@ watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep:
   padding: 0.34rem 0.38rem;
   border: 1px solid rgba(255, 239, 198, 0.3);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(48, 39, 24, 0.88), rgba(36, 43, 29, 0.74));
-  box-shadow: 0 8px 18px rgba(25, 18, 10, 0.24), inset 0 0 0 1px rgba(246, 211, 110, 0.08);
+  background:
+    linear-gradient(180deg, rgba(48, 39, 24, 0.9), rgba(20, 29, 26, 0.78)),
+    radial-gradient(circle at 30% 0%, rgba(246, 211, 110, 0.14), transparent 44%);
+  box-shadow: 0 10px 22px rgba(25, 18, 10, 0.3), inset 0 0 0 1px rgba(246, 211, 110, 0.08);
   cursor: pointer;
   pointer-events: auto;
 }
@@ -469,22 +512,23 @@ watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep:
 .map-readability-key {
   position: absolute;
   left: 0.8rem;
-  bottom: 5.7rem;
+  bottom: 5.55rem;
   z-index: 30;
   display: flex;
   flex-wrap: wrap;
   gap: 0.34rem 0.56rem;
   max-width: min(440px, calc(100% - 1.6rem));
-  padding: 0.38rem 0.5rem;
+  padding: 0.3rem 0.42rem;
   border: 1px solid rgba(255, 239, 198, 0.22);
   border-radius: 8px;
-  background: rgba(45, 37, 23, 0.64);
+  background: rgba(19, 25, 20, 0.42);
   box-shadow: inset 0 0 0 1px rgba(255, 239, 198, 0.07);
   color: #fff7df;
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 800;
   line-height: 1;
   pointer-events: none;
+  opacity: 0.72;
 }
 .map-readability-key span { display: inline-flex; align-items: center; gap: 0.28rem; white-space: nowrap; }
 .map-readability-key .tile { width: 0.62rem; height: 0.62rem; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255, 247, 214, 0.28); }
@@ -499,7 +543,7 @@ watch(() => props.storyEvents, () => { sceneInstance?.rebuildPois?.() }, { deep:
   top: 0.75rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 4;
+  z-index: 5;
   padding: 0.4rem 0.75rem;
   border-radius: 8px;
   text-align: center;

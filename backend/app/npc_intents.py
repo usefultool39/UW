@@ -484,8 +484,8 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                         },
                     )
                 ],
-                fallback=(14, 14, "reading_hall"),
-                scene_id="reading_hall",
+                fallback=(14, 14, "church_library"),
+                scene_id="church_library",
                 tile_x=14,
                 tile_y=14,
             )
@@ -974,8 +974,8 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 npc_id="alice",
                 intent_id="alice_formalizes_month02_patrol_board",
                 kind="npc_plan",
-                title="艾丽丝要把第二月巡逻板交给村务执行",
-                description="稳守线已经从书库简报走到中段。艾丽丝在村道广场等你，把北门巡逻、撤退信号和异常上报整理成村民能照着执行的轮值表。",
+                title="艾琳要把第二月巡逻板交给村务执行",
+                description="稳守线已经从书库简报走到中段。艾琳在村道广场等你，把北门巡逻、撤退信号和异常上报整理成村民能照着执行的轮值表。",
                 priority=85,
                 reason="Week 06 order route needs a concrete village-operation follow-up after the Day 32 briefing.",
                 action={"type": "scene_activity", "activity_id": "village_month02_patrol_standby"},
@@ -986,9 +986,9 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 response_options=[
                     _social_response(
                         response_id="formalize_patrol_board",
-                        label="和艾丽丝把巡逻板交给村务执行",
+                        label="和艾琳把巡逻板交给村务执行",
                         hint="公开轮值、撤退信号和异常上报格式。",
-                        result_text="艾丽丝把轮值栏钉到木牌上，等你确认哪些信号可以公开，哪些只写给巡逻队。",
+                        result_text="艾琳把轮值栏钉到木牌上，等你确认哪些信号可以公开，哪些只写给巡逻队。",
                         tone="steady",
                         effects={
                             "flags": {"alice_month02_patrol_board_agreed": 1},
@@ -1056,8 +1056,8 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 npc_id="alice",
                 intent_id="alice_conducts_quiet_frequency_crosscheck",
                 kind="npc_plan",
-                title="艾丽丝要复核静默线频率的第二周数据",
-                description="上次整理的频率记录已经过了一周。艾丽丝在书桌等你，把新见到的风声断点与第一周记录对照，确认异常是在靠近还是在漂移。",
+                title="艾琳要复核静默线频率的第二周数据",
+                description="上次整理的频率记录已经过了一周。艾琳在书桌等你，把新见到的风声断点与第一周记录对照，确认异常是在靠近还是在漂移。",
                 priority=85,
                 reason="Week 06 quiet route needs a frequency crosscheck after the Day 32 record.",
                 action={"type": "scene_activity", "activity_id": "reading_hall_quiet_frequency_crosscheck"},
@@ -1068,9 +1068,9 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 response_options=[
                     _social_response(
                         response_id="crosscheck_frequency_table",
-                        label="和艾丽丝复核两周频率记录",
+                        label="和艾琳复核两周频率记录",
                         hint="对比风声断点、时间带和见证人。",
-                        result_text="艾丽丝把两页记录并排摊开，等你把新的静默点标到上一周频率表旁边。",
+                        result_text="艾琳把两页记录并排摊开，等你把新的静默点标到上一周频率表旁边。",
                         tone="careful",
                         effects={
                             "flags": {"alice_month02_quiet_crosscheck_agreed": 1},
@@ -1104,8 +1104,8 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 npc_id="alice",
                 intent_id="alice_calls_anomaly_convergence",
                 kind="npc_plan",
-                title="艾丽丝要把三条路线的异常信号合到同一张记录上",
-                description="第二月中段的发现开始指向同一个方向。艾丽丝在书库等你，把村务报告、远征补给和静默频率表并排核对，确认异常是否正在靠近北门。",
+                title="艾琳要把三条路线的异常信号合到同一张记录上",
+                description="第二月中段的发现开始指向同一个方向。艾琳在书库等你，把村务报告、远征补给和静默频率表并排核对，确认异常是否正在靠近北门。",
                 priority=87,
                 reason="Week 07 needs a shared convergence objective after any Week 06 route slice is completed.",
                 action={"type": "scene_activity", "activity_id": "boundary_anomaly_convergence"},
@@ -1116,9 +1116,9 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 response_options=[
                     _social_response(
                         response_id="compare_route_records",
-                        label="和艾丽丝核对三条路线的异常信号",
+                        label="和艾琳核对三条路线的异常信号",
                         hint="把村务、远征和静默记录放到同一张表里。",
-                        result_text="艾丽丝把三份记录推到桌面中央，等你指出哪些信号其实来自同一个方向。",
+                        result_text="艾琳把三份记录推到桌面中央，等你指出哪些信号其实来自同一个方向。",
                         tone="careful",
                         effects={
                             "flags": {"alice_month02_convergence_agreed": 1},

@@ -74,6 +74,18 @@ function getActionAriaLabel(action) {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+.action-hotbar::before {
+  content: "";
+  position: absolute;
+  left: 0.7rem;
+  right: 0.7rem;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(253, 224, 71, 0.68), rgba(125, 211, 252, 0.5), transparent);
+  box-shadow: 0 0 14px rgba(253, 224, 71, 0.24);
+  pointer-events: none;
+}
+
 .action-hotbar button {
   position: relative;
   min-height: 3.25rem;
@@ -93,6 +105,17 @@ function getActionAriaLabel(action) {
   --action-glow: rgba(125, 211, 252, 0.24);
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease, background 0.18s ease;
   will-change: transform;
+  overflow: hidden;
+}
+
+.action-hotbar button::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--action-accent), transparent);
+  opacity: 0.58;
+  pointer-events: none;
 }
 
 .action-hotbar button.action-talk { --action-accent: #22d3ee; --action-glow: rgba(34, 211, 238, 0.28); }
