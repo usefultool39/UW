@@ -63,6 +63,7 @@
 | 2026-06-01 | Day1 村西书库 | 把旧记录告诉艾琳 | 人物感增强 | 通过 | 选择 `ch1_d1_reading_clue.ask_alice` | 玩家第一次把旧记录告诉艾琳时，应理解她为什么在意记录，而不只是收到任务提示 | 已补强；结果文本加入莉娜练习页、刻印标记和“鸟声消失”圈注，记忆摘要同步写入日常安全牵挂 |
 | 2026-06-01 | Day2 巨树清场边缘 | 森林异常共同调查 | 人物感增强 | 通过 | 选择 `ch1_d2_forest_anomaly.investigate_together` | 艾琳在异常出现后应体现判断方式，而不只是担心或阻止 | 已补强；艾琳用刻印标记压住安全距离，先判断异常有没有越过日常边界 |
 | 2026-06-01 | Day39 书库阅览台 | 静默线频率复核 | E2E 质量门 | 通过 | 设置 Month02 quiet 前置 flag，Day39 进入 `reading_hall`，通过 UI 点击 `reading_hall_quiet_frequency_crosscheck` | Day39 至少一条路线有完整 E2E：意图出现、入口可点、结果可见、完成 flag 写入 | 已补 E2E；`month02_quiet_frequency_crosscheck_done=1` 与 `month02_quiet_frequency_crosschecked=1` |
+| 2026-06-01 | Day46 / 存档导入 | Month02 required_any_flags | 存档兼容 | 通过 | 导出包含 `month02_quiet_frequency_crosscheck_done=1` 的 Day46 存档，重置后导入并执行 `boundary_anomaly_convergence` | 导入后保留 Month02 flags，Day46 收束活动仍能通过 `required_any_flags` 解锁并结算 | 已补后端测试；导入后写入 `month02_anomaly_convergence_done=1` 与 `month02_anomaly_source_documented=1` |
 
 ## 本轮证据
 
@@ -80,6 +81,7 @@
 - Day1 艾琳人物厚度：`.venv\Scripts\python.exe -m pytest backend/tests/test_content_validator.py backend/tests/test_story_director_events.py backend/tests/test_npc_intents.py::test_state_exposes_day1_npc_intents backend/tests/test_npc_intents.py::test_reading_activity_changes_alice_intent_to_reaction -q`，13 passed；运行时 API 触发 `ch1_d1_reading_clue.ask_alice` 复验通过
 - Day2 艾琳人物厚度：`.venv\Scripts\python.exe -m pytest backend/tests/test_content_validator.py backend/tests/test_story_director_events.py -q`，11 passed；`npm.cmd run test:e2e -- --grep "Day 2" --reporter=line`，4 passed；运行时 API 触发 `ch1_d2_forest_anomaly.investigate_together` 复验通过
 - Day39 静默线 E2E：`npm.cmd run test:e2e -- --grep "Day 39 quiet" --reporter=line`，1 passed；相关后端 Day39 / Month02 测试，2 passed；完整 E2E `npm.cmd run test:e2e -- --reporter=line`，9 passed
+- Save/load 兼容：`.venv\Scripts\python.exe -m pytest backend/tests/test_api_framework.py::test_save_import_preserves_month_two_required_any_flags_for_day_forty_six -q`，1 passed；Month02 / Day46 定向测试，2 passed；完整 API 框架测试，29 passed
 
 ## 今晚目标调节
 
@@ -101,6 +103,6 @@
 
 ## 当前状态
 
-- 版本基线：`f86bd8e`
-- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2 与 Day46 艾琳人物厚度已有落点
-- 下一步动作：继续围绕艾琳做 Day4-6 的人物厚度 pass，优先补复盘里的长期牵挂；随后做提交前 diff 分组审查
+- 版本基线：`321c28b`
+- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖
+- 下一步动作：继续围绕艾琳做 Day4-6 的人物厚度 pass，优先补复盘里的长期牵挂；随后提交并同步本轮存档兼容质量门

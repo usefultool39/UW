@@ -215,6 +215,49 @@ def test_save_export_import_restores_world_and_memory():
     assert profile["important_memories"]
 
 
+def test_save_import_preserves_month_two_required_any_flags_for_day_forty_six():
+    client = TestClient(app)
+    client.post("/api/reset")
+    for flag in [
+        "month02_day31_entry_done",
+        "month02_route_quiet",
+        "month02_quiet_frequency_crosscheck_done",
+    ]:
+        r = client.post(
+            "/api/player/action",
+            json={"kind": "set_flag", "flag_key": flag, "flag_value": 1},
+        )
+        assert r.status_code == 200
+        assert r.json()["ok"] is True
+    client.post("/api/player/action", json={"kind": "set_day", "day": 46})
+    client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "reading_hall"})
+
+    save = client.get("/api/save/export").json()
+
+    client.post("/api/reset")
+    locked = client.post(
+        "/api/player/action",
+        json={"kind": "scene_activity", "activity_id": "boundary_anomaly_convergence"},
+    ).json()
+    assert locked["ok"] is False
+
+    imported = client.post("/api/save/import", json=save)
+    assert imported.status_code == 200
+    restored = imported.json()["state"]
+    assert restored["day"] == 46
+    assert restored["flags"]["month02_quiet_frequency_crosscheck_done"] == 1
+    intents = {item["id"]: item for item in restored["npc_intents"]}
+    assert "alice_calls_anomaly_convergence" in intents
+
+    done = client.post(
+        "/api/player/action",
+        json={"kind": "scene_activity", "activity_id": "boundary_anomaly_convergence"},
+    ).json()
+    assert done["ok"] is True
+    assert done["state"]["flags"]["month02_anomaly_convergence_done"] == 1
+    assert done["state"]["flags"]["month02_anomaly_source_documented"] == 1
+
+
 def test_move_world_returns_path():
     client = TestClient(app)
     client.post("/api/reset")

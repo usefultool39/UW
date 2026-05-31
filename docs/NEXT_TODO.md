@@ -20,10 +20,10 @@ This file is the handoff list after the May 30 automation watch cycle. The curre
 - [x] Add a Day1 Ailin character-depth pass when the player tells her the old boundary record: Lina practice page, inscription marker, and daily-safety concern.
 - [x] Add a Day2 Ailin character-depth pass for the shared forest anomaly path: inscription marker, safety distance, and daily-boundary judgment.
 - [x] Add one full E2E route for Day39 quiet branch before Day46 convergence, covering NPC intent, UI entry, result panel, and completion flags.
+- [x] Add a save/load compatibility check after Month 02 flags and `required_any_flags` were introduced; imported Day46 quiet-route saves still unlock convergence.
 - [ ] Tonight focus: make one core character feel stronger before adding more systems. Recommended first pass: Ailin across Day1 library, Day2 anomaly, Day 4-6 debrief, and Day 46 convergence.
 - [ ] Review the first-screen visual hierarchy: objective text, available actions, map readability, and NPC intent visibility.
 - [ ] Improve player-facing text cleanup for any remaining development wording, internal ids, or garbled fallback copy.
-- [ ] Add a save/load compatibility check after Month 02 flags and `required_any_flags` were introduced.
 - [ ] Expand Week 07 after convergence into a concrete follow-up objective instead of ending at a shared signal.
 - [ ] Build a small visual/audio pass for the reading hall, north gate, village square, and home hearth so the core loop feels less prototype-like.
 - [ ] Keep CCL on bounded tasks only: read-only audits, content list generation, low-risk test suggestions, and report writing.
