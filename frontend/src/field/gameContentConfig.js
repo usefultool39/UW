@@ -159,6 +159,12 @@ export function getQuestGuide(simState) {
   const sceneId = simState.player?.scene_id || simState.scene_id || ''
   const day = Number(simState.day || 1)
   const sceneHint = sceneId ? `你现在在${getSceneLabel(sceneId)}。` : ''
+  if (
+    Number(flags.month02_anomaly_convergence_done || 0) > 0 ||
+    Number(flags.month02_anomaly_source_documented || 0) > 0
+  ) {
+    return '第二月后段：三条路线已经指向同一个北门外源头。先回北门复核撤退口令与安全边距，为第二月末选择做准备。'
+  }
   if (ending && !flags.month01_debrief_done) return '第一章已经收束。休息到第四天后，在书库把边界事件复盘成第一月路线。'
   if (flags.month01_debrief_done && !flags.month01_drill_done) return '第一月推进中：休息到第七天后去北门，把安全距离和撤退信号演练成流程。'
   if (flags.month01_drill_done && !flags.month01_village_trust) return '第一月推进中：第十二天起到村广场处理巡查公开度和补给问题。'

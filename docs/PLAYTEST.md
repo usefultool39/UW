@@ -66,6 +66,7 @@
 | 2026-06-01 | Day2 巨树清场边缘 | 森林异常共同调查 | 人物感增强 | 通过 | 选择 `ch1_d2_forest_anomaly.investigate_together` | 艾琳在异常出现后应体现判断方式，而不只是担心或阻止 | 已补强；艾琳用刻印标记压住安全距离，先判断异常有没有越过日常边界 |
 | 2026-06-01 | Day39 书库阅览台 | 静默线频率复核 | E2E 质量门 | 通过 | 设置 Month02 quiet 前置 flag，Day39 进入 `reading_hall`，通过 UI 点击 `reading_hall_quiet_frequency_crosscheck` | Day39 至少一条路线有完整 E2E：意图出现、入口可点、结果可见、完成 flag 写入 | 已补 E2E；`month02_quiet_frequency_crosscheck_done=1` 与 `month02_quiet_frequency_crosschecked=1` |
 | 2026-06-01 | Day46 / 存档导入 | Month02 required_any_flags | 存档兼容 | 通过 | 导出包含 `month02_quiet_frequency_crosscheck_done=1` 的 Day46 存档，重置后导入并执行 `boundary_anomaly_convergence` | 导入后保留 Month02 flags，Day46 收束活动仍能通过 `required_any_flags` 解锁并结算 | 已补后端测试；导入后写入 `month02_anomaly_convergence_done=1` 与 `month02_anomaly_source_documented=1` |
+| 2026-06-01 | Day46 汇合结算后 | Week07 后续目标 | 目标回退 | P1 | 完成 `boundary_anomaly_convergence` 后关闭结果面板，观察右侧当前目标 | Day46 汇合后应给出第二月后段的下一步，而不是回退到 Day1 入门提示 | 已修复并复验；目标改为回北门复核撤退口令与安全边距，为第二月末选择做准备 |
 
 ## 本轮证据
 
@@ -86,6 +87,8 @@
 - Day39 静默线 E2E：`npm.cmd run test:e2e -- --grep "Day 39 quiet" --reporter=line`，1 passed；相关后端 Day39 / Month02 测试，2 passed；完整 E2E `npm.cmd run test:e2e -- --reporter=line`，9 passed
 - Save/load 兼容：`.venv\Scripts\python.exe -m pytest backend/tests/test_api_framework.py::test_save_import_preserves_month_two_required_any_flags_for_day_forty_six -q`，1 passed；Month02 / Day46 定向测试，2 passed；完整 API 框架测试，29 passed
 - 首屏视觉层级复查：Playwright 截图 `runs/automation/codex_first_screen_desktop_20260531_190137_initial.png`、`runs/automation/codex_first_screen_mobile_20260531_190137_initial.png`、`runs/automation/codex_first_hud_desktop_20260531_190259.png`、`runs/automation/codex_first_hud_mobile_20260531_190259.png`；核心 HUD overlap 检查为 0
+- 玩家可见文案扫描：Playwright 覆盖 Day1 开场/HUD、Day4 复盘、Day39 静默线、Day46 汇合；未发现旧名、内部 id 或乱码暴露；发现 Day46 汇合后目标回退 P1 并修复
+- Day46 后续目标修复：`npm.cmd run test:e2e -- --grep "Day 46" --reporter=line`，1 passed；`npm.cmd run build`，passed；完整 E2E `npm.cmd run test:e2e -- --reporter=line`，9 passed
 
 ## 今晚目标调节
 
@@ -108,5 +111,5 @@
 ## 当前状态
 
 - 版本基线：`a487210`
-- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2、Day4-6 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖；首屏开场与 HUD 视觉层级已做桌面/移动基线复查
-- 下一步动作：继续做玩家可见文案清理，或把 Week07 汇合后的后续目标补成一个可执行小闭环
+- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2、Day4-6 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖；首屏开场与 HUD 视觉层级已做桌面/移动基线复查；Day46 汇合后目标回退 P1 已修复
+- 下一步动作：继续做玩家可见文案清理，或补 Week08 / 第二月末选择的下一组小闭环

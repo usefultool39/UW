@@ -379,5 +379,9 @@ test.describe('开放世界质量 smoke', () => {
     const after = await (await request.get(`${API}/api/state`)).json()
     expect(after.flags.month02_anomaly_convergence_done).toBe(1)
     expect(after.flags.month02_anomaly_source_documented).toBe(1)
+
+    await page.locator('.result-primary').click()
+    await expect(page.locator('.quest-tracker')).toContainText('\u7b2c\u4e8c\u6708\u540e\u6bb5')
+    await expect(page.locator('.quest-tracker')).not.toContainText('\u7ec6\u96e8\u521a\u505c')
   })
 })

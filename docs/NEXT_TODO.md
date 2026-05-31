@@ -25,7 +25,7 @@ This file is the handoff list after the May 30 automation watch cycle. The curre
 - [x] Tonight focus: make one core character feel stronger before adding more systems. Ailin now has anchored passes across Day1 library, Day2 anomaly, Day4-6 debrief, and Day46 convergence.
 - [x] Review the first-screen visual hierarchy: objective text, available actions, map readability, and NPC intent visibility. Desktop/mobile opening and HUD screenshots passed; mobile time-advance control proximity is a later polish note, not a blocker.
 - [ ] Improve player-facing text cleanup for any remaining development wording, internal ids, or garbled fallback copy.
-- [ ] Expand Week 07 after convergence into a concrete follow-up objective instead of ending at a shared signal.
+- [x] Expand Week 07 after convergence into a concrete follow-up objective instead of ending at a shared signal. After Day46 convergence, the quest tracker now points to northern-gate retreat-signal and safety-margin review for the second-month ending.
 - [ ] Build a small visual/audio pass for the reading hall, north gate, village square, and home hearth so the core loop feels less prototype-like.
 - [ ] Keep CCL on bounded tasks only: read-only audits, content list generation, low-risk test suggestions, and report writing.
 
