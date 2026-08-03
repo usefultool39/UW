@@ -11,7 +11,7 @@
         <header class="interact-card-hd">
           <div>
             <div v-if="regionLabel" class="interact-region">{{ regionLabel }}</div>
-            <h3 class="interact-card-title">{{ nearbyInteract?.title }}</h3>
+            <h3 class="interact-card-title">{{ displayInteractTitle }}</h3>
           </div>
           <button
             type="button"
@@ -22,28 +22,34 @@
             ×
           </button>
         </header>
-        <p class="interact-card-body">{{ nearbyInteract?.body }}</p>
+        <p class="interact-card-body">{{ displayInteractBody }}</p>
         <div class="interact-actions">
           <button
-            v-for="act in visibleInteractActions"
+            v-for="act in displayVisibleInteractActions"
             :key="act.id"
             type="button"
             class="interact-action"
-            :class="{ blocked: !!act.blockedReason }"
+            :class="{
+              blocked: !!act.blockedReason,
+              recommended: act.type === 'story_event',
+              relationship: act.activity?.interaction_kind === 'meal_choice' || act.type === 'npc_intent_response',
+              challenge: act.activity?.interaction_kind === 'reading_keywords' || act.activity?.interaction_kind === 'training'
+            }"
             :data-action-id="act.id"
             :data-action-type="act.type || ''"
             :data-activity-id="act.activity?.id || act.activity_id || ''"
             :disabled="busy || !!act.blockedReason"
             @click="emit('interact-action', act)"
           >
-            <span class="action-kicker">{{ actionKicker(act) }}</span>
+            <span class="action-kicker">{{ actionKicker(act) }}<b v-if="act.type === 'story_event'">建议优先</b></span>
             <span class="action-label">{{ act.label }}</span>
             <span v-if="act.meta" class="action-meta">{{ act.meta }}</span>
             <span v-if="act.description" class="action-desc">{{ act.description }}</span>
+            <span class="action-outcome">{{ actionOutcome(act) }}</span>
           </button>
         </div>
         <p class="interact-card-note">
-          当前地点的行动会写入日志、关系和 NPC 记忆。
+          主线结果由规则系统决定；同伴会记住你的关键选择。
         </p>
       </div>
     </div>
@@ -52,6 +58,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { compactPlayerText, uwCanonText } from '../utils/uwCanonText.js'
 
 const props = defineProps({
   nearbyInteract: { type: Object, default: null },
@@ -68,6 +75,36 @@ const REGION_LABELS = {
   forbidden: '不可进入'
 }
 
+const displayInteractTitle = computed(() => uwCanonText(props.nearbyInteract?.title || '附近互动'))
+const displayInteractBody = computed(() => compactPlayerText(props.nearbyInteract?.body || '', 140))
+
+function playerFacingMeta(action) {
+  if (action?.type === 'npc_intent_response') return '回应会改变关系与后续态度'
+  if (action?.source === 'npc_intent') return '同伴主动提出'
+  if (action?.type === 'story_event') return '关键线索 · 推进主线'
+  if (action?.type === 'scene_activity') return action?.blockedReason || action?.meta || '消耗时间 · 获得进展'
+  return action?.blockedReason || action?.meta || ''
+}
+
+const displayVisibleInteractActions = computed(() =>
+  (Array.isArray(props.visibleInteractActions) ? props.visibleInteractActions : []).map((action) => ({
+    ...action,
+    label: compactPlayerText(action.label, 44),
+    meta: compactPlayerText(playerFacingMeta(action), 56),
+    description: compactPlayerText(action.description, 92)
+  }))
+)
+
+function actionOutcome(action) {
+  if (action?.blockedReason) return `暂不可用：${uwCanonText(action.blockedReason)}`
+  if (action?.type === 'npc_intent_response') return '结果预览：关系 / 记忆'
+  if (action?.source === 'npc_intent') return '结果预览：同伴事件 / 关系'
+  if (action?.type === 'story_event') return '结果预览：剧情推进 / 新线索'
+  if (action?.activity?.interaction_kind === 'boundary_patrol') return '结果预览：生命 / 体力 / 标记奖励'
+  if (action?.type === 'scene_activity') return '结果预览：时间推进 / 活动收益'
+  return '结果预览：世界状态变化'
+}
+
 const regionLabel = computed(() => {
   const poi = props.nearbyInteract
   const type = poi?.regionType
@@ -81,6 +118,7 @@ function actionKicker(action) {
   if (action?.type === 'story_event') return '章节线索'
   if (action?.activity?.interaction_kind === 'reading_keywords') return '轻量玩法 · 读书'
   if (action?.activity?.interaction_kind === 'meal_choice') return '关系选择'
+  if (action?.activity?.interaction_kind === 'boundary_patrol') return '短程探索 · 战术巡查'
   if (action?.type === 'scene_activity') return '场景活动'
   if (action?.type === 'daily_tick') return '日常推进'
   return '确认互动'
@@ -261,5 +299,38 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   font-size: 0.82rem;
   line-height: 1.45;
 }
+.action-outcome {
+  margin-top: 0.28rem;
+  padding-top: 0.38rem;
+  border-top: 1px solid rgba(186, 230, 253, 0.12);
+  color: #d9f99d;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.interact-action.recommended {
+  background: linear-gradient(180deg, rgba(190, 128, 42, 0.96), rgba(105, 60, 25, 0.98));
+  border-color: rgba(253, 224, 71, 0.64);
+  box-shadow: 0 0 22px rgba(246, 211, 110, 0.12);
+}
+.interact-action.relationship {
+  background: linear-gradient(180deg, rgba(126, 66, 105, 0.94), rgba(69, 38, 73, 0.98));
+  border-color: rgba(244, 114, 182, 0.38);
+}
+.interact-action.challenge {
+  background: linear-gradient(180deg, rgba(39, 98, 126, 0.94), rgba(24, 54, 78, 0.98));
+  border-color: rgba(56, 189, 248, 0.4);
+}
+.action-kicker { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.action-kicker b {
+  padding: 0.14rem 0.38rem;
+  border-radius: 999px;
+  color: #2e2113;
+  background: #fde68a;
+  font-size: 0.62rem;
+  letter-spacing: 0;
+}
+
 </style>
 

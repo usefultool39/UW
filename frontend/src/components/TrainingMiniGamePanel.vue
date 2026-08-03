@@ -9,7 +9,7 @@
     <section class="training-panel" @click.stop>
       <header class="training-header">
         <div>
-          <p class="training-kicker">古誓树训练</p>
+          <p class="training-kicker">巨神树训练</p>
           <h3>{{ event?.title || '节奏训练' }}</h3>
         </div>
         <button type="button" class="training-close" aria-label="关闭" @click="close">×</button>
@@ -72,7 +72,7 @@ const averageScore = computed(() => {
 
 const tier = computed(() => {
   if (averageScore.value >= 82) {
-    return { id: 'excellent', label: '优秀', text: '节拍很准，尤里明显感觉到你稳住了。' }
+    return { id: 'excellent', label: '优秀', text: '节拍很准，尤吉欧明显感觉到你稳住了。' }
   }
   if (averageScore.value >= 52) {
     return { id: 'steady', label: '稳定', text: '动作还不完美，但节奏已经接上。' }

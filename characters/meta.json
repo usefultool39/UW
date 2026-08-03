@@ -3,8 +3,8 @@
   "agents": [
     {
       "id": "alice",
-      "display": "艾琳",
-      "role": "露茵村 · 村长之女 / 刻印术见习",
+      "display": "爱丽丝",
+      "role": "卢利特村 · 村长之女 / 神圣术见习",
       "behavior_role": "logistics",
       "initial_location": "home",
       "enabled": true,
@@ -14,8 +14,8 @@
     },
     {
       "id": "eugeo",
-      "display": "尤里",
-      "role": "露茵村 · 古誓树清场 / 日常劳作",
+      "display": "尤吉欧",
+      "role": "卢利特村 · 巨神树清场 / 日常劳作",
       "behavior_role": "field",
       "initial_location": "at_tree",
       "enabled": true,
@@ -26,7 +26,7 @@
     {
       "id": "selka",
       "display": "赛尔卡",
-      "role": "露茵村 · 见习疗愈者 / 书库帮手",
+      "role": "卢利特村 · 见习疗愈者 / 书库帮手",
       "behavior_role": "healer",
       "initial_location": "home",
       "enabled": true,
@@ -36,8 +36,8 @@
     },
     {
       "id": "garret",
-      "display": "加雷特",
-      "role": "露茵村 · 北门巡守 / 边界见证者",
+      "display": "加利塔",
+      "role": "卢利特村 · 北方村门巡守 / 边界见证者",
       "behavior_role": "patrol",
       "initial_location": "bench",
       "enabled": true,
@@ -47,8 +47,8 @@
     },
     {
       "id": "rulid_elder",
-      "display": "罗温",
-      "role": "露茵村 · 村务长 / 律令解释者",
+      "display": "加斯夫特",
+      "role": "卢利特村 · 村务长 / 禁忌目录解释者",
       "behavior_role": "elder",
       "initial_location": "table",
       "enabled": true,

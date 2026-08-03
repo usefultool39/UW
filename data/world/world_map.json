@@ -510,13 +510,19 @@
       "radius": 3,
       "label": "北境边门",
       "title": "北境边门",
-      "body": "再往北就是山脉与北境律令共同构成的边界。边门暂时封锁，但你可以先远望和记录。",
+      "body": "再往北就是山脉与禁忌目录共同构成的边界。边门暂时封锁，但你可以先远望、记录，或在确认异常后进行短程巡查。",
       "actions": [
         {
           "id": "north_gate_survey",
           "label": "远望边界线",
           "type": "scene_activity",
           "activity_id": "north_gate_survey"
+        },
+        {
+          "id": "north_gate_boundary_patrol",
+          "label": "进入短程巡查：判断敌意并安全返回",
+          "type": "scene_activity",
+          "activity_id": "north_gate_boundary_patrol"
         }
       ]
     },

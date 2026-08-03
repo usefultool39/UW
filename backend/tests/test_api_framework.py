@@ -466,3 +466,67 @@ def test_scene_activity_sleep_resets_day_and_environment():
     assert body["state"]["player"]["scene_id"] == "home_hearth"
     assert body["state"]["player"]["tile_x"] == 11
     assert body["state"]["player"]["tile_y"] == 27
+
+
+def test_boundary_patrol_applies_resources_and_incremental_rewards():
+    session = Session(run_id="test_boundary_patrol_resources")
+    session.state = session.state.model_copy(
+        update={"flags": {**session.state.flags, "forest_anomaly_seen": 1}}
+    )
+    session.player_action(kind="move_scene", scene_id="north_gate")
+    before = session.state.player
+
+    out = session.player_action(
+        kind="scene_activity",
+        activity_id="north_gate_boundary_patrol",
+        activity_choice="scraped_clear",
+    )
+
+    assert out["ok"] is True
+    assert out["state"]["player"]["hp"] == before.hp - 8
+    assert out["state"]["player"]["mp"] == before.mp - 5
+    assert out["state"]["player"]["stamina"] == before.stamina - 20
+    assert out["state"]["flags"]["boundary_marks"] == 2
+    assert out["state"]["flags"]["boundary_patrol_clears"] == 1
+    assert out["activity_result"]["resource_changes"]["hp"]["delta"] == -8
+    assert out["activity_result"]["flag_deltas"]["boundary_marks"] == 2
+
+
+def test_boundary_patrol_rejection_is_transactional_when_hp_is_too_low():
+    session = Session(run_id="test_boundary_patrol_transaction")
+    session.state = session.state.model_copy(
+        update={
+            "flags": {**session.state.flags, "forest_anomaly_seen": 1},
+            "player": session.state.player.model_copy(update={"hp": 10}),
+        }
+    )
+    session.player_action(kind="move_scene", scene_id="north_gate")
+    before_flags = dict(session.state.flags)
+    before_relationships = session.state.relationships
+
+    out = session.player_action(
+        kind="scene_activity",
+        activity_id="north_gate_boundary_patrol",
+        activity_choice="forced_retreat",
+    )
+
+    assert out["ok"] is False
+    assert out["error"] == "insufficient_hp"
+    assert out["state"]["flags"] == before_flags
+    assert out["state"]["relationships"] == {
+        key: value.model_dump(mode="json") for key, value in before_relationships.items()
+    }
+
+
+def test_rest_until_next_day_restores_all_player_resources():
+    session = Session(run_id="test_rest_all_resources")
+    session.state = session.state.model_copy(
+        update={"player": session.state.player.model_copy(update={"hp": 37, "mp": 21, "stamina": 12})}
+    )
+
+    out = session.player_action(kind="rest_until_next_day")
+
+    assert out["ok"] is True
+    assert out["state"]["player"]["hp"] == out["state"]["player"]["max_hp"]
+    assert out["state"]["player"]["mp"] == out["state"]["player"]["max_mp"]
+    assert out["state"]["player"]["stamina"] == out["state"]["player"]["max_stamina"]

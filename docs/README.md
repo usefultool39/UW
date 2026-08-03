@@ -1,67 +1,70 @@
-# 文档入口
+# 边境回声文档中心
 
-本目录只保留当前权威文档。历史探索、重复路线图和中间版本已删除，避免后续开发者在过时方向里绕路。
+> **单一事实来源**：过时计划只保留在 `archive/` 中用于追溯，不再作为当前任务依据。
 
-## 必读顺序
+## 先回答三个问题
 
-1. [PROJECT.md](PROJECT.md)  
-   当前产品方向、架构边界、文件入口、API、数据流、扩展规则和近期路线。
+| 问题 | 权威文档 |
+|---|---|
+| 1. 已经做了什么？ | [planning/CURRENT_STATUS.md](planning/CURRENT_STATUS.md) |
+| 2. 目标做什么？ | [product/PRODUCT_BRIEF.md](product/PRODUCT_BRIEF.md) / [product/ROADMAP.md](product/ROADMAP.md) |
+| 3. 下一阶段做什么？ | [planning/NEXT_PHASE.md](planning/NEXT_PHASE.md)；候选工作在 [BACKLOG.md](planning/BACKLOG.md) |
 
-2. [FUTURE_DETAILED_PLAN.md](FUTURE_DETAILED_PLAN.md)  
-   从稳定纵切片、第一月内容、NPC 智能体、村庄社会、美术音频到发布维护的完整未来计划。
+## 新成员 / 新智能体 15 分钟阅读顺序
 
-3. [EXECUTION_BOARD.md](EXECUTION_BOARD.md)  
-   可直接开工的任务看板：质量门、Day 1-3 回归、第一月 Day 4-10、重要 NPC、Agent Loop、调试器、美术音频。
+1. 本页。
+2. [产品简述](product/PRODUCT_BRIEF.md)。
+3. [当前状态](planning/CURRENT_STATUS.md)。
+4. [下一阶段](planning/NEXT_PHASE.md)。
+5. [系统架构](architecture/SYSTEM_OVERVIEW.md)。
+6. [开发流程](delivery/DEVELOPMENT_PROCESS.md) 与 [完成定义](delivery/DEFINITION_OF_DONE.md)。
+7. 再阅读改动对应的专题文档、ADR 和测试策略。
 
-4. [PLAYTEST.md](PLAYTEST.md)  
-   第一章三日 Demo 的试玩步骤和验收点。
+## 文档地图
 
-5. [GAME_QUALITY_ROADMAP.md](GAME_QUALITY_ROADMAP.md)  
-   游戏观感、移动手感、可玩性、AI NPC 和内容制作的长期任务板。后续每完成一项就在里面打勾，并追加执行记录。
+### 产品
+- [PRODUCT_BRIEF](product/PRODUCT_BRIEF.md)：愿景、体验支柱、非目标。
+- [REQUIREMENTS](product/REQUIREMENTS.md)：带编号的功能和非功能需求。
+- [MVP_SCOPE](product/MVP_SCOPE.md)：MVP 边界与退出标准。
+- [ROADMAP](product/ROADMAP.md)：Now / Next / Later。
+- [DAY1_VERTICAL_SLICE](product/DAY1_VERTICAL_SLICE.md)：Day 1 体验脚本。
 
-6. 根目录 [README.md](../README.md)  
-   快速启动、目录结构和常用验证命令。
+### 架构
+- [SYSTEM_OVERVIEW](architecture/SYSTEM_OVERVIEW.md)：模块边界与数据流。
+- [DATA_AND_CONTENT](architecture/DATA_AND_CONTENT.md)：配置、存档和运行产物。
+- [AI_NPC_BOUNDARY](architecture/AI_NPC_BOUNDARY.md)：scripted / hybrid / agent 边界。
+- [CLIENT_CONTRACT](architecture/CLIENT_CONTRACT.md)：客户端 API 契约。
+- [SCENE_SYSTEM](architecture/SCENE_SYSTEM.md)：场景扩展。
+- [ADR 索引](architecture/adr/README.md)：重要架构决策。
 
-## 专题文档
+### 计划与交付
+- [CURRENT_STATUS](planning/CURRENT_STATUS.md)：当前真实状态。
+- [NEXT_PHASE](planning/NEXT_PHASE.md)：当前唯一阶段计划。
+- [BACKLOG](planning/BACKLOG.md)：候选工作。
+- [DEVELOPMENT_PROCESS](delivery/DEVELOPMENT_PROCESS.md)：从需求到发布。
+- [DEFINITION_OF_DONE](delivery/DEFINITION_OF_DONE.md)：完成定义。
+- [TEST_STRATEGY](delivery/TEST_STRATEGY.md)：测试和质量门。
+- [RELEASE_PROCESS](delivery/RELEASE_PROCESS.md)：发布与回滚。
+- [VERSIONING](delivery/VERSIONING.md)：版本和兼容。
+- [PLAYTEST](delivery/PLAYTEST.md)：试玩记录。
 
-- [CLIENT_CONTRACT.md](CLIENT_CONTRACT.md)：Vue/Phaser 与 Cocos Creator 并行客户端必须共享的 API、DTO、玩家行动和地图表现契约。
-- [DAY1_VERTICAL_SLICE.md](DAY1_VERTICAL_SLICE.md)：Day 1 不超过 20 个关键节点的完整体验脚本。
-- [SCENE_SYSTEM.md](SCENE_SYSTEM.md)：场景切换、多地图、未来副本/战斗实例的扩展方式。
-- [ART_DIRECTION_PLAN.md](ART_DIRECTION_PLAN.md)：美术方向、地图层级、资产清单和细粒度比例规范。
-- [AFTERNOON_MAP_POLISH_PLAN.md](AFTERNOON_MAP_POLISH_PLAN.md)：地图和操作润色计划。
-- [NEXT_HANDOFF_PLAN.md](NEXT_HANDOFF_PLAN.md)：上一阶段 Day 1 自然玩法循环交接记录，当前很多任务已完成，可作为历史上下文。
-- [CLIENT_STRATEGY_DECISION.md](CLIENT_STRATEGY_DECISION.md)：客户端路线决策，当前主线仍是 Vue + Phaser，Cocos 冻结备用。
-- [COCOS_SETUP.md](COCOS_SETUP.md)：Cocos 本机环境与验证记录。
+### 运行
+- [RUNBOOK](operations/RUNBOOK.md)：安装、启动、停止、验证。
+- [TROUBLESHOOTING](operations/TROUBLESHOOTING.md)：常见故障。
+- [COCOS_SETUP](operations/COCOS_SETUP.md)：冻结的备用客户端。
 
-## 外部计划目录
+## 文档更新规则
 
-用户侧计划目录：
+| 变化 | 必须更新 |
+|---|---|
+| 产品目标/用户体验 | `PRODUCT_BRIEF.md`，必要时 `REQUIREMENTS.md` |
+| MVP 范围 | `MVP_SCOPE.md`、`ROADMAP.md` |
+| 当前能力/测试/风险 | `CURRENT_STATUS.md` |
+| 下一阶段 | **只更新** `NEXT_PHASE.md`，不要再建第二份 TODO |
+| 新候选需求 | `BACKLOG.md`，写优先级和验收 |
+| 重要架构 | 新增 ADR；不覆盖历史 ADR |
+| API/数据格式 | `CLIENT_CONTRACT.md` / `DATA_AND_CONTENT.md` 与测试 |
+| 玩家可见变化 | 根目录 `CHANGELOG.md` |
+| 发布 | `VERSION`、`CHANGELOG.md`、发布证据 |
 
-```text
-C:\Users\liang\Desktop\计划to do list\边境回声项目未来详细计划
-```
-
-其中 `未来优化计划.md` 是给人看的总计划，`下一步执行清单.md` 是短期执行入口，`文档索引.md` 记录实际项目路径和阅读顺序。
-
-## 局部文档
-
-- [backend/README.md](../backend/README.md)：后端开发、API、测试。
-- [frontend/README.md](../frontend/README.md)：前端开发、构建、E2E。
-- [characters/README_PERSONA.md](../characters/README_PERSONA.md)：角色 persona 与阶段 overlay。
-- [frontend/public/assets/game/README.md](../frontend/public/assets/game/README.md)：地图素材替换。
-
-## 当前判断
-
-项目主线是：
-
-> 单人玩家 + AI NPC + 稳定世界规则 + 章节剧情 + 记忆关系 + 新手村纵切片。
-
-不是：
-
-- 多人在线 MMO。
-- 大规模开放世界。
-- 纯 AI 聊天室。
-- 只看 tick 日志的模拟器。
-- 直接发布官方 IP 同人复刻。
-
-如果旧对话、旧代码注释或残留资源与这里冲突，以 [PROJECT.md](PROJECT.md) 为准。
+历史计划见 [archive/2026-legacy-plans/README.md](archive/2026-legacy-plans/README.md)。

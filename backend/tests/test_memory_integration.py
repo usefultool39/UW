@@ -35,3 +35,17 @@ def test_memory_api_returns_summary_and_recent_events(tmp_path):
         assert isinstance(payload["recent_events"], list)
     finally:
         SESSION.memory_store = original_store
+
+
+def test_session_memory_is_scoped_per_run():
+    first = Session(run_id="memory-scope-first")
+    second = Session(run_id="memory-scope-second")
+    assert first.memory_store.root_dir != second.memory_store.root_dir
+
+    first.memory_store.append_important_memory(
+        "alice",
+        {"day": 3, "type": "choice", "summary": "只属于第一局的边界记忆", "weight": 5},
+        first.run_id,
+    )
+    context = second.memory_store.read_important_context("alice")
+    assert context["important_memories"] == []

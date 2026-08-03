@@ -74,8 +74,8 @@ const selectedIds = ref([])
 const keywords = [
   { id: 'bird_silence', label: '鸟声消失', note: '边界附近最反常的感官线索' },
   { id: 'silent_line', label: '静默线', note: '旧记录里被反复涂改的词' },
-  { id: 'north_law', label: '北境律令', note: '村民不愿多谈的规则名' },
-  { id: 'ancient_tree', label: '古誓树', note: '清场日常和边界传闻的交点' },
+  { id: 'north_law', label: '禁忌目录', note: '村民不愿多谈的规则名' },
+  { id: 'ancient_tree', label: '巨神树', note: '清场日常和边界传闻的交点' },
   { id: 'village_record', label: '村史断页', note: '年份缺了一段的旧纸' },
   { id: 'blank_margin', label: '空白注记', note: '像被人故意留下的空处' }
 ]
@@ -96,7 +96,7 @@ const interpretation = computed(() => {
     return {
       id: 'trace_silence',
       label: '异常线索完整',
-      text: '你把鸟声、静默线和北境律令拼成同一个问题。'
+      text: '你把鸟声、静默线和禁忌目录拼成同一个问题。'
     }
   }
   if (set.has('ancient_tree') && set.has('north_law') && set.has('village_record')) {
@@ -110,7 +110,7 @@ const interpretation = computed(() => {
     id: 'quiet_observe',
     label: selectedIds.value.length ? '保留疑问' : '等待关键词',
     text: selectedIds.value.length
-      ? '这组词还没有变成答案，但足够让你继续观察艾琳和村子的反应。'
+      ? '这组词还没有变成答案，但足够让你继续观察爱丽丝和村子的反应。'
       : '先从纸页里挑出 3 个最刺眼的词。'
   }
 })

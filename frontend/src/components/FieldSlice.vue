@@ -3,6 +3,7 @@
     <!-- Top header bar -->
     <FieldHeader
       :busy="busy"
+      :npc-runtime="npcRuntime"
       @export-save="onExportSave"
       @import-save="onImportClick"
       @import-file="onImportFile"
@@ -33,7 +34,7 @@
         <section v-if="openingBriefVisible" class="opening-brief" role="status">
           <div class="brief-kicker">第一天 · 清晨</div>
           <h3>细雨停在村道边</h3>
-          <p>书库里的旧记录和巨树旁的训练都在等你回应。今天的选择，会被艾琳和尤里记住。</p>
+          <p>教会书库里出现了一页被改写的记录。先确认事实，再决定是否告诉爱丽丝和尤吉欧。</p>
           <div class="brief-actions">
             <button type="button" @click="focusFirstStoryEvent">查看线索</button>
             <button type="button" class="brief-ghost" @click="openingBriefDismissed = true">开始行动</button>
@@ -92,7 +93,7 @@
       <!-- Bottom chat strip -->
       <div class="chat-strip">
         <span>系统</span>
-        点击地图移动，靠近 NPC 或互动点后可触发对话与事件。
+        WASD / 方向键移动。跟随金色指引，靠近目标后按互动按钮。
       </div>
 
       <!-- Bottom hotbar -->
@@ -195,6 +196,14 @@
       @complete="onMealChoiceComplete"
     />
 
+    <BoundaryPatrolMiniGamePanel
+      v-model="boundaryPatrolOpen"
+      :activity="pendingActivityAction?.activity"
+      :player="simState?.player"
+      :busy="busy"
+      @complete="onBoundaryPatrolComplete"
+    />
+
     <StoryResultPanel
       v-model="storyResultOpen"
       :result="storyResult"
@@ -234,12 +243,15 @@ import BoundaryProbeMiniGamePanel from './BoundaryProbeMiniGamePanel.vue'
 import BoundaryVerdictMiniGamePanel from './BoundaryVerdictMiniGamePanel.vue'
 import ReadingMiniGamePanel from './ReadingMiniGamePanel.vue'
 import MealChoicePanel from './MealChoicePanel.vue'
+import BoundaryPatrolMiniGamePanel from './BoundaryPatrolMiniGamePanel.vue'
 import Toast from './Toast.vue'
 import { getAgentLabel, getQuestGuide, getSceneLabel, getTimeBandLabel } from '../field/gameContentConfig.js'
 import { findNearbyInteractPoi } from '../field/interactPoi.js'
 import { DEFAULT_MAP_ID } from '../field/sceneRegistry.js'
+import { activityIdForAction, activityOpenMessage, activityPanelKind, shouldOpenActivityPanel } from '../field/activityRegistry.js'
 import { useAudio } from '../composables/useAudio.js'
 import { useFieldToast } from '../composables/useFieldToast.js'
+import { compactPlayerText, uwCanonText } from '../utils/uwCanonText.js'
 
 // Audio composable for field ambience and interaction feedback
 const { playSfx, startFieldAudio } = useAudio()
@@ -248,6 +260,7 @@ const { toastMessage, toastType, toastOpen, showToast, clearToastTimer } = useFi
 const props = defineProps({
   simState: { type: Object, required: true },
   devMode: { type: Boolean, default: false },
+  npcRuntime: { type: String, default: 'scripted' },
   dailyTick: { type: Function, required: true },
   playerAction: { type: Function, required: true },
   storyAdvance: { type: Function, required: true },
@@ -294,14 +307,13 @@ const boundaryProbeOpen = ref(false)
 const boundaryVerdictOpen = ref(false)
 const readingGameOpen = ref(false)
 const mealChoiceOpen = ref(false)
+const boundaryPatrolOpen = ref(false)
 const pendingActivityAction = ref(null)
 const storyResult = ref(null)
 const npcProfile = ref(null)
 
 let sceneInstance = null
 
-const READING_ACTIVITY_IDS = new Set(['church_read_sacred_arts'])
-const MEAL_ACTIVITY_IDS = new Set(['church_ask_alice_lunch', 'home_evening_meal'])
 
 // --- Computed ---
 const sceneLabel = computed(() => getSceneLabel(props.simState?.player?.scene_id || props.simState?.scene_id || ''))
@@ -353,7 +365,9 @@ const nearbyNpcIntents = computed(() => {
       if (!Number.isFinite(tx) || !Number.isFinite(ty)) return null
       const dist = Math.max(Math.abs(px - tx), Math.abs(py - ty))
       const sameScene = sceneId && sceneId === playerScene
-      if (dist > 4 && !sameScene) return null
+      // 场景入口和 NPC 意图坐标可能分处同一场景的不同交互点。
+      // 玩家已经进入目标场景时，应能直接从互动面板回应同伴，避免“目标就在这里却点不到”。
+      if (!sameScene) return null
       return { intent, dist }
     })
     .filter(Boolean)
@@ -463,11 +477,19 @@ const nearbyInteractTitle = computed(() => {
   return poi.title || '暂无地点'
 })
 
+function actionPreviewMeta(action) {
+  if (action?.type === 'npc_intent_response') return `${getAgentLabel(action.npc_id)}会记住你的态度`
+  if (action?.source === 'npc_intent') return '同伴主动事件'
+  if (action?.type === 'story_event') return `主线 · ${getSceneLabel(action?.storyEvent?.location?.scene_id || '')}`
+  if (action?.type === 'scene_activity') return action?.blockedReason || action?.meta || '消耗时间，获得进展'
+  return action?.blockedReason || action?.meta || ''
+}
+
 const nearbyActionPreview = computed(() =>
-  visibleInteractActions.value.slice(0, 4).map((action) => ({
+  visibleInteractActions.value.slice(0, 2).map((action) => ({
     id: action.id,
-    label: action.label,
-    meta: action.meta || '',
+    label: compactPlayerText(action.label, 34),
+    meta: compactPlayerText(actionPreviewMeta(action), 42),
     blocked: !!action.blockedReason
   }))
 )
@@ -543,6 +565,7 @@ const anyModalOpen = computed(() =>
   boundaryVerdictOpen.value ||
   readingGameOpen.value ||
   mealChoiceOpen.value ||
+  boundaryPatrolOpen.value ||
   journalOpen.value
 )
 
@@ -567,12 +590,8 @@ const newcomerGuide = computed(() => {
   }
 })
 
-const newcomerGuideVisible = computed(() =>
-  shouldShowDayOneOpening.value &&
-  !openingCinematicVisible.value &&
-  !openingBriefVisible.value &&
-  !anyModalOpen.value
-)
+// 新手信息只保留开场与右侧主线卡，避免三个引导层同时争夺注意力。
+const newcomerGuideVisible = computed(() => false)
 
 function compactGuideText(value, maxLength = 30) {
   const text = String(value || '').replace(/\s+/g, ' ').trim()
@@ -600,14 +619,16 @@ function buildEventQuestGuide(event) {
 }
 
 const questGuide = computed(() => {
+  // 主线永远保持单一焦点；附近的 NPC 主动事件显示为可选互动，
+  // 避免“去书库”和“回应同伴”同时被标成当前目标。
+  if (storyEvents.value.length) {
+    return uwCanonText(buildEventQuestGuide(storyEvents.value[0]))
+  }
   const intent = nearbyNpcIntents.value[0] || npcIntents.value[0]
   if (intent) {
-    return buildIntentQuestGuide(intent)
+    return uwCanonText(buildIntentQuestGuide(intent))
   }
-  if (storyEvents.value.length) {
-    return buildEventQuestGuide(storyEvents.value[0])
-  }
-  return getQuestGuide(props.simState)
+  return uwCanonText(getQuestGuide(props.simState))
 })
 
 const shouldShowDayOneOpening = computed(() =>
@@ -645,7 +666,7 @@ async function onOpeningSkip() {
   openingCinematicDismissed.value = true
   openingBriefDismissed.value = true
   await startOpeningAudio()
-  showToast('跟随地面光标，先去村西书库确认旧记录。', 'info')
+  showToast('跟随金色指引，先去教会书库确认异常记录。', 'info')
 }
 
 function onNewcomerGuideAction() {
@@ -918,6 +939,7 @@ function openInteractPanel() {
     boundaryVerdictOpen.value ||
     readingGameOpen.value ||
     mealChoiceOpen.value ||
+    boundaryPatrolOpen.value ||
     dialogueOpen.value ||
     npcPanelOpen.value ||
     npcProfileOpen.value ||
@@ -1032,17 +1054,17 @@ async function onHotbarAction(actionId) {
     if (trainingEvent?.id) {
       selectedStoryEventId.value = trainingEvent.id
       trainingGameOpen.value = true
-      showToast('尤里已经摆好训练节奏。先完成三次出手，再决定怎么回应他。')
+      showToast('尤吉欧已经摆好训练节奏。先完成三次出手，再决定怎么回应他。')
       return
     }
     const trainingIntent = nearbyNpcIntents.value.find((intent) => intent?.action?.event_id === 'ch1_d1_training_with_eugeo')
     if (trainingIntent?.action?.event_id) {
       selectedStoryEventId.value = trainingIntent.action.event_id
       trainingGameOpen.value = true
-      showToast('尤里向你示意：训练从现在开始。')
+      showToast('尤吉欧向你示意：训练从现在开始。')
       return
     }
-    showToast('先走到古誓树清场，靠近尤里后再开始训练。')
+    showToast('先走到巨神树伐木场，靠近尤吉欧后再开始训练。')
   } else if (actionId === 'rest') {
     await doWithBusy(async () => {
       const beforeDay = Number(props.simState?.day || 1)
@@ -1096,13 +1118,11 @@ async function onInteractAction(act) {
   if (act?.type === 'scene_activity' && shouldOpenActivityPanel(act)) {
     pendingActivityAction.value = act
     interactOpen.value = false
-    if (READING_ACTIVITY_IDS.has(activityIdForAction(act))) {
-      readingGameOpen.value = true
-      showToast('书页已经摊开，先拼出你要带走的线索。')
-    } else {
-      mealChoiceOpen.value = true
-      showToast('餐桌上的态度，会被关系和记忆记住。')
-    }
+    const panelKind = activityPanelKind(act)
+    if (panelKind === 'reading') readingGameOpen.value = true
+    else if (panelKind === 'patrol') boundaryPatrolOpen.value = true
+    else if (panelKind === 'meal') mealChoiceOpen.value = true
+    showToast(activityOpenMessage(act))
     return
   }
   await doWithBusy(async () => {
@@ -1122,21 +1142,6 @@ async function onInteractAction(act) {
   })
 }
 
-function activityIdForAction(act) {
-  return String(act?.activity_id || act?.id || act?.activity?.id || '')
-}
-
-function shouldOpenActivityPanel(act) {
-  const activityId = activityIdForAction(act)
-  const kind = act?.activity?.interaction_kind || ''
-  return (
-    kind === 'reading_keywords' ||
-    kind === 'meal_choice' ||
-    READING_ACTIVITY_IDS.has(activityId) ||
-    MEAL_ACTIVITY_IDS.has(activityId)
-  )
-}
-
 async function runSceneActivity(act, extra = {}) {
   const activityId = activityIdForAction(act)
   interactOpen.value = false
@@ -1150,6 +1155,7 @@ async function runSceneActivity(act, extra = {}) {
     ...(res.activity_result || {}),
     reading_result: extra.reading_result || null,
     meal_result: extra.meal_result || null,
+    patrol_result: extra.patrol_result || null,
     relationship_changes: res.relationship_changes || res.activity_result?.relationship_changes || [],
     memory_written: res.memory_written || res.activity_result?.memory_written || [],
     promises: res.activity_result?.promises || {},
@@ -1405,11 +1411,28 @@ async function onMealChoiceComplete(payload) {
   })
 }
 
+
+async function onBoundaryPatrolComplete(payload) {
+  const act = pendingActivityAction.value
+  if (!act || busy.value) return
+  await doWithBusy(async () => {
+    await runSceneActivity(act, {
+      activity_choice: payload?.choice_id,
+      patrol_result: payload?.result || null
+    })
+    boundaryPatrolOpen.value = false
+    pendingActivityAction.value = null
+    showToast('巡查结果已写入资源、关系和边境记录。', 'success')
+    await refreshStoryEvents()
+    sceneInstance?.syncPlayerFromState?.()
+  })
+}
+
 // --- Keyboard shortcuts ---
 function handleHotkey(e) {
   const tag = e.target?.tagName?.toLowerCase?.()
   if (tag === 'input' || tag === 'textarea' || tag === 'select') return
-  if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value || storyEventOpen.value || storyResultOpen.value || npcProfileOpen.value || journalOpen.value || trainingGameOpen.value || boundaryProbeOpen.value || boundaryVerdictOpen.value || readingGameOpen.value || mealChoiceOpen.value) return
+  if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value || storyEventOpen.value || storyResultOpen.value || npcProfileOpen.value || journalOpen.value || trainingGameOpen.value || boundaryProbeOpen.value || boundaryVerdictOpen.value || readingGameOpen.value || mealChoiceOpen.value || boundaryPatrolOpen.value) return
   const key = String(e.key || '').toLowerCase()
   if (props.devMode && key === 'v' && (e.ctrlKey || e.metaKey || e.shiftKey)) {
     e.preventDefault()

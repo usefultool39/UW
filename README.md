@@ -1,80 +1,51 @@
-# 边境回声
+# 边境回声 · Underworld 分支篇
 
-单人 AI RPG 纵切 Demo。当前目标不是 MMO，也不是完整开放世界，而是先把“露茵村第一章”做成稳定、可试玩、可扩展的 20-30 分钟体验。
+一款以 **NPC 记忆、关系后果与逐渐不安的乡村日常** 为核心的单人叙事 RPG 原型。项目参考《刀剑神域 Alicization》的 Underworld 氛围和公开设定，以原创“见习记录员”身份和分支时间线进行非商业二次创作。
 
-玩家以见习记录员身份在封闭村庄里行动、对话、训练、阅读、休息和做选择。世界事实由后端规则决定；AI 负责 NPC 的表达、情绪、记忆摘要和非关键反应；章节事件由配置和剧情导演控制。
+当前目标是打磨一段成熟、容易上手、可反复验证的 30–45 分钟卢利特村 Day 1–3 纵切片。默认 NPC 完全离线运行；未来准备好模型 API 后，可按角色切换 Hybrid / Agent，而不改写世界规则和存档核心。
 
-内部 id 仍保留 `alice/eugeo/kirito` 以兼容代码和存档；玩家可见文本已迁移到原创称呼：艾琳、尤里、凛斗、露茵村、古誓树、北境律令、静默线。
+## 项目导航
 
-## 当前版本
+| 你要知道 | 权威文档 |
+|---|---|
+| 已经做了什么、测试基线、已知风险 | [当前状态](docs/planning/CURRENT_STATUS.md) |
+| 最终要做成什么 | [产品简述](docs/product/PRODUCT_BRIEF.md) / [路线图](docs/product/ROADMAP.md) |
+| 下一阶段只做什么 | [下一阶段](docs/planning/NEXT_PHASE.md) |
+| 如何规范开发 | [开发流程](docs/delivery/DEVELOPMENT_PROCESS.md) / [贡献指南](CONTRIBUTING.md) |
+| 全部文档 | [文档中心](docs/README.md) |
 
-- **v1.0 纵切基础**：地图主界面、玩家移动、艾琳 / 尤里地图实体、章节事件、NPC 对话、关系档案、第一章三日流程和三个结局。
-- **v1.1 体验与存档**：章节选择结果面板、关系/记忆反馈、导出/导入存档、日结算和 Day 2 预告。
-- **v1.2 Day 1 自然玩法循环**：地点自然触发、线索日志、训练小游戏、读书关键词拼接、午餐/晚餐关系选择。
+## 当前能力
 
-## 必读文档
+- Vue 3 + Phaser 地图主客户端，FastAPI 权威世界状态。
+- 地图移动、地点调查、对话、故事事件、三日主线与后续月份骨架。
+- 阅读、训练、用餐、边境探查/巡查等短玩法。
+- 时间、HP、MP、体力、flag、关系、记忆、承诺和紧张关系后果。
+- `scripted` / `hybrid` / `agent` NPC 模式与失败回退。
+- 存档导入导出、内容校验、pytest、Playwright E2E。
+- macOS 一键启动；Windows 和手动启动入口保留。
 
-1. [docs/README.md](docs/README.md)：文档入口和阅读顺序。
-2. [docs/PROJECT.md](docs/PROJECT.md)：产品定位、原创化清单、架构、入口。
-3. [docs/FUTURE_DETAILED_PLAN.md](docs/FUTURE_DETAILED_PLAN.md)：未来详细计划。
-4. [docs/EXECUTION_BOARD.md](docs/EXECUTION_BOARD.md)：下一步执行看板。
-5. [docs/CLIENT_CONTRACT.md](docs/CLIENT_CONTRACT.md)：Vue/Phaser 与 Cocos Creator 共用客户端契约。
-6. [docs/DAY1_VERTICAL_SLICE.md](docs/DAY1_VERTICAL_SLICE.md)：Day 1 完整体验脚本。
-7. [docs/PLAYTEST.md](docs/PLAYTEST.md)：第一章三日 Demo 试玩和验收流程。
-8. [docs/GAME_QUALITY_ROADMAP.md](docs/GAME_QUALITY_ROADMAP.md)：长期任务板。
+## macOS 快速启动
 
-## 快速启动
+Finder 双击根目录 **`启动游戏.command`**，或：
 
-方式 A：Windows 一键启动：
-
-```bat
-启动全部项目.bat
+```bash
+./启动游戏.command
 ```
 
-方式 B：两个终端：
+首次运行会创建 `backend/.venv` 并安装依赖。游戏：http://127.0.0.1:3000；健康检查：http://127.0.0.1:8765/api/health。
 
-```bat
-:: 终端 1：后端
-cd /d <项目根目录>\backend
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8765
+完整运行说明见 [本地运行手册](docs/operations/RUNBOOK.md)。
 
-:: 终端 2：前端
-cd /d <项目根目录>\frontend
-npm install
-npm run dev
+## 验证
+
+```bash
+./scripts/quality.sh
+cd frontend && PYTHON_BIN=../backend/.venv/bin/python npm run test:e2e
 ```
 
-访问：
+## 重要边界
 
-- 前端：http://127.0.0.1:3000
-- 后端健康检查：http://127.0.0.1:8765/api/health
-
-## 常用验证
-
-```bat
-cd /d <项目根目录>\backend
-python -m pytest -q
-
-cd /d <项目根目录>\frontend
-npm.cmd run build
-npm.cmd run test:e2e
-```
-
-## 目录结构
-
-```text
-边境回声/
-  backend/              FastAPI 后端、世界规则、剧情导演、记忆、测试
-  frontend/             Vue 3 + Phaser 地图主界面
-  cocos-client/         Cocos Creator 并行客户端骨架，未来正式表现层
-  characters/           NPC persona、背景、阶段 overlay、角色元数据
-  data/
-    story/              第一章事件与主线节点
-    world/              地图、区域、NPC 日程、场景活动
-      maps/             未来多地图文件
-    memory/             本地运行记忆，不是剧情配置源
-  docs/                 当前权威文档
-  runs/                 本地 JSONL 运行日志和视觉截图，可清理
-```
-
-不要把 `runs/`、`data/memory/`、`frontend/dist/` 当成剧情配置源；它们是运行产物或本地状态。
+- 后端决定位置、时间、资源、剧情闸、关系和永久记忆。
+- 大模型只提供候选表达/意图，不能绕过规则。
+- `runs/`、`data/memory/`、`frontend/dist/` 是运行产物，不是内容源。
+- 公开发布前需要重新评估同人名称、素材和版权边界。

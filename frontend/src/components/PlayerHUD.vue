@@ -14,9 +14,9 @@
     </div>
     <div class="player-vitals">
       <div class="vital-name">{{ playerName }}</div>
-      <div class="bar hp"><span :style="{ width: hpPercent + '%' }"></span></div>
-      <div class="bar mp"><span :style="{ width: mpPercent + '%' }"></span></div>
-      <div class="bar stamina"><span :style="{ width: staminaPercent + '%' }"></span></div>
+      <div class="bar hp" :aria-label="`生命 ${hpValue}/${maxHpValue}`"><span :style="{ width: hpPercent + '%' }"></span><b>HP {{ hpValue }}</b></div>
+      <div class="bar mp" :aria-label="`神圣力 ${mpValue}/${maxMpValue}`"><span :style="{ width: mpPercent + '%' }"></span><b>MP {{ mpValue }}</b></div>
+      <div class="bar stamina" :aria-label="`体力 ${staminaValue}/${maxStaminaValue}`"><span :style="{ width: staminaPercent + '%' }"></span><b>ST {{ staminaValue }}</b></div>
     </div>
     <div class="player-meta">
       <span class="meta-tag day">Day {{ day }}</span>
@@ -57,6 +57,12 @@ const playerName = computed(() =>
 
 const day = computed(() => props.simState?.day ?? 1)
 const weatherLabel = computed(() => props.simState?.weather_label || '晴朗')
+const hpValue = computed(() => Number(props.simState?.player?.hp ?? 100))
+const maxHpValue = computed(() => Number(props.simState?.player?.max_hp ?? 100))
+const mpValue = computed(() => Number(props.simState?.player?.mp ?? 100))
+const maxMpValue = computed(() => Number(props.simState?.player?.max_mp ?? 100))
+const staminaValue = computed(() => Number(props.simState?.player?.stamina ?? 100))
+const maxStaminaValue = computed(() => Number(props.simState?.player?.max_stamina ?? 100))
 
 const hpPercent = computed(() => {
   const hp = props.simState?.player?.hp
@@ -282,4 +288,6 @@ const staminaPercent = computed(() => {
     width: min(260px, calc(100% - 1.1rem));
   }
 }
+.bar { position: relative; }
+.bar b { position: absolute; inset: 0 .24rem 0 auto; display: flex; align-items: center; color: rgba(255,255,255,.86); font-size: .5rem; line-height: 1; letter-spacing: .02em; text-shadow: 0 1px 2px rgba(0,0,0,.8); }
 </style>

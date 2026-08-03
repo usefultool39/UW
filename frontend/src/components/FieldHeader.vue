@@ -5,6 +5,9 @@
       <h2>{{ GAME_CHAPTER_INFO.title }}</h2>
     </div>
     <div class="header-actions">
+      <span class="runtime-badge" :class="`runtime-${npcRuntime}`" :title="runtimeTitle">
+        <i></i>{{ runtimeLabel }}
+      </span>
       <button type="button" class="tb tb-ghost save-action" :disabled="busy" @click="$emit('export-save')">
         <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 17h14v-2H3v2zm9-9L6 12h4v4h4v-4h4l-6-6z"/></svg>存档
       </button>
@@ -51,8 +54,9 @@ import { computed } from 'vue'
 import { GAME_CHAPTER_INFO } from '../field/gameContentConfig.js'
 import { useAudio } from '../composables/useAudio.js'
 
-defineProps({
-  busy: { type: Boolean, default: false }
+const props = defineProps({
+  busy: { type: Boolean, default: false },
+  npcRuntime: { type: String, default: 'scripted' }
 })
 
 defineEmits([
@@ -74,6 +78,14 @@ const audioTitle = computed(() => {
   if (isMuted.value) return '恢复音乐和环境声'
   return bgmPlaying.value ? '静音' : '开启清晨音乐和细雨环境声'
 })
+
+const npcRuntime = computed(() => ['scripted', 'hybrid', 'agent'].includes(props.npcRuntime) ? props.npcRuntime : 'scripted')
+const runtimeLabel = computed(() => ({ scripted: '固定 NPC', hybrid: '混合 NPC', agent: '智能体 NPC' })[npcRuntime.value])
+const runtimeTitle = computed(() => ({
+  scripted: '完全离线：规则、记忆和人工对话驱动',
+  hybrid: '关键剧情固定，普通表达可使用大模型',
+  agent: '大模型可提出意图，世界结果仍由规则校验'
+})[npcRuntime.value])
 
 async function onAudioClick() {
   if (isMuted.value) {
@@ -222,4 +234,22 @@ async function onAudioClick() {
     justify-content: center;
   }
 }
+.runtime-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+  padding: 0.3rem 0.52rem;
+  border-radius: 999px;
+  color: #dbeafe;
+  background: rgba(30, 64, 175, 0.16);
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+.runtime-badge i { width: 0.42rem; height: 0.42rem; border-radius: 50%; background: #7dd3fc; box-shadow: 0 0 8px rgba(125, 211, 252, 0.7); }
+.runtime-badge.runtime-hybrid { color: #fef3c7; border-color: rgba(253, 224, 71, 0.28); }
+.runtime-badge.runtime-hybrid i { background: #fde047; box-shadow: 0 0 8px rgba(253, 224, 71, 0.7); }
+.runtime-badge.runtime-agent { color: #dcfce7; border-color: rgba(74, 222, 128, 0.3); }
+.runtime-badge.runtime-agent i { background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, 0.7); }
+
 </style>

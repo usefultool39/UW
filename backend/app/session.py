@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
+from .activity_engine import ActivityValidationError, plan_scene_activity
 from .agent_registry import get_agent_profile
 from .dialogue_agent import dialogue_reply
 from .heuristic import choose_action
@@ -16,7 +17,6 @@ from .npc_intents import attach_npc_intents
 from .player_actions import (
     PLAYER_ACTIONS,
     camera_for_player as _camera_for_player,
-    merge_activity_effects as _merge_activity_effects,
     normalize_player_action_kind,
     player_at_location as _player_at_location,
     poi_by_id as _poi_by_id,
@@ -44,7 +44,13 @@ class Session:
         self.events: list[dict] = []
         self.seed = seed
         self.run_id = run_id
-        self.memory_store = MemoryStore(self.root / "data" / "memory")
+        safe_run_id = "".join(
+            ch if ch.isalnum() or ch in {"-", "_"} else "_"
+            for ch in str(run_id or "default")
+        )[:80] or "default"
+        # Memories belong to a playthrough. A new game must never inherit a
+        # previous run's Day 3 secrets; imported saves restore their own summary.
+        self.memory_store = MemoryStore(self.root / "data" / "memory" / safe_run_id)
         self._pending_jsonl: list[dict] = []
         self._pending_memory: list[tuple[str, dict, str]] = []
         self._runs_dir = self.root / "runs"
@@ -476,7 +482,9 @@ class Session:
                 action_events.append({"type": "time_advanced", "ticks": steps})
             elif kind == "compound_sleep":
                 pl = _player_at_location(self.state.player, Location.home)
-                player = pl.model_copy(update={"stamina": pl.max_stamina})
+                player = pl.model_copy(
+                    update={"stamina": pl.max_stamina, "hp": pl.max_hp, "mp": pl.max_mp}
+                )
                 self.state = self.state.model_copy(update={"player": player, "scene_id": pl.scene_id})
                 steps = max(1, min(24, int(daily_n or n or 1)))
                 for _ in range(steps):
@@ -489,87 +497,34 @@ class Session:
                 if not activity:
                     return fail("unknown_activity")
 
-                scene_ids = activity.get("scene_ids")
-                if isinstance(scene_ids, list) and scene_ids:
-                    allowed_scenes = {str(s) for s in scene_ids}
-                else:
-                    scene_req = str(activity.get("scene_id") or "")
-                    allowed_scenes = {scene_req} if scene_req else set()
-                if allowed_scenes and self.state.player.scene_id not in allowed_scenes:
-                    return fail("wrong_scene", allowed_scenes=sorted(allowed_scenes))
-                time_bands = activity.get("time_bands") or []
-                if isinstance(time_bands, list) and time_bands and self.state.time_band not in time_bands:
-                    return fail("wrong_time_band", allowed_time_bands=time_bands)
-
-                requirements = activity.get("requirements") or {}
-                required_flags = requirements.get("required_flags") or {}
-                if isinstance(required_flags, dict):
-                    for key, val in required_flags.items():
-                        if int(self.state.flags.get(str(key), 0)) < int(val):
-                            return fail("requirements_not_met", required_flags=required_flags)
-                required_any_flags = requirements.get("required_any_flags") or {}
-                if isinstance(required_any_flags, dict) and required_any_flags:
-                    if not any(
-                        int(self.state.flags.get(str(key), 0)) >= int(val)
-                        for key, val in required_any_flags.items()
-                    ):
-                        return fail("requirements_not_met", required_any_flags=required_any_flags)
-
-                effects = activity.get("effects") or {}
-                if not isinstance(effects, dict):
-                    effects = {}
-                selected_choice: dict[str, Any] | None = None
-                choice_id = str(activity_choice or "").strip()
-                choices = activity.get("choices") if isinstance(activity.get("choices"), list) else []
-                if choice_id:
-                    selected_choice = next(
-                        (
-                            c
-                            for c in choices
-                            if isinstance(c, dict) and str(c.get("id") or "") == choice_id
-                        ),
-                        None,
+                try:
+                    plan = plan_scene_activity(
+                        activity,
+                        activity_id=activity_id,
+                        activity_choice=activity_choice,
+                        scene_id=self.state.player.scene_id,
+                        time_band=self.state.time_band,
+                        day=self.state.day,
+                        flags=self.state.flags,
+                        player=self.state.player,
                     )
-                    if selected_choice is None:
-                        return fail("unknown_activity_choice", activity_id=activity_id, activity_choice=choice_id)
-                    choice_effects = selected_choice.get("effects")
-                    if isinstance(choice_effects, dict):
-                        effects = _merge_activity_effects(effects, choice_effects)
+                except ActivityValidationError as exc:
+                    return fail(exc.code, **exc.details)
 
-                flags = dict(self.state.flags)
-                repeat = str(activity.get("repeat") or "free")
-                activity_day = int(self.state.day)
-                done_key = f"activity_done.{activity_id}"
-                day_key = f"activity_day.{activity_id}"
-                if repeat == "once" and int(flags.get(done_key, 0)) >= 1:
-                    return fail("already_done")
-                if repeat == "daily" and int(flags.get(day_key, -1)) == activity_day:
-                    return fail("already_done_today")
-
-                for key, val in (effects.get("flags") or {}).items():
-                    flags[str(key)] = int(val)
-                if repeat == "once":
-                    flags[done_key] = 1
-                elif repeat == "daily":
-                    flags[day_key] = activity_day
-                if flags != self.state.flags:
-                    self.state = self.state.model_copy(update={"flags": flags})
+                effects = plan.effects
+                selected_choice = plan.selected_choice
+                choice_id = str(activity_choice or "").strip()
+                if plan.next_flags != self.state.flags:
+                    self.state = self.state.model_copy(update={"flags": plan.next_flags})
 
                 self.state, relationship_changes = apply_relationship_effects(
                     self.state,
                     effects.get("relationship") if isinstance(effects.get("relationship"), dict) else {},
                 )
-
-                tree_damage = max(0, int(effects.get("tree_damage") or 0))
-                stamina_cost = max(0, int(effects.get("stamina_cost") or 8))
-                if self.state.player.stamina < stamina_cost:
-                    return fail("insufficient_stamina", required=stamina_cost, current=self.state.player.stamina)
-
-                # Consume player stamina
-                new_stamina = max(0, self.state.player.stamina - stamina_cost)
-                player = self.state.player.model_copy(update={"stamina": new_stamina})
-                self.state = self.state.model_copy(update={"player": player})
-
+                self.state = self.state.model_copy(update={"player": plan.next_player})
+                resource_changes = plan.resource_changes
+                tree_damage = plan.tree_damage
+                time_cost = plan.time_cost
                 if tree_damage:
                     next_hp = max(0, self.state.tree.hp - tree_damage)
                     tree = self.state.tree.model_copy(
@@ -605,7 +560,9 @@ class Session:
 
                 if effects.get("sleep_until_morning") is True:
                     pl = _player_at_location(self.state.player, Location.home)
-                    player = pl.model_copy(update={"stamina": pl.max_stamina})
+                    player = pl.model_copy(
+                        update={"stamina": pl.max_stamina, "hp": pl.max_hp, "mp": pl.max_mp}
+                    )
                     self.state = self.state.model_copy(
                         update={
                             "day": self.state.day + 1,
@@ -617,7 +574,6 @@ class Session:
                     )
                     self.state = apply_npc_schedules(apply_environment(self.state), self.root)
 
-                time_cost = max(0, min(12, int(activity.get("time_cost") or 0)))
                 for _ in range(time_cost):
                     self.state = advance_tick(self.state)
 
@@ -640,8 +596,12 @@ class Session:
                     ),
                     "time_cost": time_cost,
                     "tree_damage": tree_damage,
-                    "stamina_cost": stamina_cost,
-                    "repeat": repeat,
+                    "stamina_cost": plan.stamina_cost,
+                    "hp_cost": plan.hp_cost,
+                    "mp_cost": plan.mp_cost,
+                    "resource_changes": resource_changes,
+                    "flag_deltas": effects.get("flag_deltas") if isinstance(effects.get("flag_deltas"), dict) else {},
+                    "repeat": plan.repeat,
                     "relationship_changes": relationship_changes,
                     "memory_written": memory_written,
                     "promises": promises,
@@ -658,7 +618,9 @@ class Session:
             elif kind == "rest_until_next_day":
                 pl = _player_at_location(self.state.player, Location.home)
                 # Restore player stamina when resting
-                player = pl.model_copy(update={"stamina": pl.max_stamina})
+                player = pl.model_copy(
+                    update={"stamina": pl.max_stamina, "hp": pl.max_hp, "mp": pl.max_mp}
+                )
                 self.state = self.state.model_copy(
                     update={
                         "day": self.state.day + 1,

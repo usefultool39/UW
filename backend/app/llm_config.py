@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import os
 
+from .npc_runtime import npc_runtime_meta
+
 DEFAULT_ACTION_MODEL = "M2-H"
 DEFAULT_DIALOGUE_MODEL = "M2-H"
 DEFAULT_PROVIDER_HINT = "MiniMax"
@@ -75,6 +77,7 @@ def llm_is_configured() -> bool:
 
 def model_meta() -> dict[str, str | bool]:
     return {
+        **npc_runtime_meta(),
         "action_model": action_model(),
         "dialogue_model": dialogue_model(),
         "provider_hint": model_provider_hint(),

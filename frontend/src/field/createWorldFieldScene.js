@@ -1222,7 +1222,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
         .setScrollFactor(0)
         .setDepth(50)
       this.add
-        .text(ox + 4, oy - 11, '露茵村地图', {
+        .text(ox + 4, oy - 11, '卢利特村地图', {
           fontSize: '10px',
           color: '#fde68a',
           fontFamily: 'system-ui, "Microsoft YaHei", sans-serif',

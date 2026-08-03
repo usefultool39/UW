@@ -615,7 +615,7 @@ function addGigasTree(scene, layer, ts, tx, ty) {
   g.lineStyle(3 * s, 0xd8b567, 0.78)
   g.strokeCircle(0, -40 * s, 54 * s)
   c.add(g)
-  addSmallLabel(scene, c, 0, -97 * s, '古誓树', '#fef08a')
+  addSmallLabel(scene, c, 0, -97 * s, '巨神树', '#fef08a')
   layer.add(c)
 }
 

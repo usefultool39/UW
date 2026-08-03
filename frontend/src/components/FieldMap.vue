@@ -14,7 +14,7 @@
       @click.stop.prevent="handleMiniMapClick"
     >
       <div class="dom-minimap-head">
-        <span>露茵村地图</span>
+        <span>卢利特村地图</span>
         <span>N</span>
       </div>
       <svg

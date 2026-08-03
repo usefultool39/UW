@@ -23,6 +23,7 @@
       v-if="appTab === 'field'"
       :sim-state="state"
       :dev-mode="showDevTabs"
+      :npc-runtime="npcRuntime"
       :daily-tick="dailyTick"
       :player-action="playerAction"
       :story-advance="storyAdvance"
@@ -134,6 +135,7 @@ const {
   running,
   llmConfigured,
   llmProvider,
+  npcRuntime,
   lastError,
   refresh,
   step,

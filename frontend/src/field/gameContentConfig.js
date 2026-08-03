@@ -1,7 +1,7 @@
-﻿import { DEFAULT_MAP_ID, getSceneLabel as getRegisteredSceneLabel, getWorldBackgroundAsset } from './sceneRegistry.js'
+import { DEFAULT_MAP_ID, getSceneLabel as getRegisteredSceneLabel, getWorldBackgroundAsset } from './sceneRegistry.js'
 export { MAP_DEFINITIONS, SCENE_DEFINITIONS, SCENE_TRANSITION_BLUEPRINTS } from './sceneRegistry.js'
 
-export const GAME_CHAPTER_INFO = { kicker: '第一章 · 清晨的边境', title: '露茵村' }
+export const GAME_CHAPTER_INFO = { kicker: 'UNDERWORLD 分支篇 · 第一章', title: '卢利特村' }
 export const WORLD_ASSETS = { background: getWorldBackgroundAsset(DEFAULT_MAP_ID) }
 
 export const AGENT_ART_MODES = {
@@ -11,7 +11,7 @@ export const AGENT_ART_MODES = {
 
 export const AGENTS = {
   player: {
-    label: '凛斗',
+    label: '见习记录员',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_player_pixel',
     asset: '/assets/game/player-token-tv.png',
@@ -21,7 +21,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   alice: {
-    label: '艾琳',
+    label: '爱丽丝',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_alice_pixel',
     asset: '/assets/game/alice-token-tv.png',
@@ -31,7 +31,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   eugeo: {
-    label: '尤里',
+    label: '尤吉欧',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_eugeo_pixel',
     asset: '/assets/game/eugeo-token-tv.png',
@@ -50,7 +50,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   garret: {
-    label: '加雷特',
+    label: '加利塔',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_garret_pixel',
     haloColor: 0xb9d57a,
@@ -59,7 +59,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   rulid_elder: {
-    label: '罗温',
+    label: '加斯夫特',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_rulid_elder_pixel',
     haloColor: 0xd8b889,
@@ -68,7 +68,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   kirito: {
-    label: '凛斗',
+    label: '见习记录员',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_kirito_pixel',
     haloColor: 0x5ecfff,
@@ -103,8 +103,8 @@ export const TIME_BAND_LABELS = { morning: '清晨', afternoon: '白昼', evenin
 
 export const STORY_EVENT_HINTS = {
   ch1_d1_reading_clue: { title: '书库里的边界记录', clue: '旧记录写到北方边界会突然失去鸟声，像规则被按住。', scene_id: 'church_library', day: 1 },
-  ch1_d1_training_with_eugeo: { title: '古誓树旁的训练', clue: '尤里把训练看成确认世界仍按规则运转的方式。', scene_id: 'gigas_clearing', day: 1 },
-  ch1_d2_forest_anomaly: { title: '森林忽然安静', clue: '古誓树清场附近的风声断了一瞬。', scene_id: 'gigas_clearing', day: 2 },
+  ch1_d1_training_with_eugeo: { title: '巨神树旁的训练', clue: '尤吉欧把训练看成确认世界仍按规则运转的方式。', scene_id: 'gigas_clearing', day: 1 },
+  ch1_d2_forest_anomaly: { title: '森林忽然安静', clue: '巨神树伐木场附近的风声断了一瞬。', scene_id: 'gigas_clearing', day: 2 },
   ch1_d2_npc_disagreement: { title: '晚餐桌边的分歧', clue: '异常变成了餐桌边没说出口的话。', scene_id: 'home_hearth', day: 2 },
   ch1_d3_boundary_choice: { title: '第三天：边界线前', clue: '你们终于站到那条看不见的边界前。', scene_id: 'north_gate', day: 3 },
   ch1_d4_after_boundary_debrief: { title: '第四天：书库复盘', clue: '边界事件被写成会影响后续一个月的记录。', scene_id: 'church_library', day: 4 },
@@ -117,12 +117,12 @@ export const STORY_EVENT_HINTS = {
 
 export const FLAG_CLUE_HINTS = {
   clue_boundary_record: { title: '北境异常记录', body: '你读到了北方边界的异常记录：鸟声会突然消失，安静得不自然。', meta: '来自书库调查' },
-  alice_warned_boundary: { title: '艾琳知道了边界记录', body: '你把书页内容告诉了艾琳，她开始担心北边今天太安静。', meta: '艾琳会记住' },
+  alice_warned_boundary: { title: '爱丽丝知道了边界记录', body: '你把书页内容告诉了爱丽丝，她开始担心北边今天太安静。', meta: '爱丽丝会记住' },
   kept_boundary_note: { title: '暂时隐瞒的书页线索', body: '你把边界记录先记在心里，决定观察村子和森林的变化。', meta: '关系里可能留下暗线' },
-  trained_with_eugeo: { title: '古誓树训练完成', body: '你在古誓树旁完成了第一天训练，尤里会根据你的做法重新看你。', meta: '来自古誓树清场' },
-  eugeo_heard_boundary_question: { title: '训练时追问边界', body: '你把古誓树训练和北方异常连了起来，尤里开始认真看待这件事。', meta: '尤里会记住' },
-  forest_anomaly_seen: { title: '森林异常被确认', body: '你们看见古誓树清场附近的风声突然断掉，异常不再只是书页传闻。', meta: 'Day 2 线索' },
-  promise_investigate_with_eugeo: { title: '继续调查的约定', body: '你答应和尤里继续确认北方边界的异常。', meta: '承诺' },
+  trained_with_eugeo: { title: '巨神树训练完成', body: '你在巨神树旁完成了第一天训练，尤吉欧会根据你的做法重新看你。', meta: '来自巨神树伐木场' },
+  eugeo_heard_boundary_question: { title: '训练时追问边界', body: '你把巨神树训练和北方异常连了起来，尤吉欧开始认真看待这件事。', meta: '尤吉欧会记住' },
+  forest_anomaly_seen: { title: '森林异常被确认', body: '你们看见巨神树伐木场附近的风声突然断掉，异常不再只是书页传闻。', meta: 'Day 2 线索' },
+  promise_investigate_with_eugeo: { title: '继续调查的约定', body: '你答应和尤吉欧继续确认北方边界的异常。', meta: '承诺' },
   boundary_risk_taken: { title: '独自靠近异常', body: '你曾独自往异常方向多走了几步，这会让同伴担心。', meta: '紧张点' },
   month01_debrief_done: { title: '第一月复盘完成', body: '你们把边界事件整理成后续一个月可以执行的路线。', meta: 'Day 4-6' },
   month01_drill_done: { title: '北门巡查流程', body: '北门安全距离、信号和撤退路线已经被三人演练过。', meta: 'Day 7-10' },
@@ -186,9 +186,9 @@ export function getQuestGuide(simState) {
   }
   const node = simState.story_node_id || ''
   const doneRead = flags.prologue_reading_done === 1
-  if (node === 'mq00_tutorial' && !doneRead) return '细雨刚停。先去村西书库看看旧记录，或沿主路去古誓树清场找尤里。'
+  if (node === 'mq00_tutorial' && !doneRead) return '细雨刚停。先去村西书库看看旧记录，或沿主路去巨神树伐木场找尤吉欧。'
   if (node === 'mq00_tutorial' && doneRead) return '书页里的边界记录让人不安。把这件事告诉谁，会改变今天的气氛。'
-  if (node === 'mq01_tree_arc' || String(node).startsWith('mq01')) return '到古誓树旁找尤里。训练只是表面，真正的问题是北边为什么突然安静下来。'
-  if (day <= 3) return `${sceneHint}沿主路在书库、古誓树和家中之间走一圈；若没有新线索，就休息推进到下一个时段。`.trim()
+  if (node === 'mq01_tree_arc' || String(node).startsWith('mq01')) return '到巨神树旁找尤吉欧。训练只是表面，真正的问题是北边为什么突然安静下来。'
+  if (day <= 3) return `${sceneHint}沿主路在书库、巨神树和家中之间走一圈；若没有新线索，就休息推进到下一个时段。`.trim()
   return `${sceneHint}查看日志里的第一月路线，去北门、村广场或小屋寻找下一处金色标记；没有新事时先休息推进时间。`.trim()
 }

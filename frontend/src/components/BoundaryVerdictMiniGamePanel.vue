@@ -16,7 +16,7 @@
       </header>
 
       <p class="verdict-desc">
-        北境律令、静默线和同伴的视线同时压过来。先确认你愿意承认的事实，再给出最终行动。
+        禁忌目录、静默线和同伴的视线同时压过来。先确认你愿意承认的事实，再给出最终行动。
       </p>
 
       <div class="verdict-layout">
@@ -96,10 +96,10 @@ const selectedIds = ref([])
 const selectedEnding = ref('obey_order')
 
 const evidence = [
-  { id: 'law_pressure', label: '北境律令仍在', note: '规则没有声音，但每个人都知道它在', order: 34, truth: 4, secrecy: 6 },
+  { id: 'law_pressure', label: '禁忌目录仍在', note: '规则没有声音，但每个人都知道它在', order: 34, truth: 4, secrecy: 6 },
   { id: 'silent_line', label: '静默线真实存在', note: '鸟声和风声都在同一处断开', order: 4, truth: 34, secrecy: 8 },
-  { id: 'alice_hand', label: '艾琳按住记录本', note: '她担心的不是答案，而是你会不会回来', order: 24, truth: 8, secrecy: 18 },
-  { id: 'eugeo_step', label: '尤里往前半步', note: '他已经把这当成共同冒险的入口', order: 4, truth: 28, secrecy: 4 },
+  { id: 'alice_hand', label: '爱丽丝按住记录本', note: '她担心的不是答案，而是你会不会回来', order: 24, truth: 8, secrecy: 18 },
+  { id: 'eugeo_step', label: '尤吉欧往前半步', note: '他已经把这当成共同冒险的入口', order: 4, truth: 28, secrecy: 4 },
   { id: 'village_smoke', label: '村里的炊烟还在', note: '回去报告也能保护今天以前的日常', order: 26, truth: 2, secrecy: 18 },
   { id: 'wind_returns', label: '风声在边界后回流', note: '源头似乎只差一步就会承认你', order: 0, truth: 32, secrecy: 0 }
 ]

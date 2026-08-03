@@ -19,6 +19,8 @@ from .llm_agent import (
 )
 from .llm_config import dialogue_model
 from .models import AgentState, WorldState
+from .npc_runtime import npc_runtime_for
+from .scripted_dialogue import choose_scripted_line
 
 
 def _agent_by_id(state: WorldState, npc_id: str) -> AgentState:
@@ -247,8 +249,18 @@ def fallback_dialogue_reply(
     rel_affinity = _relationship_number(relationship, "affinity")
     rel_trust = _relationship_number(relationship, "trust")
     rel_tension = _relationship_number(relationship, "tension")
+    scripted_line = choose_scripted_line(
+        project_root=project_root,
+        npc_id=npc_id,
+        message=msg,
+        relationship=relationship,
+        day=state.day,
+        time_band=state.time_band,
+    )
 
-    if any(key in msg for key in ("北", "边界", "禁忌", "异常")):
+    if scripted_line:
+        reply = scripted_line["reply"]
+    elif any(key in msg for key in ("北", "边界", "禁忌", "异常")):
         if npc_id == "alice":
             reply = "别急着靠近边界。那里太安静了，安静到不像是自然的沉默。"
         elif npc_id == "eugeo":
@@ -297,7 +309,9 @@ def fallback_dialogue_reply(
         "ok": True,
         "npc_id": npc_id,
         "reply": reply,
-        "emotion": _mood_emotion(agent),
+        "emotion": scripted_line.get("emotion", _mood_emotion(agent)) if scripted_line else _mood_emotion(agent),
+        "intent": scripted_line.get("topic", "daily") if scripted_line else "daily",
+        "scripted_variant": scripted_line.get("variant") if scripted_line else None,
         "memory_candidate": {
             "type": "dialogue",
             "summary": f"玩家对{name}说：{msg[:60] or '（沉默）'}",
@@ -317,8 +331,9 @@ def dialogue_reply(
     memory_context: dict[str, Any] | None = None,
     relationship: Any | None = None,
 ) -> dict[str, Any]:
-    try:
-        return llm_dialogue_reply(
+    runtime = npc_runtime_for(npc_id)
+    if runtime == "scripted":
+        scripted = fallback_dialogue_reply(
             state=state,
             npc_id=npc_id,
             message=message,
@@ -327,6 +342,22 @@ def dialogue_reply(
             memory_context=memory_context,
             relationship=relationship,
         )
+        scripted["source"] = "fallback"
+        scripted["npc_runtime"] = runtime
+        return scripted
+
+    try:
+        result = llm_dialogue_reply(
+            state=state,
+            npc_id=npc_id,
+            message=message,
+            project_root=project_root,
+            recent_memories=recent_memories,
+            memory_context=memory_context,
+            relationship=relationship,
+        )
+        result["npc_runtime"] = runtime
+        return result
     except Exception as exc:
         fallback = fallback_dialogue_reply(
             state=state,
@@ -340,4 +371,5 @@ def dialogue_reply(
         fallback["llm_error"] = str(exc)
         fallback["llm_attempted"] = str(exc) != "llm_key_missing"
         fallback["source"] = "fallback"
+        fallback["npc_runtime"] = runtime
         return fallback

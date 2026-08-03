@@ -31,7 +31,7 @@ defineEmits(['action'])
 const actions = [
   { id: 'talk', key: '1', icon: '话', label: '对话', desc: '与附近的 NPC 对话' },
   { id: 'read', key: '2', icon: '查', label: '调查', desc: '阅读书页，了解规则与边界' },
-  { id: 'train', key: '3', icon: '剑', label: '训练', desc: '进行古誓树训练' },
+  { id: 'train', key: '3', icon: '剑', label: '训练', desc: '进行巨神树剑术与伐木训练' },
   { id: 'rest', key: '4', icon: '眠', label: '休息', desc: '回小屋休息，推进到第二天' },
   { id: 'journal', key: '5', icon: '志', label: '日志', desc: '查看线索手册、NPC 记忆和关系暗线' }
 ]

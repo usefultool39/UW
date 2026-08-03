@@ -1,11 +1,23 @@
 import { ref } from 'vue'
 import { API_ROUTES, DEFAULT_WORLD_MAP_ID } from '../contracts/clientContract.js'
+import { uwCanonText } from '../utils/uwCanonText.js'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 /** 普通接口（状态、配置、启发式 step） */
 const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS) || 15000
 /** 超过该阈值的超时文案走「AI 慢」提示 */
 const LONG_REQUEST_THRESHOLD_MS = 20000
+
+function normalizePlayerFacingPayload(value) {
+  if (typeof value === 'string') return uwCanonText(value)
+  if (Array.isArray(value)) return value.map(normalizePlayerFacingPayload)
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, normalizePlayerFacingPayload(item)])
+    )
+  }
+  return value
+}
 
 /**
  * AI 模式：一步内会为多名角色各调一次模型，后端单次 HTTP 可达 45s+；
@@ -27,6 +39,7 @@ export function useGameApi() {
   const runInterval = ref(null)
   const llmConfigured = ref(false)
   const llmProvider = ref('')
+  const npcRuntime = ref('scripted')
   const lastError = ref('')
   const runId = ref(null)
   const checkpoint = ref(null)
@@ -101,7 +114,7 @@ export function useGameApi() {
       const message = payload?.error || payload?.detail || `请求失败（状态码 ${r.status}）`
       throw new Error(message)
     }
-    return payload
+    return normalizePlayerFacingPayload(payload)
   }
 
   async function fetchState() {
@@ -272,6 +285,7 @@ export function useGameApi() {
     const c = await requestJson(API_ROUTES.config)
     llmConfigured.value = c.llm_configured
     llmProvider.value = c.provider_hint
+    npcRuntime.value = c.npc_runtime || 'scripted'
   }
 
   function startRun(n, mode) {
@@ -332,6 +346,7 @@ export function useGameApi() {
     running,
     llmConfigured,
     llmProvider,
+    npcRuntime,
     lastError,
     runId,
     checkpoint,

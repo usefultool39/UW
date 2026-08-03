@@ -4,18 +4,18 @@
       <div class="opening-bg" aria-hidden="true" />
       <div class="opening-rain" aria-hidden="true" />
       <div class="opening-copy">
-        <p class="opening-kicker">第一章 · 清晨的边境</p>
-        <h1>露茵村</h1>
+        <p class="opening-kicker">UNDERWORLD · 分支记录 07</p>
+        <h1>卢利特村</h1>
         <p class="opening-lead">
-          你是见习记录员凛斗。细雨刚停，村西书库留下了一页旧记录，古誓树旁也有人等你过去。
+          你是卢利特村的见习记录员。今天原本只有天命登记与剑术练习，教会书库里却出现了一页不该存在的北境记录。
         </p>
         <div class="opening-objective">
           <span>当前目标</span>
-          <strong>先去村西书库，确认北境旧记录。</strong>
+          <strong>先去教会书库，确认被修改的北境记录。</strong>
         </div>
         <div class="opening-actions">
           <button type="button" class="opening-primary" @click="$emit('focus-first-event')">
-            跟随线索
+            开始记录
           </button>
           <button type="button" class="opening-secondary" @click="$emit('skip')">
             开始行动
@@ -25,7 +25,7 @@
       <div class="opening-status" aria-hidden="true">
         <span>Day 1</span>
         <span>细雨</span>
-        <span>村道广场</span>
+        <span>卢利特村广场</span>
       </div>
     </section>
   </Transition>

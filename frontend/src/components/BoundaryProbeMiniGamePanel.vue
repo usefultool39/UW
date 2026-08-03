@@ -16,13 +16,13 @@
       </header>
 
       <p class="probe-desc">
-        风声被规则压住的一瞬间，先用刻印术短句锁定异常，再决定按谁的方式靠近静默线。
+        风声被规则压住的一瞬间，先用神圣术短句锁定异常，再决定按谁的方式靠近静默线。
       </p>
 
       <div class="probe-body">
         <section class="command-board">
           <div class="board-head">
-            <strong>刻印术短句</strong>
+            <strong>神圣术短句</strong>
             <span>{{ selectedIds.length }}/{{ maxPicked }}</span>
           </div>
           <button
@@ -101,7 +101,7 @@ const fragments = [
   { id: 'bind_distance', label: '束定距离', note: '给同伴留下安全界线', value: 28 },
   { id: 'open_boundary', label: '开启边门', note: '更接近源头，但风险升高', value: 20 },
   { id: 'record_vector', label: '记录向量', note: '把异常写成可复查的线索', value: 24 },
-  { id: 'listen_roots', label: '听取根音', note: '让古誓树回声参与判断', value: 22 }
+  { id: 'listen_roots', label: '听取根音', note: '让巨神树回声参与判断', value: 22 }
 ]
 
 const stances = [
@@ -109,7 +109,7 @@ const stances = [
     id: 'caution',
     choiceIds: ['honor_alice_caution', 'investigate_together'],
     label: '先守住安全距离',
-    hint: '更接近艾琳的做法，降低鲁莽越线的风险。'
+    hint: '更接近爱丽丝的做法，降低鲁莽越线的风险。'
   },
   {
     id: 'together',
@@ -121,8 +121,8 @@ const stances = [
     id: 'promise',
     requiresChoice: 'follow_eugeo_promise',
     choiceIds: ['follow_eugeo_promise', 'investigate_together'],
-    label: '兑现和尤里的约定',
-    hint: '更主动推进调查，但艾琳会更紧张。'
+    label: '兑现和尤吉欧的约定',
+    hint: '更主动推进调查，但爱丽丝会更紧张。'
   },
   {
     id: 'risk',
@@ -167,7 +167,7 @@ const signalTier = computed(() => {
 })
 
 const signalText = computed(() => {
-  if (!selectedIds.value.length) return '先选出三段刻印术短句。顺序会决定你们怎么解释这条静默线。'
+  if (!selectedIds.value.length) return '先选出三段神圣术短句。顺序会决定你们怎么解释这条静默线。'
   if (signalTier.value.id === 'clear') return '光素、风声和距离被压到同一条线上，异常源头的方向变得明确。'
   if (signalTier.value.id === 'steady') return '读数能用，但仍有噪声。继续靠近前最好让同伴知道你的判断。'
   return '短句还没有稳定成术式。硬靠近也能推进，但会让关系承受更多风险。'

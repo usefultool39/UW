@@ -37,8 +37,8 @@ const keys = computed(() =>
 
 const labels = computed(() =>
   props.type === 'c2'
-    ? ['采纳艾琳的安排', '自行安排餐桌']
-    : ['加快削木（更信凛斗）', '稳扎稳打（更信尤里）']
+    ? ['采纳爱丽丝的安排', '自行安排餐桌']
+    : ['加快削木（更信凛斗）', '稳扎稳打（更信尤吉欧）']
 )
 
 function emitPick(key) {

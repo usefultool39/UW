@@ -1,20 +1,42 @@
 <template>
   <aside class="quest-tracker" :class="{ guided: highlightPrimary }" role="status">
     <section class="quest-focus">
-      <div class="quest-rail-title">当前目标</div>
+      <div class="quest-heading-row">
+        <div>
+          <div class="quest-rail-title">主线目标</div>
+          <div class="quest-day">Day {{ simState?.day || 1 }} · {{ primaryKindLabel }}</div>
+        </div>
+        <span class="quest-state">进行中</span>
+      </div>
       <p class="quest-rail-body">{{ safeQuestGuide }}</p>
       <div v-if="routeHint" class="route-hint" aria-hidden="true">
         <span class="route-pulse"></span>
-        <span>{{ routeHint }}</span>
+        <span>{{ uwCanonText(routeHint) }}</span>
+      </div>
+      <div class="reward-preview" aria-label="完成奖励预览">
+        <span>完成后</span>
+        <strong>{{ rewardPreview }}</strong>
+      </div>
+      <div class="daily-loop" aria-label="今日进度">
+        <div class="daily-loop-head">
+          <span>今日节奏</span>
+          <strong>{{ dayPlanDone }}/{{ dayPlan.length }}</strong>
+        </div>
+        <div class="daily-loop-bar"><span :style="{ width: `${dayPlanPercent}%` }"></span></div>
+        <div class="daily-loop-items">
+          <span v-for="item in dayPlan" :key="item.id" :class="{ done: item.done }">
+            <b>{{ item.done ? '✓' : '·' }}</b>{{ item.label }}
+          </span>
+        </div>
       </div>
       <button
-        v-if="safeStoryEvents.length"
+        v-if="primaryEvent"
         type="button"
         class="quest-primary-btn"
         :disabled="busy"
-        @click="$emit('open-event', safeStoryEvents[0].id)"
+        @click="$emit('open-event', primaryEvent.id)"
       >
-        查看推荐线索
+        追踪：{{ uwCanonText(primaryEvent.title || '当前线索') }}
       </button>
       <button
         v-else-if="actionPreview.length"
@@ -27,22 +49,17 @@
       </button>
     </section>
 
-    <div class="guide-steps" aria-label="新手行动步骤">
-      <span>1 跟随光标</span>
-      <span>2 靠近地点</span>
-      <span>3 做出选择</span>
+    <div v-if="highlightPrimary" class="guide-steps" aria-label="新手行动步骤">
+      <span>1 看金色指引</span>
+      <span>2 走近目标</span>
+      <span>3 选择行动</span>
     </div>
 
     <div v-if="actionPreview.length" class="nearby-actions">
       <div class="nearby-actions-head">
-        <div class="nearby-actions-label">可执行</div>
-        <button
-          type="button"
-          class="nearby-enter-btn"
-          :disabled="busy"
-          @click="$emit('open-interact')"
-        >
-          进入
+        <div class="nearby-actions-label">就在这里</div>
+        <button type="button" class="nearby-enter-btn" :disabled="busy" @click="$emit('open-interact')">
+          互动
         </button>
       </div>
       <button
@@ -60,12 +77,12 @@
     </div>
 
     <div v-if="hasNearbyNpc" class="npc-prompt">
-      <span>NPC 在附近</span>
-      <strong>可以交谈</strong>
+      <span>附近同伴</span>
+      <strong>{{ safeNearbyNpcLabel }}</strong>
     </div>
 
     <div v-if="activeNpcIntents.length" class="npc-attention">
-      <div class="npc-attention-label">NPC 关注</div>
+      <div class="npc-attention-label">同伴主动事件</div>
       <button
         v-for="intent in activeNpcIntents"
         :key="intent.id"
@@ -80,10 +97,10 @@
     </div>
 
     <Transition name="event-fade">
-      <div v-if="safeStoryEvents.length" class="event-strip">
-        <div class="event-label">当前线索</div>
+      <div v-if="secondaryEvents.length" class="event-strip">
+        <div class="event-label">之后可追踪</div>
         <button
-          v-for="event in safeStoryEvents"
+          v-for="event in secondaryEvents"
           :key="event.id"
           type="button"
           :disabled="busy"
@@ -92,7 +109,7 @@
         >
           <span class="event-marker" aria-hidden="true"><span></span></span>
           <span class="event-copy">
-            <span>{{ canonText(event.title) }}</span>
+            <span>{{ uwCanonText(event.title) }}</span>
             <small>{{ eventMeta(event) }}</small>
           </span>
         </button>
@@ -100,10 +117,6 @@
     </Transition>
 
     <div class="tracker-meta">
-      <span class="meta-chip">
-        <span class="chip-icon">附近</span>
-        {{ safeNearbyNpcLabel }}
-      </span>
       <span class="meta-chip place">
         <span class="chip-icon">地点</span>
         {{ safeNearbyInteractTitle }}
@@ -115,6 +128,7 @@
 <script setup>
 import { computed } from 'vue'
 import { getAgentLabel, getSceneLabel } from '../field/gameContentConfig.js'
+import { compactPlayerText, uwCanonText } from '../utils/uwCanonText.js'
 
 const props = defineProps({
   simState: { type: Object, default: null },
@@ -130,51 +144,100 @@ const props = defineProps({
 
 defineEmits(['open-event', 'open-interact'])
 
-function canonText(value) {
-  return String(value || '')
-    .replaceAll('爱丽丝', '艾琳')
-    .replaceAll('悠吉欧', '尤里')
-    .replaceAll('Kirito', '凛斗')
-}
-
+const safeStoryEvents = computed(() => Array.isArray(props.storyEvents) ? props.storyEvents : [])
+const primaryEvent = computed(() => safeStoryEvents.value[0] || null)
+const secondaryEvents = computed(() => safeStoryEvents.value.slice(1, 2))
 const actionPreview = computed(() =>
   (Array.isArray(props.nearbyActionPreview) ? props.nearbyActionPreview : [])
+    .slice(0, 2)
     .map((action) => ({
       ...action,
-      label: canonText(action.label),
-      meta: canonText(action.meta)
+      label: compactPlayerText(action.label, 34),
+      meta: compactPlayerText(action.meta, 42)
     }))
 )
 
-const safeStoryEvents = computed(() =>
-  Array.isArray(props.storyEvents) ? props.storyEvents : []
-)
-
-const safeQuestGuide = computed(() => canonText(props.questGuide || '在村中探索，了解周围环境。'))
-const safeNearbyNpcLabel = computed(() => canonText(props.nearbyNpcLabel || '暂无 NPC'))
-const safeNearbyInteractTitle = computed(() => canonText(props.nearbyInteractTitle || '暂无地点'))
+const safeQuestGuide = computed(() => compactPlayerText(props.questGuide || '在村中探索，了解周围环境。', 88))
+const safeNearbyNpcLabel = computed(() => uwCanonText(props.nearbyNpcLabel || '暂无 NPC'))
+const safeNearbyInteractTitle = computed(() => uwCanonText(props.nearbyInteractTitle || '暂无地点'))
 const hasNearbyNpc = computed(() => safeNearbyNpcLabel.value !== '暂无 NPC')
-const activeNpcIntents = computed(() =>
-  (Array.isArray(props.simState?.npc_intents) ? props.simState.npc_intents : [])
-    .slice()
-    .sort((a, b) => Number(b?.priority || 0) - Number(a?.priority || 0))
-    .slice(0, 2)
-)
+
+const activeNpcIntents = computed(() => {
+  const player = props.simState?.player
+  const px = Number(player?.tile_x)
+  const py = Number(player?.tile_y)
+  const sceneId = String(player?.scene_id || props.simState?.scene_id || '')
+  if (!Number.isFinite(px) || !Number.isFinite(py)) return []
+  return (Array.isArray(props.simState?.npc_intents) ? props.simState.npc_intents : [])
+    .map((intent) => ({
+      intent,
+      sameScene: String(intent?.scene_id || '') === sceneId,
+      distance: Math.max(Math.abs(Number(intent?.tile_x) - px), Math.abs(Number(intent?.tile_y) - py))
+    }))
+    .filter((item) => item.sameScene && Number.isFinite(item.distance))
+    .sort((a, b) => Number(b.intent?.priority || 0) - Number(a.intent?.priority || 0))
+    .slice(0, 1)
+    .map((item) => item.intent)
+})
+
+const primaryKindLabel = computed(() => {
+  const kind = String(primaryEvent.value?.kind || '')
+  return ({ clue: '调查', training: '训练', anomaly: '异常', conflict: '抉择', final_choice: '关键选择' })[kind] || '村庄生活'
+})
+
+const rewardPreview = computed(() => {
+  const kind = String(primaryEvent.value?.kind || '')
+  return ({
+    clue: '获得线索，解锁新的关系回应',
+    training: '提升行动熟练度，推进尤吉欧关系',
+    anomaly: '确认世界异常，开启剧情分支',
+    conflict: '改变同伴立场与后续事件',
+    final_choice: '决定本章路线与结局'
+  })[kind] || (actionPreview.value.length ? '时间推进，NPC 会记住你的选择' : '推进今天的故事')
+})
+
+const completedIds = computed(() => new Set(Array.isArray(props.simState?.completed_event_ids) ? props.simState.completed_event_ids : []))
+const flags = computed(() => props.simState?.flags || {})
+const dayPlan = computed(() => {
+  const day = Number(props.simState?.day || 1)
+  if (day <= 1) return [
+    { id: 'record', label: '确认异常记录', done: Number(flags.value.clue_boundary_record || 0) > 0 },
+    { id: 'training', label: '完成同伴训练', done: Number(flags.value.trained_with_eugeo || 0) > 0 },
+    { id: 'rest', label: '回到小屋结算', done: day > 1 }
+  ]
+  if (day === 2) return [
+    { id: 'anomaly', label: '调查森林静默', done: completedIds.value.has('ch1_d2_forest_anomaly') },
+    { id: 'dinner', label: '处理同伴分歧', done: completedIds.value.has('ch1_d2_npc_disagreement') },
+    { id: 'rest', label: '准备边界行动', done: day > 2 }
+  ]
+  if (day === 3) return [
+    { id: 'boundary', label: '抵达静默线', done: completedIds.value.has('ch1_d3_boundary_choice') },
+    { id: 'choice', label: '作出关键选择', done: Boolean(props.simState?.chapter_ending_id) },
+    { id: 'record', label: '留下你的记录', done: Boolean(props.simState?.chapter_ending_id) }
+  ]
+  return [
+    { id: 'main', label: '处理当前主线', done: !primaryEvent.value },
+    { id: 'bond', label: '回应一名同伴', done: activeNpcIntents.value.length === 0 },
+    { id: 'close', label: '完成今日结算', done: false }
+  ]
+})
+const dayPlanDone = computed(() => dayPlan.value.filter((item) => item.done).length)
+const dayPlanPercent = computed(() => dayPlan.value.length ? Math.round(dayPlanDone.value / dayPlan.value.length * 100) : 0)
 
 function intentTitle(intent) {
-  return canonText(intent?.title || '同伴正在等你回应')
+  return compactPlayerText(intent?.title || '同伴正在等你回应', 38)
 }
 
 function intentMeta(intent) {
-  const agent = canonText(intent?.npc_id ? getAgentLabel(intent.npc_id) : 'NPC')
+  const agent = intent?.npc_id ? getAgentLabel(intent.npc_id) : '同伴'
   const scene = intent?.scene_id ? getSceneLabel(intent.scene_id) : ''
-  return canonText([agent, scene, intent?.reason || '主动邀约'].filter(Boolean).join(' · '))
+  const playerFacingReason = intent?.description || intent?.stakes?.[0] || '想和你确认一件事'
+  return compactPlayerText([agent, scene, playerFacingReason].filter(Boolean).join(' · '), 58)
 }
 
 function eventMeta(event) {
   const scene = getSceneLabel(event?.location?.scene_id || '')
-  const day = event?.day || event?.trigger?.day_min || ''
-  return canonText([scene, day ? `Day ${day}` : '靠近金色标记'].filter(Boolean).join(' · '))
+  return compactPlayerText(scene || '跟随金色标记', 32)
 }
 </script>
 
@@ -648,5 +711,55 @@ function eventMeta(event) {
     margin-top: 0.42rem;
   }
 }
+.quest-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.quest-day {
+  margin-top: 0.16rem;
+  color: #bae6fd;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.quest-state {
+  padding: 0.18rem 0.42rem;
+  border-radius: 999px;
+  color: #d9f99d;
+  background: rgba(101, 163, 13, 0.16);
+  border: 1px solid rgba(163, 230, 53, 0.28);
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+.reward-preview {
+  display: grid;
+  gap: 0.12rem;
+  margin: 0.58rem 0;
+  padding: 0.48rem 0.58rem;
+  border-radius: 7px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(125, 211, 252, 0.16);
+}
+.reward-preview span { color: #7dd3fc; font-size: 0.66rem; font-weight: 900; }
+.reward-preview strong { color: #e0f2fe; font-size: 0.78rem; line-height: 1.4; }
+
+.daily-loop {
+  margin: 0.55rem 0 0.62rem;
+  padding: 0.5rem 0.58rem;
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+.daily-loop-head { display: flex; justify-content: space-between; color: #cbd5e1; font-size: 0.7rem; font-weight: 900; }
+.daily-loop-head strong { color: #fde68a; }
+.daily-loop-bar { height: 4px; margin: 0.38rem 0 0.42rem; border-radius: 99px; overflow: hidden; background: rgba(148, 163, 184, 0.16); }
+.daily-loop-bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #38bdf8, #fde047); transition: width 0.3s ease; }
+.daily-loop-items { display: grid; gap: 0.2rem; }
+.daily-loop-items span { color: #94a3b8; font-size: 0.68rem; line-height: 1.3; }
+.daily-loop-items span b { display: inline-block; width: 1rem; color: #64748b; }
+.daily-loop-items span.done { color: #bbf7d0; text-decoration: line-through; text-decoration-color: rgba(187, 247, 208, 0.4); }
+.daily-loop-items span.done b { color: #86efac; }
+
 </style>
 

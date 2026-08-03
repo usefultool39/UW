@@ -66,14 +66,14 @@ const fallbackOptions = computed(() => {
   const id = props.activity?.id || props.activity?.activity_id || ''
   if (id === 'home_evening_meal') {
     return [
-      { id: 'side_alice', label: '偏向艾琳：先守住北境律令', hint: '降低当晚风险，但尤里会觉得调查被放慢。' },
-      { id: 'side_eugeo', label: '偏向尤里：明天再确认静默线', hint: '推进调查，但艾琳会更担心。' },
+      { id: 'side_alice', label: '偏向爱丽丝：先守住禁忌目录', hint: '降低当晚风险，但尤吉欧会觉得调查被放慢。' },
+      { id: 'side_eugeo', label: '偏向尤吉欧：明天再确认静默线', hint: '推进调查，但爱丽丝会更担心。' },
       { id: 'keep_table_calm', label: '保持沉默，把话题拉回日常', hint: '缓和当下气氛，同时保留观察空间。' }
     ]
   }
   return [
-    { id: 'support_alice', label: '帮艾琳把篮子重新扎紧', hint: '让她知道你愿意照看这些细节。' },
-    { id: 'support_eugeo', label: '给尤里多留一份干粮', hint: '把古誓树清场的消耗放在前面。' },
+    { id: 'support_alice', label: '帮爱丽丝把篮子重新扎紧', hint: '让她知道你愿意照看这些细节。' },
+    { id: 'support_eugeo', label: '给尤吉欧多留一份干粮', hint: '把巨神树伐木场的消耗放在前面。' },
     { id: 'quiet_observe', label: '保持沉默，观察两人的习惯', hint: '少表态，多记住他们的日常分工。' }
   ]
 })

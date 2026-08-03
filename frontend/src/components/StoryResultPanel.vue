@@ -186,6 +186,7 @@ const impactLines = computed(() => {
   const meal = props.result?.meal_result
   const anomaly = props.result?.anomaly_result
   const final = props.result?.final_result
+  const patrol = props.result?.patrol_result
   const activityChoice = props.result?.activity_choice
   if (isMonthFinal.value && props.result?.choice?.label) {
     lines.push({ label: '第一月路线', value: props.result.choice.label })
@@ -199,6 +200,13 @@ const impactLines = computed(() => {
   if (anomaly?.stance) lines.push({ label: '调查态度', value: anomaly.stance })
   if (final?.label) lines.push({ label: '终局选择', value: final.label })
   if (final?.tone) lines.push({ label: '判定倾向', value: `${final.tone} · ${final.pressure || 0}` })
+  if (patrol?.label) lines.push({ label: '巡查评价', value: `${patrol.label} · ${patrol.score || 0}` })
+  if (patrol?.marks) lines.push({ label: '边境标记', value: `+${patrol.marks}` })
+  const resources = props.result?.resource_changes || {}
+  for (const [key, label] of [['hp', '生命变化'], ['mp', '神圣力变化'], ['stamina', '体力变化']]) {
+    const delta = Number(resources?.[key]?.delta || 0)
+    if (delta) lines.push({ label, value: `${delta > 0 ? '+' : ''}${delta} · ${resources[key].after}` })
+  }
   if (!reading?.label && !meal?.label && activityChoice?.label) {
     lines.push({ label: '行动选择', value: activityChoice.label })
   }
