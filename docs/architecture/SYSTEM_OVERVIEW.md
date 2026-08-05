@@ -84,3 +84,17 @@ sequenceDiagram
 - 新模型能力：通过 runtime 接入，必须有超时、回退和审计。
 
 `createWorldFieldScene.js`、`npc_intents.py` 等仍是热点；拆分前先补角色测试和独立 ADR，避免为了文件变小改变玩法。
+
+## 日期推进数据流（2026-08-05）
+
+```text
+玩家完成当日活动
+→ 后端写入活动结果/关系/记忆
+→ Story Director 检查 required_story_event 与 day_end_gate
+→ 条件满足：生成日结算
+→ 自动执行 NPC 日程与环境切换
+→ 进入下一日并返回 next_goal
+→ 前端展示日结算和新目标
+```
+
+日期推进的所有权归 `Session + Story Director`。前端不得直接调用“推荐日期”或自行修改 `day`。自动 tick 可以推进时间段、NPC 行为和环境，但跨日必须有可审计的剧情原因。

@@ -80,3 +80,30 @@
 - `performance.bake_static_layers/guide_interval_ms/water_interval_ms/weather_interval_ms`：性能参数。
 
 地图 `rows` 仍是可走、碰撞和地形逻辑的源；正式美术只替换表现，不改变规则源。
+
+## 日期推进契约（2026-08-05）
+
+### 玩家界面
+
+- 不再提供独立的“时间推进/主动推荐日期”按钮。
+- 前端只展示当前日期、当前时间段、未完成的必需事件和可触发的日结算入口。
+- “休息”是一个场景活动；是否跨日由后端返回的 `day_transition` 决定。
+
+### 后端返回
+
+`PlayerActionResult` 在发生日期变化时应返回：
+
+```json
+{
+  "day_transition": {
+    "from_day": 1,
+    "to_day": 2,
+    "reason": "day_end_gate_completed",
+    "trigger_event_id": "day1_evening_settlement",
+    "summary": [],
+    "next_goal": {}
+  }
+}
+```
+
+`daily_tick` 仍可作为自动模拟接口使用，但它不能在没有剧情闸的情况下把日期推进到下一天。`rest_until_next_day` 保留为兼容动作名，实际执行必须经过 `day_end_gate` 校验；未来可在 API v3 中改名为更准确的 `resolve_day_end`。

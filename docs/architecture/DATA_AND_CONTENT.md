@@ -39,3 +39,31 @@
 - [ ] 结果解释时间、资源或关系变化。
 - [ ] 更新自动测试或试玩用例。
 - [ ] 同步 Current Status / Changelog（如适用）。
+
+## 剧情事件驱动日期（2026-08-05）
+
+日期推进是内容配置的一部分，不由前端按钮决定。建议事件或章节节点支持以下字段：
+
+```json
+{
+  "day_end_gate": true,
+  "required_for_day": true,
+  "advance_policy": "after_evening_settlement",
+  "auto_advance": true,
+  "next_day": 2,
+  "next_story_node_id": "ch1_day2_anomaly"
+}
+```
+
+### 规则
+
+- `required_for_day`：当前日期必须完成的事件。
+- `day_end_gate`：允许进入日结算的剧情闸。
+- `advance_policy`：日期推进时机，例如 `after_evening_settlement`、`after_choice`、`after_scene_exit`。
+- `auto_advance`：事件完成后是否由后端自动执行日结算；不能由客户端自行解释。
+- `next_day`：可选的目标日期；必须经过后端校验，不能任意跳跃。
+- `next_story_node_id`：跨日后进入的剧情节点。
+
+普通 `scene_activity` 只改变时间段、资源、关系和记忆；除非显式配置为剧情闸，不得改变 `day`。
+
+运行产物和存档应记录：触发事件 ID、推进原因、推进前后的日期、日结算摘要和下一目标，便于回放和排查“为什么进入了下一天”。
