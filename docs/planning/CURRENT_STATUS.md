@@ -2,8 +2,8 @@
 
 - **状态**：Current / 权威事实页
 - **快照日期**：2026-08-05
-- **Git 基线**：`main` / 当前交接提交（以 `git log -1` 为准）；`0.4.0-preview.1` 候选已提交
-- **版本标识**：`0.4.0-preview.1`（候选工作区；已 commit，push 状态以交接远端核验为准；未创建 tag）
+- **Git 基线**：`main` / `8154e7e`（Underworld 叙事基线与剧情事件驱动日期推进已提交）
+- **版本标识**：`0.4.0-preview.1`（候选工作区；本地领先 `origin/main` 两个提交，尚未 push；未创建 tag）
 
 ## 版本收束（2026-08-04）
 
@@ -17,7 +17,7 @@
 - 已建立素材与宏观优化动态工作台：`docs/planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md`；后续素材审查和优化交流以此为唯一动态入口。
 - 已建立智能体交接文档：`docs/delivery/HANDOFF_20260805.md`；包含当前事实、不可破坏边界、验证基线、P0/P1 接手顺序和完成定义。
 - 新增素材已完成第一轮宏观审查与技术返工：UI 图标、BGM、ambience v002 可进入内测；关键图/肖像 v002 已重导为真实 PNG / RGBA 透明 PNG 并通过二次复核（尺寸、alpha、sha256 与 MANIFEST 一致）；剩余工作是第一批 runtime 接入、真实 UI 截图验收和 3 人陌生玩家盲测。
-- 交接前复验：素材检查 `29 requests passed`，关键图/肖像/音频实物规格与台账一致；后端 `205 passed`；前端单测 `12 passed`；production build 通过；Playwright E2E `11 passed`；存在既有 Starlette/httpx 弃用警告和 Phaser chunk 体积警告。
+- 交接前复验：素材检查 `29 requests passed`，关键图/肖像/音频实物规格与台账一致；随后完成日期闸门迭代质量门：后端 `207 passed`；前端单测 `12 passed`；production build 通过；Playwright E2E `12 passed`；存在既有 Starlette/httpx 弃用警告和 Phaser chunk 体积警告。
 - 素材返工记录：`docs/planning/MATERIALS_REWORK_STATUS_20260805.md`；审查证据图已放入 `docs/delivery/`。
 
 ## 第一轮成熟化改造（2026-08-04）
@@ -40,7 +40,7 @@
 - 两条回响由后端条件互斥过滤，结算写入 flag、关系、永久记忆和紧张原因；跨路线强选原子拒绝。
 - 完整 authored effects、记忆文本和最终结算仍只在后端；scripted/hybrid/agent 共用同一事件结果和记忆结构。
 - 方案与证据：`docs/planning/MATURITY_STAGE_20260804_DECISION_PREVIEW.md`、`docs/planning/MATURITY_STAGE_20260804_RELATIONSHIP_ECHO.md`、`docs/planning/MATURITY_STAGE_20260804_DAY3_ECHO.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_SINGLE_ENTRY.md`、`docs/planning/MATURITY_STAGE_20260804_ACTIVITY_REGISTRY.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_NPC_DEDUP.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_OPENING_SINGLE_CTA.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_GUIDANCE_HIERARCHY.md`。
-- 验证：后端 205 passed；前端单测 12 passed；production build 通过；Playwright E2E 11 passed。
+- 验证（2026-08-05 日期闸门迭代后）：后端 207 passed；前端单测 12 passed；production build 通过；Playwright E2E 12 passed。
 
 ## 已经完成
 
@@ -99,11 +99,21 @@
 3. Day 1 真正可玩闭环；
 4. 再用素材接入和真人盲测验证吸引力。
 
-### 日期推进调整（待实现）
+### 日期推进调整（已实现，2026-08-05）
 
-- 删除玩家主动推荐日期/时间推进入口。
-- 保留自动推进，但自动推进不能绕过后端剧情闸。
-- 完成必需剧情事件并触发日结算后，日期自动进入下一天。
-- 旧 `rest_until_next_day` 动作只保留兼容语义，实际必须经过 `day_end_gate` 校验。
+- 已删除玩家主动推荐日期/时间推进入口；前端只显示“剧情推进”状态。
+- 普通活动只消耗行动时间，不直接跨日。
+- 完成必需剧情事件并触发晚间结算后，日期自动进入下一天。
+- 旧 `rest_until_next_day` / `home_sleep_until_morning` 只保留兼容语义，实际必须经过 `day_end_gate` 校验。
+- 自动 tick、NPC 日程和环境模拟继续运行，但不能绕过剧情闸；跨日会写入 JSONL 审计记录。
+- Day 1 需要 `clue_boundary_record`，Day 2 需要 `forest_anomaly_seen`，对应 E2E 已覆盖“未完成不能跨日 / 完成后自动跨日”。
 
-本节记录的是已批准的产品方向，代码实现和测试更新应在下一次开发任务中完成后再把状态改为 Done。
+
+## 日期闸门迭代质量门（2026-08-05）
+
+- 代码提交：`0e70fa5`（叙事基线与文档）→ `8154e7e`（剧情事件驱动日期推进）。
+- 后端：`207 passed`；保留 1 个既有 Starlette/httpx 弃用警告。
+- 前端：单测 `12 passed`；production build 通过；仅有 Phaser chunk 体积警告。
+- E2E：`12 passed`，新增覆盖“无独立时间推进按钮、剧情闸未完成不能跨日、完成事件后休息自动进入下一天”。
+- 桌面/移动质量截图：`runs/quality_gate_desktop.png`、`runs/quality_gate_mobile.png`。
+- 远端状态：执行 `git fetch origin` 后，`origin/main=25a5f84`；本地 `main=8154e7e`，领先 2 个提交，待推送。

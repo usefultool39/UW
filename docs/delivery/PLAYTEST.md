@@ -130,9 +130,9 @@
 
 ## 当前状态
 
-- 版本基线：`49ae78d` + 2026-08-04 未提交成熟化改动
+- 版本基线：`8154e7e`；日期闸门前置文档提交为 `0e70fa5`；本地 `main` 当前领先 `origin/main` 两个提交
 - 当前验证：Day1 书库选择→Day2 专属关系回响→Day3 结局上下文、Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控与书库重复读书入口已修复；Day 4-6 目的地口径已统一；Day1、Day2、Day4-6 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖；首屏开场与 HUD 视觉层级已做桌面/移动基线复查；Day46 汇合后目标回退 P1 已修复
-- 下一步动作：优先执行首次玩家 Day 1 盲测与候选版质量门；新增活动只通过 registry 扩展，不再回到 FieldSlice 手写分支
+- 下一步动作：先推送并核验本轮提交，再执行首次玩家 Day 1 盲测；新增活动只通过 registry 扩展，不再回到 FieldSlice 手写分支
 
 
 ## 2026-08-05 日期推进体验规则
@@ -141,3 +141,14 @@
 - 玩家只有在完成当前日期剧情闸后，回到炉火处休息/结算，日期才会自动推进。
 - 普通活动展示“时间消耗”，不再暗示可以直接跨日。
 - 自动 tick 继续用于 NPC 日程和环境变化，但不能绕过剧情闸。
+
+
+## 2026-08-05 日期闸门迭代质量门记录
+
+- 目标：删除玩家主动日期推荐/时间推进入口，让 Day 1 → Day 2 的跨日由剧情事件和晚间结算决定。
+- 后端：`../backend/.venv/bin/python -m pytest -q` → `207 passed`；1 个既有 Starlette/httpx 弃用警告。
+- 前端单测：`npm run test:unit` → `12 passed`。
+- 构建：`npm run build` → 通过；Phaser chunk 约 1.48 MB 的既有 warning 不阻塞。
+- E2E：`PYTHON_BIN=../backend/.venv/bin/python npm run test:e2e` → `12 passed`（含日期闸门专项）。
+- 人工截图：桌面与移动首屏已复查，未发现独立“时间推进”按钮或关键 UI 重叠；证据在 `runs/quality_gate_desktop.png`、`runs/quality_gate_mobile.png`。
+- 未完成项仍是自动化无法替代的 3 名陌生玩家 Day 1 盲测。
