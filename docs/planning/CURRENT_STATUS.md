@@ -2,7 +2,7 @@
 
 - **状态**：Current / 权威事实页
 - **快照日期**：2026-08-05
-- **Git 基线**：`main` / `9c898db`（AI 安全边界、存档安全与 Day 4–7 剧情闸门已提交并推送）
+- **Git 基线**：`main` / `f77ba99`（AI 安全边界、存档安全与 Day 4–12 剧情闸门已提交并推送）
 - **版本标识**：`0.4.0-preview.1`（候选工作区；首批 runtime 素材与 AI 安全增强已接入；未创建 tag）
 
 ## 版本收束（2026-08-04）
@@ -51,7 +51,7 @@
 - LLM 行动失败时回退 heuristic；对话返回和事件新增 `memory_decision`、`memory_committed`、`ai_budget`。
 - 本轮验证：后端 `237 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。
 - 当前仍未调用真实外部 API，未读取或修改 `/Users/lzm/Desktop/ai-shop`，未宣称完成真人盲测或商业化授权。
-- 最新 Git 状态：`main...origin/main` 已同步，远端与本地均为 `9c898db`。
+- 最新 Git 状态：`main...origin/main` 已同步，远端与本地均为 `f77ba99`。
 - 本轮新增存档导入安全：清空旧 pending 写入、重置单局 AI 预算、过滤导入记忆危险文本；后端质量门更新为 `237 passed`。
 - 本轮新增 Day 4 / Day 7 / Day 12 显式剧情闸门：Day 3 边界选择、Day 4 书库复盘、Day 7 北门巡查演练、Day 12 村务信任现在不能被休息直接跳过；后端质量门更新为 `241 passed`，Playwright E2E 更新为 `13 passed`。
 - 修复边界调查小游戏父级重渲染导致选择状态偶发清空的问题，并让 E2E 等待每个选择真正进入 selected 状态。
