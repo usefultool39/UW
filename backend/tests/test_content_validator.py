@@ -153,3 +153,44 @@ def test_validate_project_reports_bad_visual_tileset_manifest(tmp_path: Path):
 
     assert out["ok"] is False
     assert "invalid_visual_tileset_manifest" in codes
+
+
+def test_validate_project_reports_unproducible_day_gate_flag(tmp_path: Path):
+    def write_json(rel: str, payload: dict) -> None:
+        path = tmp_path / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload), encoding="utf-8")
+
+    write_json("characters/meta.json", {"v": 1, "agents": []})
+    write_json(
+        "data/story/main_nodes.json",
+        {
+            "nodes": {},
+            "day_gates": {
+                "4": {
+                    "required_flags": {"never_written": 1},
+                    "advance_to": 5,
+                }
+            },
+        },
+    )
+    write_json("data/story/events_chapter_01.json", {"v": 1, "events": []})
+    write_json("data/world/scene_activities.json", {"v": 1, "activities": []})
+    write_json(
+        "data/world/world_map.json",
+        {
+            "v": 1,
+            "id": "novice_open",
+            "width": 1,
+            "height": 1,
+            "spawn": {"x": 0, "y": 0},
+            "walkable": [0],
+            "scene_zones": [],
+            "pois": [],
+            "rows": ["0"],
+        },
+    )
+
+    out = validate_project(tmp_path)
+    assert out["ok"] is False
+    assert "unproducible_day_gate_flag" in {issue["code"] for issue in out["errors"]}

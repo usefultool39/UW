@@ -125,3 +125,9 @@
 - Day 12 村务事件新增基于可选日常活动的 authored 反馈：如果玩家先复核巡查板或听取村道传闻，事件描述与选择提示会记住这段准备，而不是把日常活动和主线割裂。
 - 新增回归测试验证 `village_patrol_board_review` 会改变 Day 12 事件的公开视图；不完成该活动仍可正常推进主线，保持易上手。
 - 本轮质量门：后端 `243 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `13 passed`。
+
+### 2026-08-05 内容校验增强
+
+- 内容校验器现在会检查每个 `day_gate.required_flags` 是否确实由 authored 故事选择或场景活动写入，避免新增日期闸门后出现永远无法满足的软锁。
+- 同时校验 `day_gate.required_events` 是否引用当前存在的故事事件。
+- 新增坏配置回归测试；本轮后端质量门：`244 passed`。

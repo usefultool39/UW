@@ -1024,6 +1024,76 @@ def _validate_schedules(
     return checked
 
 
+
+
+def _collect_written_flags(project_root: Path) -> set[str]:
+    """Collect authored flags that can satisfy a narrative date gate."""
+    written: set[str] = set()
+
+    def collect_effects(raw: Any) -> None:
+        if not isinstance(raw, dict):
+            return
+        for key in ("flags", "flag_deltas"):
+            values = raw.get(key)
+            if isinstance(values, dict):
+                written.update(str(item) for item in values)
+
+    story_path = project_root / "data" / "story" / "events_chapter_01.json"
+    story = _load_json_file(story_path, [])
+    if isinstance(story, dict):
+        for event in story.get("events") or []:
+            if not isinstance(event, dict):
+                continue
+            for choice in event.get("choices") or []:
+                if isinstance(choice, dict):
+                    collect_effects(choice.get("effects"))
+
+    activity_path = project_root / "data" / "world" / "scene_activities.json"
+    activities = _load_json_file(activity_path, [])
+    if isinstance(activities, dict):
+        for activity in activities.get("activities") or []:
+            if not isinstance(activity, dict):
+                continue
+            collect_effects(activity.get("effects"))
+            for choice in activity.get("choices") or []:
+                if isinstance(choice, dict):
+                    collect_effects(choice.get("effects"))
+    return written
+
+
+def _validate_day_gate_producers(
+    project_root: Path,
+    *,
+    event_ids: set[str],
+    errors: list[Issue],
+) -> None:
+    path = project_root / "data" / "story" / "main_nodes.json"
+    raw = _load_json_file(path, errors)
+    gates = raw.get("day_gates") if isinstance(raw, dict) else {}
+    if not isinstance(gates, dict):
+        return
+    written_flags = _collect_written_flags(project_root)
+    for raw_day, gate in gates.items():
+        if not isinstance(gate, dict):
+            continue
+        gate_path = f"data/story/main_nodes.json.day_gates.{raw_day}"
+        for key in (gate.get("required_flags") or {}):
+            if str(key) not in written_flags:
+                _add_issue(
+                    errors,
+                    code="unproducible_day_gate_flag",
+                    path=f"{gate_path}.required_flags.{key}",
+                    message=f"No authored story/activity effect writes day-gate flag '{key}'.",
+                )
+        for index, event_id in enumerate(gate.get("required_events") or []):
+            if str(event_id) not in event_ids:
+                _add_issue(
+                    errors,
+                    code="unknown_day_gate_event",
+                    path=f"{gate_path}.required_events[{index}]",
+                    message=f"Unknown day-gate event '{event_id}'.",
+                )
+
 def validate_project(project_root: Path) -> dict[str, Any]:
     """Validate content config references without mutating world state."""
     project_root = project_root.resolve()
@@ -1055,6 +1125,12 @@ def validate_project(project_root: Path) -> dict[str, Any]:
         activity_refs=activity_refs,
         errors=errors,
     )
+    _validate_day_gate_producers(
+        project_root,
+        event_ids=event_ids,
+        errors=errors,
+    )
+
     schedule_entries = _validate_schedules(
         project_root,
         known_agents=known_agents,
