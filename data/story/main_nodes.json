@@ -122,6 +122,18 @@
         "title": "把巡查交给村子",
         "description": "让一次演练变成村内可复用的守望轮换。"
       }
+    },
+    "12": {
+      "required_flags": {
+        "month01_village_trust": 1
+      },
+      "advance_to": 13,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 12 · 巡查变成村务",
+      "next_goal": {
+        "title": "准备静默线演练",
+        "description": "把村内信任带到北门的下一次共同判断。"
+      }
     }
   }
 }

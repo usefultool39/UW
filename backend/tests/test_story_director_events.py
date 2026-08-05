@@ -291,3 +291,18 @@ def test_day_seven_cannot_advance_before_first_boundary_drill():
     assert out["missing"] == [
         {"type": "flag", "key": "month01_drill_done", "expected": 1, "actual": 0}
     ]
+
+
+def test_day_twelve_cannot_advance_before_village_trust_event():
+    sess = Session(run_id="test-story-day12-gate")
+    sess.state = sess.state.model_copy(
+        update={"day": 12, "flags": {"month01_drill_done": 1}}
+    )
+
+    out = sess.player_action(kind="rest_until_next_day")
+
+    assert out["ok"] is False
+    assert out["error"] == "day_end_gate_incomplete"
+    assert out["missing"] == [
+        {"type": "flag", "key": "month01_village_trust", "expected": 1, "actual": 0}
+    ]

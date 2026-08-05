@@ -232,11 +232,17 @@ test.describe('开放世界质量 smoke', () => {
     await page.goto('/')
     await page.getByRole('button', { name: '追踪：森林忽然安静', exact: true }).click()
     await expect(page.locator('.probe-panel')).toBeVisible()
-    await page.getByRole('button', { name: /生成光素/ }).click()
-    await page.getByRole('button', { name: /追踪静默/ }).click()
-    await page.getByRole('button', { name: /束定距离/ }).click()
-    await page.getByRole('button', { name: /叫上两人一起确认/ }).click()
-    await page.getByRole('button', { name: '确认异常' }).click()
+    for (const label of ['生成光素', '追踪静默', '束定距离']) {
+      const fragment = page.locator('.fragment-chip').filter({ hasText: label })
+      await fragment.click()
+      await expect(fragment).toHaveClass(/selected/)
+    }
+    const together = page.locator('.stance-card').filter({ hasText: '叫上两人一起确认' })
+    await together.click()
+    await expect(together).toHaveClass(/selected/)
+    const confirmProbe = page.getByRole('button', { name: '确认异常' })
+    await expect(confirmProbe).toBeEnabled()
+    await confirmProbe.click()
 
     await expect(page.locator('.result-panel')).toBeVisible()
     await expect(page.locator('.impact-chip').filter({ hasText: '边界读数' })).toBeVisible()
@@ -316,7 +322,7 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.milestone-row').filter({ hasText: 'Day 4-6' })).toBeVisible()
   })
 
-  test('Day 4 与 Day 7 事件成为可持续主线的日期闸门', async ({ request }) => {
+  test('Day 4、Day 7 与 Day 12 事件成为可持续主线的日期闸门', async ({ request }) => {
     await storyChoose(request, { event_id: 'ch1_d1_reading_clue', choice_id: 'ask_alice' })
     await playerAction(request, { kind: 'rest_until_next_day' })
     await storyChoose(request, { event_id: 'ch1_d2_forest_anomaly', choice_id: 'investigate_together' })
@@ -350,8 +356,18 @@ test.describe('开放世界质量 smoke', () => {
     expect(blockedDay7Body.missing[0].key).toBe('month01_drill_done')
 
     await storyChoose(request, { event_id: 'ch1_d7_first_boundary_drill', choice_id: 'mark_safe_route' })
-    const day8 = await playerAction(request, { kind: 'rest_until_next_day' })
-    expect(day8.state.day).toBe(8)
+    await restToDay(request, 12)
+
+    const blockedDay12 = await request.post(`${API}/api/player/action`, {
+      data: { kind: 'rest_until_next_day' }
+    })
+    const blockedDay12Body = await blockedDay12.json()
+    expect(blockedDay12Body.ok).toBeFalsy()
+    expect(blockedDay12Body.missing[0].key).toBe('month01_village_trust')
+
+    await storyChoose(request, { event_id: 'ch1_d12_village_trust', choice_id: 'public_patrol_board' })
+    const day13 = await playerAction(request, { kind: 'rest_until_next_day' })
+    expect(day13.state.day).toBe(13)
   })
 
   test('北境短程巡查可判断敌意、消耗资源并获得累计标记', async ({ page, request }) => {

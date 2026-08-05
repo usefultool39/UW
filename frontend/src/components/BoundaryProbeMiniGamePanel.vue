@@ -234,9 +234,17 @@ function finish() {
 }
 
 watch(
-  () => [props.modelValue, props.event?.id],
-  ([open]) => {
+  () => props.modelValue,
+  (open) => {
     if (open) reset()
+  },
+  { flush: 'sync' }
+)
+
+watch(
+  () => props.event?.id,
+  () => {
+    if (props.modelValue) reset()
   },
   { flush: 'sync' }
 )
