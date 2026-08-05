@@ -9,6 +9,7 @@ from typing import Any
 import httpx
 from anthropic import Anthropic
 
+from .ai_provider import adapter_enabled, generate_text, provider_meta
 from .config import RECENT_EVENTS_K
 from .llm_config import action_model, is_minimax_model, is_openai_chat_model
 from .models import Action, ActionName, AgentState, WorldState
@@ -362,15 +363,19 @@ def llm_choose_action(
     import os
 
     model = action_model()
-    anthropic_key = _sanitize_api_key(os.getenv("ANTHROPIC_API_KEY") or "")
-    minimax_key = _sanitize_api_key(os.getenv("MINIMAX_API_KEY") or "")
-    api_key = _select_api_key(
-        model=model, anthropic_key=anthropic_key, minimax_key=minimax_key
-    )
-    if not api_key:
-        raise RuntimeError(
-            "请设置 ANTHROPIC_API_KEY 或 MINIMAX_API_KEY（见 .env.example）"
+    if adapter_enabled():
+        # Provider-specific keys (e.g. STEPFUN_API_KEY) are resolved by the adapter.
+        anthropic_key = minimax_key = api_key = "adapter"
+    else:
+        anthropic_key = _sanitize_api_key(os.getenv("ANTHROPIC_API_KEY") or "")
+        minimax_key = _sanitize_api_key(os.getenv("MINIMAX_API_KEY") or "")
+        api_key = _select_api_key(
+            model=model, anthropic_key=anthropic_key, minimax_key=minimax_key
         )
+        if not api_key:
+            raise RuntimeError(
+                "请设置 ANTHROPIC_API_KEY 或 MINIMAX_API_KEY（见 .env.example）"
+            )
 
     system_base = _system_base(project_root)
     persona = _persona_text(project_root, agent_id, state)
@@ -378,7 +383,15 @@ def llm_choose_action(
 
     user = build_user_message(state, agent_id, events)
 
-    if _is_openai_chat_model(model):
+    if adapter_enabled():
+        content = generate_text(
+            system=system,
+            user=user,
+            model=model,
+            max_tokens=1000,
+            temperature=0.2,
+        )
+    elif _is_openai_chat_model(model):
         minimax_base = (
             os.getenv("MINIMAX_OPENAI_BASE_URL")
             or "https://api.minimax.io/v1"
@@ -429,6 +442,7 @@ def llm_choose_action(
         "llm_prompt_user": user,
         "llm_raw": content,
         "llm_thinking": thinking,
+        **({"llm_provider": provider_meta(model)} if adapter_enabled() else {}),
     }
     try:
         action, llm_thinking = parse_action_json(content)

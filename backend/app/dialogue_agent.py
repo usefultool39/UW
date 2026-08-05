@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .agent_registry import get_agent_profile
+from .ai_provider import adapter_enabled, generate_text, provider_meta
 from .llm_agent import (
     _call_minimax_chat,
     _call_minimax_openai_chat,
@@ -136,13 +137,17 @@ def llm_dialogue_reply(
     relationship: Any | None = None,
 ) -> dict[str, Any]:
     model = dialogue_model()
-    anthropic_key = _sanitize_api_key(os.getenv("ANTHROPIC_API_KEY") or "")
-    minimax_key = _sanitize_api_key(os.getenv("MINIMAX_API_KEY") or "")
-    api_key = _select_api_key(
-        model=model, anthropic_key=anthropic_key, minimax_key=minimax_key
-    )
-    if not api_key:
-        raise RuntimeError("llm_key_missing")
+    if adapter_enabled():
+        # Provider-specific keys are resolved by ai_provider.py.
+        anthropic_key = minimax_key = api_key = "adapter"
+    else:
+        anthropic_key = _sanitize_api_key(os.getenv("ANTHROPIC_API_KEY") or "")
+        minimax_key = _sanitize_api_key(os.getenv("MINIMAX_API_KEY") or "")
+        api_key = _select_api_key(
+            model=model, anthropic_key=anthropic_key, minimax_key=minimax_key
+        )
+        if not api_key:
+            raise RuntimeError("llm_key_missing")
 
     agent = _agent_by_id(state, npc_id)
     profile = get_agent_profile(project_root, npc_id)
@@ -170,7 +175,15 @@ def llm_dialogue_reply(
         ]
     )
 
-    if _is_openai_chat_model(model):
+    if adapter_enabled():
+        content = generate_text(
+            system=system,
+            user=user,
+            model=model,
+            max_tokens=600,
+            temperature=0.2,
+        )
+    elif _is_openai_chat_model(model):
         base_url = (
             os.getenv("MINIMAX_OPENAI_BASE_URL")
             or "https://api.minimax.io/v1"
@@ -220,6 +233,7 @@ def llm_dialogue_reply(
         "npc_id": npc_id,
         **parsed,
         "source": "llm",
+        **({"llm_provider": provider_meta(model)} if adapter_enabled() else {}),
     }
 
 

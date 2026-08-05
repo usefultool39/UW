@@ -57,6 +57,7 @@
 - 关系、重要记忆、承诺、紧张关系和后续回响。
 - 记忆按 `run_id` 隔离。
 - scripted 默认；hybrid/agent 配置和回退骨架。
+- `ai_provider.py` 已建立统一 Provider 适配器，支持 StepFun / SenseTime / OpenAI-compatible 配置；失败自动回退，不改变 Session 世界事实。
 - 后端保有世界事实、资源、剧情闸和奖励最终决定权。
 
 ### 工程
@@ -69,7 +70,7 @@
 ## 本轮验证基线（2026-08-04）
 
 - 后端：205 passed；1 个 Starlette/httpx 第三方弃用警告。
-- 前端单元测试：14 passed。
+- 前端单元测试：12 passed。
 - 前端 production build：通过。
 - Playwright E2E：11 passed。
 - `git diff --check`：通过。

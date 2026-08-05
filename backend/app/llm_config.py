@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 
+from .ai_provider import adapter_enabled, provider_meta
 from .npc_runtime import npc_runtime_meta
 
 DEFAULT_ACTION_MODEL = "M2-H"
@@ -38,6 +39,8 @@ def _coalesce_model(*candidates: str | None, default: str) -> str:
 
 def action_model() -> str:
     return _coalesce_model(
+        _read_env("LLM_ACTION_MODEL"),
+        _read_env("LLM_MODEL"),
         _read_env("ACTION_MODEL"),
         _read_env("ANTHROPIC_MODEL"),
         _read_env("MINIMAX_MODEL"),
@@ -48,6 +51,8 @@ def action_model() -> str:
 
 def dialogue_model() -> str:
     return _coalesce_model(
+        _read_env("LLM_DIALOGUE_MODEL"),
+        _read_env("LLM_MODEL"),
         _read_env("DIALOGUE_MODEL"),
         _read_env("MINIMAX_DIALOGUE_MODEL"),
         action_model(),
@@ -61,6 +66,9 @@ def sanitize_key(raw: str | None) -> str:
 
 
 def model_provider_hint() -> str:
+    if adapter_enabled():
+        provider = str(provider_meta(action_model()).get("provider") or "invalid")
+        return {"stepfun": "StepFun", "sensetime": "SenseTime", "openai_compatible": "OpenAI-compatible", "minimax": "MiniMax", "anthropic": "Anthropic SDK"}.get(provider, provider)
     am = action_model()
     dm = dialogue_model()
     has_minimax_key = bool(_read_env("MINIMAX_API_KEY"))
@@ -72,12 +80,15 @@ def model_provider_hint() -> str:
 
 
 def llm_is_configured() -> bool:
+    if adapter_enabled():
+        return bool(provider_meta(action_model()).get("configured"))
     return bool(_read_env("MINIMAX_API_KEY") or _read_env("ANTHROPIC_API_KEY"))
 
 
 def model_meta() -> dict[str, str | bool]:
     return {
         **npc_runtime_meta(),
+        **({"llm_provider": provider_meta(action_model())} if adapter_enabled() else {}),
         "action_model": action_model(),
         "dialogue_model": dialogue_model(),
         "provider_hint": model_provider_hint(),
