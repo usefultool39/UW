@@ -86,6 +86,42 @@
       "next_story_node_id": "ch1_day2_anomaly",
       "advance_policy": "after_evening_settlement",
       "settlement_title": "Day 2 · 静默线被确认"
+    },
+    "3": {
+      "required_flags": {
+        "boundary_incident_resolved": 1
+      },
+      "advance_to": 4,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 3 · 边界选择留下以后",
+      "next_goal": {
+        "title": "回到书库复盘",
+        "description": "把边界前的判断写成下一步可复查的记录。"
+      }
+    },
+    "4": {
+      "required_flags": {
+        "month01_debrief_done": 1
+      },
+      "advance_to": 5,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 4 · 记录的口径",
+      "next_goal": {
+        "title": "准备第一次巡查演练",
+        "description": "让记录变成北门可以执行的安全流程。"
+      }
+    },
+    "7": {
+      "required_flags": {
+        "month01_drill_done": 1
+      },
+      "advance_to": 8,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 7 · 巡查流程留下以后",
+      "next_goal": {
+        "title": "把巡查交给村子",
+        "description": "让一次演练变成村内可复用的守望轮换。"
+      }
     }
   }
 }

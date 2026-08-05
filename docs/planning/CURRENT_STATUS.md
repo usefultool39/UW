@@ -53,6 +53,8 @@
 - 当前仍未调用真实外部 API，未读取或修改 `/Users/lzm/Desktop/ai-shop`，未宣称完成真人盲测或商业化授权。
 - 最新 Git 状态：`main...origin/main` 已同步，远端与本地均为 `94cc27a`。
 - 本轮新增存档导入安全：清空旧 pending 写入、重置单局 AI 预算、过滤导入记忆危险文本；后端质量门更新为 `237 passed`。
+- 本轮新增 Day 4 / Day 7 显式剧情闸门：Day 3 边界选择、Day 4 书库复盘、Day 7 北门巡查演练现在不能被休息直接跳过；后端质量门更新为 `240 passed`，Playwright E2E 更新为 `13 passed`。
+- E2E 后端通过 `UW_RATE_LIMIT_ENABLED=0` 隔离本地 smoke 请求；生产默认仍开启 SlowAPI 限流。
 
 ## 已经完成
 

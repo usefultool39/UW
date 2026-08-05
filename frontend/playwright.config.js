@@ -39,6 +39,7 @@ export default defineConfig({
       command: `${backendPython} -m uvicorn app.main:app --host 127.0.0.1 --port ${backendPort}`,
       cwd: '../backend',
       url: `${backendUrl}/api/health`,
+      env: { ...process.env, UW_RATE_LIMIT_ENABLED: '0' },
       reuseExistingServer: !process.env.CI,
       timeout: 120_000
     },

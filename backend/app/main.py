@@ -38,7 +38,8 @@ def _cors_allow_origins() -> list[str]:
     ]
 
 
-limiter = Limiter(key_func=get_remote_address)
+_rate_limit_enabled = (os.getenv("UW_RATE_LIMIT_ENABLED", "1").strip().lower() not in {"0", "false", "no", "off"})
+limiter = Limiter(key_func=get_remote_address, enabled=_rate_limit_enabled)
 app = FastAPI(title="边境回声 · 日常/主线框架 API")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)

@@ -246,3 +246,48 @@ def test_day_three_variant_carries_confessed_note_echo_forward():
     assert "坦白的书页符号" in event["description"]
     hide = next(choice for choice in event["choices"] if choice["id"] == "hide_anomaly")
     assert "裂痕" in hide["hint"]
+
+
+def test_day_three_cannot_advance_before_boundary_choice():
+    sess = Session(run_id="test-story-day3-gate")
+    sess.state = sess.state.model_copy(
+        update={"day": 3, "flags": {"forest_anomaly_seen": 1}}
+    )
+
+    out = sess.player_action(kind="rest_until_next_day")
+
+    assert out["ok"] is False
+    assert out["error"] == "day_end_gate_incomplete"
+    assert out["missing"] == [
+        {"type": "flag", "key": "boundary_incident_resolved", "expected": 1, "actual": 0}
+    ]
+
+
+def test_day_four_cannot_advance_before_debrief():
+    sess = Session(run_id="test-story-day4-gate")
+    sess.state = sess.state.model_copy(
+        update={"day": 4, "flags": {"boundary_incident_resolved": 1}}
+    )
+
+    out = sess.player_action(kind="rest_until_next_day")
+
+    assert out["ok"] is False
+    assert out["error"] == "day_end_gate_incomplete"
+    assert out["missing"] == [
+        {"type": "flag", "key": "month01_debrief_done", "expected": 1, "actual": 0}
+    ]
+
+
+def test_day_seven_cannot_advance_before_first_boundary_drill():
+    sess = Session(run_id="test-story-day7-gate")
+    sess.state = sess.state.model_copy(
+        update={"day": 7, "flags": {"month01_debrief_done": 1}}
+    )
+
+    out = sess.player_action(kind="rest_until_next_day")
+
+    assert out["ok"] is False
+    assert out["error"] == "day_end_gate_incomplete"
+    assert out["missing"] == [
+        {"type": "flag", "key": "month01_drill_done", "expected": 1, "actual": 0}
+    ]

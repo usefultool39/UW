@@ -316,6 +316,44 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.milestone-row').filter({ hasText: 'Day 4-6' })).toBeVisible()
   })
 
+  test('Day 4 与 Day 7 事件成为可持续主线的日期闸门', async ({ request }) => {
+    await storyChoose(request, { event_id: 'ch1_d1_reading_clue', choice_id: 'ask_alice' })
+    await playerAction(request, { kind: 'rest_until_next_day' })
+    await storyChoose(request, { event_id: 'ch1_d2_forest_anomaly', choice_id: 'investigate_together' })
+    await playerAction(request, { kind: 'rest_until_next_day' })
+
+    const blockedDay3 = await request.post(`${API}/api/player/action`, {
+      data: { kind: 'rest_until_next_day' }
+    })
+    const blockedDay3Body = await blockedDay3.json()
+    expect(blockedDay3Body.ok).toBeFalsy()
+    expect(blockedDay3Body.missing[0].key).toBe('boundary_incident_resolved')
+
+    await storyChoose(request, { event_id: 'ch1_d3_boundary_choice', choice_id: 'cross_boundary' })
+    await restToDay(request, 4)
+
+    const blockedDay4 = await request.post(`${API}/api/player/action`, {
+      data: { kind: 'rest_until_next_day' }
+    })
+    const blockedDay4Body = await blockedDay4.json()
+    expect(blockedDay4Body.ok).toBeFalsy()
+    expect(blockedDay4Body.missing[0].key).toBe('month01_debrief_done')
+
+    await storyChoose(request, { event_id: 'ch1_d4_after_boundary_debrief', choice_id: 'write_truth' })
+    await restToDay(request, 7)
+
+    const blockedDay7 = await request.post(`${API}/api/player/action`, {
+      data: { kind: 'rest_until_next_day' }
+    })
+    const blockedDay7Body = await blockedDay7.json()
+    expect(blockedDay7Body.ok).toBeFalsy()
+    expect(blockedDay7Body.missing[0].key).toBe('month01_drill_done')
+
+    await storyChoose(request, { event_id: 'ch1_d7_first_boundary_drill', choice_id: 'mark_safe_route' })
+    const day8 = await playerAction(request, { kind: 'rest_until_next_day' })
+    expect(day8.state.day).toBe(8)
+  })
+
   test('北境短程巡查可判断敌意、消耗资源并获得累计标记', async ({ page, request }) => {
     await setFlags(request, ['forest_anomaly_seen'])
     await playerAction(request, { kind: 'move_scene', scene_id: 'north_gate' })
