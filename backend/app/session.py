@@ -120,6 +120,11 @@ class Session:
             except Exception as exc:
                 return {"ok": False, "error": f"invalid_state: {exc}"}
 
+            # Drop writes from the abandoned in-memory timeline and start a
+            # fresh AI budget for the imported playthrough snapshot.
+            self._pending_jsonl.clear()
+            self._pending_memory.clear()
+            self.agent_budget = AgentBudget()
             self.state = restored
             self._refresh_runtime_views()
             raw_events = payload.get("events")

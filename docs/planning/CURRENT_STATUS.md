@@ -49,9 +49,10 @@
 - 新增 `backend/app/npc_intent_agent.py` 与 `backend/app/intent_policy.py`：模型只能从当前 authored NPC intent/response 中提出预览建议；`POST /api/npc/{npc_id}/intent/propose` 不直接提交世界效果。
 - 新增 `backend/app/agent_budget.py`：每局默认总计 24 次 AI 调用（action 12、dialogue 12、intent 6），耗尽后自动回退 scripted/heuristic，并写入 JSONL 审计。
 - LLM 行动失败时回退 heuristic；对话返回和事件新增 `memory_decision`、`memory_committed`、`ai_budget`。
-- 本轮验证：后端 `235 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。
+- 本轮验证：后端 `237 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。
 - 当前仍未调用真实外部 API，未读取或修改 `/Users/lzm/Desktop/ai-shop`，未宣称完成真人盲测或商业化授权。
 - 最新 Git 状态：`main...origin/main` 已同步，远端与本地均为 `6b02a5b`。
+- 本轮新增存档导入安全：清空旧 pending 写入、重置单局 AI 预算、过滤导入记忆危险文本；后端质量门更新为 `237 passed`。
 
 ## 已经完成
 

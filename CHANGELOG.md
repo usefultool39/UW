@@ -91,3 +91,10 @@
 #### Verification
 
 - 2026-08-05：后端 `235 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。
+
+### 2026-08-05 长期目标续航：存档导入与回放安全
+
+- 存档导入现在会清理尚未刷出的旧时间线写入，并为导入周目重置 AI 调用预算。
+- `MemoryStore.replace_summary` 对导入的永久记忆、承诺和紧张文本执行长度、权重和危险标记过滤，保留旧存档兼容但不接受控制文本。
+- 新增存档安全回放测试，确保导入恶意记忆不会进入当前 NPC 记忆上下文。
+- 本轮后端质量门：`237 passed`；已知非阻塞 Starlette/httpx 弃用警告保持不变。

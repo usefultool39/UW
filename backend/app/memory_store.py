@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import threading
 from collections import deque
 from contextlib import contextmanager
@@ -11,6 +12,31 @@ from typing import Any
 
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+_BLOCKED_IMPORT_MARKERS = (
+    "ignore previous",
+    "忽略之前",
+    "修改 flag",
+    "修改关系",
+    "修改日期",
+    "推进剧情",
+    "<script",
+    "```",
+    "http://",
+    "https://",
+)
+
+
+def _clean_import_text(value: Any, limit: int = 180) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip()[:limit]
+
+
+def _safe_import_text(value: Any, limit: int = 180) -> str:
+    text = _clean_import_text(value, limit)
+    if any(marker in text.lower() for marker in _BLOCKED_IMPORT_MARKERS):
+        return ""
+    return text
 
 
 class MemoryStore:
@@ -230,9 +256,39 @@ class MemoryStore:
                     base[key] = summary[key]
         base["npc_id"] = npc_id
         base["last_run_id"] = run_id
-        base["important_memories"] = list(base.get("important_memories") or [])[:24]
-        base["promises"] = list(base.get("promises") or [])[-20:]
-        base["tensions"] = list(base.get("tensions") or [])[-20:]
+        safe_memories: list[dict[str, Any]] = []
+        for raw_memory in list(base.get("important_memories") or []):
+            if not isinstance(raw_memory, dict):
+                continue
+            summary_text = _safe_import_text(raw_memory.get("summary"))
+            if not summary_text:
+                continue
+            try:
+                weight = max(1, min(5, int(raw_memory.get("weight", 3))))
+            except (TypeError, ValueError):
+                weight = 3
+            safe_memories.append(
+                {
+                    "recorded_at": _clean_import_text(raw_memory.get("recorded_at"), 80),
+                    "run_id": _clean_import_text(raw_memory.get("run_id"), 80),
+                    "day": raw_memory.get("day"),
+                    "type": _clean_import_text(raw_memory.get("type") or "choice", 40),
+                    "summary": summary_text,
+                    "weight": weight,
+                    "source_event": _clean_import_text(raw_memory.get("source_event"), 120),
+                }
+            )
+        base["important_memories"] = safe_memories[:24]
+        base["promises"] = [
+            text
+            for text in (_safe_import_text(item) for item in list(base.get("promises") or [])[-20:])
+            if text
+        ]
+        base["tensions"] = [
+            text
+            for text in (_safe_import_text(item) for item in list(base.get("tensions") or [])[-20:])
+            if text
+        ]
         base["last_updated_at"] = _utc_now_iso()
         with self._with_npc_lock(npc_id):
             self._save_summary(npc_id, base)
