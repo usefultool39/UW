@@ -21,6 +21,13 @@ def test_world_scene_activities_json():
     assert body.get("v") == 1
     activity = next(item for item in body["activities"] if item["id"] == "gigas_chop_rhythm")
     assert activity["repeat"] == "daily"
+    reading = next(item for item in body["activities"] if item["id"] == "church_read_sacred_arts")
+    assert reading["preview"]["resource_costs"] == {"stamina": 5}
+    assert reading["preview"]["reward_kinds"] == ["relationship", "memory", "progress"]
+    assert reading["preview"]["variable_resource_cost"] is False
+    patrol = next(item for item in body["activities"] if item["id"] == "north_gate_boundary_patrol")
+    assert patrol["preview"]["variable_resource_cost"] is True
+    assert "effects" not in reading
 
 
 def test_world_map_by_id_default():
@@ -30,6 +37,10 @@ def test_world_map_by_id_default():
     body = r.json()
     assert body["id"] == "novice_open"
     assert "rows" in body
+    reading_desk = next(poi for poi in body["pois"] if poi["id"] == "ix_reading_desk")
+    action_ids = [action["id"] for action in reading_desk["actions"]]
+    assert "church_read_sacred_arts" in action_ids
+    assert "read" not in action_ids
 
 
 def test_world_map_by_id_rejects_path_traversal():

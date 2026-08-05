@@ -1,0 +1,30 @@
+request_id,priority,status,category,title,quantity,deliverable_dir,depends_on,target_version,owner,notes
+REF-STYLE-001,P0,received,research,原创视觉方向板,3套,materials/inbox/visual/styleboards,,0.4.0-preview.2,user,首批立即执行 [v001 received 2026-08-04]
+VIS-KA-001,P0,received,visual,Day1开场关键图,3方向×2构图,materials/inbox/visual/keyart,REF-STYLE-001,0.4.0-preview.2,user,桌面与移动独立构图 [v001 received 2026-08-04]
+VIS-POR-001,P0,received,visual,三核心人物肖像样张,3人×2表情,materials/inbox/visual/portraits,REF-STYLE-001,0.4.0-preview.2,user,玩家爱丽丝尤吉欧 [v001 received 2026-08-04]
+VIS-UI-001,P0,received,visual,12枚核心UI图标样张,12,materials/inbox/visual/ui_icons,REF-STYLE-001,0.4.0-preview.2,user,24px可读 [v001 received 2026-08-04]
+AUD-BGM-001,P0,received,audio,村庄清晨主循环,2版,materials/inbox/audio/bgm,,0.4.0-preview.2,user,75至120秒无缝循环 [v001 received 2026-08-04]
+AUD-AMB-001,P0,received,audio,细雨村庄环境声,2版,materials/inbox/audio/ambience,,0.4.0-preview.2,user,90至180秒无缝循环 [v001 received 2026-08-04]
+QA-PLAY-001,P0,requested,research,真实首次玩家Day1证据,3人,materials/inbox/research/playtest,,0.4.0-preview.2,user,录屏观察访谈
+NAR-VOICE-001,P0,received,writing,三核心人物声音圣经,1套,materials/inbox/writing/character_voice,,0.4.0-preview.2,user,scripted与agent共用 [v001 received 2026-08-04]
+VIS-MAP-001,P1,deferred,visual,卢利特村主地图重绘,1主图加分层源,materials/inbox/visual/world,REF-STYLE-001;VIS-KA-001,0.4.0-preview.2,user,风格批准后启动
+VIS-POR-002,P1,deferred,visual,全角色肖像包,6人×5表情,materials/inbox/visual/portraits,VIS-POR-001,0.4.0-preview.2,user,样张批准后
+VIS-CHR-001,P1,deferred,visual,玩家地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.4.0-preview.2,user,统一脚底锚点
+VIS-CHR-002,P1,deferred,visual,爱丽丝地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.4.0-preview.2,user,统一脚底锚点
+VIS-CHR-003,P1,deferred,visual,尤吉欧地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.4.0-preview.2,user,统一脚底锚点
+VIS-CHR-004,P1,deferred,visual,支持NPC地图sprite,3人,materials/inbox/visual/characters,VIS-CHR-001;VIS-CHR-002;VIS-CHR-003,0.4.0-preview.2,user,赛尔卡加利塔加斯夫特
+VIS-ENV-001,P1,deferred,visual,六场景活动背景,6场,materials/inbox/visual/world,REF-STYLE-001;VIS-MAP-001,0.4.0-preview.2,user,无人物版优先
+VIS-UI-002,P1,deferred,visual,完整32枚UI图标,32,materials/inbox/visual/ui_icons,VIS-UI-001,0.4.0-preview.2,user,样张批准后
+VIS-VFX-001,P1,deferred,visual,神圣术与静默线VFX,1图集,materials/inbox/visual/vfx,VIS-UI-001,0.4.0-preview.2,user,移动端alpha预算
+AUD-BGM-002,P1,deferred,audio,边界调查悬念循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.4.0-preview.2,user,负空间制造不安
+AUD-BGM-003,P1,deferred,audio,关系日程温暖循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.4.0-preview.2,user,用餐炉边记录
+AUD-AMB-002,P1,deferred,audio,森林静默线环境声,2版,materials/inbox/audio/ambience,AUD-AMB-001,0.4.0-preview.2,user,normal与silent匹配
+AUD-SFX-001,P1,deferred,audio,UI与奖励反馈音包,18至24,materials/inbox/audio/sfx,AUD-BGM-001,0.4.0-preview.2,user,短促不刺耳
+AUD-SFX-002,P1,deferred,audio,移动活动边界音包,16至24,materials/inbox/audio/sfx,AUD-AMB-001,0.4.0-preview.2,user,脚步多变体
+NAR-LORE-001,P1,received,writing,书库北境记录碎片,24条,materials/inbox/writing/lore,,0.4.0-preview.2,user,可并行 [v001 received 2026-08-04]
+NAR-BARK-001,P1,received,writing,村庄环境短句,120条,materials/inbox/writing/ambient_barks,,0.4.0-preview.2,user,按地点时段剧情阶段 [v001 received 2026-08-04]
+AI-CORPUS-001,P1,deferred,writing,NPC对话测试集,150场景,materials/inbox/writing/agent_corpus,NAR-VOICE-001,0.4.0-preview.2,user,包含越权与fallback
+REF-FONT-001,P1,received,research,可商用中文字体候选,3至5套,materials/inbox/research/font_licenses,,0.4.0-preview.2,user,必须有许可证据 [v001 received 2026-08-04]
+REF-MOOD-001,P1,requested,research,可追溯参考包,30至60项,materials/inbox/research/moodboards,,0.4.0-preview.2,user,"可并行; [暂停待续 2026-08-04 23:27: Wikimedia不可达(000), 已定Met OpenAccess方案, 见 RESUME_NEXT.md 第2节]"
+VIS-MARKETING-001,P2,deferred,visual,商店页封面横幅,5比例,materials/inbox/visual/keyart,QA-PLAY-001;VIS-KA-001,0.4.0-preview.3,user,玩法盲测后
+AUD-VOICE-001,P2,deferred,audio,临时角色语音小样,1套,materials/inbox/audio/sfx,NAR-VOICE-001,0.4.0-preview.3,user,当前不启动

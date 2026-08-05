@@ -1,0 +1,2 @@
+asset_id,request_id,status,source_file,runtime_file,sha256,creator,tool_model,created_at,license,source_url,attribution_required,attribution_text,approved_by,approved_at,integrated_at,replaces_asset_id,notes
+EXAMPLE-DO-NOT-USE,VIS-KA-001,received,materials/inbox/visual/keyart/example.png,,sha256-here,user,provider-model,2026-08-04,provider-commercial-output,none,false,,,none,,,示例行请复制后删除

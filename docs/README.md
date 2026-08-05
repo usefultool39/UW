@@ -47,6 +47,12 @@
 - [RELEASE_PROCESS](delivery/RELEASE_PROCESS.md)：发布与回滚。
 - [VERSIONING](delivery/VERSIONING.md)：版本和兼容。
 - [PLAYTEST](delivery/PLAYTEST.md)：试玩记录。
+- [RELEASE 0.4.0-preview.1](delivery/RELEASE_0.4.0-preview.1.md)：当前候选版范围、验证和限制。
+- [智能体交接文档](delivery/HANDOFF_20260805.md)：当前项目事实、不可破坏边界、验证基线、P0/P1 接手顺序和交接完成定义。
+- [素材宏观审查快照](delivery/MATERIALS_MACRO_AUDIT_20260805.md)：2026-08-05 新增素材的静态审查结论。
+- [素材审核清单](delivery/MATERIALS_AUDIT_20260805.csv)：逐组可用/适配/重做/暂缓状态。
+- [素材工作区](../materials/00_INDEX.md)：素材需求、提示词、收件、权利和验收规范。
+- [素材与宏观审查动态工作台](planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md)：新增素材审核、宏观复审、P0/P1 单一待办和后续更新日志；后续交流以此为准。
 
 ### 运行
 - [RUNBOOK](operations/RUNBOOK.md)：安装、启动、停止、验证。
@@ -66,5 +72,6 @@
 | API/数据格式 | `CLIENT_CONTRACT.md` / `DATA_AND_CONTENT.md` 与测试 |
 | 玩家可见变化 | 根目录 `CHANGELOG.md` |
 | 发布 | `VERSION`、`CHANGELOG.md`、发布证据 |
+| 素材需求/来源/批准 | `materials/REQUESTS.csv`、sidecar、manifest 与 `materials/` 规范 |
 
 历史计划见 [archive/2026-legacy-plans/README.md](archive/2026-legacy-plans/README.md)。

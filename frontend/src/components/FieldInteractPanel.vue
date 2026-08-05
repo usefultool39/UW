@@ -30,7 +30,7 @@
             type="button"
             class="interact-action"
             :class="{
-              blocked: !!act.blockedReason,
+              blocked: !!act.decision?.blockedReason,
               recommended: act.type === 'story_event',
               relationship: act.activity?.interaction_kind === 'meal_choice' || act.type === 'npc_intent_response',
               challenge: act.activity?.interaction_kind === 'reading_keywords' || act.activity?.interaction_kind === 'training'
@@ -38,13 +38,18 @@
             :data-action-id="act.id"
             :data-action-type="act.type || ''"
             :data-activity-id="act.activity?.id || act.activity_id || ''"
-            :disabled="busy || !!act.blockedReason"
+            :disabled="busy || !!act.decision?.blockedReason"
             @click="emit('interact-action', act)"
           >
             <span class="action-kicker">{{ actionKicker(act) }}<b v-if="act.type === 'story_event'">建议优先</b></span>
             <span class="action-label">{{ act.label }}</span>
             <span v-if="act.meta" class="action-meta">{{ act.meta }}</span>
             <span v-if="act.description" class="action-desc">{{ act.description }}</span>
+            <span class="decision-preview" aria-label="行动成本与收益">
+              <span v-for="cost in act.decision.costs" :key="`cost:${cost}`" class="decision-chip cost">代价 · {{ cost }}</span>
+              <span v-for="reward in act.decision.rewards" :key="`reward:${reward}`" class="decision-chip reward">收益 · {{ reward }}</span>
+            </span>
+            <span v-if="act.decision.recovery" class="action-recovery">怎么解锁：{{ act.decision.recovery }}</span>
             <span class="action-outcome">{{ actionOutcome(act) }}</span>
           </button>
         </div>
@@ -59,10 +64,12 @@
 <script setup>
 import { computed } from 'vue'
 import { compactPlayerText, uwCanonText } from '../utils/uwCanonText.js'
+import { buildActionDecisionPreview } from '../field/actionDecisionPreview.js'
 
 const props = defineProps({
   nearbyInteract: { type: Object, default: null },
   visibleInteractActions: { type: Array, default: () => [] },
+  simState: { type: Object, default: null },
   busy: { type: Boolean, default: false },
   modelValue: { type: Boolean, default: false }
 })
@@ -91,12 +98,13 @@ const displayVisibleInteractActions = computed(() =>
     ...action,
     label: compactPlayerText(action.label, 44),
     meta: compactPlayerText(playerFacingMeta(action), 56),
-    description: compactPlayerText(action.description, 92)
+    description: compactPlayerText(action.description, 92),
+    decision: buildActionDecisionPreview(action, props.simState)
   }))
 )
 
 function actionOutcome(action) {
-  if (action?.blockedReason) return `暂不可用：${uwCanonText(action.blockedReason)}`
+  if (action?.decision?.blockedReason) return `暂不可用：${uwCanonText(action.decision.blockedReason)}`
   if (action?.type === 'npc_intent_response') return '结果预览：关系 / 记忆'
   if (action?.source === 'npc_intent') return '结果预览：同伴事件 / 关系'
   if (action?.type === 'story_event') return '结果预览：剧情推进 / 新线索'
@@ -299,6 +307,36 @@ const emit = defineEmits(['update:modelValue', 'interact-action'])
   font-size: 0.82rem;
   line-height: 1.45;
 }
+.decision-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.32rem;
+  margin-top: 0.3rem;
+}
+.decision-chip {
+  padding: 0.2rem 0.42rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.decision-chip.cost {
+  color: #fed7aa;
+  background: rgba(124, 45, 18, 0.34);
+  border: 1px solid rgba(251, 146, 60, 0.24);
+}
+.decision-chip.reward {
+  color: #d9f99d;
+  background: rgba(54, 83, 20, 0.32);
+  border: 1px solid rgba(163, 230, 53, 0.22);
+}
+.action-recovery {
+  margin-top: 0.24rem;
+  color: #fde68a;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
 .action-outcome {
   margin-top: 0.28rem;
   padding-top: 0.38rem;

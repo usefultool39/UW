@@ -1,0 +1,58 @@
+{
+  "AUD-AMB-001_drizzle_village_a_v001": {
+    "type": "ambience",
+    "duration": 114.0,
+    "version": "a",
+    "status": "changes_requested",
+    "replaced_by": "AUD-AMB-001_drizzle_village_a_v002"
+  },
+  "AUD-AMB-001_drizzle_village_a_v002": {
+    "type": "ambience",
+    "duration": 114.0,
+    "version": "a",
+    "lufs": -24.6,
+    "true_peak_dbtp": -13.1,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 2,
+    "runtime_format": "ogg",
+    "master_format": "wav",
+    "runtime_file": "ambience/v002/AUD-AMB-001_drizzle_village_a_v002.ogg",
+    "master_file": "ambience/v002/AUD-AMB-001_drizzle_village_a_v002.wav",
+    "replaces": "AUD-AMB-001_drizzle_village_a_v001",
+    "loop_safe": true
+  },
+  "AUD-AMB-001_drizzle_village_b_v001": {
+    "type": "ambience",
+    "duration": 104.0,
+    "version": "b",
+    "status": "changes_requested",
+    "replaced_by": "AUD-AMB-001_drizzle_village_b_v002"
+  },
+  "AUD-AMB-001_drizzle_village_b_v002": {
+    "type": "ambience",
+    "duration": 104.0,
+    "version": "b",
+    "lufs": -24.6,
+    "true_peak_dbtp": -12.4,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 2,
+    "runtime_format": "ogg",
+    "master_format": "wav",
+    "runtime_file": "ambience/v002/AUD-AMB-001_drizzle_village_b_v002.ogg",
+    "master_file": "ambience/v002/AUD-AMB-001_drizzle_village_b_v002.wav",
+    "replaces": "AUD-AMB-001_drizzle_village_b_v001",
+    "loop_safe": true
+  },
+  "AUD-BGM-001_village_dawn_a_v001": {
+    "type": "bgm",
+    "duration": 91.0,
+    "version": "a"
+  },
+  "AUD-BGM-001_village_dawn_b_v001": {
+    "type": "bgm",
+    "duration": 83.0,
+    "version": "b"
+  }
+}

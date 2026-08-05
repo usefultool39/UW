@@ -153,8 +153,21 @@ if [ "$SETUP_ONLY" -eq 1 ]; then
   exit 0
 fi
 
-port_in_use "$BACKEND_PORT" && fail "端口 $BACKEND_PORT 已被占用，请先关闭占用该端口的程序"
-port_in_use "$FRONTEND_PORT" && fail "端口 $FRONTEND_PORT 已被占用，请先关闭占用该端口的程序"
+free_port() {
+  local port=$1 pids
+  trap - ERR
+  set +e
+  pids=$(lsof -nP -iTCP:"$port" -sTCP:LISTEN -t 2>/dev/null)
+  set -e
+  trap pause_on_error ERR
+  if [ -n "$pids" ]; then
+    warn "端口 $port 已被占用，正在自动释放..."
+    echo "$pids" | xargs kill -9 2>/dev/null || true
+    sleep 1
+  fi
+}
+free_port "$BACKEND_PORT"
+free_port "$FRONTEND_PORT"
 
 trap cleanup INT TERM EXIT
 

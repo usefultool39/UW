@@ -177,6 +177,67 @@
       "participants": ["alice", "eugeo"],
       "choices": [
         {
+          "id": "use_alice_marked_record",
+          "label": "按艾琳昨天圈出的记录对照静默线",
+          "hint": "延续 Day 1 的公开线索：更快定位异常，艾琳会记得你没有把她排除在外。",
+          "conditions": {
+            "required_flags": { "alice_warned_boundary": 1 },
+            "forbidden_flags": { "kept_boundary_note": 1 }
+          },
+          "result_text": "你摊开昨天共同看过的记录，沿着艾琳圈出的“鸟声消失”逐项对照。她把刻印标记压在静默线外，低声确认：昨天的担心不是多余的，而你也没有让她最后一个知道。",
+          "effects": {
+            "flags": {
+              "forest_anomaly_seen": 1,
+              "followed_alice_mark_day2": 1
+            },
+            "story_node_id": "ch1_day2_anomaly",
+            "relationship": {
+              "alice.trust": 5,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家把第一天与艾琳共享并由她圈出的边界记录带到森林，依照共同记录确认了静默线。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "confess_hidden_note",
+          "label": "把昨天隐瞒的书页符号告诉艾琳",
+          "hint": "承认隐瞒会带来短期紧张，但能补全判断并修复信任。",
+          "conditions": {
+            "required_flags": { "kept_boundary_note": 1 },
+            "forbidden_flags": { "alice_warned_boundary": 1 }
+          },
+          "result_text": "你在真正的异常前拿出昨天记下的书页符号，承认自己没有立刻告诉她。艾琳沉默了一息，还是接过记录补上刻印：她不喜欢被瞒着，但更在意你现在选择把事实补全。",
+          "effects": {
+            "flags": {
+              "forest_anomaly_seen": 1,
+              "confessed_hidden_note_day2": 1
+            },
+            "story_node_id": "ch1_day2_anomaly",
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 2,
+              "eugeo.trust": 1
+            },
+            "tensions": {
+              "alice": "玩家第一天隐瞒了边界书页符号，但在第二天异常出现时主动补全事实。"
+            },
+            "memory": {
+              "alice": {
+                "type": "choice",
+                "summary": "玩家第一天隐瞒了书页符号，但在第二天静默线真正出现时向艾琳坦白并补全了记录。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
           "id": "honor_alice_caution",
           "label": "按昨晚约定：先让艾琳确认安全距离",
           "hint": "只有 Day 1 晚餐偏向艾琳时出现。稳住关系，但调查会更慢。",
@@ -399,6 +460,32 @@
       "title": "第三天：边界线前",
       "description": "你们终于站到那条看不见的边界前。规则没有声音，却比任何命令都更清楚地压在每个人心上。",
       "variants": [
+        {
+          "id": "from_day2_alice_record",
+          "when": { "required_flags": { "followed_alice_mark_day2": 1 } },
+          "description": "你们终于站到那条看不见的边界前。昨天按艾琳圈出的记录对照过的静默线仍在脚下延伸；她把那页共同记录夹在本子里，等你决定是把事实带回村里，还是把判断推进到边界另一侧。",
+          "choice_overrides": {
+            "cross_boundary": {
+              "hint": "沿着共同记录把判断推进到最后一步；艾琳会记住你没有把她排除在真相之外。"
+            },
+            "obey_order": {
+              "hint": "把共同记录带回村里，让这次异常先成为所有人都能复核的事实。"
+            }
+          }
+        },
+        {
+          "id": "from_day2_confessed_note",
+          "when": { "required_flags": { "confessed_hidden_note_day2": 1 } },
+          "description": "你们终于站到那条看不见的边界前。昨天坦白的书页符号已经补进艾琳的记录，纸页上的空白不再能被当成没发生过；她等你决定是否继续对事实负责。",
+          "choice_overrides": {
+            "obey_order": {
+              "hint": "把已经补全的事实带回村里，别让这次坦白只停在两个人之间。"
+            },
+            "hide_anomaly": {
+              "hint": "重新把异常压回沉默，会让昨天刚修复的信任再次出现裂痕。"
+            }
+          }
+        },
         {
           "id": "from_day2_together",
           "when": { "required_flags": { "promise_investigate_with_eugeo": 1 } },

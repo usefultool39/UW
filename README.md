@@ -11,6 +11,8 @@
 | 已经做了什么、测试基线、已知风险 | [当前状态](docs/planning/CURRENT_STATUS.md) |
 | 最终要做成什么 | [产品简述](docs/product/PRODUCT_BRIEF.md) / [路线图](docs/product/ROADMAP.md) |
 | 下一阶段只做什么 | [下一阶段](docs/planning/NEXT_PHASE.md) |
+| 当前候选版说明 | [0.4.0-preview.1](docs/delivery/RELEASE_0.4.0-preview.1.md) |
+| 需要我准备什么素材 | [素材总目录](materials/00_INDEX.md) / [详细需求](materials/01_REQUEST_CATALOG.md) |
 | 如何规范开发 | [开发流程](docs/delivery/DEVELOPMENT_PROCESS.md) / [贡献指南](CONTRIBUTING.md) |
 | 全部文档 | [文档中心](docs/README.md) |
 

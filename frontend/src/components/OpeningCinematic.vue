@@ -15,11 +15,9 @@
         </div>
         <div class="opening-actions">
           <button type="button" class="opening-primary" @click="$emit('focus-first-event')">
-            开始记录
+            定位第一条线索
           </button>
-          <button type="button" class="opening-secondary" @click="$emit('skip')">
-            开始行动
-          </button>
+          <span class="opening-action-hint">点击后会把镜头带到书库方向，接着跟随金色指引移动。</span>
         </div>
       </div>
       <div class="opening-status" aria-hidden="true">
@@ -144,6 +142,14 @@ defineEmits(['focus-first-event', 'skip'])
   font-weight: 900;
 }
 
+.opening-action-hint {
+  align-self: center;
+  max-width: 24rem;
+  color: rgba(255, 247, 223, 0.7);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 .opening-primary {
   color: #2e2113;
   background: linear-gradient(180deg, #fff2bb, #d89442);
@@ -215,12 +221,18 @@ defineEmits(['focus-first-event', 'skip'])
 
   .opening-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    gap: 0.52rem;
   }
 
   .opening-actions button {
+    width: 100%;
     padding: 0 0.55rem;
     font-size: 0.88rem;
+  }
+
+  .opening-action-hint {
+    max-width: none;
+    font-size: 0.72rem;
   }
 
   .opening-status {

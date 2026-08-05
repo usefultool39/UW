@@ -35,6 +35,39 @@ def find_scene_activity(project_root: Path, activity_id: str) -> dict[str, Any] 
     return None
 
 
+def _public_activity_preview(item: dict[str, Any]) -> dict[str, Any]:
+    """Expose decision-relevant categories without leaking authored effects or memory text."""
+    effects = item.get("effects") if isinstance(item.get("effects"), dict) else {}
+    resource_costs: dict[str, int] = {}
+    for source_key, public_key in (
+        ("hp_cost", "hp"),
+        ("mp_cost", "mp"),
+        ("stamina_cost", "stamina"),
+    ):
+        try:
+            amount = int(effects.get(source_key) or 0)
+        except (TypeError, ValueError):
+            amount = 0
+        if amount > 0:
+            resource_costs[public_key] = amount
+
+    reward_kinds: list[str] = []
+    if isinstance(effects.get("relationship"), dict) and effects["relationship"]:
+        reward_kinds.append("relationship")
+    if isinstance(effects.get("memory"), dict) and effects["memory"]:
+        reward_kinds.append("memory")
+    if isinstance(effects.get("flags"), dict) and effects["flags"]:
+        reward_kinds.append("progress")
+    if isinstance(effects.get("resource_changes"), dict) and effects["resource_changes"]:
+        reward_kinds.append("resources")
+
+    return {
+        "resource_costs": resource_costs,
+        "reward_kinds": reward_kinds,
+        "variable_resource_cost": item.get("interaction_kind") == "boundary_patrol",
+    }
+
+
 def public_scene_activities(project_root: Path) -> dict[str, Any]:
     raw = load_scene_activities(project_root)
     out = []
@@ -61,6 +94,7 @@ def public_scene_activities(project_root: Path) -> dict[str, Any]:
             )
             if key in item
         }
+        row["preview"] = _public_activity_preview(item)
         choices = item.get("choices")
         if isinstance(choices, list):
             row["choices"] = [

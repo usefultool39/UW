@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.5"
+     stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="线索">
+  <title>clue / 线索</title>
+  <circle cx="10" cy="10" r="5.6"/>
+  <path d="M14.1 13.9 L20.4 20.2"/>
+  <path d="M7.3 10.7 c1.1 -2.1 2.1 -2.1 2.9 0 c0.8 2.1 1.8 2.1 2.9 0"/>
+</svg>

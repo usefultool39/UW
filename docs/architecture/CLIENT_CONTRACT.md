@@ -45,7 +45,7 @@
 - `PlayerState`：`map_id`、`scene_id`、`tile_x`、`tile_y`、`hp/mp/stamina`。
 - `AgentState`：`id`、`map_id`、`scene_id`、`tile_x`、`tile_y`、`mood`、`current_goal`。
 - `MapData`：`id`、`width`、`height`、`tile_size`、`visual`、`spawn`、`walkable`、`scene_zones`、`pois`、`rows`。
-- `SceneActivity`：`id`、`scene_ids`、`time_bands`、`interaction_kind`、`choices`、`effects`。
+- `SceneActivity`：`id`、`scene_ids`、`time_bands`、`interaction_kind`、`choices`、`preview`。公开 `preview` 只包含 `resource_costs`、`reward_kinds`、`variable_resource_cost`；完整 authored effects 只留在后端。
 - `StoryEvent`：`id`、`kind`、`title`、`description`、`location`、`participants`、`choices`。
 - `NpcIntent`：`id`、`npc_id`、`kind`、`title`、`description`、`scene_id`、`tile_x/y`、`priority`、`reason`、`action`、`stakes`、`response_options`。
 - `PlayerActionResult`：`ok`、`state`、`events`、`camera`、`scene_update`，可选 `path`、`activity_result`、`intent_result`、`relationship_changes`、`memory_written`、`error`。

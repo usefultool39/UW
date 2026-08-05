@@ -106,6 +106,20 @@ const fragments = [
 
 const stances = [
   {
+    id: 'marked_record',
+    requiresChoice: 'use_alice_marked_record',
+    choiceIds: ['use_alice_marked_record'],
+    label: '按爱丽丝昨天圈出的记录对照静默线',
+    hint: '把 Day 1 共同记录变成今天的现场判断，让她看到你没有忘记。'
+  },
+  {
+    id: 'hidden_note',
+    requiresChoice: 'confess_hidden_note',
+    choiceIds: ['confess_hidden_note'],
+    label: '把昨天隐瞒的书页符号告诉爱丽丝',
+    hint: '承认隐瞒会带来紧张，但能补全线索并开始修复信任。'
+  },
+  {
     id: 'caution',
     choiceIds: ['honor_alice_caution', 'investigate_together'],
     label: '先守住安全距离',
@@ -223,7 +237,8 @@ watch(
   () => [props.modelValue, props.event?.id],
   ([open]) => {
     if (open) reset()
-  }
+  },
+  { flush: 'sync' }
 )
 </script>
 

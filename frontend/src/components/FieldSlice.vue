@@ -29,6 +29,7 @@
     <div class="playfield-shell">
       <!-- Player HUD (top-left overlay) -->
       <PlayerHUD :sim-state="simState" :scene-label="sceneLabel" />
+      <LoopRibbon :sim-state="simState" :story-events="storyEvents" :npc-runtime="npcRuntime" />
 
       <Transition name="brief-fade">
         <section v-if="openingBriefVisible" class="opening-brief" role="status">
@@ -79,17 +80,6 @@
         @open-interact="openInteractPanel"
       />
 
-      <Transition name="guide-fade">
-        <section v-if="newcomerGuideVisible" class="newcomer-guide" aria-live="polite">
-          <div class="newcomer-kicker">{{ newcomerGuide.kicker }}</div>
-          <h3>{{ newcomerGuide.title }}</h3>
-          <p>{{ newcomerGuide.body }}</p>
-          <button type="button" :disabled="busy" @click="onNewcomerGuideAction">
-            {{ newcomerGuide.actionLabel }}
-          </button>
-        </section>
-      </Transition>
-
       <!-- Bottom chat strip -->
       <div class="chat-strip">
         <span>系统</span>
@@ -135,6 +125,7 @@
       v-model="interactOpen"
       :nearby-interact="effectiveNearbyInteract"
       :visible-interact-actions="visibleInteractActions"
+      :sim-state="simState"
       :busy="busy"
       @interact-action="onInteractAction"
     />
@@ -186,14 +177,14 @@
       v-model="readingGameOpen"
       :activity="pendingActivityAction?.activity"
       :busy="busy"
-      @complete="onReadingComplete"
+      @complete="onActivityComplete"
     />
 
     <MealChoicePanel
       v-model="mealChoiceOpen"
       :activity="pendingActivityAction?.activity"
       :busy="busy"
-      @complete="onMealChoiceComplete"
+      @complete="onActivityComplete"
     />
 
     <BoundaryPatrolMiniGamePanel
@@ -201,7 +192,7 @@
       :activity="pendingActivityAction?.activity"
       :player="simState?.player"
       :busy="busy"
-      @complete="onBoundaryPatrolComplete"
+      @complete="onActivityComplete"
     />
 
     <StoryResultPanel
@@ -227,6 +218,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import FieldHeader from './FieldHeader.vue'
 import PlayerHUD from './PlayerHUD.vue'
+import LoopRibbon from './LoopRibbon.vue'
 import FieldMap from './FieldMap.vue'
 import QuestTracker from './QuestTracker.vue'
 import Hotbar from './Hotbar.vue'
@@ -248,7 +240,8 @@ import Toast from './Toast.vue'
 import { getAgentLabel, getQuestGuide, getSceneLabel, getTimeBandLabel } from '../field/gameContentConfig.js'
 import { findNearbyInteractPoi } from '../field/interactPoi.js'
 import { DEFAULT_MAP_ID } from '../field/sceneRegistry.js'
-import { activityIdForAction, activityOpenMessage, activityPanelKind, shouldOpenActivityPanel } from '../field/activityRegistry.js'
+import { dedupeActivityActions } from '../field/interactActionMerge.js'
+import { activityCompletionMessage, activityIdForAction, activityOpenMessage, activityPanelKind, activityResultExtras, shouldOpenActivityPanel } from '../field/activityRegistry.js'
 import { useAudio } from '../composables/useAudio.js'
 import { useFieldToast } from '../composables/useFieldToast.js'
 import { compactPlayerText, uwCanonText } from '../utils/uwCanonText.js'
@@ -310,6 +303,12 @@ const mealChoiceOpen = ref(false)
 const boundaryPatrolOpen = ref(false)
 const pendingActivityAction = ref(null)
 const storyResult = ref(null)
+
+const activityPanelRefs = Object.freeze({
+  reading: readingGameOpen,
+  meal: mealChoiceOpen,
+  patrol: boundaryPatrolOpen
+})
 const npcProfile = ref(null)
 
 let sceneInstance = null
@@ -439,7 +438,11 @@ const visibleInteractActions = computed(() => {
       .filter((a) => !a.requires_story || a.requires_story === nid)
       .map(enrichInteractAction)
     : []
-  return [...npcIntentActions.value, ...naturalStoryEventActions.value, ...base]
+  return dedupeActivityActions([
+    ...npcIntentActions.value,
+    ...naturalStoryEventActions.value,
+    ...base
+  ])
 })
 
 const selectedNpc = computed(() =>
@@ -569,29 +572,12 @@ const anyModalOpen = computed(() =>
   journalOpen.value
 )
 
-const newcomerGuide = computed(() => {
-  const event = primaryStoryEvent.value
-  const title = event?.title || '书库里的边界记录'
-  if (nearbyActionPreview.value.length && primaryEventSameScene.value && Number(primaryEventDistance.value || 99) <= 4) {
-    return {
-      kicker: '线索已靠近',
-      title: '可以处理眼前的线索',
-      body: '你已经走到关键地点附近。打开附近互动，先把第一条记录变成真正的选择。',
-      actionLabel: '打开附近互动',
-      action: 'interact'
-    }
-  }
-  return {
-    kicker: '路线追踪',
-    title: '先锁定第一条线索',
-    body: `${title}会把今天的目标串起来。跟着金色标记走，先确认村西书库的旧记录。`,
-    actionLabel: '前往推荐线索',
-    action: 'event'
-  }
-})
-
 // 新手信息只保留开场与右侧主线卡，避免三个引导层同时争夺注意力。
-const newcomerGuideVisible = computed(() => false)
+const newcomerGuideVisible = computed(() =>
+  shouldShowDayOneOpening.value &&
+  openingCinematicDismissed.value &&
+  openingBriefDismissed.value
+)
 
 function compactGuideText(value, maxLength = 30) {
   const text = String(value || '').replace(/\s+/g, ' ').trim()
@@ -667,14 +653,6 @@ async function onOpeningSkip() {
   openingBriefDismissed.value = true
   await startOpeningAudio()
   showToast('跟随金色指引，先去教会书库确认异常记录。', 'info')
-}
-
-function onNewcomerGuideAction() {
-  if (newcomerGuide.value.action === 'interact' && nearbyActionPreview.value.length) {
-    openInteractPanel()
-    return
-  }
-  openRecommendedStoryEvent(primaryStoryEvent.value?.id)
 }
 
 // --- Scene ---
@@ -879,7 +857,9 @@ function enrichNpcIntentAction(intent) {
       id: `intent:${intent.id}`,
       type: 'scene_activity',
       activity_id: action.activity_id,
-      label: intent.title || activity?.label || '回应 NPC',
+      label: intent.title
+        ? `${intent.title}${activity?.label ? ` · ${activity.label}` : ''}`
+        : activity?.label || '回应 NPC',
       description: intent.description || activity?.description || '',
       meta: baseMeta,
       source: 'npc_intent',
@@ -1041,13 +1021,14 @@ async function onHotbarAction(actionId) {
       showToast(availability.reason || '先走到书库阅览台附近，再调查旧记录。')
       return
     }
-    pendingActivityAction.value = {
+    const action = {
       id: 'church_read_sacred_arts',
       type: 'scene_activity',
       activity_id: 'church_read_sacred_arts',
       activity
     }
-    readingGameOpen.value = true
+    pendingActivityAction.value = action
+    setActivityPanelOpen(action, true)
   } else if (actionId === 'train') {
     const trainingEvent = nearbyStoryEvents.value.find((event) => event?.kind === 'training')
       || storyEvents.value.find((event) => event?.kind === 'training' && (event?.location?.scene_id === props.simState?.player?.scene_id))
@@ -1118,10 +1099,7 @@ async function onInteractAction(act) {
   if (act?.type === 'scene_activity' && shouldOpenActivityPanel(act)) {
     pendingActivityAction.value = act
     interactOpen.value = false
-    const panelKind = activityPanelKind(act)
-    if (panelKind === 'reading') readingGameOpen.value = true
-    else if (panelKind === 'patrol') boundaryPatrolOpen.value = true
-    else if (panelKind === 'meal') mealChoiceOpen.value = true
+    setActivityPanelOpen(act, true)
     showToast(activityOpenMessage(act))
     return
   }
@@ -1142,6 +1120,14 @@ async function onInteractAction(act) {
   })
 }
 
+function setActivityPanelOpen(action, open) {
+  const panelKind = activityPanelKind(action)
+  const panelRef = activityPanelRefs[panelKind]
+  if (!panelRef) return false
+  panelRef.value = open
+  return true
+}
+
 async function runSceneActivity(act, extra = {}) {
   const activityId = activityIdForAction(act)
   interactOpen.value = false
@@ -1153,9 +1139,7 @@ async function runSceneActivity(act, extra = {}) {
   })
   storyResult.value = {
     ...(res.activity_result || {}),
-    reading_result: extra.reading_result || null,
-    meal_result: extra.meal_result || null,
-    patrol_result: extra.patrol_result || null,
+    ...activityResultExtras(act, extra.mini_game_result),
     relationship_changes: res.relationship_changes || res.activity_result?.relationship_changes || [],
     memory_written: res.memory_written || res.activity_result?.memory_written || [],
     promises: res.activity_result?.promises || {},
@@ -1379,50 +1363,17 @@ async function onBoundaryVerdictComplete(payload) {
   })
 }
 
-async function onReadingComplete(payload) {
+async function onActivityComplete(payload) {
   const act = pendingActivityAction.value
   if (!act || busy.value) return
   await doWithBusy(async () => {
     await runSceneActivity(act, {
       activity_choice: payload?.choice_id,
-      reading_result: payload?.result || null
+      mini_game_result: payload?.result || null
     })
-    readingGameOpen.value = false
+    setActivityPanelOpen(act, false)
     pendingActivityAction.value = null
-    showToast('书库线索已经写入日志和关系。', 'success')
-    await refreshStoryEvents()
-    sceneInstance?.syncPlayerFromState?.()
-  })
-}
-
-async function onMealChoiceComplete(payload) {
-  const act = pendingActivityAction.value
-  if (!act || busy.value) return
-  await doWithBusy(async () => {
-    await runSceneActivity(act, {
-      activity_choice: payload?.choice_id,
-      meal_result: payload?.result || null
-    })
-    mealChoiceOpen.value = false
-    pendingActivityAction.value = null
-    showToast('这次餐桌态度已经被记住。', 'success')
-    await refreshStoryEvents()
-    sceneInstance?.syncPlayerFromState?.()
-  })
-}
-
-
-async function onBoundaryPatrolComplete(payload) {
-  const act = pendingActivityAction.value
-  if (!act || busy.value) return
-  await doWithBusy(async () => {
-    await runSceneActivity(act, {
-      activity_choice: payload?.choice_id,
-      patrol_result: payload?.result || null
-    })
-    boundaryPatrolOpen.value = false
-    pendingActivityAction.value = null
-    showToast('巡查结果已写入资源、关系和边境记录。', 'success')
+    showToast(activityCompletionMessage(act) || '活动结果已写入今天的旅程。', 'success')
     await refreshStoryEvents()
     sceneInstance?.syncPlayerFromState?.()
   })
@@ -1680,94 +1631,6 @@ watch(activeMapId, async (mapId, oldMapId) => {
   box-shadow: none;
 }
 
-.newcomer-guide {
-  position: absolute;
-  z-index: 46;
-  left: 0.85rem;
-  top: 5.8rem;
-  width: min(350px, calc(100% - 2rem));
-  padding: 0.74rem 0.82rem 0.82rem;
-  border-radius: 8px;
-  color: #fff7df;
-  background:
-    linear-gradient(135deg, rgba(13, 25, 35, 0.9), rgba(31, 38, 25, 0.78)),
-    radial-gradient(circle at 6% 0%, rgba(125, 211, 252, 0.16), transparent 38%),
-    radial-gradient(circle at 100% 15%, rgba(246, 211, 110, 0.14), transparent 40%);
-  border: 1px solid rgba(180, 224, 255, 0.24);
-  box-shadow:
-    0 16px 38px rgba(2, 6, 23, 0.34),
-    inset 3px 0 0 rgba(125, 211, 252, 0.58);
-  backdrop-filter: blur(9px);
-  -webkit-backdrop-filter: blur(9px);
-  pointer-events: auto;
-}
-
-.newcomer-guide::after {
-  content: "";
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: -0.5rem;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(253, 224, 71, 0.7), transparent);
-  box-shadow: 0 0 18px rgba(253, 224, 71, 0.35);
-}
-
-.newcomer-kicker {
-  color: #7dd3fc;
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  font-weight: 900;
-}
-
-.newcomer-guide h3 {
-  margin: 0.2rem 0 0.34rem;
-  color: #fff7df;
-  font-size: 1.02rem;
-  line-height: 1.25;
-}
-
-.newcomer-guide p {
-  margin: 0;
-  color: #dbeafe;
-  font-size: 0.76rem;
-  line-height: 1.55;
-}
-
-.newcomer-guide button {
-  width: 100%;
-  min-height: 2.18rem;
-  margin-top: 0.68rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 247, 214, 0.66);
-  color: #2e2113;
-  background: linear-gradient(180deg, #fff0b6, #d8913e);
-  box-shadow: 0 0 20px rgba(246, 211, 110, 0.2);
-  font-size: 0.78rem;
-  font-weight: 900;
-}
-
-.newcomer-guide button:hover:not(:disabled) {
-  box-shadow: 0 0 28px rgba(253, 224, 71, 0.32);
-  transform: translateY(-1px);
-}
-
-.newcomer-guide button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.guide-fade-enter-active,
-.guide-fade-leave-active {
-  transition: opacity 0.24s ease, transform 0.24s ease;
-}
-
-.guide-fade-enter-from,
-.guide-fade-leave-to {
-  opacity: 0;
-  transform: translateY(8px);
-}
-
 .field-slice :deep(.field-header) {
   position: absolute;
   z-index: 50;
@@ -2010,22 +1873,6 @@ watch(activeMapId, async (mapId, oldMapId) => {
   .opening-brief h3 { font-size: 0.94rem; }
   .opening-brief p { font-size: 0.74rem; }
   .brief-actions button { flex: 1; padding: 0 0.45rem; }
-  .newcomer-guide {
-    top: 12.7rem;
-    left: 0.55rem;
-    right: 0.55rem;
-    width: auto;
-    padding: 0.62rem 0.68rem 0.72rem;
-  }
-  .newcomer-guide h3 { font-size: 0.92rem; }
-  .newcomer-guide p {
-    font-size: 0.72rem;
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  .newcomer-guide button { min-height: 2rem; }
   .chat-strip { display: none; }
 }
 </style>

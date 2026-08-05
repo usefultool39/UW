@@ -115,3 +115,123 @@ def test_day_three_cross_boundary_sets_ending_and_memory():
     assert sess.state.chapter_ending_id == "cross"
     assert sess.state.flags["boundary_rule_touched"] == 1
     assert any(item["npc_id"] == "eugeo" for item in out["memory_written"])
+
+
+def test_day_two_library_echo_choices_are_route_specific():
+    told = Session(run_id="test-story-day2-library-echo-told")
+    told.choose_story_event("ch1_d1_reading_clue", "ask_alice")
+    told.player_action(kind="rest_until_next_day")
+    told_event = next(
+        event
+        for event in told.available_story_events()["events"]
+        if event["id"] == "ch1_d2_forest_anomaly"
+    )
+    told_choices = {choice["id"]: choice for choice in told_event["choices"]}
+
+    assert "use_alice_marked_record" in told_choices
+    assert "confess_hidden_note" not in told_choices
+    assert "昨天圈出的记录" in told_choices["use_alice_marked_record"]["label"]
+
+    hidden = Session(run_id="test-story-day2-library-echo-hidden")
+    hidden.choose_story_event("ch1_d1_reading_clue", "keep_note")
+    hidden.player_action(kind="rest_until_next_day")
+    hidden_event = next(
+        event
+        for event in hidden.available_story_events()["events"]
+        if event["id"] == "ch1_d2_forest_anomaly"
+    )
+    hidden_choices = {choice["id"]: choice for choice in hidden_event["choices"]}
+
+    assert "confess_hidden_note" in hidden_choices
+    assert "use_alice_marked_record" not in hidden_choices
+    assert "昨天隐瞒" in hidden_choices["confess_hidden_note"]["label"]
+
+
+def test_day_two_marked_record_echo_applies_relationship_flag_and_memory():
+    sess = Session(run_id="test-story-day2-library-echo-marked-result")
+    sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
+    trust_before = sess.state.relationships["alice"].trust
+    sess.player_action(kind="rest_until_next_day")
+
+    out = sess.choose_story_event("ch1_d2_forest_anomaly", "use_alice_marked_record")
+
+    assert out["ok"] is True
+    assert sess.state.flags["followed_alice_mark_day2"] == 1
+    assert sess.state.relationships["alice"].trust == trust_before + 5
+    alice_memory = next(item for item in out["memory_written"] if item["npc_id"] == "alice")
+    assert "共同记录" in alice_memory["summary"]
+
+
+def test_day_two_hidden_note_echo_repairs_trust_and_records_tension():
+    sess = Session(run_id="test-story-day2-library-echo-confession-result")
+    sess.choose_story_event("ch1_d1_reading_clue", "keep_note")
+    trust_before = sess.state.relationships["alice"].trust
+    sess.player_action(kind="rest_until_next_day")
+
+    out = sess.choose_story_event("ch1_d2_forest_anomaly", "confess_hidden_note")
+
+    assert out["ok"] is True
+    assert sess.state.flags["confessed_hidden_note_day2"] == 1
+    assert sess.state.relationships["alice"].trust == trust_before + 4
+    assert "alice" in out["tensions"]
+    alice_memory = next(item for item in out["memory_written"] if item["npc_id"] == "alice")
+    assert "隐瞒" in alice_memory["summary"]
+    assert "补全" in alice_memory["summary"]
+
+
+def test_day_two_cross_route_choice_is_rejected_without_partial_write():
+    sess = Session(run_id="test-story-day2-library-echo-atomic-reject")
+    sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
+    sess.player_action(kind="rest_until_next_day")
+    sess.available_story_events()
+    state_before = sess.state.model_dump(mode="json")
+    memories_before = list(sess.npc_profile("alice")["profile"]["important_memories"])
+    event_count_before = len(sess.events)
+
+    out = sess.choose_story_event("ch1_d2_forest_anomaly", "confess_hidden_note")
+
+    assert out["ok"] is False
+    assert out["error"] == "unknown_choice"
+    assert sess.state.model_dump(mode="json") == state_before
+    assert sess.npc_profile("alice")["profile"]["important_memories"] == memories_before
+    assert len(sess.events) == event_count_before
+    assert "forest_anomaly_seen" not in sess.state.flags
+    assert "confessed_hidden_note_day2" not in sess.state.flags
+
+
+def test_day_three_variant_carries_marked_record_echo_forward():
+    sess = Session(run_id="test-story-day3-library-echo-marked")
+    sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
+    sess.player_action(kind="rest_until_next_day")
+    sess.choose_story_event("ch1_d2_forest_anomaly", "use_alice_marked_record")
+    sess.player_action(kind="rest_until_next_day")
+
+    event = next(
+        event
+        for event in sess.available_story_events()["events"]
+        if event["id"] == "ch1_d3_boundary_choice"
+    )
+
+    assert event["variant_id"] == "from_day2_alice_record"
+    assert "共同记录" in event["description"]
+    cross = next(choice for choice in event["choices"] if choice["id"] == "cross_boundary")
+    assert "共同记录" in cross["hint"]
+
+
+def test_day_three_variant_carries_confessed_note_echo_forward():
+    sess = Session(run_id="test-story-day3-library-echo-confessed")
+    sess.choose_story_event("ch1_d1_reading_clue", "keep_note")
+    sess.player_action(kind="rest_until_next_day")
+    sess.choose_story_event("ch1_d2_forest_anomaly", "confess_hidden_note")
+    sess.player_action(kind="rest_until_next_day")
+
+    event = next(
+        event
+        for event in sess.available_story_events()["events"]
+        if event["id"] == "ch1_d3_boundary_choice"
+    )
+
+    assert event["variant_id"] == "from_day2_confessed_note"
+    assert "坦白的书页符号" in event["description"]
+    hide = next(choice for choice in event["choices"] if choice["id"] == "hide_anomaly")
+    assert "裂痕" in hide["hint"]

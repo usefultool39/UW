@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.5"
+     stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="关系">
+  <title>relationship / 关系</title>
+  <circle cx="8" cy="8.6" r="3.4"/>
+  <circle cx="16" cy="15.4" r="3.4"/>
+  <path d="M10.6 10.8 L13.4 13.2"/>
+</svg>

@@ -29,6 +29,8 @@
 - [x] Day2：完成第一条任务分支并返回主 NPC，确认后续意图更新
 - [x] Day3：完成一个完整选择分支并进入小结（如 `chapter_ending_id`）
 - [x] Day1-3 总体验：首次入场 UI 层级、交互入口、提示语是否清晰
+- [x] Day1 书库选择在 Day2 出现专属关系回响；跨路线选择不可见且后端拒绝
+- [x] Day2 的共同记录 / 坦白路线在 Day3 结局判定面板继续显示专属上下文
 
 ### Day 4-6 事后复盘（第一月早期）
 
@@ -55,8 +57,9 @@
 | 2026-05-30 | | | | | | | |
 | 2026-06-01 | Day1 起始村道广场 | 首屏入场 | 首屏层级 | P2 | 打开 `http://127.0.0.1:3000`，跳过开场后观察右侧任务、底部按钮、引导气泡 | 玩家不用读文档也能知道先去村西书库 | 可读性基本成立；首屏信息量偏大，但不阻断 |
 | 2026-06-01 | Day1 起始村道广场 | 首屏视觉层级 | 浏览器基线 | 通过 / P2 | Playwright 分别截图桌面 1440x900 与移动 390x844，检查开场封面、HUD、任务追踪、热键、地图与 NPC 意图 | 首屏中文正常、核心 UI 不重叠，玩家能看到当前目标、可执行动作和地图方向 | 通过；开场封面桌面/移动观感稳定，HUD 核心区域无几何重叠。移动端底部时间推进按钮靠近热键，记录为后续 polish，不阻断 |
-| 2026-06-01 | Day1 村西书道 / 书库阅览台 | 读书与边界记录 | 交互入口重复 | P2 | 到书库打开附近互动，`church_read_sacred_arts` 同时以 NPC 主动和轻量玩法出现 | 同一关键动作最好只有一个主入口，或明确主次 | 功能可完成；后续做 Day1 引导整理时合并/降噪 |
+| 2026-06-01 / 2026-08-04 | Day1 村西书道 / 书库阅览台 | 读书与边界记录 | 交互入口重复 | P2 → 已修复 | 到书库打开附近互动，旧配置同时显示直接写 flag 的“翻阅旧记录”和 `church_read_sacred_arts` 短玩法 | 同一关键动作只有一个主入口，完成后仍写入 `prologue_reading_done` | 2026-08-04 移除 `read` shortcut；地图 API 断言入口唯一，Day 1 定向 E2E 验证短玩法、进度 flag 与后续剧情均通过 |
 | 2026-06-01 | Day1-3 | 主线闭环 | 可玩性 | 通过 | 完成读书小游戏、`ch1_d1_reading_clue`、`ch1_d2_forest_anomaly`、`ch1_d3_boundary_choice` | Day1-3 可触发、可完成、可结算 | 通过；Day2 写入 `forest_anomaly_seen=1`，Day3 写入 `chapter_ending_id=cross` |
+| 2026-08-04 | Day1 书库 → Day2 森林 | 早期选择关系回响 | 可理解性 / 因果反馈 | 通过 | Day1 选择 `keep_note`，休息到 Day2，完成边界调查并选择“把昨天隐瞒的书页符号告诉爱丽丝” | 玩家能看到坦白的短期紧张、信任修复和永久记忆；非本路线选择不可用 | 通过；写入 `confessed_hidden_note_day2=1`，爱丽丝信任 +4、紧张 +2，结果面板显示关系原因、记忆和暗线 |
 | 2026-06-01 | Day 1 首屏任务追踪 | 推荐线索按钮 | 远距离剧情触发 | P1 | 在村道广场跳过开场后点击“查看推荐线索” | 远距离只引导玩家前往书库附近，不直接打开书库剧情面板 | 已修复；远距离点击只提示“先去村西书库附近”，不再打开事件面板 |
 | 2026-06-01 | Day 4 家中炉火 / 村西书库 | Day 4-6 事后复盘 | 路线提示称呼不一致 | P2 | 完成 Day3 后休息到 Day4，观察右侧目标与书库事件 | 艾琳主动意图和当前线索都应明确指向同一个玩家目的地 | 已修复并复验；目标、NPC 关注和当前线索都指向“村西书库” |
 | 2026-06-01 | Day 4 村西书库 | Day 4-6 事后复盘 | 可玩性 | 通过 | 进入 `church_library`，打开 `ch1_d4_after_boundary_debrief`，选择 `write_truth` | 复盘事件可触发、可完成、可结算 | 通过；写入 `month01_debrief_done=1`、`month01_record_truth=1`，艾琳/尤里记忆更新，复盘意图消失 |
@@ -91,6 +94,21 @@
 - 首屏视觉层级复查：Playwright 截图 `runs/automation/codex_first_screen_desktop_20260531_190137_initial.png`、`runs/automation/codex_first_screen_mobile_20260531_190137_initial.png`、`runs/automation/codex_first_hud_desktop_20260531_190259.png`、`runs/automation/codex_first_hud_mobile_20260531_190259.png`；核心 HUD overlap 检查为 0
 - 玩家可见文案扫描：Playwright 覆盖 Day1 开场/HUD、Day4 复盘、Day39 静默线、Day46 汇合；未发现旧名、内部 id 或乱码暴露；发现 Day46 汇合后目标回退 P1 并修复
 - Day46 后续目标修复：`npm.cmd run test:e2e -- --grep "Day 46" --reporter=line`，1 passed；`npm.cmd run build`，passed；完整 E2E `npm.cmd run test:e2e -- --reporter=line`，9 passed
+- 2026-08-04 WP-2A 关系回响：`backend/tests/test_story_director_events.py` 12 passed；后端全量 203 passed；前端单测 8 passed；production build passed；定向“Day 1 隐瞒书页” E2E 1 passed；完整 E2E 11 passed；`git diff --check` passed
+- 2026-08-04 WP-1C 单一读书入口：地图 API 定向测试 1 passed；“读书、午餐、训练”定向 E2E 1 passed，确认无 `read` shortcut 且 `prologue_reading_done=1`；全量证据沿用本轮最终质量门
+- 2026-08-04 WP-2B Day 3 关系余波：剧情导演定向测试 14 passed；Day 1 隐瞒→Day 2 坦白→Day 3 上下文定向 E2E 1 passed；后端全量 205 passed；前端单测 8 passed；production build passed；完整 E2E 11 passed
+- 2026-08-04 WP-3A 活动 Registry：前端单测 9 passed，覆盖结果字段映射、interaction kind fallback 和未知活动；后端 205 passed；production build passed；完整 E2E 11 passed，读书/晚餐/巡查结果反馈均通过
+
+## 2026-08-04 WP-1D 自动试玩证据
+
+- Day 1 书库已确认不存在旧 `read` shortcut，`church_read_sacred_arts` 只显示一个 NPC 语境入口。
+- 唯一入口仍展示“耗时 2 刻 / 体力 -5 / 信任与关系收益”，并能完成短玩法、写入 `prologue_reading_done`。
+- 去重纯函数覆盖 NPC 优先、无 NPC 时基础入口保留、其他 action type 不误删。
+- 边界调查隐瞒书页路线新增选中态与确认按钮可用断言，并将打开时 reset 改为同步，避免快速操作竞态。
+- 验证结果：backend 205 passed；frontend unit 12 passed；production build passed；Playwright E2E 11 passed；`git diff --check` passed。
+- 尚未替代的证据：真实首次玩家 Day 1 盲测（60 秒首次有效互动、无需提示完成度、代价/收益复述）。
+- WP-1E 截图审计确认开场原有两个近义按钮会造成选择歧义；改为单一“定位第一条线索”入口后，自动化验证旧文案不可见、三步引导和短循环 HUD 可见。
+- WP-1F 地图截图审计确认开场后同时存在大型路线卡、短循环卡和右侧任务卡；已删除重复大型路线卡，并断言唯一主线 CTA、三步提示与短循环解释同时保留。
 
 ## 今晚目标调节
 
@@ -108,10 +126,10 @@
 - 问题发现 → 在 `runs/automation` 记录（时间、重现、日志/截图）
 - 选择一个最小可验证修复项（每轮只改一个目标）
 - 修复后执行对应 Playtest 或 E2E 条目并记录
-- 通过后更新 `NEXT_TODO.md` 与本页状态
+- 通过后更新 `planning/NEXT_PHASE.md`、`planning/CURRENT_STATUS.md` 与本页状态
 
 ## 当前状态
 
-- 版本基线：`a487210`
-- 当前验证：Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控已修复；Day 4-6 目的地口径已统一；Day1、Day2、Day4-6 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖；首屏开场与 HUD 视觉层级已做桌面/移动基线复查；Day46 汇合后目标回退 P1 已修复
-- 下一步动作：继续做玩家可见文案清理，或补 Week08 / 第二月末选择的下一组小闭环
+- 版本基线：`49ae78d` + 2026-08-04 未提交成熟化改动
+- 当前验证：Day1 书库选择→Day2 专属关系回响→Day3 结局上下文、Day1-3、Day 4-6、Day39 静默线与 Day 46（第46天）基线已通过；Day 46 旧名 P1 已修复并复验；Day39-45 旧名 P1 已清理并通过后端校验；Day 1 远距离推荐线索门控与书库重复读书入口已修复；Day 4-6 目的地口径已统一；Day1、Day2、Day4-6 与 Day46 艾琳人物厚度已有落点；Month02 save/load required_any_flags 兼容已覆盖；首屏开场与 HUD 视觉层级已做桌面/移动基线复查；Day46 汇合后目标回退 P1 已修复
+- 下一步动作：优先执行首次玩家 Day 1 盲测与候选版质量门；新增活动只通过 registry 扩展，不再回到 FieldSlice 手写分支

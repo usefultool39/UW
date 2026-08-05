@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test'
 
-const API = 'http://127.0.0.1:8765'
+const API = process.env.E2E_API_URL || `http://127.0.0.1:${process.env.E2E_BACKEND_PORT || 8765}`
 
 async function resetWorld(request) {
   const res = await request.post(`${API}/api/reset`)
@@ -72,7 +72,7 @@ async function advanceToDay31OrderRoute(request) {
 }
 
 async function dismissOpeningBrief(page) {
-  const btn = page.getByRole('button', { name: '开始行动' })
+  const btn = page.getByRole('button', { name: '定位第一条线索' })
   await btn.click({ timeout: 1_500 }).catch(() => {})
 }
 
@@ -135,6 +135,14 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.phaser-host')).toBeVisible()
     await expectCanvasNonBlank(page)
     await expectNoCoreOverlap(page)
+    await expect(page.getByRole('button', { name: '定位第一条线索' })).toHaveCount(1)
+    await expect(page.getByRole('button', { name: '开始行动' })).toHaveCount(0)
+    await page.getByRole('button', { name: '定位第一条线索' }).click()
+    await expect(page.locator('.opening-cinematic-root')).toHaveCount(0)
+    await expect(page.locator('.newcomer-guide')).toHaveCount(0)
+    await expect(page.locator('.quest-tracker .quest-primary-btn')).toHaveCount(1)
+    await expect(page.locator('.guide-steps')).toContainText('看金色指引')
+    await expect(page.locator('.loop-ribbon')).toContainText('一条线索，做一次判断')
     await page.screenshot({ path: '../runs/quality_gate_desktop.png', fullPage: false })
 
     await page.setViewportSize({ width: 390, height: 844 })
@@ -150,7 +158,13 @@ test.describe('开放世界质量 smoke', () => {
     await dismissOpeningBrief(page)
 
     await page.locator('.nearby-enter-btn').click()
-    await page.locator('.interact-action').filter({ hasText: '拼接神圣术' }).click()
+    await expect(page.locator('.interact-action[data-action-id="read"]')).toHaveCount(0)
+    await expect(page.locator('.interact-action[data-activity-id="church_read_sacred_arts"]')).toHaveCount(1)
+    const readingEntry = page.locator('.interact-action').filter({ hasText: '拼接神圣术' })
+    await expect(readingEntry.locator('.decision-chip.cost').filter({ hasText: '耗时 2 刻' })).toBeVisible()
+    await expect(readingEntry.locator('.decision-chip.cost').filter({ hasText: '体力 -5' })).toBeVisible()
+    await expect(readingEntry.locator('.decision-chip.reward').filter({ hasText: '信任 / 关系' })).toBeVisible()
+    await readingEntry.click()
     await expect(page.locator('.reading-panel')).toBeVisible()
     await page.getByRole('button', { name: /鸟声消失/ }).click()
     await page.getByRole('button', { name: /静默线/ }).click()
@@ -158,6 +172,8 @@ test.describe('开放世界质量 smoke', () => {
     await page.getByRole('button', { name: '记下这条线索' }).click()
     await expect(page.locator('.result-panel')).toBeVisible()
     await expect(page.locator('.impact-chip').filter({ hasText: '阅读线索' })).toBeVisible()
+    const readingState = await (await request.get(`${API}/api/state`)).json()
+    expect(readingState.flags.prologue_reading_done).toBe(1)
     await page.getByRole('button', { name: '继续行动' }).click()
 
     await page.locator('.nearby-enter-btn').click()
@@ -168,7 +184,7 @@ test.describe('开放世界质量 smoke', () => {
     await page.getByRole('button', { name: '继续行动' }).click()
 
     await page.locator('.nearby-enter-btn').click()
-    await page.locator('.interact-action[data-action-id="church_ask_alice_lunch"]').click()
+    await page.locator('.interact-action[data-activity-id="church_ask_alice_lunch"]').click()
     await expect(page.locator('.meal-panel')).toBeVisible()
     await page.getByRole('button', { name: /给尤吉欧多留一份干粮/ }).click()
     await page.getByRole('button', { name: '确认态度' }).click()
@@ -219,6 +235,47 @@ test.describe('开放世界质量 smoke', () => {
 
     const state = await (await request.get(`${API}/api/state`)).json()
     expect(state.flags.forest_anomaly_seen).toBe(1)
+  })
+
+  test('Day 1 隐瞒书页会在 Day 2 提供坦白并修复信任的关系回响', async ({ page, request }) => {
+    await storyChoose(request, { event_id: 'ch1_d1_reading_clue', choice_id: 'keep_note' })
+    await playerAction(request, { kind: 'rest_until_next_day' })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'gigas_clearing' })
+
+    await page.goto('/')
+    await page.getByRole('button', { name: '追踪：森林忽然安静', exact: true }).click()
+    await expect(page.locator('.probe-panel')).toBeVisible()
+    await page.getByRole('button', { name: /生成光素/ }).click()
+    await page.getByRole('button', { name: /追踪静默/ }).click()
+    await page.getByRole('button', { name: /束定距离/ }).click()
+    const confessionStance = page.locator('.stance-card').filter({ hasText: '把昨天隐瞒的书页符号告诉爱丽丝' })
+    await expect(confessionStance).toBeVisible()
+    await confessionStance.click()
+    await expect(confessionStance).toHaveClass(/selected/)
+    const confirmProbe = page.getByRole('button', { name: '确认异常' })
+    await expect(confirmProbe).toBeEnabled()
+    await confirmProbe.click()
+
+    const result = page.locator('.result-panel')
+    await expect(result).toBeVisible()
+    await expect(result).toContainText('她不喜欢被瞒着')
+    await expect(result.locator('.result-section').filter({ hasText: '关系变化' })).toContainText('爱丽丝的信任 +4')
+    await expect(result).toContainText('第二天静默线真正出现时向爱丽丝坦白')
+    await expect(result).toContainText('留下的暗线')
+
+    const state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.confessed_hidden_note_day2).toBe(1)
+    expect(state.flags.forest_anomaly_seen).toBe(1)
+    expect(state.relationships.alice.trust).toBe(4)
+    expect(state.relationships.alice.tension).toBe(3)
+
+    await page.getByRole('button', { name: '继续行动' }).click()
+    await playerAction(request, { kind: 'rest_until_next_day' })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'gigas_clearing' })
+    await page.reload()
+    await page.getByRole('button', { name: '追踪：第三天：边界线前', exact: true }).click()
+    await expect(page.locator('.verdict-panel')).toBeVisible()
+    await expect(page.locator('.verdict-context')).toContainText('坦白的书页符号已经补进')
   })
 
   test('Day 3 边界最终选择会进入结局判定小游戏并收束章节', async ({ page, request }) => {

@@ -21,6 +21,14 @@
 cd frontend && PYTHON_BIN=../backend/.venv/bin/python npm run test:e2e
 ```
 
+如果默认 `8765/3000` 被其他本地服务占用，使用隔离端口，避免 Playwright 因 `reuseExistingServer` 误连到错误 API：
+
+```bash
+cd frontend
+E2E_BACKEND_PORT=8875 E2E_FRONTEND_PORT=3077 \
+  PYTHON_BIN=../backend/.venv/bin/python npm run test:e2e
+```
+
 `quality.sh` 执行 pytest、前端单测、production build 和 `git diff --check`；UI/发布改动再执行 E2E。
 
 ## 关键不变量

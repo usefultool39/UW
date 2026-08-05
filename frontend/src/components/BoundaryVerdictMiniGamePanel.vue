@@ -18,6 +18,9 @@
       <p class="verdict-desc">
         禁忌目录、静默线和同伴的视线同时压过来。先确认你愿意承认的事实，再给出最终行动。
       </p>
+      <p v-if="event?.description" class="verdict-context">
+        {{ event.description }}
+      </p>
 
       <div class="verdict-layout">
         <section class="evidence-board">
@@ -263,10 +266,21 @@ watch(
 }
 
 .verdict-desc {
-  margin: 0.82rem 0 0.9rem;
+  margin: 0.82rem 0 0.42rem;
   color: #dbeafe;
   font-size: 0.98rem;
   line-height: 1.6;
+}
+
+.verdict-context {
+  margin: 0 0 0.9rem;
+  padding: 0.62rem 0.72rem;
+  border-left: 3px solid rgba(246, 211, 110, 0.72);
+  border-radius: 0 8px 8px 0;
+  background: rgba(120, 83, 35, 0.16);
+  color: #fef3c7;
+  font-size: 0.88rem;
+  line-height: 1.55;
 }
 
 .verdict-layout {

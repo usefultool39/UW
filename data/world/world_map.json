@@ -366,14 +366,6 @@
       "body": "尘光落在纸页上。静下心来读几章，像是穿过了一整天。",
       "actions": [
         {
-          "id": "read",
-          "label": "翻阅旧记录（标记读完书）",
-          "type": "set_flag",
-          "flag_key": "prologue_reading_done",
-          "flag_value": 1,
-          "toast": "书页里的边界记录被你记下了。留意地图上的金色章节事件。"
-        },
-        {
           "id": "church_read_sacred_arts",
           "label": "进入读书玩法：拼接刻印术线索",
           "type": "scene_activity",

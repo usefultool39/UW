@@ -2,7 +2,7 @@
 
 - **状态**：Current
 - **架构**：模块化单体 + 数据驱动内容
-- **最后更新**：2026-08-03
+- **最后更新**：2026-08-04
 
 ## 系统上下文
 
@@ -44,7 +44,7 @@ backend/app/
 frontend/src/
   App.vue                应用壳与 API 状态
   components/            UI 与小游戏
-  field/                 Phaser、地图绘制、活动注册表
+  field/                 Phaser、地图绘制、活动注册表（panel / 提示 / 结果字段）
   composables/           API、音频、toast、叙事进度
 data/                    世界、剧情、地图、活动、日程
 characters/              persona、背景、固定对话、元数据
@@ -73,6 +73,8 @@ sequenceDiagram
 ```
 
 `Activity Engine` 必须是纯函数：不写文件、不调用模型、不修改 Session；Session 在完整校验通过后提交。
+
+前端特殊活动通过 `field/activityRegistry.js` 声明 panel、打开/完成提示和小游戏结果字段；`FieldSlice.vue` 只负责调用统一完成流程。interaction kind 可以复用既有展示适配，但未知活动不得猜测结果字段。
 
 ## 扩展规则
 
