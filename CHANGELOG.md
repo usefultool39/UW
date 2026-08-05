@@ -16,10 +16,11 @@
 - 保留 NPC、环境和模拟 tick 的自动运行，但自动 tick 不得绕过剧情闸门。
 - Day 1 / Day 2 的最小主线分别以“记录边界线索”和“目击森林异常”为跨日条件，形成 Day 1 → Day 2 → Day 3 的可验证纵向闭环。
 - 前端将时间状态改为非交互的“剧情推进”提示，并在未满足闸门时显示缺失事件与恢复建议。
+- 首批已审核素材进入 runtime：UI 影响图标、肖像 v002 256 派生图、Day 1 村庄关键图、BGM A 与 ambience A v002；所有素材均保留缺失回退。
 
 ### Verification
 
-- 2026-08-05 质量门：后端 `207 passed`；前端单测 `12 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。已知非阻塞警告：Starlette/httpx 弃用提示、Phaser chunk 约 1.48 MB。
+- 2026-08-05 质量门：后端 `207 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。已知非阻塞警告：Starlette/httpx 弃用提示、Phaser chunk 约 1.48 MB。
 
 ## [0.4.0-preview.1] - 2026-08-04
 

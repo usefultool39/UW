@@ -30,14 +30,20 @@
 
       <section v-if="impactLines.length" class="impact-grid">
         <div v-for="line in impactLines" :key="line.label" class="impact-chip">
-          <span>{{ line.label }}</span>
+          <span class="impact-label">
+            <img v-if="line.icon" :src="getRuntimeIcon(line.icon)" :alt="`${line.label}图标`" loading="lazy" />
+            {{ line.label }}
+          </span>
           <strong>{{ line.value }}</strong>
         </div>
       </section>
 
       <section v-if="agentImpactCards.length" class="memory-board">
         <article v-for="card in agentImpactCards" :key="card.npcId" class="memory-card">
-          <div class="memory-avatar">{{ card.initial }}</div>
+          <div class="memory-avatar">
+            <img v-if="card.portrait" :src="card.portrait" :alt="`${card.name}肖像`" loading="lazy" />
+            <span v-else>{{ card.initial }}</span>
+          </div>
           <div>
             <h4>{{ card.name }}</h4>
             <p v-if="card.relationship">{{ card.relationship }}</p>
@@ -103,6 +109,7 @@
 <script setup>
 import { computed } from 'vue'
 import { getAgentLabel, getSceneLabel, getTimeBandLabel } from '../field/gameContentConfig.js'
+import { getPortraitAsset, getRuntimeIcon } from '../field/runtimeAssetPaths.js'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -191,28 +198,28 @@ const impactLines = computed(() => {
   if (isMonthFinal.value && props.result?.choice?.label) {
     lines.push({ label: '第一月路线', value: props.result.choice.label })
   }
-  if (timeCost > 0) lines.push({ label: '时间消耗', value: `${timeCost} 刻` })
-  if (treeDamage > 0) lines.push({ label: '巨树损伤', value: `-${treeDamage}` })
-  if (training?.label) lines.push({ label: '训练表现', value: `${training.label} · ${training.score || 0}` })
-  if (reading?.label) lines.push({ label: '阅读线索', value: reading.label })
-  if (meal?.label) lines.push({ label: '餐桌态度', value: meal.label })
-  if (anomaly?.label) lines.push({ label: '边界读数', value: `${anomaly.label} · ${anomaly.score || 0}` })
-  if (anomaly?.stance) lines.push({ label: '调查态度', value: anomaly.stance })
-  if (final?.label) lines.push({ label: '终局选择', value: final.label })
-  if (final?.tone) lines.push({ label: '判定倾向', value: `${final.tone} · ${final.pressure || 0}` })
-  if (patrol?.label) lines.push({ label: '巡查评价', value: `${patrol.label} · ${patrol.score || 0}` })
-  if (patrol?.marks) lines.push({ label: '边境标记', value: `+${patrol.marks}` })
+  if (timeCost > 0) lines.push({ label: '时间消耗', value: `${timeCost} 刻`, icon: 'time' })
+  if (treeDamage > 0) lines.push({ label: '巨树损伤', value: `-${treeDamage}`, icon: 'anomaly' })
+  if (training?.label) lines.push({ label: '训练表现', value: `${training.label} · ${training.score || 0}`, icon: 'stamina' })
+  if (reading?.label) lines.push({ label: '阅读线索', value: reading.label, icon: 'clue' })
+  if (meal?.label) lines.push({ label: '餐桌态度', value: meal.label, icon: 'relationship' })
+  if (anomaly?.label) lines.push({ label: '边界读数', value: `${anomaly.label} · ${anomaly.score || 0}`, icon: 'anomaly' })
+  if (anomaly?.stance) lines.push({ label: '调查态度', value: anomaly.stance, icon: 'record' })
+  if (final?.label) lines.push({ label: '终局选择', value: final.label, icon: 'record' })
+  if (final?.tone) lines.push({ label: '判定倾向', value: `${final.tone} · ${final.pressure || 0}`, icon: 'tension' })
+  if (patrol?.label) lines.push({ label: '巡查评价', value: `${patrol.label} · ${patrol.score || 0}`, icon: 'location' })
+  if (patrol?.marks) lines.push({ label: '边境标记', value: `+${patrol.marks}`, icon: 'location' })
   const resources = props.result?.resource_changes || {}
-  for (const [key, label] of [['hp', '生命变化'], ['mp', '神圣力变化'], ['stamina', '体力变化']]) {
+  for (const [key, label, icon] of [['hp', '生命变化', 'recover'], ['mp', '神圣力变化', 'memory'], ['stamina', '体力变化', 'stamina']]) {
     const delta = Number(resources?.[key]?.delta || 0)
-    if (delta) lines.push({ label, value: `${delta > 0 ? '+' : ''}${delta} · ${resources[key].after}` })
+    if (delta) lines.push({ label, value: `${delta > 0 ? '+' : ''}${delta} · ${resources[key].after}`, icon })
   }
   if (!reading?.label && !meal?.label && activityChoice?.label) {
-    lines.push({ label: '行动选择', value: activityChoice.label })
+    lines.push({ label: '行动选择', value: activityChoice.label, icon: 'record' })
   }
-  if (props.result?.kind === 'daily_summary') lines.push({ label: '模拟事件', value: `${dailyEventLines.value.length} 条` })
-  if (day > 0) lines.push({ label: '当前日期', value: `Day ${day}` })
-  if (timeBand) lines.push({ label: '当前时段', value: getTimeBandLabel(timeBand) })
+  if (props.result?.kind === 'daily_summary') lines.push({ label: '模拟事件', value: `${dailyEventLines.value.length} 条`, icon: 'schedule' })
+  if (day > 0) lines.push({ label: '当前日期', value: `Day ${day}`, icon: 'schedule' })
+  if (timeBand) lines.push({ label: '当前时段', value: getTimeBandLabel(timeBand), icon: 'time' })
   return lines
 })
 
@@ -321,6 +328,7 @@ const agentImpactCards = computed(() => {
         npcId: id,
         name,
         initial: name.slice(0, 1),
+        portrait: getPortraitAsset(id, 'neutral'),
         relationship: '',
         memory: ''
       })
@@ -452,6 +460,19 @@ const agentImpactCards = computed(() => {
   gap: 0.12rem;
 }
 
+.impact-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.impact-label img {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px rgba(103, 232, 249, 0.2));
+}
+
 .impact-chip span {
   color: #bfdbfe;
   font-size: 0.82rem;
@@ -483,6 +504,7 @@ const agentImpactCards = computed(() => {
 
 .memory-avatar {
   flex: 0 0 auto;
+  overflow: hidden;
   width: 2.35rem;
   height: 2.35rem;
   border-radius: 50%;
@@ -494,6 +516,14 @@ const agentImpactCards = computed(() => {
   background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.28), transparent 30%), rgba(120, 83, 35, 0.9);
   border: 1px solid rgba(246, 211, 110, 0.48);
   box-shadow: 0 0 14px rgba(246, 211, 110, 0.12);
+}
+
+.memory-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
 }
 
 .memory-card h4 {

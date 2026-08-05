@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import { RUNTIME_AUDIO } from '../field/runtimeAssetPaths.js'
 
 const STORAGE_KEY = 'uw-audio-muted'
 const VOLUME_STORAGE_KEY = 'uw-audio-volume'
@@ -9,6 +10,8 @@ const PROCEDURAL_SFX_URLS = new Set([
   '/assets/audio/sfx_activity.mp3'
 ])
 const PROCEDURAL_BGM_URL = 'procedural:luin_morning'
+const RUNTIME_BGM_URL = RUNTIME_AUDIO.bgmVillageDawn
+const RUNTIME_AMBIENCE_URLS = { drizzle: RUNTIME_AUDIO.ambienceDrizzle }
 
 function loadSettings() {
   try {
@@ -194,12 +197,14 @@ export function useAudio() {
         bgmGain.connect(ctx.destination)
       }
       bgmGain.gain.setValueAtTime(bgmLevel(), ctx.currentTime)
-      const audioBuffer = url === PROCEDURAL_BGM_URL
+      let audioBuffer = url === PROCEDURAL_BGM_URL
         ? createMorningBgm(ctx)
         : await (async () => {
           const arrayBuffer = await fetchAudioBuffer(url)
           return arrayBuffer ? ctx.decodeAudioData(arrayBuffer) : null
         })()
+      // Runtime 素材是增强层；若本地打包或浏览器不支持，自动回退到程序化晨曲。
+      if (!audioBuffer && url !== PROCEDURAL_BGM_URL) audioBuffer = createMorningBgm(ctx)
       if (!audioBuffer) return
       const source = ctx.createBufferSource()
       source.buffer = audioBuffer
@@ -235,8 +240,11 @@ export function useAudio() {
         ambienceGain.connect(ctx.destination)
       }
       ambienceGain.gain.setValueAtTime(ambienceLevel(), ctx.currentTime)
+      const runtimeUrl = RUNTIME_AMBIENCE_URLS[kind]
+      const arrayBuffer = runtimeUrl ? await fetchAudioBuffer(runtimeUrl) : null
+      const audioBuffer = arrayBuffer ? await ctx.decodeAudioData(arrayBuffer) : createDrizzleBuffer(ctx, kind)
       const source = ctx.createBufferSource()
-      source.buffer = createDrizzleBuffer(ctx, kind)
+      source.buffer = audioBuffer
       source.loop = true
       source.connect(ambienceGain)
       source.start()
@@ -257,7 +265,7 @@ export function useAudio() {
 
   async function startFieldAudio(weather = 'drizzle') {
     if (muted.value) return
-    await playBgm(PROCEDURAL_BGM_URL)
+    await playBgm(RUNTIME_BGM_URL)
     await startAmbience(weather)
   }
 

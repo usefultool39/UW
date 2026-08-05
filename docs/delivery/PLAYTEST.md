@@ -145,9 +145,11 @@
 
 ## 2026-08-05 日期闸门迭代质量门记录
 
+- 真人盲测执行单：`docs/delivery/DAY1_BLIND_TEST_RUNBOOK_20260805.md`；真实记录仍待 3 名陌生玩家回填。
+
 - 目标：删除玩家主动日期推荐/时间推进入口，让 Day 1 → Day 2 的跨日由剧情事件和晚间结算决定。
 - 后端：`../backend/.venv/bin/python -m pytest -q` → `207 passed`；1 个既有 Starlette/httpx 弃用警告。
-- 前端单测：`npm run test:unit` → `12 passed`。
+- 前端单测：`npm run test:unit` → `14 passed`。
 - 构建：`npm run build` → 通过；Phaser chunk 约 1.48 MB 的既有 warning 不阻塞。
 - E2E：`PYTHON_BIN=../backend/.venv/bin/python npm run test:e2e` → `12 passed`（含日期闸门专项）。
 - 人工截图：桌面与移动首屏已复查，未发现独立“时间推进”按钮或关键 UI 重叠；证据在 `runs/quality_gate_desktop.png`、`runs/quality_gate_mobile.png`。

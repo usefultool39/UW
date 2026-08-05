@@ -17,7 +17,7 @@
 - 已建立素材与宏观优化动态工作台：`docs/planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md`；后续素材审查和优化交流以此为唯一动态入口。
 - 已建立智能体交接文档：`docs/delivery/HANDOFF_20260805.md`；包含当前事实、不可破坏边界、验证基线、P0/P1 接手顺序和完成定义。
 - 新增素材已完成第一轮宏观审查与技术返工：UI 图标、BGM、ambience v002 可进入内测；关键图/肖像 v002 已重导为真实 PNG / RGBA 透明 PNG 并通过二次复核（尺寸、alpha、sha256 与 MANIFEST 一致）；剩余工作是第一批 runtime 接入、真实 UI 截图验收和 3 人陌生玩家盲测。
-- 交接前复验：素材检查 `29 requests passed`，关键图/肖像/音频实物规格与台账一致；随后完成日期闸门迭代质量门：后端 `207 passed`；前端单测 `12 passed`；production build 通过；Playwright E2E `12 passed`；存在既有 Starlette/httpx 弃用警告和 Phaser chunk 体积警告。
+- 交接前复验：素材检查 `29 requests passed`，关键图/肖像/音频实物规格与台账一致；随后完成日期闸门迭代质量门：后端 `207 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；存在既有 Starlette/httpx 弃用警告和 Phaser chunk 体积警告。
 - 素材返工记录：`docs/planning/MATERIALS_REWORK_STATUS_20260805.md`；审查证据图已放入 `docs/delivery/`。
 
 ## 第一轮成熟化改造（2026-08-04）
@@ -40,7 +40,7 @@
 - 两条回响由后端条件互斥过滤，结算写入 flag、关系、永久记忆和紧张原因；跨路线强选原子拒绝。
 - 完整 authored effects、记忆文本和最终结算仍只在后端；scripted/hybrid/agent 共用同一事件结果和记忆结构。
 - 方案与证据：`docs/planning/MATURITY_STAGE_20260804_DECISION_PREVIEW.md`、`docs/planning/MATURITY_STAGE_20260804_RELATIONSHIP_ECHO.md`、`docs/planning/MATURITY_STAGE_20260804_DAY3_ECHO.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_SINGLE_ENTRY.md`、`docs/planning/MATURITY_STAGE_20260804_ACTIVITY_REGISTRY.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_NPC_DEDUP.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_OPENING_SINGLE_CTA.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_GUIDANCE_HIERARCHY.md`。
-- 验证（2026-08-05 日期闸门迭代后）：后端 207 passed；前端单测 12 passed；production build 通过；Playwright E2E 12 passed。
+- 验证（2026-08-05 runtime 素材接入后）：后端 207 passed；前端单测 14 passed；production build 通过；Playwright E2E 12 passed。
 
 ## 已经完成
 
@@ -69,7 +69,7 @@
 ## 本轮验证基线（2026-08-04）
 
 - 后端：205 passed；1 个 Starlette/httpx 第三方弃用警告。
-- 前端单元测试：12 passed。
+- 前端单元测试：14 passed。
 - 前端 production build：通过。
 - Playwright E2E：11 passed。
 - `git diff --check`：通过。
@@ -113,7 +113,7 @@
 
 - 代码提交：`0e70fa5`（叙事基线与文档）→ `8154e7e`（剧情事件驱动日期推进）。
 - 后端：`207 passed`；保留 1 个既有 Starlette/httpx 弃用警告。
-- 前端：单测 `12 passed`；production build 通过；仅有 Phaser chunk 体积警告。
+- 前端：单测 `14 passed`；production build 通过；仅有 Phaser chunk 体积警告。
 - E2E：`12 passed`，新增覆盖“无独立时间推进按钮、剧情闸未完成不能跨日、完成事件后休息自动进入下一天”。
 - 桌面/移动质量截图：`runs/quality_gate_desktop.png`、`runs/quality_gate_mobile.png`。
 - 远端状态：执行 `git fetch origin` 后，`origin/main=25a5f84`；本地 `main=8154e7e`，领先 2 个提交，待推送。

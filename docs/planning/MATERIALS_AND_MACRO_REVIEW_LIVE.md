@@ -166,8 +166,8 @@
 - [x] 修复 `VIS-KA-001` v002 实际格式、尺寸、hash、manifest。 — **2026-08-05 二次更新并复核完成**
 - [x] 修复 `VIS-POR-001` v002 master 的 RGBA 透明度，并重新生成 256 图。 — **2026-08-05 二次更新并复核完成**
 - [x] 补齐 `audio.meta.json` 的 ambience v002 条目。 — **2026-08-05 二次更新并复核完成**
-- [ ] 接入 UI 图标、BGM、ambience v002 到第一批真实 runtime。
-- [ ] 完成一张真实 UI 截图验收，确认 A/B/C 不互相打架。
+- [x] 接入 UI 图标、BGM、ambience v002 到第一批真实 runtime。 — **2026-08-05 完成，保留程序化回退**
+- [x] 完成一张真实 UI 截图验收，确认 A/B/C 不互相打架。 — **2026-08-05 Playwright 桌面/移动截图复查通过**
 - [ ] 招募 3 名陌生玩家完成 Day 1 盲测。
 
 ### P1：P0 完成后做
@@ -290,3 +290,14 @@
 ```
 
 **维护规则**：每次更新必须写绝对日期；不得只写“今天/昨天/刚刚”。
+
+### 2026-08-05｜首批 runtime 接入
+
+- 已接入 `frontend/public/assets/runtime/`：
+  - UI 48px 图标：时间、体力、关系、线索、异常、记忆、记录、位置等；在结果面板的行动影响卡中显示。
+  - 肖像 v002 256 派生图：爱丽丝、尤吉欧、玩家；在关系/记忆结果卡中显示，缺失时回退为首字。
+  - 村庄关键图 v002：作为 Day 1 开场行动简报的背景层，不替换 Phaser 地图底图。
+  - BGM A 与 ambience A v002：进入 `useAudio`，浏览器加载失败时回退程序化晨曲/细雨。
+- 运行时文件使用相对仓库 symlink 指向 `materials/inbox`，避免复制大文件；Vite production build 已确认会将目标文件打入 `dist/assets/runtime/`。
+- `materials/MANIFEST.csv` 已为 21 个实际 runtime 文件补齐 `runtime_file` 与 `integrated_at`。
+- 仍未完成：3 名陌生玩家 Day 1 盲测；素材是否“好看”与“愿意继续”仍不能由自动化截图代替。

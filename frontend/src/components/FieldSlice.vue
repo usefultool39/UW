@@ -1574,7 +1574,9 @@ watch(activeMapId, async (mapId, oldMapId) => {
   border-radius: 8px;
   color: #fff7df;
   background:
-    linear-gradient(135deg, rgba(79, 55, 31, 0.92), rgba(39, 50, 32, 0.76)),
+    linear-gradient(135deg, rgba(45, 32, 24, 0.9), rgba(25, 42, 34, 0.78)),
+    linear-gradient(180deg, rgba(12, 20, 26, 0.18), rgba(12, 20, 26, 0.72)),
+    url('/assets/runtime/keyart/village-desktop.png') center / cover,
     radial-gradient(circle at 18% 0%, rgba(246, 211, 110, 0.2), transparent 44%);
   border: 1px solid rgba(255, 239, 198, 0.32);
   box-shadow: 0 18px 42px rgba(25, 18, 10, 0.36), 0 0 24px rgba(246, 211, 110, 0.08);
