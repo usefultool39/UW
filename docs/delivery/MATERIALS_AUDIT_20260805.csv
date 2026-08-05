@@ -1,19 +1,19 @@
 request_id,素材组,当前结论,可用范围,必须处理,证据或涉及文件
 REF-STYLE-001,三套视觉方向板,通过-方向锁定,"A作为首屏/村庄基调；B作为书库/记录页；C仅作为异常/静默线状态；仅作方向参考，不是最终美术",冻结角色分工和token；后续正式资产必须按A+B主基调统一，避免每张图各自换风格,materials/inbox/visual/styleboards/REF-STYLE-001_direction_{A,B,C}_v001.png
 VIS-KA-001-v001,关键图旧版,重做/归档,"仅用于比较迭代，不进入运行时",保留审计记录后从候选清单移除；不可使用带AI水印和低于master规格的版本,materials/inbox/visual/keyart/VIS-KA-001_direction_{a,b,c}_{desktop,mobile}_v001.png
-VIS-KA-001-v002,关键图新版,视觉通过-技术退回,"村庄=开场/主菜单；书库=阅读/记录；边界=异常状态，不作为首屏",重新导出为真实PNG或把扩展名改为.jpg并同步规范；按sidecar要求交付2560x1440桌面/1440x1920移动master；重新写hash和manifest,"当前文件名为.png但file识别为JPEG；实际桌面1376x768、移动768x1376，和sidecar宣称的master规格不一致"
+VIS-KA-001-v002,关键图新版,通过-技术合规（待runtime接入）,"村庄=开场/主菜单；书库=阅读/记录；边界=异常状态，不作为首屏",已完成返工：真实PNG 2560x1440桌面/1440x1920移动master，无水印，sha256与MANIFEST一致（2026-08-05二次复核）；下一步接入runtime并做真实UI截图,"当前实物：file识别为PNG；桌面2560x1440、移动1440x1920；sha256抽查一致"
 VIS-POR-001-v001,旧肖像组六张,重做/归档,"不可用于正式运行时或对外展示",停止使用kirito命名/IP外观/水印版；保留为被拒绝证据，不要再派生新资源,materials/inbox/visual/portraits/*_v001.png
-VIS-POR-001-v002-master,新版肖像六张master,技术退回,"角色构图和v002原创化方向可保留，修复后可作为UI肖像候选",重新输出真正的1024x1024 RGBA透明PNG；当前扩展名.png实际为JPEG 3通道，且把棋盘格背景烘进图像；修复后重算256派生图和manifest,"materials/inbox/visual/portraits/{alice,eugeo,player}_*_v002.png；当前file识别为JPEG，sidecar写RGBA透明"
-VIS-POR-001-v002-256,新版肖像缩略图,条件通过-临时预览,"可用于256缩略图/审查，不替代master；接入前仍需边缘、缩放和角色一致性QA",等master修复后重新生成并校验alpha边缘；不要把256图当作高分辨率肖像源,materials/inbox/visual/portraits/*_v002_256.png
+VIS-POR-001-v002-master,新版肖像六张master,通过-技术合规（待runtime接入）,"角色构图和v002原创化方向可保留，修复后可作为UI肖像候选",已完成返工：真实RGBA PNG 1024x1024，透明背景，四角alpha=0，无棋盘格残留（2026-08-05二次复核）；接入前做边缘/缩放QA并同步派生256图,"materials/inbox/visual/portraits/{alice,eugeo,player}_*_v002.png；当前file识别为RGBA PNG 1024x1024；角色区约23-43%不透明，边缘约1.5-2.8%半透明渐变"
+VIS-POR-001-v002-256,新版肖像缩略图,通过-可用（接入前QA）,"可用于256缩略图和UI预览；接入前仍需边缘、缩放和角色一致性QA",已确认由master派生且sha256与MANIFEST一致；不要把256图当作高分辨率肖像源,materials/inbox/visual/portraits/*_v002_256.png
 VIS-UI-001,核心UI图标,通过-原型可用,"12枚图标的24/48/96 PNG和SVG可直接用于HUD、任务卡、结果面板",用真实UI截图验证24px下语义可辨；建立图标ID到状态/颜色语义表；不要把sheet当运行时精灵表,materials/inbox/visual/ui_icons/VIS-UI-001_core_icons_v001/{svg,png/{24,48,96}}/*
 AUD-BGM-001,村庄清晨BGM两版,通过-内测可用,"A优先首屏/村庄；B优先书库/记录页；运行时优先OGG，WAV留母带",完成真实循环点和跨场景ducking试玩；接入runtime asset manifest，保留WAV母带与OGG预览,materials/inbox/audio/bgm/*.wav;*.ogg；实测48kHz/24bit/stereo，91/83秒，约-18 LUFS
 AUD-AMB-001-v001,细雨环境声旧版,重做/替换,"仅作响度对比，不进入运行时",继续使用v002，不要回退v001；manifest保持changes_requested,materials/inbox/audio/ambience/*_v001.*；实测约-18 LUFS，超出ambience目标区间
-AUD-AMB-001-v002,细雨环境声新版,通过-内测可用,"A用于村庄常态；B用于更少人声、更靠近边界溪边的状态；可作为静默线前的听觉铺垫",更新audio.meta.json加入v002；接入runtime并做首尾循环/音量/天气切换试玩；实测约-24.6 LUFS在sidecar目标-26~-22内,materials/inbox/audio/ambience/v002/*.wav;*.ogg
+AUD-AMB-001-v002,细雨环境声新版,通过-内测可用,"A用于村庄常态；B用于更少人声、更靠近边界溪边的状态；可作为静默线前的听觉铺垫",已完成：audio.meta.json已补v002条目；接入runtime并做首尾循环/音量/天气切换试玩；实测约-24.6 LUFS在sidecar目标-26~-22内,materials/inbox/audio/ambience/v002/*.wav;*.ogg
 NAR-VOICE-001,核心人物声音圣经,通过-内容源,"可作为scripted/hybrid/agent共用的角色表达约束",不要直接当运行时对话；先把角色显示名、内部ID、IP/原创迁移规则、状态档位映射写成机器可读配置；继续保留绝不越权和fallback约束,materials/inbox/writing/character_voice/NAR-VOICE-001_core_voice_bible_v001.md
 NAR-LORE-001,书库北境记录碎片24条,条件通过-叙事源,"可进入书库/线索/档案内容制作，反证结构适合边界悬念",为每条补稳定trigger_event_id、unlock_flag、location_id、day/time；与当前story事件和角色内部ID做校验；避免自由文本直接驱动结算,materials/inbox/writing/lore/NAR-LORE-001_archive_fragments_v001.csv
 NAR-BARK-001,村庄环境短句120条,条件通过-叙事源,"可作为地点×时段×天气×剧情阶段的短句池；环境声条目可作为无NPC barks",把中文地点/时段/天气映射为枚举ID；补权重、冷却、重复保护和触发优先级；接入前做Day1-3实际频率审查,materials/inbox/writing/ambient_barks/NAR-BARK-001_ambient_barks_v001.csv
 REF-FONT-001,中文字体许可证候选,通过-选型研究,"组合A可作为UI安全基线；组合C可作为书库/叙事层候选",下载并固定实际字体文件、版本、hash、许可证副本和子集化方案；在正式运行时前完成包体与渲染回归；D/E不进入approved,materials/inbox/research/font_licenses/REF-FONT-001_cjk_font_candidates_v001.md
 REF-MOOD-001,外部可追溯参考包,未交付/续做,"当前不能作为已完成素材使用；三套程序化方向板可暂代视觉方向讨论",按RESUME_NEXT中的Met Open Access方案完成30-60项可追溯参考；生成CSV+sidecar；禁止把暂停占位文档标为received,materials/inbox/research/moodboards/REF-MOOD-001_PAUSED.md
 QA-PLAY-001,首次玩家试玩套件,通过-流程模板非证据,"脚本、同意书、观察表、访谈问题可直接使用",必须招募3名未参与开发玩家并回填player01-03记录；在证据产出前不要宣称易上手已验证,materials/inbox/research/playtest/QA-PLAY-001_playtest_kit_v001.md
-AUDIO-META,audio.meta.json,条件通过-元数据不完整,"可作v001音频预览索引",补充ambience v002条目并改为版本化runtime manifest；不要让运行时只认识v001,materials/inbox/audio/audio.meta.json
+AUDIO-META,audio.meta.json,通过-元数据已补齐,"可作v001/v002音频索引",已完成：含ambience v002（lufs/true_peak/sample_rate/bit_depth/runtime_file/loop_safe）；接入runtime后补循环/ducking证据,materials/inbox/audio/audio.meta.json
 DEFERRED-SET,未新增/已延后素材,"不判定为失败-尚未提供",暂不阻塞Day1-3 scripted纵切片，但不能宣称视觉听觉完整,等待VIS-MAP/VIS-CHR/VIS-ENV/VIS-VFX/AUD-BGM-002/003/AUD-AMB-002/AUD-SFX/AI-CORPUS等按依赖交付；逐项审查后再进入approved,materials/REQUESTS.csv中status=deferred的请求

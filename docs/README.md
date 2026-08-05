@@ -51,6 +51,7 @@
 - [智能体交接文档](delivery/HANDOFF_20260805.md)：当前项目事实、不可破坏边界、验证基线、P0/P1 接手顺序和交接完成定义。
 - [素材宏观审查快照](delivery/MATERIALS_MACRO_AUDIT_20260805.md)：2026-08-05 新增素材的静态审查结论。
 - [素材审核清单](delivery/MATERIALS_AUDIT_20260805.csv)：逐组可用/适配/重做/暂缓状态。
+- [素材返工交付状态](planning/MATERIALS_REWORK_STATUS_20260805.md)：2026-08-05 关键图/肖像/音频返工交付记录。
 - [素材工作区](../materials/00_INDEX.md)：素材需求、提示词、收件、权利和验收规范。
 - [素材与宏观审查动态工作台](planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md)：新增素材审核、宏观复审、P0/P1 单一待办和后续更新日志；后续交流以此为准。
 

@@ -3,7 +3,7 @@
 - **状态**：Current / 权威事实页
 - **快照日期**：2026-08-05
 - **Git 基线**：`main` / 当前交接提交（以 `git log -1` 为准）；`0.4.0-preview.1` 候选已提交
-- **版本标识**：`0.4.0-preview.1`（候选工作区；未 commit / tag）
+- **版本标识**：`0.4.0-preview.1`（候选工作区；已 commit，push 状态以交接远端核验为准；未创建 tag）
 
 ## 版本收束（2026-08-04）
 
@@ -16,8 +16,9 @@
 
 - 已建立素材与宏观优化动态工作台：`docs/planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md`；后续素材审查和优化交流以此为唯一动态入口。
 - 已建立智能体交接文档：`docs/delivery/HANDOFF_20260805.md`；包含当前事实、不可破坏边界、验证基线、P0/P1 接手顺序和完成定义。
-- 新增素材已完成第一轮宏观审查：UI 图标、BGM、ambience v002 可进入内测；关键图/肖像 v002 需修复实际格式、尺寸和透明度后才能进入 runtime；3 人陌生玩家盲测仍未完成。
-- 交接前复验：素材检查 `29 requests passed`；后端 `205 passed`；前端单测 `12 passed`；production build 通过；Playwright E2E `11 passed`；存在既有 Starlette/httpx 弃用警告和 Phaser chunk 体积警告。
+- 新增素材已完成第一轮宏观审查与技术返工：UI 图标、BGM、ambience v002 可进入内测；关键图/肖像 v002 已重导为真实 PNG / RGBA 透明 PNG 并通过二次复核（尺寸、alpha、sha256 与 MANIFEST 一致）；剩余工作是第一批 runtime 接入、真实 UI 截图验收和 3 人陌生玩家盲测。
+- 交接前复验：素材检查 `29 requests passed`，关键图/肖像/音频实物规格与台账一致；后端 `205 passed`；前端单测 `12 passed`；production build 通过；Playwright E2E `11 passed`；存在既有 Starlette/httpx 弃用警告和 Phaser chunk 体积警告。
+- 素材返工记录：`docs/planning/MATERIALS_REWORK_STATUS_20260805.md`；审查证据图已放入 `docs/delivery/`。
 
 ## 第一轮成熟化改造（2026-08-04）
 

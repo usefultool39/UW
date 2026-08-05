@@ -1,6 +1,8 @@
 # RESUME_NEXT —— 素材 v001 收尾断点
 
 > 本文件是**暂停/续跑交接文档**。暂停时间：2026-08-04 23:27。明天从这里继续。
+>
+> **2026-08-05 更新**：素材返工（关键图/肖像 v002、ambience v002、MANIFEST 重建）已完成，最新状态与后续更新以 [`docs/planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md`](../docs/planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md) 为准；返工交付记录见 [`docs/planning/MATERIALS_REWORK_STATUS_20260805.md`](../docs/planning/MATERIALS_REWORK_STATUS_20260805.md)。本文件中的行数/状态为暂停时快照，可能已过期。
 
 ## 1. 总体状态：12 项需求，11 项已完成入库
 
