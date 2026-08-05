@@ -134,6 +134,42 @@
         "title": "准备静默线演练",
         "description": "把村内信任带到北门的下一次共同判断。"
       }
+    },
+    "18": {
+      "required_flags": {
+        "month01_silent_line_rehearsed": 1
+      },
+      "advance_to": 19,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 18 · 静默线的协作方式",
+      "next_goal": {
+        "title": "准备远征包",
+        "description": "把静默线演练的分工变成可携带的记录和补给。"
+      }
+    },
+    "24": {
+      "required_flags": {
+        "month01_expedition_ready": 1
+      },
+      "advance_to": 25,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 24 · 远征包已经成形",
+      "next_goal": {
+        "title": "把安全流程交给村子",
+        "description": "在北门前夜到来前，确认村内可以理解撤退信号。"
+      }
+    },
+    "28": {
+      "required_flags": {
+        "month01_gate_vigil_done": 1
+      },
+      "advance_to": 29,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 28 · 北门前夜",
+      "next_goal": {
+        "title": "决定第二月路线",
+        "description": "带着第一月的记录和承诺，选择接下来要承担的方向。"
+      }
     }
   }
 }

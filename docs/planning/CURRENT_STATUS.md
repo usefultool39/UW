@@ -53,7 +53,7 @@
 - 当前仍未调用真实外部 API，未读取或修改 `/Users/lzm/Desktop/ai-shop`，未宣称完成真人盲测或商业化授权。
 - 最新 Git 状态：`main...origin/main` 已同步，远端与本地均为 `f77ba99`。
 - 本轮新增存档导入安全：清空旧 pending 写入、重置单局 AI 预算、过滤导入记忆危险文本；后端质量门更新为 `237 passed`。
-- 本轮新增 Day 4 / Day 7 / Day 12 显式剧情闸门：Day 3 边界选择、Day 4 书库复盘、Day 7 北门巡查演练、Day 12 村务信任现在不能被休息直接跳过；后端质量门更新为 `241 passed`，Playwright E2E 更新为 `13 passed`。
+- 本轮新增 Day 4 / Day 7 / Day 12 / Day 18 / Day 24 / Day 28 显式剧情闸门：第一月关键 authored 事件现在不能被连续休息直接跳过；后端质量门更新为 `242 passed`，Playwright E2E 更新为 `13 passed`。
 - 修复边界调查小游戏父级重渲染导致选择状态偶发清空的问题，并让 E2E 等待每个选择真正进入 selected 状态。
 - E2E 后端通过 `UW_RATE_LIMIT_ENABLED=0` 隔离本地 smoke 请求；生产默认仍开启 SlowAPI 限流。
 

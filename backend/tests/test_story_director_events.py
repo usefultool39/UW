@@ -306,3 +306,20 @@ def test_day_twelve_cannot_advance_before_village_trust_event():
     assert out["missing"] == [
         {"type": "flag", "key": "month01_village_trust", "expected": 1, "actual": 0}
     ]
+
+
+def test_later_month_milestones_also_require_their_authored_event():
+    cases = [
+        (18, {"month01_village_trust": 1}, "month01_silent_line_rehearsed"),
+        (24, {"month01_silent_line_rehearsed": 1}, "month01_expedition_ready"),
+        (28, {"month01_expedition_ready": 1}, "month01_gate_vigil_done"),
+    ]
+    for day, flags, missing_key in cases:
+        sess = Session(run_id=f"test-story-day-gate-{day}")
+        sess.state = sess.state.model_copy(update={"day": day, "flags": flags})
+
+        out = sess.player_action(kind="rest_until_next_day")
+
+        assert out["ok"] is False
+        assert out["error"] == "day_end_gate_incomplete"
+        assert out["missing"][0]["key"] == missing_key
