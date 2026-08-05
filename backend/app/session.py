@@ -25,7 +25,7 @@ from .player_actions import (
 )
 from .relationship import apply_relationship_effects, ensure_relationships, npc_profile
 from .scene_activities import find_scene_activity
-from .story_director import available_events, choose_event
+from .story_director import available_events, choose_event, day_gate_status
 from .story_catalog import can_enter_node, default_catalog_path, load_main_nodes
 from .world import (
     advance_tick,
@@ -204,6 +204,47 @@ class Session:
         """与 `step` 等价；预留日后在 tick 前后挂日历/开放事件等钩子。"""
         return self.step(mode=mode)
 
+    def _resolve_day_transition(self, *, reason: str, trigger_event_id: str | None = None) -> dict[str, Any] | None:
+        status = day_gate_status(self.root, self.state)
+        if not status.get("ready"):
+            return None
+        gate = status.get("gate") if isinstance(status.get("gate"), dict) else {}
+        before_day = int(self.state.day)
+        target_day = int(gate.get("advance_to") or (before_day + 1))
+        player = _player_at_location(self.state.player, Location.home).model_copy(
+            update={"stamina": self.state.player.max_stamina, "hp": self.state.player.max_hp, "mp": self.state.player.max_mp}
+        )
+        updates: dict[str, Any] = {
+            "day": target_day,
+            "tick": 0,
+            "time_band": "morning",
+            "scene_id": player.scene_id,
+            "player": player,
+        }
+        next_node = gate.get("next_story_node_id")
+        if next_node:
+            updates["story_node_id"] = str(next_node)
+        self.state = self.state.model_copy(update=updates)
+        self.state = apply_npc_schedules(apply_environment(self.state), self.root)
+        transition = {
+            "from_day": before_day,
+            "to_day": target_day,
+            "reason": reason,
+            "trigger_event_id": trigger_event_id,
+            "settlement_title": gate.get("settlement_title"),
+            "next_goal": gate.get("next_goal") or {},
+        }
+        self._append_jsonl({"kind": "day_transition", **transition})
+        return transition
+
+    def _day_gate_error(self) -> dict[str, Any]:
+        status = day_gate_status(self.root, self.state)
+        return {
+            "missing": status.get("missing") or [],
+            "day": self.state.day,
+            "gate": status.get("gate"),
+        }
+
     def player_action(
         self,
         *,
@@ -236,6 +277,7 @@ class Session:
             intent_result: dict | None = None
             relationship_changes: list[dict] = []
             memory_written: list[dict] = []
+            day_transition: dict[str, Any] | None = None
 
             def current_map() -> tuple[dict[str, Any] | None, str | None]:
                 mid = map_id or self.state.player.map_id or "novice_open"
@@ -514,6 +556,11 @@ class Session:
                 effects = plan.effects
                 selected_choice = plan.selected_choice
                 choice_id = str(activity_choice or "").strip()
+                if effects.get("sleep_until_morning") is True:
+                    candidate_state = self.state.model_copy(update={"flags": plan.next_flags})
+                    candidate_status = day_gate_status(self.root, candidate_state)
+                    if not candidate_status.get("ready"):
+                        return fail("day_end_gate_incomplete", **self._day_gate_error())
                 if plan.next_flags != self.state.flags:
                     self.state = self.state.model_copy(update={"flags": plan.next_flags})
 
@@ -559,20 +606,16 @@ class Session:
                     self.memory_store.add_tension(str(npc_id), str(text), self.run_id)
 
                 if effects.get("sleep_until_morning") is True:
-                    pl = _player_at_location(self.state.player, Location.home)
-                    player = pl.model_copy(
-                        update={"stamina": pl.max_stamina, "hp": pl.max_hp, "mp": pl.max_mp}
+                    day_transition = self._resolve_day_transition(
+                        reason="day_end_gate_completed",
+                        trigger_event_id=activity_id,
                     )
-                    self.state = self.state.model_copy(
-                        update={
-                            "day": self.state.day + 1,
-                            "tick": 0,
-                            "time_band": "morning",
-                            "scene_id": pl.scene_id,
-                            "player": player,
-                        }
-                    )
-                    self.state = apply_npc_schedules(apply_environment(self.state), self.root)
+                    action_events.append({
+                        "type": "day_reset",
+                        "day": self.state.day,
+                        "time_band": self.state.time_band,
+                        "reason": "day_end_gate_completed",
+                    })
 
                 for _ in range(time_cost):
                     self.state = advance_tick(self.state)
@@ -616,22 +659,19 @@ class Session:
                     }
                 )
             elif kind == "rest_until_next_day":
-                pl = _player_at_location(self.state.player, Location.home)
-                # Restore player stamina when resting
-                player = pl.model_copy(
-                    update={"stamina": pl.max_stamina, "hp": pl.max_hp, "mp": pl.max_mp}
+                status = day_gate_status(self.root, self.state)
+                if not status.get("ready"):
+                    return fail("day_end_gate_incomplete", **self._day_gate_error())
+                day_transition = self._resolve_day_transition(
+                    reason="day_end_gate_completed",
+                    trigger_event_id="rest_until_next_day",
                 )
-                self.state = self.state.model_copy(
-                    update={
-                        "day": self.state.day + 1,
-                        "tick": 0,
-                        "time_band": "morning",
-                        "scene_id": pl.scene_id,
-                        "player": player,
-                    }
-                )
-                self.state = apply_npc_schedules(apply_environment(self.state), self.root)
-                action_events.append({"type": "day_reset", "day": self.state.day, "time_band": self.state.time_band})
+                action_events.append({
+                    "type": "day_reset",
+                    "day": self.state.day,
+                    "time_band": self.state.time_band,
+                    "reason": "day_end_gate_completed",
+                })
 
             row = {
                 "kind": "player_action",
@@ -685,6 +725,8 @@ class Session:
                 out["intent_result"] = intent_result
                 out["relationship_changes"] = relationship_changes
                 out["memory_written"] = memory_written
+            if day_transition is not None:
+                out["day_transition"] = day_transition
             return out
 
     def available_story_events(self) -> dict:

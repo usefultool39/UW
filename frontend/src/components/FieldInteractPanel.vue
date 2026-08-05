@@ -109,7 +109,7 @@ function actionOutcome(action) {
   if (action?.source === 'npc_intent') return '结果预览：同伴事件 / 关系'
   if (action?.type === 'story_event') return '结果预览：剧情推进 / 新线索'
   if (action?.activity?.interaction_kind === 'boundary_patrol') return '结果预览：生命 / 体力 / 标记奖励'
-  if (action?.type === 'scene_activity') return '结果预览：时间推进 / 活动收益'
+  if (action?.type === 'scene_activity') return '结果预览：时间消耗 / 活动收益'
   return '结果预览：世界状态变化'
 }
 

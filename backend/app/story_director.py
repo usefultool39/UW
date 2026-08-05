@@ -6,6 +6,7 @@ from typing import Any
 
 from .models import WorldState
 from .relationship import apply_relationship_effects, ensure_relationships
+from .story_catalog import default_catalog_path, load_main_nodes
 
 
 def default_events_path(project_root: Path, chapter_id: str = "chapter_01") -> Path:
@@ -183,6 +184,9 @@ def public_event_view(event: dict[str, Any], state: WorldState | None = None) ->
             if isinstance(c, dict) and choice_is_available(state, c)
         ],
         "variant_id": variant.get("id"),
+        "required_for_day": bool(event.get("required_for_day", False)),
+        "day_end_gate": bool(event.get("day_end_gate", False)),
+        "advance_policy": event.get("advance_policy"),
     }
 
 
@@ -296,3 +300,57 @@ def choose_event(
         "ending_id": ending_id,
     }
     return next_state, result
+
+
+def load_day_gates(project_root: Path) -> dict[str, Any]:
+    """Load explicit narrative day gates from the main story catalog."""
+    catalog = load_main_nodes(default_catalog_path(project_root))
+    raw = catalog.get("day_gates") if isinstance(catalog, dict) else {}
+    return raw if isinstance(raw, dict) else {}
+
+
+def day_gate_status(project_root: Path, state: WorldState, day: int | None = None) -> dict[str, Any]:
+    """Return whether the current day may be resolved.
+
+    Days without an explicit gate remain legacy-compatible for older month-plan
+    tests/content. Day 1-3 are explicitly gated by the new data contract.
+    """
+    current_day = int(day if day is not None else state.day)
+    gates = load_day_gates(project_root)
+    gate = gates.get(str(current_day))
+    if not isinstance(gate, dict):
+        return {
+            "ready": True,
+            "mode": "legacy_no_gate",
+            "day": current_day,
+            "missing": [],
+            "gate": None,
+        }
+
+    missing: list[dict[str, Any]] = []
+    required_flags = gate.get("required_flags") if isinstance(gate.get("required_flags"), dict) else {}
+    for key, expected in required_flags.items():
+        actual = _flag_value(state, str(key))
+        if actual < int(expected):
+            missing.append({"type": "flag", "key": str(key), "expected": int(expected), "actual": actual})
+
+    required_events = gate.get("required_events") if isinstance(gate.get("required_events"), list) else []
+    completed = set(state.completed_event_ids or [])
+    for event_id in required_events:
+        if str(event_id) not in completed:
+            missing.append({"type": "event", "id": str(event_id)})
+
+    any_groups = gate.get("required_any_flags") if isinstance(gate.get("required_any_flags"), list) else []
+    for group in any_groups:
+        if not isinstance(group, dict):
+            continue
+        if not any(_flag_value(state, str(key)) >= int(expected) for key, expected in group.items()):
+            missing.append({"type": "any_flags", "options": {str(k): int(v) for k, v in group.items()}})
+
+    return {
+        "ready": not missing,
+        "mode": "explicit",
+        "day": current_day,
+        "missing": missing,
+        "gate": gate,
+    }

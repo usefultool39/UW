@@ -238,7 +238,7 @@ def step(request: Request, body: RunBody | None = None):
 @app.post("/api/sim/daily_tick")
 @limiter.limit("60/minute")
 def daily_tick(request: Request, body: RunBody | None = None):
-    """推荐：单步/多步日常模拟；语义上等价于旧 `/api/step`，便于客户端命名对齐。"""
+    """自动模拟：单步/多步日常 tick；只推进时间段和 NPC 状态，不绕过剧情闸跨日。"""
     b = body or RunBody()
     mode = b.mode if b.mode in ("heuristic", "llm") else "heuristic"
     n = max(1, min(200, int(b.n)))

@@ -11,11 +11,22 @@
       "trigger": {
         "day_min": 1,
         "day_max": 1,
-        "time_bands": ["morning", "afternoon"],
-        "forbidden_flags": { "clue_boundary_record": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon"
+        ],
+        "forbidden_flags": {
+          "clue_boundary_record": 1
+        }
       },
-      "location": { "scene_id": "church_library", "tile_x": 13, "tile_y": 14 },
-      "participants": ["alice"],
+      "location": {
+        "scene_id": "church_library",
+        "tile_x": 13,
+        "tile_y": 14
+      },
+      "participants": [
+        "alice"
+      ],
       "choices": [
         {
           "id": "ask_alice",
@@ -64,7 +75,10 @@
             }
           }
         }
-      ]
+      ],
+      "required_for_day": true,
+      "day_end_gate": true,
+      "advance_policy": "after_evening_settlement"
     },
     {
       "id": "ch1_d1_training_with_eugeo",
@@ -75,11 +89,22 @@
       "trigger": {
         "day_min": 1,
         "day_max": 1,
-        "time_bands": ["morning", "afternoon"],
-        "forbidden_flags": { "trained_with_eugeo": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon"
+        ],
+        "forbidden_flags": {
+          "trained_with_eugeo": 1
+        }
       },
-      "location": { "scene_id": "gigas_clearing", "tile_x": 54, "tile_y": 22 },
-      "participants": ["eugeo"],
+      "location": {
+        "scene_id": "gigas_clearing",
+        "tile_x": 54,
+        "tile_y": 22
+      },
+      "participants": [
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "steady_training",
@@ -137,7 +162,11 @@
       "variants": [
         {
           "id": "from_day1_eugeo_promise",
-          "when": { "required_flags": { "dinner_sided_eugeo_day1": 1 } },
+          "when": {
+            "required_flags": {
+              "dinner_sided_eugeo_day1": 1
+            }
+          },
           "description": "第二天，你和尤里都记得昨晚餐桌上的约定。巨树清场附近的风声断了一瞬，像静默线在回应你们。",
           "choice_overrides": {
             "investigate_together": {
@@ -147,7 +176,11 @@
         },
         {
           "id": "from_day1_alice_caution",
-          "when": { "required_flags": { "dinner_sided_alice_day1": 1 } },
+          "when": {
+            "required_flags": {
+              "dinner_sided_alice_day1": 1
+            }
+          },
           "description": "第二天，昨晚餐桌上那句“先守住北境律令”还留在艾琳眼里。巨树清场附近的风声断了一瞬，但她先看向你脚下的安全距离。",
           "choice_overrides": {
             "investigate_together": {
@@ -157,7 +190,11 @@
         },
         {
           "id": "from_day1_calm_table",
-          "when": { "required_flags": { "dinner_kept_calm_day1": 1 } },
+          "when": {
+            "required_flags": {
+              "dinner_kept_calm_day1": 1
+            }
+          },
           "description": "第二天，餐桌上的沉默没有消失。巨树清场附近的风声断了一瞬，你意识到昨晚没说出口的话已经跟到了森林边。",
           "choice_overrides": {
             "press_alone": {
@@ -169,20 +206,38 @@
       "trigger": {
         "day_min": 2,
         "day_max": 2,
-        "time_bands": ["morning", "afternoon"],
-        "required_flags": { "clue_boundary_record": 1 },
-        "forbidden_flags": { "forest_anomaly_seen": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon"
+        ],
+        "required_flags": {
+          "clue_boundary_record": 1
+        },
+        "forbidden_flags": {
+          "forest_anomaly_seen": 1
+        }
       },
-      "location": { "scene_id": "gigas_clearing", "tile_x": 58, "tile_y": 18 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "gigas_clearing",
+        "tile_x": 58,
+        "tile_y": 18
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "use_alice_marked_record",
           "label": "按艾琳昨天圈出的记录对照静默线",
           "hint": "延续 Day 1 的公开线索：更快定位异常，艾琳会记得你没有把她排除在外。",
           "conditions": {
-            "required_flags": { "alice_warned_boundary": 1 },
-            "forbidden_flags": { "kept_boundary_note": 1 }
+            "required_flags": {
+              "alice_warned_boundary": 1
+            },
+            "forbidden_flags": {
+              "kept_boundary_note": 1
+            }
           },
           "result_text": "你摊开昨天共同看过的记录，沿着艾琳圈出的“鸟声消失”逐项对照。她把刻印标记压在静默线外，低声确认：昨天的担心不是多余的，而你也没有让她最后一个知道。",
           "effects": {
@@ -210,8 +265,12 @@
           "label": "把昨天隐瞒的书页符号告诉艾琳",
           "hint": "承认隐瞒会带来短期紧张，但能补全判断并修复信任。",
           "conditions": {
-            "required_flags": { "kept_boundary_note": 1 },
-            "forbidden_flags": { "alice_warned_boundary": 1 }
+            "required_flags": {
+              "kept_boundary_note": 1
+            },
+            "forbidden_flags": {
+              "alice_warned_boundary": 1
+            }
           },
           "result_text": "你在真正的异常前拿出昨天记下的书页符号，承认自己没有立刻告诉她。艾琳沉默了一息，还是接过记录补上刻印：她不喜欢被瞒着，但更在意你现在选择把事实补全。",
           "effects": {
@@ -241,7 +300,11 @@
           "id": "honor_alice_caution",
           "label": "按昨晚约定：先让艾琳确认安全距离",
           "hint": "只有 Day 1 晚餐偏向艾琳时出现。稳住关系，但调查会更慢。",
-          "conditions": { "required_flags": { "dinner_sided_alice_day1": 1 } },
+          "conditions": {
+            "required_flags": {
+              "dinner_sided_alice_day1": 1
+            }
+          },
           "result_text": "你先停在艾琳画出的距离外。她看了你一眼，像是确认你没有把昨晚的话当成敷衍。",
           "effects": {
             "flags": {
@@ -272,7 +335,11 @@
           "id": "follow_eugeo_promise",
           "label": "兑现昨晚承诺：和尤里先确认静默线",
           "hint": "只有 Day 1 晚餐偏向尤里时出现。推进调查，但艾琳会更紧张。",
-          "conditions": { "required_flags": { "dinner_sided_eugeo_day1": 1 } },
+          "conditions": {
+            "required_flags": {
+              "dinner_sided_eugeo_day1": 1
+            }
+          },
           "result_text": "你没有绕开昨晚的承诺，先和尤里确认风声断开的方向。艾琳没有阻止，但她的手已经按在记录本上。",
           "effects": {
             "flags": {
@@ -373,7 +440,10 @@
             }
           }
         }
-      ]
+      ],
+      "required_for_day": true,
+      "day_end_gate": true,
+      "advance_policy": "after_evening_settlement"
     },
     {
       "id": "ch1_d2_npc_disagreement",
@@ -384,12 +454,26 @@
       "trigger": {
         "day_min": 2,
         "day_max": 2,
-        "time_bands": ["evening", "night"],
-        "required_flags": { "forest_anomaly_seen": 1 },
-        "forbidden_flags": { "npc_disagreement_resolved": 1 }
+        "time_bands": [
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "forest_anomaly_seen": 1
+        },
+        "forbidden_flags": {
+          "npc_disagreement_resolved": 1
+        }
       },
-      "location": { "scene_id": "home_hearth", "tile_x": 11, "tile_y": 27 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "home_hearth",
+        "tile_x": 11,
+        "tile_y": 27
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "side_with_caution",
@@ -462,7 +546,11 @@
       "variants": [
         {
           "id": "from_day2_alice_record",
-          "when": { "required_flags": { "followed_alice_mark_day2": 1 } },
+          "when": {
+            "required_flags": {
+              "followed_alice_mark_day2": 1
+            }
+          },
           "description": "你们终于站到那条看不见的边界前。昨天按艾琳圈出的记录对照过的静默线仍在脚下延伸；她把那页共同记录夹在本子里，等你决定是把事实带回村里，还是把判断推进到边界另一侧。",
           "choice_overrides": {
             "cross_boundary": {
@@ -475,7 +563,11 @@
         },
         {
           "id": "from_day2_confessed_note",
-          "when": { "required_flags": { "confessed_hidden_note_day2": 1 } },
+          "when": {
+            "required_flags": {
+              "confessed_hidden_note_day2": 1
+            }
+          },
           "description": "你们终于站到那条看不见的边界前。昨天坦白的书页符号已经补进艾琳的记录，纸页上的空白不再能被当成没发生过；她等你决定是否继续对事实负责。",
           "choice_overrides": {
             "obey_order": {
@@ -488,7 +580,11 @@
         },
         {
           "id": "from_day2_together",
-          "when": { "required_flags": { "promise_investigate_with_eugeo": 1 } },
+          "when": {
+            "required_flags": {
+              "promise_investigate_with_eugeo": 1
+            }
+          },
           "description": "你们终于站到那条看不见的边界前。第二天一起确认过的静默线仍在脚下延伸，尤里等你把共同调查推进到最后一步，艾琳则盯着你们有没有越过约定的安全距离。",
           "choice_overrides": {
             "cross_boundary": {
@@ -501,7 +597,11 @@
         },
         {
           "id": "from_day2_risk",
-          "when": { "required_flags": { "boundary_risk_taken": 1 } },
+          "when": {
+            "required_flags": {
+              "boundary_risk_taken": 1
+            }
+          },
           "description": "你们终于站到那条看不见的边界前。第二天你独自靠近异常的事还留在两人眼里：尤里没有阻止你往前看，艾琳却比昨天更安静。",
           "choice_overrides": {
             "cross_boundary": {
@@ -516,12 +616,27 @@
       "trigger": {
         "day_min": 3,
         "day_max": 3,
-        "time_bands": ["morning", "afternoon", "evening"],
-        "required_flags": { "forest_anomaly_seen": 1 },
-        "forbidden_flags": { "boundary_incident_resolved": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening"
+        ],
+        "required_flags": {
+          "forest_anomaly_seen": 1
+        },
+        "forbidden_flags": {
+          "boundary_incident_resolved": 1
+        }
       },
-      "location": { "scene_id": "gigas_clearing", "tile_x": 61, "tile_y": 17 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "gigas_clearing",
+        "tile_x": 61,
+        "tile_y": 17
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "obey_order",
@@ -633,29 +748,55 @@
       "variants": [
         {
           "id": "after_cross",
-          "when": { "required_flags": { "ending_cross": 1 } },
+          "when": {
+            "required_flags": {
+              "ending_cross": 1
+            }
+          },
           "description": "第四天，越过边界那一步还压在每个人心里。艾琳把记录本摊开，尤里则把你们听见风声回流的位置画在纸上。"
         },
         {
           "id": "after_order",
-          "when": { "required_flags": { "ending_order": 1 } },
+          "when": {
+            "required_flags": {
+              "ending_order": 1
+            }
+          },
           "description": "第四天，你们遵守规则回村报告后的余波仍在。艾琳准备把事实整理成可提交记录，尤里想知道记录里会不会保留你们真正看见的异常。"
         },
         {
           "id": "after_hide",
-          "when": { "required_flags": { "ending_hide": 1 } },
+          "when": {
+            "required_flags": {
+              "ending_hide": 1
+            }
+          },
           "description": "第四天，隐瞒异常后的沉默还在桌边。艾琳没有追问，尤里也没有逼你说明，但记录本空着的位置正在等一个答案。"
         }
       ],
       "trigger": {
         "day_min": 4,
         "day_max": 6,
-        "time_bands": ["morning", "afternoon"],
-        "required_flags": { "boundary_incident_resolved": 1 },
-        "forbidden_flags": { "month01_debrief_done": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon"
+        ],
+        "required_flags": {
+          "boundary_incident_resolved": 1
+        },
+        "forbidden_flags": {
+          "month01_debrief_done": 1
+        }
       },
-      "location": { "scene_id": "church_library", "tile_x": 14, "tile_y": 14 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "church_library",
+        "tile_x": 14,
+        "tile_y": 14
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "write_truth",
@@ -762,12 +903,26 @@
       "trigger": {
         "day_min": 7,
         "day_max": 10,
-        "time_bands": ["morning", "afternoon"],
-        "required_flags": { "month01_debrief_done": 1 },
-        "forbidden_flags": { "month01_drill_done": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon"
+        ],
+        "required_flags": {
+          "month01_debrief_done": 1
+        },
+        "forbidden_flags": {
+          "month01_drill_done": 1
+        }
       },
-      "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "north_gate",
+        "tile_x": 67,
+        "tile_y": 24
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "mark_safe_route",
@@ -841,12 +996,27 @@
       "trigger": {
         "day_min": 12,
         "day_max": 16,
-        "time_bands": ["morning", "afternoon", "evening"],
-        "required_flags": { "month01_drill_done": 1 },
-        "forbidden_flags": { "month01_village_trust": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening"
+        ],
+        "required_flags": {
+          "month01_drill_done": 1
+        },
+        "forbidden_flags": {
+          "month01_village_trust": 1
+        }
       },
-      "location": { "scene_id": "village_square", "tile_x": 28, "tile_y": 25 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "village_square",
+        "tile_x": 28,
+        "tile_y": 25
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "public_patrol_board",
@@ -920,12 +1090,26 @@
       "trigger": {
         "day_min": 18,
         "day_max": 22,
-        "time_bands": ["morning", "afternoon"],
-        "required_flags": { "month01_village_trust": 1 },
-        "forbidden_flags": { "month01_silent_line_rehearsed": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon"
+        ],
+        "required_flags": {
+          "month01_village_trust": 1
+        },
+        "forbidden_flags": {
+          "month01_silent_line_rehearsed": 1
+        }
       },
-      "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "north_gate",
+        "tile_x": 67,
+        "tile_y": 24
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "calibrate_sacred_arts",
@@ -1000,25 +1184,46 @@
       "trigger": {
         "day_min": 24,
         "day_max": 27,
-        "time_bands": ["morning", "afternoon", "evening"],
-        "required_flags": { "month01_silent_line_rehearsed": 1 },
-        "forbidden_flags": { "month01_expedition_ready": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening"
+        ],
+        "required_flags": {
+          "month01_silent_line_rehearsed": 1
+        },
+        "forbidden_flags": {
+          "month01_expedition_ready": 1
+        }
       },
-      "location": { "scene_id": "home_hearth", "tile_x": 12, "tile_y": 27 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "home_hearth",
+        "tile_x": 12,
+        "tile_y": 27
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "pack_for_safety",
           "label": "优先带安全绳、记录本和退路标记",
           "hint": "偏向稳妥远征，艾琳会更放心。",
           "preview": {
-            "remembered_by": ["alice", "eugeo"],
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
             "relationship": {
               "alice.trust": 6,
               "alice.tension": -2,
               "eugeo.trust": 2
             },
-            "consequences": ["第二月撤退路线更稳定", "调查推进会更谨慎"]
+            "consequences": [
+              "第二月撤退路线更稳定",
+              "调查推进会更谨慎"
+            ]
           },
           "result_text": "你把最占重量的位置留给安全绳和记录本。艾琳把每段绳结重新检查了一遍，尤里则把标记粉分成三份。",
           "effects": {
@@ -1050,15 +1255,23 @@
           "label": "优先带干粮、备用刻印和测距粉",
           "hint": "偏向更远的调查路线，尤里会更兴奋。",
           "preview": {
-            "remembered_by": ["alice", "eugeo"],
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
             "relationship": {
               "eugeo.trust": 6,
               "eugeo.affinity": 2,
               "alice.trust": 2,
               "alice.tension": 2
             },
-            "promises": ["alice"],
-            "consequences": ["第二月调查范围更远", "撤退压力会更明显"]
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "第二月调查范围更远",
+              "撤退压力会更明显"
+            ]
           },
           "result_text": "你把远征包留给更长路线需要的东西。尤里主动背起最重的那袋测距粉，艾琳没有阻止，只把撤退标记塞进你手里。",
           "effects": {
@@ -1100,25 +1313,48 @@
       "trigger": {
         "day_min": 28,
         "day_max": 30,
-        "time_bands": ["morning", "afternoon", "evening", "night"],
-        "required_flags": { "month01_expedition_ready": 1, "month01_gate_vigil_done": 1 },
-        "forbidden_flags": { "month01_gate_resolved": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month01_expedition_ready": 1,
+          "month01_gate_vigil_done": 1
+        },
+        "forbidden_flags": {
+          "month01_gate_resolved": 1
+        }
       },
-      "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "north_gate",
+        "tile_x": 67,
+        "tile_y": 24
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "route_report_first",
           "label": "第二月先走报告与许可路线",
           "hint": "秩序路线：村内资源更稳，远征节奏更慢。",
           "preview": {
-            "remembered_by": ["alice", "eugeo"],
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
             "relationship": {
               "alice.trust": 7,
               "alice.tension": -2,
               "eugeo.tension": 2
             },
-            "consequences": ["第二月村内支持更稳", "远征节奏会放慢"]
+            "consequences": [
+              "第二月村内支持更稳",
+              "远征节奏会放慢"
+            ]
           },
           "result_text": "你决定先把记录交上去，换取正式许可和更多村内支持。艾琳把北门前夜那一页压平，在许可路线旁画下清晰的回程箭头；尤里最后看了一眼门外，点头承认这不是退缩，而是把第二月的第一步踩稳。",
           "effects": {
@@ -1150,14 +1386,22 @@
           "label": "第二月以三人远征为主线",
           "hint": "三人共同承担远征节奏和风险。",
           "preview": {
-            "remembered_by": ["alice", "eugeo"],
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
             "relationship": {
               "eugeo.trust": 7,
               "alice.trust": 4,
               "alice.tension": 3
             },
-            "promises": ["alice"],
-            "consequences": ["第二月远征推进更快", "同伴关系压力更高"]
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "第二月远征推进更快",
+              "同伴关系压力更高"
+            ]
           },
           "result_text": "你决定第二个月就以三人远征为主。尤里没有隐藏笑意，先把脚尖对准门外；艾琳沉默片刻，把最后一条退路标记交到你手里，要求你在每次推进前都先确认它还亮着。",
           "effects": {
@@ -1192,14 +1436,22 @@
           "label": "第二月先暗中确认静默线源头",
           "hint": "隐秘路线：风险集中在关系暗线和信息不对称。",
           "preview": {
-            "remembered_by": ["alice", "eugeo"],
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
             "relationship": {
               "eugeo.trust": 5,
               "alice.tension": 5,
               "alice.trust": 1
             },
-            "tensions": ["alice"],
-            "consequences": ["第二月调查更隐蔽", "信息不对称风险更高"]
+            "tensions": [
+              "alice"
+            ],
+            "consequences": [
+              "第二月调查更隐蔽",
+              "信息不对称风险更高"
+            ]
           },
           "result_text": "你决定先不扩大声势，第二月从暗中复核静默线源头开始。北门外的风声像是短暂让出一条缝；艾琳看着你，像是在判断这次你会不会把话说完整；尤里则轻声说他会跟上，但要你把每一次沉默都写进记录。",
           "effects": {
@@ -1240,25 +1492,51 @@
       "trigger": {
         "day_min": 31,
         "day_max": 31,
-        "time_bands": ["morning", "afternoon", "evening", "night"],
-        "required_flags": { "month01_gate_resolved": 1 },
-        "forbidden_flags": { "month02_day31_entry_done": 1 }
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month01_gate_resolved": 1
+        },
+        "forbidden_flags": {
+          "month02_day31_entry_done": 1
+        }
       },
-      "location": { "scene_id": "north_gate", "tile_x": 67, "tile_y": 24 },
-      "participants": ["alice", "eugeo"],
+      "location": {
+        "scene_id": "north_gate",
+        "tile_x": 67,
+        "tile_y": 24
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
       "choices": [
         {
           "id": "confirm_order_route",
           "label": "把第二月写成稳守北门的协同计划",
           "hint": "稳守路线：先巩固村务、巡查公开度和补给线。",
-          "conditions": { "required_flags": { "month01_route_order": 1 } },
+          "conditions": {
+            "required_flags": {
+              "month01_route_order": 1
+            }
+          },
           "preview": {
-            "remembered_by": ["alice", "eugeo"],
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
             "relationship": {
               "alice.trust": 2,
               "eugeo.trust": 1
             },
-            "consequences": ["第二月村内支持更稳", "远征推进会更谨慎"]
+            "consequences": [
+              "第二月村内支持更稳",
+              "远征推进会更谨慎"
+            ]
           },
           "result_text": "你把北门记录交给同伴复核，把第二月第一条准则定为稳守与协同。艾琳先确认撤退信号，尤里负责把巡查公开度写成村务流程。",
           "effects": {
@@ -1288,15 +1566,27 @@
           "id": "confirm_expedition_route",
           "label": "把第二月写成三人边境远征计划",
           "hint": "远征路线：优先推进边境调查，但每次推进前确认退路。",
-          "conditions": { "required_flags": { "month01_route_expedition": 1 } },
+          "conditions": {
+            "required_flags": {
+              "month01_route_expedition": 1
+            }
+          },
           "preview": {
-            "remembered_by": ["alice", "eugeo"],
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
             "relationship": {
               "eugeo.trust": 2,
               "alice.tension": 1
             },
-            "promises": ["alice"],
-            "consequences": ["第二月远征推进更快", "同伴压力会更高"]
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "第二月远征推进更快",
+              "同伴压力会更高"
+            ]
           },
           "result_text": "你把第二月第一条准则定为三人远征。尤里把测距粉和绳标重新分包，艾琳则要求每次越过北门前都先确认撤退路线。",
           "effects": {
@@ -1329,15 +1619,27 @@
           "id": "confirm_quiet_route",
           "label": "把第二月写成静默观察和暗线复核计划",
           "hint": "静默路线：先整理记录和异常频率，再决定是否越过北门。",
-          "conditions": { "required_flags": { "month01_route_quiet": 1 } },
+          "conditions": {
+            "required_flags": {
+              "month01_route_quiet": 1
+            }
+          },
           "preview": {
-            "remembered_by": ["alice", "eugeo"],
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
             "relationship": {
               "eugeo.trust": 1,
               "alice.tension": 2
             },
-            "tensions": ["alice"],
-            "consequences": ["第二月调查更隐蔽", "信息不对称风险更高"]
+            "tensions": [
+              "alice"
+            ],
+            "consequences": [
+              "第二月调查更隐蔽",
+              "信息不对称风险更高"
+            ]
           },
           "result_text": "你把第二月第一条准则定为静默观察。记录本上多出异常频率、风声断点和同伴反应三栏，艾琳提醒你这一次不能再让信息缺口扩大。",
           "effects": {

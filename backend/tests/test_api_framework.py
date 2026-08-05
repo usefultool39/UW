@@ -461,6 +461,7 @@ def test_scene_activity_sleep_resets_day_and_environment():
     before = client.get("/api/state").json()
     assert before["time_band"] == "evening"
     client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "home_hearth"})
+    client.post("/api/player/action", json={"kind": "set_flag", "flag_key": "clue_boundary_record", "flag_value": 1})
 
     r = client.post(
         "/api/player/action",
@@ -529,10 +530,30 @@ def test_boundary_patrol_rejection_is_transactional_when_hp_is_too_low():
     }
 
 
+def test_scene_activity_sleep_is_blocked_until_day_gate_is_complete():
+    client = TestClient(app)
+    client.post("/api/reset")
+    client.post("/api/sim/daily_tick", json={"n": 40, "mode": "heuristic"})
+    client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "home_hearth"})
+
+    r = client.post(
+        "/api/player/action",
+        json={"kind": "scene_activity", "activity_id": "home_sleep_until_morning"},
+    )
+
+    body = r.json()
+    assert body["ok"] is False
+    assert body["error"] == "day_end_gate_incomplete"
+    assert body["state"]["day"] == 1
+
+
 def test_rest_until_next_day_restores_all_player_resources():
     session = Session(run_id="test_rest_all_resources")
     session.state = session.state.model_copy(
-        update={"player": session.state.player.model_copy(update={"hp": 37, "mp": 21, "stamina": 12})}
+        update={
+            "flags": {**session.state.flags, "clue_boundary_record": 1},
+            "player": session.state.player.model_copy(update={"hp": 37, "mp": 21, "stamina": 12}),
+        }
     )
 
     out = session.player_action(kind="rest_until_next_day")

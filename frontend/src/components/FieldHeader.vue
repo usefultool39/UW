@@ -35,9 +35,7 @@
           @input="setVolume(Number($event.target.value))"
         />
       </div>
-      <button type="button" class="tb tb-primary" :disabled="busy" @click="$emit('daily')">
-        <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M6 3l1.5 3.5L11 5l-1.5 3.5L14 11l-3.5 1.5L11 16l-.5-3.5L7 14l-3.5-1.5L4 9l3.5-1.5L6 3z"/></svg>时间推进
-      </button>
+      <span class="story-progress-badge" title="日期由剧情事件和日结算自动推进">剧情推进</span>
     </div>
     <input
       ref="saveFileEl"
@@ -63,8 +61,7 @@ defineEmits([
   'export-save',
   'import-save',
   'import-file',
-  'refresh',
-  'daily'
+  'refresh'
 ])
 
 const { isMuted, currentVolume, bgmPlaying, toggleMute, setVolume, startFieldAudio } = useAudio()
@@ -198,6 +195,20 @@ async function onAudioClick() {
 .tb-primary:hover:not(:disabled) {
   border-color: rgba(255, 226, 163, 0.78);
   box-shadow: 0 0 18px rgba(241, 199, 107, 0.28);
+}
+
+.story-progress-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 0.65rem;
+  border: 1px solid rgba(253, 224, 71, 0.32);
+  border-radius: 999px;
+  color: #fde68a;
+  background: rgba(253, 224, 71, 0.08);
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .audio-volume {

@@ -8,7 +8,6 @@
       @import-save="onImportClick"
       @import-file="onImportFile"
       @refresh="onRefresh"
-      @daily="onDaily"
     />
 
     <OpeningCinematic
@@ -87,7 +86,7 @@
       </div>
 
       <!-- Bottom hotbar -->
-      <Hotbar :busy="busy" :has-events="!!storyEvents.length" @action="onHotbarAction" />
+      <Hotbar :busy="busy" :has-events="!!storyEvents.length" :day-gate="dayGateStatus" @action="onHotbarAction" />
 
       <ClueJournalPanel
         v-model="journalOpen"
@@ -287,6 +286,11 @@ const openingBriefDismissed = ref(false)
 const journalOpen = ref(false)
 const journalProfiles = ref({})
 const recentJournalMemories = ref([])
+const dayGateStatus = computed(() => ({
+  day: Number(props.simState?.day || 1),
+  ready: true,
+  label: '剧情结算',
+}))
 
 // Modal states
 const interactOpen = ref(false)
@@ -1053,7 +1057,7 @@ async function onHotbarAction(actionId) {
       await refreshStoryEvents()
       storyResult.value = buildDaySettlementResult(res?.state || props.simState, storyEvents.value, beforeDay)
       storyResultOpen.value = true
-      showToast('你回到小屋休息。新的一天开始了。', 'success')
+      showToast(res?.day_transition ? '今日剧情已结算，新的日期自动开启。' : '你回到小屋休息。', 'success')
       sceneInstance?.syncPlayerFromState?.()
     })
   } else if (actionId === 'journal') {
@@ -1284,15 +1288,6 @@ async function onRefresh() {
   })
 }
 
-async function onDaily() {
-  await doWithBusy(async () => {
-    const res = await props.dailyTick(1, 'heuristic')
-    await refreshStoryEvents()
-    storyResult.value = buildDailySummaryResult(res, storyEvents.value)
-    storyResultOpen.value = true
-    sceneInstance?.syncPlayerFromState?.()
-  })
-}
 
 async function onTrainingComplete(payload) {
   const event = selectedStoryEvent.value
@@ -1430,8 +1425,10 @@ async function doWithBusy(fn) {
       localError.value = '你还没有进入对应场景。先走到地图上的地点范围。'
     } else if (msg.includes('requirements_not_met')) {
       localError.value = '这个行动还有前置条件。先完成当前线索，或与对应 NPC 互动。'
+    } else if (msg.includes('day_end_gate_incomplete')) {
+      localError.value = '今天还有关键剧情没有完成。先完成目标，再回到炉火处结算。'
     } else if (msg.includes('already_done_today')) {
-      localError.value = '这个行动今天已经完成。可以推进到下一天再回来。'
+      localError.value = '这个行动今天已经完成。可以继续完成当天剧情。'
     } else if (msg.includes('already_done')) {
       localError.value = '这个行动已经完成。去探索新的地点或推进章节事件吧。'
     } else {

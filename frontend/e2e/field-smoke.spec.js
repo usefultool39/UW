@@ -152,6 +152,14 @@ test.describe('开放世界质量 smoke', () => {
     await page.screenshot({ path: '../runs/quality_gate_mobile.png', fullPage: false })
   })
 
+  test('日期由剧情闸和日结算推进，不显示独立时间推进按钮', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto('/')
+    await expect(page.getByRole('button', { name: /时间推进/ })).toHaveCount(0)
+    await expect(page.locator('.story-progress-badge')).toHaveText('剧情推进')
+    await expect(page.locator('.action-rest')).toHaveAttribute('title', /剧情闸/)
+  })
+
   test('读书、午餐、训练、日志和 Day 2 预告可走通', async ({ page, request }) => {
     await playerAction(request, { kind: 'move_scene', scene_id: 'reading_hall' })
     await page.goto('/')

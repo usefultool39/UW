@@ -191,7 +191,7 @@ const impactLines = computed(() => {
   if (isMonthFinal.value && props.result?.choice?.label) {
     lines.push({ label: '第一月路线', value: props.result.choice.label })
   }
-  if (timeCost > 0) lines.push({ label: '时间推进', value: `${timeCost} 刻` })
+  if (timeCost > 0) lines.push({ label: '时间消耗', value: `${timeCost} 刻` })
   if (treeDamage > 0) lines.push({ label: '巨树损伤', value: `-${treeDamage}` })
   if (training?.label) lines.push({ label: '训练表现', value: `${training.label} · ${training.score || 0}` })
   if (reading?.label) lines.push({ label: '阅读线索', value: reading.label })

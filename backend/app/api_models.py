@@ -71,4 +71,5 @@ class PlayerActionResult(BaseModel):
     intent_result: dict[str, Any] | None = None
     relationship_changes: list[dict[str, Any]] | None = None
     memory_written: list[dict[str, Any]] | None = None
+    day_transition: dict[str, Any] | None = None
     error: str | None = None

@@ -26,12 +26,23 @@ def test_choose_event_updates_flags_relationship_and_memory():
 def test_rest_until_next_day_unlocks_day_two_after_clue():
     sess = Session(run_id="test-story-day2")
     sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
-    sess.player_action(kind="rest_until_next_day")
+    transition = sess.player_action(kind="rest_until_next_day")
     events = sess.available_story_events()["events"]
     ids = {event["id"] for event in events}
+    assert transition["day_transition"]["from_day"] == 1
+    assert transition["day_transition"]["to_day"] == 2
     assert sess.state.day == 2
     assert "ch1_d2_forest_anomaly" in ids
 
+
+
+def test_rest_is_rejected_until_current_day_story_gate_is_complete():
+    sess = Session(run_id="test-story-day-gate-blocked")
+    out = sess.player_action(kind="rest_until_next_day")
+    assert out["ok"] is False
+    assert out["error"] == "day_end_gate_incomplete"
+    assert out["state"]["day"] == 1
+    assert out["missing"] == [{"type": "flag", "key": "clue_boundary_record", "expected": 1, "actual": 0}]
 
 def test_day_two_event_reflects_day_one_eugeo_dinner_choice():
     sess = Session(run_id="test-story-day2-eugeo-variant")

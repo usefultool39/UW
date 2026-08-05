@@ -193,7 +193,7 @@ const rewardPreview = computed(() => {
     anomaly: '确认世界异常，开启剧情分支',
     conflict: '改变同伴立场与后续事件',
     final_choice: '决定本章路线与结局'
-  })[kind] || (actionPreview.value.length ? '时间推进，NPC 会记住你的选择' : '推进今天的故事')
+  })[kind] || (actionPreview.value.length ? '时间消耗，NPC 会记住你的选择' : '推进今天的故事')
 })
 
 const completedIds = computed(() => new Set(Array.isArray(props.simState?.completed_event_ids) ? props.simState.completed_event_ids : []))
