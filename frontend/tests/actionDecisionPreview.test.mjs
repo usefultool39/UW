@@ -62,3 +62,19 @@ test('public activity preview drives UI without exposing authored effects', () =
   assert.deepEqual(preview.costs, ['耗时 2 刻', '体力 -5'])
   assert.deepEqual(preview.rewards, ['信任 / 关系', '写入记忆', '线索 / 进度'])
 })
+
+test('player-facing benefit text makes a daily activity outcome concrete', () => {
+  const preview = buildActionDecisionPreview({
+    type: 'scene_activity',
+    activity: {
+      time_cost: 1,
+      preview: {
+        resource_costs: { stamina: 2 },
+        reward_kinds: ['relationship', 'progress'],
+        benefit_text: '获得村务传闻线索；后续事件会回响。'
+      }
+    }
+  }, { player: { stamina: 10 } })
+  assert.equal(preview.rewards[0], '获得村务传闻线索；后续事件会回响。')
+  assert.deepEqual(preview.costs, ['耗时 1 刻', '体力 -2'])
+})

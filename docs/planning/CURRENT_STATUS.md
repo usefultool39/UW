@@ -134,3 +134,9 @@
 - E2E：`12 passed`，新增覆盖“无独立时间推进按钮、剧情闸未完成不能跨日、完成事件后休息自动进入下一天”。
 - 桌面/移动质量截图：`runs/quality_gate_desktop.png`、`runs/quality_gate_mobile.png`。
 - 远端状态：执行 `git fetch origin` 后，`origin/main=25a5f84`；本地 `main=8154e7e`，领先 2 个提交，待推送。
+
+## 2026-08-05 最新增量：Day 8–16 回响反馈
+
+- 村道传闻与巡查板活动现在在行动卡上显示具体的玩家可见收益，不再只显示抽象的“关系 / 进度”。
+- Day 18 静默线演练会根据 Day 8–16 的公开安全流程、邀请村民记录或村道传闻，显示不同的事件描述和选择提示；这些是可回放的 authored 叙事反馈，不绕过日期闸门。
+- 新增后端 API、故事 Director 与前端行动预览回归测试；本轮质量门已通过：后端 `246 passed`、前端 `15 passed`、build 通过、Playwright `13 passed`、`git diff --check` 通过。

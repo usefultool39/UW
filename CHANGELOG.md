@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased] 2026-08-05 — Day 8–16 回响反馈
+
+### Added
+
+- 为村道传闻、巡查板复核增加玩家可见收益预览，让行动前能理解“这次投入会带来什么”。
+- 为 Day 18 静默线演练增加公开安全流程、邀请村民记录、村道传闻三条 authored 叙事变体；保持硬闸门不变，避免支线软锁。
+- 增加活动收益预览、Day 18 路线反馈的后端与前端回归测试。
+
+### Verification
+
+- 完整后端质量门：246 passed；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：15 passed；production build 通过；Phaser chunk 约 1.48 MB 的既有体积警告保持不变。
+- Playwright E2E：13 passed（`UW_RATE_LIMIT_ENABLED=0`，仅用于本地串行 smoke；生产默认限流仍开启）。
+- `git diff --check`：通过。
+
 本项目的玩家可见变化记录在此。版本遵循 Semantic Versioning；当前仍处于 0.x Preview。
 
 ## [Unreleased]

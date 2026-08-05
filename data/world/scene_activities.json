@@ -549,7 +549,8 @@
           "alice.trust": 1,
           "eugeo.trust": 1
         }
-      }
+      },
+      "player_facing_benefit": "获得村务传闻线索；今天听到的内容会在后续村道事件里回响。"
     },
     {
       "id": "north_gate_survey",
@@ -915,7 +916,8 @@
           "alice.trust": 1,
           "eugeo.trust": 1
         }
-      }
+      },
+      "player_facing_benefit": "建立公开记录或私下调查路线；第十二天的村务事件会读到你的选择。"
     },
     {
       "id": "north_gate_silent_line_recheck",

@@ -347,3 +347,47 @@ def test_day_twelve_event_reflects_optional_village_short_loop():
     assert event["variant_id"] == "after_patrol_board_review"
     public_choice = next(item for item in event["choices"] if item["id"] == "public_patrol_board")
     assert "木牌已经有人开始补充" in public_choice["hint"]
+
+
+def test_day_eighteen_event_reflects_village_route_feedback():
+    sess = Session(run_id="test-story-day18-route-feedback")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 18,
+            "flags": {
+                "month01_village_trust": 1,
+                "village_safe_summary_published": 1,
+            },
+        }
+    )
+
+    event = next(
+        item for item in sess.available_story_events()["events"]
+        if item["id"] == "ch1_d18_silent_line_rehearsal"
+    )
+
+    assert event["variant_id"] == "after_safe_summary"
+    calibrate = next(item for item in event["choices"] if item["id"] == "calibrate_sacred_arts")
+    assert "公开的安全流程" in calibrate["hint"]
+
+
+def test_day_eighteen_event_uses_rumor_feedback_when_no_board_route_exists():
+    sess = Session(run_id="test-story-day18-rumor-feedback")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 18,
+            "flags": {
+                "month01_village_trust": 1,
+                "heard_village_rumor": 1,
+            },
+        }
+    )
+
+    event = next(
+        item for item in sess.available_story_events()["events"]
+        if item["id"] == "ch1_d18_silent_line_rehearsal"
+    )
+
+    assert event["variant_id"] == "after_village_rumor"
+    companion = next(item for item in event["choices"] if item["id"] == "trust_companion_call")
+    assert "传闻与风声" in companion["hint"]

@@ -1209,6 +1209,59 @@
             }
           }
         }
+      ],
+      "variants": [
+        {
+          "id": "after_safe_summary",
+          "when": {
+            "required_flags": {
+              "village_safe_summary_published": 1
+            }
+          },
+          "description": "你已经把北门的安全流程公开给村子。静默线演练因此多了一层责任：这次确认不仅关系到三个人，也关系到木牌上写下的每一条退路。",
+          "choice_overrides": {
+            "calibrate_sacred_arts": {
+              "hint": "沿用已经公开的安全流程，先确认刻印术不会把村民引向危险。"
+            },
+            "trust_companion_call": {
+              "hint": "让艾琳复核公开记录、尤里复核风声，三个人共同承担村务记录的后果。"
+            }
+          }
+        },
+        {
+          "id": "after_village_notes",
+          "when": {
+            "required_flags": {
+              "village_notes_invited": 1
+            }
+          },
+          "description": "广场木牌已经收到了村民补充的风向和路况。静默线演练不再只是三人的秘密排练，你们必须把这些新笔迹和边界异常放在一起判断。",
+          "choice_overrides": {
+            "calibrate_sacred_arts": {
+              "hint": "先把村民记录和刻印术逐条对照，避免把传闻误当成异常。"
+            },
+            "trust_companion_call": {
+              "hint": "让尤里先听风、艾琳整理村民记录，再把最终判定交给队伍共同复核。"
+            }
+          }
+        },
+        {
+          "id": "after_village_rumor",
+          "when": {
+            "required_flags": {
+              "heard_village_rumor": 1
+            }
+          },
+          "description": "你在村道上听过关于山脉、洞窟和不能越界的零碎说法。今天的静默线演练，终于要把那些传闻和可复核的边界记录放在同一张桌上。",
+          "choice_overrides": {
+            "calibrate_sacred_arts": {
+              "hint": "用刻印术确认传闻中的异常是否真的存在，不让恐惧替你做判断。"
+            },
+            "trust_companion_call": {
+              "hint": "让同伴分别复核传闻与风声，再共同决定是否把线索带向北门。"
+            }
+          }
+        }
       ]
     },
     {

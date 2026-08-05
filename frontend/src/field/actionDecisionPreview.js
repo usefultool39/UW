@@ -93,6 +93,7 @@ export function buildActionDecisionPreview(action, simState = {}) {
   for (const kind of Array.isArray(publicPreview?.reward_kinds) ? publicPreview.reward_kinds : []) {
     rewards.push(publicRewardLabels[kind] || '')
   }
+  if (publicPreview?.benefit_text) rewards.unshift(String(publicPreview.benefit_text))
 
   const relationship = relationshipReward(effects)
   if (relationship) rewards.push(relationship)

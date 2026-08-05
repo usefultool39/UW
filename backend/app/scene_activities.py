@@ -61,11 +61,15 @@ def _public_activity_preview(item: dict[str, Any]) -> dict[str, Any]:
     if isinstance(effects.get("resource_changes"), dict) and effects["resource_changes"]:
         reward_kinds.append("resources")
 
-    return {
+    preview = {
         "resource_costs": resource_costs,
         "reward_kinds": reward_kinds,
         "variable_resource_cost": item.get("interaction_kind") == "boundary_patrol",
     }
+    player_facing_benefit = item.get("player_facing_benefit")
+    if isinstance(player_facing_benefit, str) and player_facing_benefit.strip():
+        preview["benefit_text"] = player_facing_benefit.strip()
+    return preview
 
 
 def public_scene_activities(project_root: Path) -> dict[str, Any]:

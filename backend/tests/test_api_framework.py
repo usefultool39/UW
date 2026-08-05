@@ -25,6 +25,9 @@ def test_world_scene_activities_json():
     assert reading["preview"]["resource_costs"] == {"stamina": 5}
     assert reading["preview"]["reward_kinds"] == ["relationship", "memory", "progress"]
     assert reading["preview"]["variable_resource_cost"] is False
+    village_listen = next(item for item in body["activities"] if item["id"] == "village_square_listen")
+    assert "后续村道事件" in village_listen["preview"]["benefit_text"]
+    assert "effects" not in village_listen
     patrol = next(item for item in body["activities"] if item["id"] == "north_gate_boundary_patrol")
     assert patrol["preview"]["variable_resource_cost"] is True
     assert "effects" not in reading
