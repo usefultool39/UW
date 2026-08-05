@@ -1079,6 +1079,42 @@
             }
           }
         }
+      ],
+      "variants": [
+        {
+          "id": "after_patrol_board_review",
+          "when": {
+            "required_flags": {
+              "village_patrol_board_reviewed": 1
+            }
+          },
+          "description": "你已经把北门演练写成广场上的木牌。今天要决定的，不是要不要让村子知道，而是要让这份记录承担多少调查责任。",
+          "choice_overrides": {
+            "public_patrol_board": {
+              "hint": "木牌已经有人开始补充；现在公开完整巡查记录，会让村内信任真正成为共同流程。"
+            },
+            "quiet_supply_route": {
+              "hint": "保留三人调查的主动性，但要说明为什么木牌上的记录不能写得更完整。"
+            }
+          }
+        },
+        {
+          "id": "after_village_rumor",
+          "when": {
+            "required_flags": {
+              "heard_village_rumor": 1
+            }
+          },
+          "description": "你在村道上听见过关于山脉、洞窟和不能越界的零碎说法。艾琳把这些传闻摊在巡查板旁，等你决定哪些能成为村务记录。",
+          "choice_overrides": {
+            "public_patrol_board": {
+              "hint": "把传闻和已确认的巡查事实分开写，让村民知道哪些可以相信。"
+            },
+            "quiet_supply_route": {
+              "hint": "先不公开未确认的传闻，只为三人调查准备可复核的补给。"
+            }
+          }
+        }
       ]
     },
     {

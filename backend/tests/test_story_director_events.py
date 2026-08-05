@@ -323,3 +323,27 @@ def test_later_month_milestones_also_require_their_authored_event():
         assert out["ok"] is False
         assert out["error"] == "day_end_gate_incomplete"
         assert out["missing"][0]["key"] == missing_key
+
+
+def test_day_twelve_event_reflects_optional_village_short_loop():
+    sess = Session(run_id="test-story-day12-activity-feedback")
+    sess.state = sess.state.model_copy(
+        update={"day": 12, "flags": {"month01_drill_done": 1}}
+    )
+    sess.player_action(kind="move_scene", scene_id="village_square")
+    activity = sess.player_action(
+        kind="scene_activity",
+        activity_id="village_patrol_board_review",
+        activity_choice="publish_safe_summary",
+    )
+    assert activity["ok"] is True
+    assert sess.state.flags["village_patrol_board_reviewed"] == 1
+
+    event = next(
+        item for item in sess.available_story_events()["events"]
+        if item["id"] == "ch1_d12_village_trust"
+    )
+
+    assert event["variant_id"] == "after_patrol_board_review"
+    public_choice = next(item for item in event["choices"] if item["id"] == "public_patrol_board")
+    assert "木牌已经有人开始补充" in public_choice["hint"]

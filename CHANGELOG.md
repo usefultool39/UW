@@ -119,3 +119,9 @@
 - 将 Day 18 静默线演练、Day 24 远征包、Day 28 北门前夜加入显式日期闸门，第一月关键 authored 事件不能再被连续休息跳过。
 - 这些闸门只校验已存在的剧情 flag，不改变原有事件选择、关系效果或旧存档读取方式。
 - 本轮质量门：后端 `242 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `13 passed`。
+
+### 2026-08-05 长期目标续航：Day 8–16 短循环反馈
+
+- Day 12 村务事件新增基于可选日常活动的 authored 反馈：如果玩家先复核巡查板或听取村道传闻，事件描述与选择提示会记住这段准备，而不是把日常活动和主线割裂。
+- 新增回归测试验证 `village_patrol_board_review` 会改变 Day 12 事件的公开视图；不完成该活动仍可正常推进主线，保持易上手。
+- 本轮质量门：后端 `243 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `13 passed`。
