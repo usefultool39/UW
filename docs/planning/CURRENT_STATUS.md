@@ -2,14 +2,14 @@
 
 - **状态**：Current / 权威事实页
 - **快照日期**：2026-08-05
-- **Git 基线**：`main` / `8154e7e`（Underworld 叙事基线与剧情事件驱动日期推进已提交）
-- **版本标识**：`0.4.0-preview.1`（候选工作区；本地领先 `origin/main` 两个提交，尚未 push；未创建 tag）
+- **Git 基线**：`main` / `c49e81b`（Underworld 叙事基线、剧情事件驱动日期推进与质量门记录已提交）
+- **版本标识**：`0.4.0-preview.1`（候选工作区；`main` 已与 `origin/main` 同步至 `c49e81b`；未创建 tag）
 
 ## 版本收束（2026-08-04）
 
 - `VERSION`、frontend package 与 backend package 已同步为 `0.4.0-preview.1`。
 - 候选说明：`docs/delivery/RELEASE_0.4.0-preview.1.md`。
-- 当前是可试玩候选工作区，不冒充正式发布：交接改动已 commit，push 状态以本次交接结束时的远端核验为准；尚未创建 tag，也未完成真实首次玩家盲测。
+- 当前是可试玩候选工作区，不冒充正式发布：日期闸门迭代已 commit 并 push 到 `origin/main`；尚未创建 tag，也未完成真实首次玩家盲测。
 - 素材生产与收件入口：`materials/00_INDEX.md`。
 
 ## 交接收束（2026-08-05）
