@@ -155,5 +155,6 @@ class SimEvent(BaseModel):
     llm_prompt_user: str | None = None
     llm_raw: str | None = None
     llm_thinking: str | None = None
+    ai_budget: dict[str, Any] | None = None
     agent_mood_after: int | None = None
     agent_motivation_after: float | None = None

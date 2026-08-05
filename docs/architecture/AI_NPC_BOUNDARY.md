@@ -47,3 +47,15 @@ Perceive（只读允许状态） → Plan（结构化候选）
 - 超时、限额、解析失败和违规输出自动回退。
 - 记录模型、提示词版本、延迟、成本、候选与最终执行。
 - 同一存档可切回 scripted，不影响权威状态。
+
+## 当前 Agent Loop 落地状态（2026-08-05）
+
+已落地“候选 → 白名单校验 → Session 审计 → 玩家确认执行”的第一步：
+
+- `POST /api/npc/{npc_id}/intent/propose` 只返回预览，不直接提交世界效果；
+- 候选只能引用当前 `NpcIntent` 与其 `response_options`；
+- `intent_policy.py` 拒绝跨 NPC、未知 response、注入文本和低置信度模型候选；
+- `player_action` 仍是唯一的效果提交入口；
+- 每局 AI 调用受 `AgentBudget` 限制，超额回退 scripted / heuristic。
+
+下一步才考虑在 NPC 自主行动中调用已验证的工具白名单，且每个工具都必须保持可回放、可撤销或可由 authored 规则重算。

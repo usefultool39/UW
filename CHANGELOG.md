@@ -70,3 +70,24 @@
 ## 历史
 
 仓库在建立正式版本治理前已有 54 个提交，未创建 tag。详细演进请使用 `git log` 和 `docs/archive/2026-legacy-plans/`；不伪造历史版本号。
+
+### 2026-08-05 长期目标迭代：AI 安全边界与运行预算
+
+#### Added
+
+- 新增 `memory_policy.py`：对模型记忆候选执行来源、类型、长度、权重、注入标记和置信度校验；低置信度候选只进入审计，不写入重要记忆。
+- 新增 `intent_policy.py` 与 `npc_intent_agent.py`：模型只能从当前 authored NPC intent/response 白名单中提出预览推荐。
+- 新增 `POST /api/npc/{npc_id}/intent/propose` 预览入口；推荐不会直接修改世界，确认执行仍必须进入 `Session.player_action`。
+- 新增 `AgentBudget`：按单局 run 限制 action、dialogue、intent 的 AI 调用次数，耗尽后自动回退 scripted/heuristic。
+- 新增 `docs/architecture/AI_INTENT_AGENT_LOOP.md`，记录候选、校验、审计和执行边界。
+
+#### Changed
+
+- 普通 scripted/fallback 对话的低权重记忆候选不再误写入永久重要记忆；高权重 authored 候选仍可提交。
+- 对话返回值和 JSONL 审计新增 `memory_decision`、`memory_committed` 与 `ai_budget`。
+- LLM 行动调用失败或预算耗尽时回退 heuristic，并标记 `decision_mode=heuristic_fallback`。
+- `.env.example` 增加单局 AI 调用预算配置示例。
+
+#### Verification
+
+- 2026-08-05：后端 `235 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。

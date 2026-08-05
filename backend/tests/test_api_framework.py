@@ -562,3 +562,19 @@ def test_rest_until_next_day_restores_all_player_resources():
     assert out["state"]["player"]["hp"] == out["state"]["player"]["max_hp"]
     assert out["state"]["player"]["mp"] == out["state"]["player"]["max_mp"]
     assert out["state"]["player"]["stamina"] == out["state"]["player"]["max_stamina"]
+
+
+def test_npc_intent_proposal_is_preview_only():
+    client = TestClient(app)
+    client.post("/api/reset")
+    before = client.get("/api/state").json()
+
+    r = client.post("/api/npc/alice/intent/propose")
+
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["decision"]["accepted"] is True
+    assert body["source"] == "fallback"
+    assert body["state"]["day"] == before["day"]
+    assert body["state"]["tick"] == before["tick"]

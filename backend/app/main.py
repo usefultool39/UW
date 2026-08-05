@@ -299,6 +299,18 @@ def story_choose(request: Request, body: StoryChooseBody):
     return out
 
 
+@app.post("/api/npc/{npc_id}/intent/propose")
+@limiter.limit("30/minute")
+def propose_npc_intent(request: Request, npc_id: str):
+    """Ask the optional NPC agent for a safe, preview-only intent recommendation."""
+    with SESSION_LOCK:
+        sess = SESSION
+        out = sess.propose_npc_intent(npc_id)
+    if out.get("ok") is False:
+        raise HTTPException(status_code=404, detail=out.get("error") or "unknown_npc")
+    return out
+
+
 @app.post("/api/dialogue")
 @limiter.limit("60/minute")
 def dialogue(request: Request, body: DialogueBody):

@@ -42,6 +42,16 @@
 - 方案与证据：`docs/planning/MATURITY_STAGE_20260804_DECISION_PREVIEW.md`、`docs/planning/MATURITY_STAGE_20260804_RELATIONSHIP_ECHO.md`、`docs/planning/MATURITY_STAGE_20260804_DAY3_ECHO.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_SINGLE_ENTRY.md`、`docs/planning/MATURITY_STAGE_20260804_ACTIVITY_REGISTRY.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_NPC_DEDUP.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_OPENING_SINGLE_CTA.md`、`docs/planning/MATURITY_STAGE_20260804_DAY1_GUIDANCE_HIERARCHY.md`。
 - 验证（2026-08-05 runtime 素材接入后）：后端 207 passed；前端单测 14 passed；production build 通过；Playwright E2E 12 passed。
 
+
+## 最新长期目标切片（2026-08-05，待提交）
+
+- AI 记忆候选现在必须经过 `backend/app/memory_policy.py` 的确定性筛选：来源白名单、类型、长度、权重、注入标记与 AI 置信度均受控；普通低权重 fallback 对话不会误写永久重要记忆。
+- 新增 `backend/app/npc_intent_agent.py` 与 `backend/app/intent_policy.py`：模型只能从当前 authored NPC intent/response 中提出预览建议；`POST /api/npc/{npc_id}/intent/propose` 不直接提交世界效果。
+- 新增 `backend/app/agent_budget.py`：每局默认总计 24 次 AI 调用（action 12、dialogue 12、intent 6），耗尽后自动回退 scripted/heuristic，并写入 JSONL 审计。
+- LLM 行动失败时回退 heuristic；对话返回和事件新增 `memory_decision`、`memory_committed`、`ai_budget`。
+- 本轮验证：后端 `235 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。
+- 当前仍未调用真实外部 API，未读取或修改 `/Users/lzm/Desktop/ai-shop`，未宣称完成真人盲测或商业化授权。
+
 ## 已经完成
 
 ### 产品与玩法

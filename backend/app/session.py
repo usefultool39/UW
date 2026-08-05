@@ -7,11 +7,17 @@ from pathlib import Path
 from typing import Any, Literal
 
 from .activity_engine import ActivityValidationError, plan_scene_activity
+from .agent_budget import AgentBudget
 from .agent_registry import get_agent_profile
-from .dialogue_agent import dialogue_reply
+from .dialogue_agent import dialogue_reply, fallback_dialogue_reply
 from .heuristic import choose_action
 from .llm_agent import llm_choose_action
+from .llm_config import llm_is_configured
+from .memory_policy import screen_memory_candidate
+from .npc_intent_agent import propose_npc_intent
+from .npc_runtime import npc_runtime_for
 from .memory_store import MemoryStore
+from .ai_provider import adapter_enabled
 from .models import Location, SimEvent, TreeState, WorldState
 from .npc_intents import attach_npc_intents
 from .player_actions import (
@@ -52,6 +58,7 @@ class Session:
         # previous run's Day 3 secrets; imported saves restore their own summary.
         self.memory_store = MemoryStore(self.root / "data" / "memory" / safe_run_id)
         self._pending_jsonl: list[dict] = []
+        self.agent_budget = AgentBudget()
         self._pending_memory: list[tuple[str, dict, str]] = []
         self._runs_dir = self.root / "runs"
         self._runs_dir.mkdir(exist_ok=True)
@@ -136,6 +143,47 @@ class Session:
             self._flush_writes()
             return {"ok": True, "state": self.state.model_dump(mode="json")}
 
+    def propose_npc_intent(self, npc_id: str) -> dict[str, Any]:
+        """Preview an AI recommendation without mutating world state.
+
+        The returned candidate is restricted to the current authored intent
+        catalog. Executing a response still goes through ``player_action``.
+        """
+        with self._lock:
+            self.state = ensure_relationships(self.state)
+            self._refresh_runtime_views()
+            npc_ids = {agent.id for agent in self.state.agents}
+            if npc_id not in npc_ids:
+                return {"ok": False, "error": "unknown_npc"}
+
+            ai_budget = self.agent_budget.reserve(
+                "intent",
+                enabled=adapter_enabled() and llm_is_configured(),
+            )
+            proposal = propose_npc_intent(
+                state=self.state,
+                npc_id=npc_id,
+                project_root=self.root,
+                memory_context=self.memory_store.read_important_context(npc_id, limit=6),
+                allow_agent=ai_budget["allowed"],
+            )
+            row = {
+                "kind": "npc_intent_proposal",
+                "npc_id": npc_id,
+                "candidate": proposal.get("candidate"),
+                "decision": proposal.get("decision"),
+                "source": proposal.get("source"),
+                "provider": proposal.get("provider"),
+                "error": proposal.get("error"),
+                "ai_budget": ai_budget,
+                "tick": self.state.tick,
+                "day": self.state.day,
+            }
+            self.events.append(row)
+            self._append_jsonl(row)
+            self._flush_writes()
+            return {**proposal, "ai_budget": ai_budget, "state": self.state.model_dump(mode="json")}
+
     def step(self, mode: Literal["heuristic", "llm"]) -> list[SimEvent]:
         with self._lock:
             self.state = ensure_relationships(self.state)
@@ -144,12 +192,22 @@ class Session:
             for ag in order:
                 llm_meta: dict | None = None
                 agent_thinking: str | None = None
+                ai_budget = self.agent_budget.reserve("action", enabled=mode == "llm")
+                decision_mode = mode
                 if mode == "heuristic":
                     act = choose_action(self.state, ag)
+                elif not ai_budget["allowed"]:
+                    act = choose_action(self.state, ag)
+                    decision_mode = "heuristic_fallback"
                 else:
-                    act, agent_thinking, llm_meta = llm_choose_action(
-                        self.state, ag.id, self.events, self.root
-                    )
+                    try:
+                        act, agent_thinking, llm_meta = llm_choose_action(
+                            self.state, ag.id, self.events, self.root
+                        )
+                    except Exception as exc:
+                        act = choose_action(self.state, ag)
+                        decision_mode = "heuristic_fallback"
+                        llm_meta = {"llm_error": str(exc)}
                 new_state, ev = apply_action(self.state, ag.id, act)
                 if agent_thinking:
                     new_state.agents = [
@@ -164,12 +222,13 @@ class Session:
                     update={
                         "actor_name": who.display,
                         "actor_role": who.role,
-                        "decision_mode": mode,
+                        "decision_mode": decision_mode,
                         "llm_model": (llm_meta or {}).get("llm_model"),
                         "llm_prompt_system": (llm_meta or {}).get("llm_prompt_system"),
                         "llm_prompt_user": (llm_meta or {}).get("llm_prompt_user"),
                         "llm_raw": (llm_meta or {}).get("llm_raw"),
                         "llm_thinking": agent_thinking,
+                        "ai_budget": ai_budget,
                     }
                 )
                 row = ev.model_dump(mode="json", exclude_none=True)
@@ -873,25 +932,41 @@ class Session:
             recent = self.memory_store.read_recent_events(npc_id, limit=6)
             memory_context = self.memory_store.read_important_context(npc_id, limit=6)
             relationship = (self.state.relationships or {}).get(npc_id)
-            reply = dialogue_reply(
-                state=self.state,
-                npc_id=npc_id,
-                message=message,
-                project_root=self.root,
-                recent_memories=recent,
-                memory_context=memory_context,
-                relationship=relationship,
+            runtime = npc_runtime_for(npc_id)
+            ai_budget = self.agent_budget.reserve(
+                "dialogue",
+                enabled=runtime in {"agent", "hybrid"} and llm_is_configured(),
             )
+            dialogue_kwargs = {
+                "state": self.state,
+                "npc_id": npc_id,
+                "message": message,
+                "project_root": self.root,
+                "recent_memories": recent,
+                "memory_context": memory_context,
+                "relationship": relationship,
+            }
+            if ai_budget["allowed"]:
+                reply = dialogue_reply(**dialogue_kwargs)
+            else:
+                reply = fallback_dialogue_reply(**dialogue_kwargs)
+                reply["source"] = "fallback"
+                reply["npc_runtime"] = runtime
+                if ai_budget["reason"] not in {"runtime_scripted", "not_requested"}:
+                    reply["llm_error"] = f"ai_budget_{ai_budget['reason']}"
             memory_committed = False
             candidate = reply.get("memory_candidate")
-            if isinstance(candidate, dict) and int(candidate.get("weight", 0)) >= 3:
+            screened_candidate, memory_decision = screen_memory_candidate(
+                candidate,
+                source=str(reply.get("source") or "unknown"),
+                player_message=message,
+            )
+            if screened_candidate is not None:
                 self.memory_store.append_important_memory(
                     npc_id,
                     {
                         "day": self.state.day,
-                        "type": candidate.get("type") or "dialogue",
-                        "summary": candidate.get("summary") or "",
-                        "weight": candidate.get("weight") or 3,
+                        **screened_candidate,
                         "source_event": "dialogue",
                     },
                     self.run_id,
@@ -904,7 +979,9 @@ class Session:
                 "reply": reply.get("reply"),
                 "emotion": reply.get("emotion"),
                 "memory_candidate": reply.get("memory_candidate"),
+                "memory_decision": memory_decision,
                 "memory_committed": memory_committed,
+                "ai_budget": ai_budget,
                 "context": context or {},
                 "tick": self.state.tick,
                 "day": self.state.day,
@@ -926,6 +1003,8 @@ class Session:
             self._flush_writes()
             return {
                 **reply,
+                "memory_decision": memory_decision,
                 "memory_committed": memory_committed,
+                "ai_budget": ai_budget,
                 "state": self.state.model_dump(mode="json"),
             }

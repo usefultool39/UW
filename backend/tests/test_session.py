@@ -71,3 +71,36 @@ class TestSessionConcurrency:
 
         assert len(errors) == 0
         assert sess.state.tick > 0
+
+
+def test_llm_step_budget_exhaustion_falls_back_to_heuristic(monkeypatch):
+    from app import session as session_module
+
+    monkeypatch.setenv("AI_MAX_CALLS_PER_RUN", "0")
+    monkeypatch.setenv("AI_MAX_ACTION_CALLS_PER_RUN", "0")
+    sess = Session(run_id="budget-step-test")
+
+    events = sess.step(mode="llm")
+
+    assert events
+    assert all(event.decision_mode == "heuristic_fallback" for event in events)
+    assert all(event.ai_budget and event.ai_budget["allowed"] is False for event in events)
+    assert all(event.ai_budget["reason"] in {"total_budget_exhausted", "purpose_budget_exhausted"} for event in events)
+
+
+def test_dialogue_budget_exhaustion_falls_back_and_is_audited(monkeypatch):
+    from app import session as session_module
+
+    monkeypatch.setattr(session_module, "npc_runtime_for", lambda npc_id: "agent")
+    monkeypatch.setattr(session_module, "llm_is_configured", lambda: True)
+    monkeypatch.setenv("AI_MAX_CALLS_PER_RUN", "0")
+    monkeypatch.setenv("AI_MAX_DIALOGUE_CALLS_PER_RUN", "0")
+    sess = Session(run_id="budget-dialogue-test")
+
+    result = sess.dialogue(npc_id="alice", message="你还好吗？")
+
+    assert result["source"] == "fallback"
+    assert result["ai_budget"]["allowed"] is False
+    assert result["ai_budget"]["reason"] == "total_budget_exhausted"
+    assert "ai_budget_total_budget_exhausted" in result["llm_error"]
+    assert sess.events[-1]["ai_budget"]["total_limit"] == 0
