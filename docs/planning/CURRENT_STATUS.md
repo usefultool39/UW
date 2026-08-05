@@ -2,8 +2,8 @@
 
 - **状态**：Current / 权威事实页
 - **快照日期**：2026-08-05
-- **Git 基线**：`main` / `b1b833c`（Underworld 叙事基线、剧情事件驱动日期推进与 M3 质量门记录已提交）
-- **版本标识**：`0.4.0-preview.1`（候选工作区；`main` 已与 `origin/main` 同步至 `c49e81b`；未创建 tag）
+- **Git 基线**：`main` / `b7a62e1`（首批真实素材 runtime 接入与盲测准备已提交）
+- **版本标识**：`0.4.0-preview.1`（候选工作区；首批 runtime 素材已接入，待推送后核验；未创建 tag）
 
 ## 版本收束（2026-08-04）
 
@@ -16,7 +16,7 @@
 
 - 已建立素材与宏观优化动态工作台：`docs/planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md`；后续素材审查和优化交流以此为唯一动态入口。
 - 已建立智能体交接文档：`docs/delivery/HANDOFF_20260805.md`；包含当前事实、不可破坏边界、验证基线、P0/P1 接手顺序和完成定义。
-- 新增素材已完成第一轮宏观审查与技术返工：UI 图标、BGM、ambience v002 可进入内测；关键图/肖像 v002 已重导为真实 PNG / RGBA 透明 PNG 并通过二次复核（尺寸、alpha、sha256 与 MANIFEST 一致）；剩余工作是第一批 runtime 接入、真实 UI 截图验收和 3 人陌生玩家盲测。
+- 新增素材已完成第一轮宏观审查与技术返工：UI 图标、BGM、ambience v002 可进入内测；关键图/肖像 v002 已重导为真实 PNG / RGBA 透明 PNG 并通过二次复核（尺寸、alpha、sha256 与 MANIFEST 一致）；首批 runtime 已接入并通过截图/构建验收；剩余工作是 3 人陌生玩家盲测。
 - 交接前复验：素材检查 `29 requests passed`，关键图/肖像/音频实物规格与台账一致；随后完成日期闸门迭代质量门：后端 `207 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；存在既有 Starlette/httpx 弃用警告和 Phaser chunk 体积警告。
 - 素材返工记录：`docs/planning/MATERIALS_REWORK_STATUS_20260805.md`；审查证据图已放入 `docs/delivery/`。
 
