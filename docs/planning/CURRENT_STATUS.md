@@ -2,7 +2,7 @@
 
 - **状态**：Current / 权威事实页
 - **快照日期**：2026-08-05
-- **Git 基线**：`main` / `6b02a5b`（AI 安全边界、NPC 意图预览与单局预算已提交并推送）
+- **Git 基线**：`main` / `94cc27a`（AI 安全边界、NPC 意图预览、预算与存档导入安全已提交并推送）
 - **版本标识**：`0.4.0-preview.1`（候选工作区；首批 runtime 素材与 AI 安全增强已接入；未创建 tag）
 
 ## 版本收束（2026-08-04）
@@ -51,7 +51,7 @@
 - LLM 行动失败时回退 heuristic；对话返回和事件新增 `memory_decision`、`memory_committed`、`ai_budget`。
 - 本轮验证：后端 `237 passed`；前端单测 `14 passed`；production build 通过；Playwright E2E `12 passed`；`git diff --check` 通过。
 - 当前仍未调用真实外部 API，未读取或修改 `/Users/lzm/Desktop/ai-shop`，未宣称完成真人盲测或商业化授权。
-- 最新 Git 状态：`main...origin/main` 已同步，远端与本地均为 `6b02a5b`。
+- 最新 Git 状态：`main...origin/main` 已同步，远端与本地均为 `94cc27a`。
 - 本轮新增存档导入安全：清空旧 pending 写入、重置单局 AI 预算、过滤导入记忆危险文本；后端质量门更新为 `237 passed`。
 
 ## 已经完成
