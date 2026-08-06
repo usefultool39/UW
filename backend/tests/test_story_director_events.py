@@ -391,3 +391,40 @@ def test_day_eighteen_event_uses_rumor_feedback_when_no_board_route_exists():
     assert event["variant_id"] == "after_village_rumor"
     companion = next(item for item in event["choices"] if item["id"] == "trust_companion_call")
     assert "传闻与风声" in companion["hint"]
+
+
+def test_day_twenty_four_event_reflects_day_twelve_village_route():
+    cases = [
+        (
+            "month01_public_patrol",
+            "after_public_patrol",
+            "公开巡查路线",
+            "pack_for_safety",
+        ),
+        (
+            "month01_supply_route",
+            "after_supply_route",
+            "低调筹备",
+            "pack_for_safety",
+        ),
+    ]
+    for flag, variant_id, expected_hint, choice_id in cases:
+        sess = Session(run_id=f"test-story-day24-route-{flag}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 24,
+                "flags": {
+                    "month01_silent_line_rehearsed": 1,
+                    flag: 1,
+                },
+            }
+        )
+
+        event = next(
+            item for item in sess.available_story_events()["events"]
+            if item["id"] == "ch1_d24_expedition_pack"
+        )
+
+        assert event["variant_id"] == variant_id
+        choice = next(item for item in event["choices"] if item["id"] == choice_id)
+        assert expected_hint in choice["hint"]

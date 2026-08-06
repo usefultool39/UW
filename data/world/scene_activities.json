@@ -1012,7 +1012,8 @@
           "alice.trust": 1,
           "eugeo.trust": 1
         }
-      }
+      },
+      "player_facing_benefit": "复核静默线的靠近距离；你的判定会被后续静默线演练记住。"
     },
     {
       "id": "home_expedition_bridge_talk",

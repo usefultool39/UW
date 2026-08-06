@@ -1391,6 +1391,42 @@
             }
           }
         }
+      ],
+      "variants": [
+        {
+          "id": "after_public_patrol",
+          "when": {
+            "required_flags": {
+              "month01_public_patrol": 1
+            }
+          },
+          "description": "你们把第一月的巡查记录做成了村务的一部分。今天整理远征包时，艾琳要求每一件物资都能在公开记录里找到来处和用途。",
+          "choice_overrides": {
+            "pack_for_safety": {
+              "hint": "延续公开巡查路线：先确认补给、退路和村务记录彼此一致。"
+            },
+            "pack_for_range": {
+              "hint": "可以扩大远征范围，但要把新增风险写进村民已经看得见的记录。"
+            }
+          }
+        },
+        {
+          "id": "after_supply_route",
+          "when": {
+            "required_flags": {
+              "month01_supply_route": 1
+            }
+          },
+          "description": "你们把第一月的调查保留在三人之间。整理远征包时，艾琳反复确认哪些补给和路线不能只靠口头约定。",
+          "choice_overrides": {
+            "pack_for_safety": {
+              "hint": "兑现低调筹备时的承诺：先把补给和撤退标记复核到没有空白。"
+            },
+            "pack_for_range": {
+              "hint": "远征范围可以更大胆，但必须先回答艾琳对信息不完整的担心。"
+            }
+          }
+        }
       ]
     },
     {

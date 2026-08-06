@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased] 2026-08-06 — 第一月路线连续性与盲测证据
+
+### Added
+
+- Day 24 远征包事件会读取 Day 12 的公开巡查或低调补给路线，显示不同描述和选择提示，让第一月路线持续产生回响。
+- 北门静默线复核活动增加玩家可见收益说明，明确这次判定会进入后续静默线演练。
+- 新增首轮真人盲测批次跟踪表，集中记录三名玩家的执行状态、录屏、访谈与判定门槛，并明确 E2E 不能替代真人证据。
+
+### Verification
+
+- 后端：`247 passed`；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：`15 passed`；production build 通过；Phaser chunk 约 1.48 MB 的既有体积警告保持不变。
+- Playwright E2E：`13 passed`（`UW_RATE_LIMIT_ENABLED=0` 仅用于本地串行 smoke）。
+- `git diff --check`：通过。
+
 ## [Unreleased] 2026-08-05 — Day 8–16 回响反馈
 
 ### Added

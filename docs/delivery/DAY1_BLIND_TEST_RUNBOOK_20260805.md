@@ -60,3 +60,11 @@ materials/inbox/research/playtest/QA-PLAY-001_player03.md
 - **继续意愿**：至少 2 人表示愿意继续查看 Day 2 或森林异常。
 
 不达标时只修复最高频的一个阻塞点，重新跑自动化质量门，再进行下一轮盲测。
+
+## 批次跟踪
+
+首轮三名玩家的证据状态统一维护在：
+
+- `/Users/lzm/Desktop/UW/docs/delivery/PLAYTEST_ROUND_01_TRACKER_20260806.md`
+
+当前仍为 `pending-human-run`。自动化测试只证明系统可重复运行，不替代真人首次体验数据。

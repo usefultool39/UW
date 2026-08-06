@@ -140,3 +140,11 @@
 - 村道传闻与巡查板活动现在在行动卡上显示具体的玩家可见收益，不再只显示抽象的“关系 / 进度”。
 - Day 18 静默线演练会根据 Day 8–16 的公开安全流程、邀请村民记录或村道传闻，显示不同的事件描述和选择提示；这些是可回放的 authored 叙事反馈，不绕过日期闸门。
 - 新增后端 API、故事 Director 与前端行动预览回归测试；本轮质量门已通过：后端 `246 passed`、前端 `15 passed`、build 通过、Playwright `13 passed`、`git diff --check` 通过。
+
+## 2026-08-06 第一月路线连续性与真人盲测状态
+
+- Day 24 远征包事件会读取 Day 12 的 `month01_public_patrol` / `month01_supply_route` 路线，继续反馈公开村务或低调筹备的长期后果。
+- 北门静默线复核活动会在行动前说明其后续用途，减少“做了活动却不知道有什么意义”的问题。
+- 首轮真人盲测的执行跟踪表已建立：`docs/delivery/PLAYTEST_ROUND_01_TRACKER_20260806.md`。
+- 当前状态仍为 `pending-human-run`；现有 Playwright 结果不能替代真实玩家证据，未伪造任何玩家记录。
+- 本轮质量门：后端 `247 passed`、前端 `15 passed`、build 通过、Playwright `13 passed`、`git diff --check` 通过。
