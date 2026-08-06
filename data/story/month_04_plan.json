@@ -1,0 +1,172 @@
+{
+  "v": 1,
+  "id": "month_04",
+  "title": "第四月 · 村庄能否自己守住边界",
+  "subtitle": "把英雄行动改造成可以持续的村务、样本和责任规则",
+  "summary": "Day 104–117 读取第三月最终后果，在现有场景中建立第四月值班表、路线活动、资源恢复、承诺回访和阶段结算。",
+  "day_range": [
+    104,
+    117
+  ],
+  "ending_paths": {
+    "public_shift": {
+      "label": "公开短班",
+      "summary": "把低风险守望交给村务搭档，核心小队负责复核与升级。"
+    },
+    "frontier_samples": {
+      "label": "固定样本链",
+      "summary": "用相同距离和顺序积累可比较样本，不用深入距离证明成果。"
+    },
+    "accountable_intel": {
+      "label": "责任情报",
+      "summary": "用每日应对卡或三重托管让信息既可用又可追责。"
+    },
+    "unresolved": {
+      "label": "路线待定",
+      "summary": "先完成 Day 104 的第四月值班表。"
+    }
+  },
+  "weeks": [
+    {
+      "id": "week_15",
+      "week": 15,
+      "day_range": [
+        104,
+        110
+      ],
+      "title": "第 15 周：第四月第一份值班表",
+      "summary": "Day 104 读取第三月最终后果，建立公开短班、固定样本或情报责任值班；Day 105–110 完成一次路线活动和一次资源恢复。",
+      "goals": [
+        "完成第四月入口事件",
+        "完成一次路线值班",
+        "选择一次资源恢复"
+      ],
+      "play_hooks": [
+        "路线继承",
+        "可重复活动",
+        "资源余量"
+      ],
+      "milestones": [
+        {
+          "id": "m04_entry",
+          "title": "Day 104：第四月值班表",
+          "day_range": [
+            104,
+            104
+          ],
+          "scene_id": "home_hearth",
+          "related_event_id": "ch1_d104_fourth_month_entry",
+          "completed_flag": "month04_entry_ready",
+          "requirements": {
+            "required_flags": {
+              "month03_day103_result_done": 1
+            }
+          },
+          "goals": [
+            "读取第三月最终后果",
+            "选择第四月执行方式"
+          ],
+          "reward": "解锁当前玩法族的第四月值班活动。"
+        },
+        {
+          "id": "m04_first_shift",
+          "title": "Day 105-110：路线值班与恢复",
+          "day_range": [
+            105,
+            110
+          ],
+          "scene_id": "village_square",
+          "related_activity_ids": [
+            "village_fourth_month_shift",
+            "north_gate_fourth_month_sample_run",
+            "reading_hall_fourth_month_risk_review",
+            "home_fourth_month_recovery_plan"
+          ],
+          "completed_flag": "month04_recovery_done",
+          "requirements": {
+            "required_flags": {
+              "month04_entry_ready": 1
+            }
+          },
+          "goals": [
+            "完成一次路线活动",
+            "理解资源限制",
+            "通过 Day 110 闸门"
+          ],
+          "reward": "Day 111 会读取值班方法和恢复偏好。"
+        }
+      ]
+    },
+    {
+      "id": "week_16",
+      "week": 16,
+      "day_range": [
+        111,
+        117
+      ],
+      "title": "第 16 周：方法能否留在村里",
+      "summary": "Day 111 根据当前玩法族完成第一周复盘；Day 112–116 每日短回访验证方法能否被他人执行；Day 117 将规则留在村里。",
+      "goals": [
+        "完成第一周路线结果",
+        "完成至少一次承诺回访",
+        "完成 Day 117 阶段结算"
+      ],
+      "play_hooks": [
+        "关系后果",
+        "承诺兑现",
+        "长期规则"
+      ],
+      "milestones": [
+        {
+          "id": "m04_route_result",
+          "title": "Day 111：第一周路线结果",
+          "day_range": [
+            111,
+            111
+          ],
+          "scene_id": "reading_hall",
+          "related_event_id": "ch1_d111_fourth_month_route_result",
+          "completed_flag": "month04_route_resolved",
+          "requirements": {
+            "required_flags": {
+              "month04_route_activity_done": 1,
+              "month04_recovery_done": 1
+            }
+          },
+          "goals": [
+            "选择扩大或保护当前方法",
+            "写入关系、承诺和紧张"
+          ],
+          "reward": "解锁当前路线的每日回访。"
+        },
+        {
+          "id": "m04_phase_result",
+          "title": "Day 112-117：承诺回访与阶段结算",
+          "day_range": [
+            112,
+            117
+          ],
+          "scene_id": "home_hearth",
+          "related_event_id": "ch1_d117_fourth_month_phase_result",
+          "related_activity_ids": [
+            "village_fourth_month_followup",
+            "north_gate_fourth_month_followup",
+            "reading_hall_fourth_month_followup"
+          ],
+          "completed_flag": "month04_phase_resolved",
+          "requirements": {
+            "required_flags": {
+              "month04_route_resolved": 1
+            }
+          },
+          "goals": [
+            "至少完成一次回访",
+            "选择能留在村里的规则",
+            "进入 Day 118"
+          ],
+          "reward": "第四月方法成为后续阶段可读取的长期世界状态。"
+        }
+      ]
+    }
+  ]
+}

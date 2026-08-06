@@ -29,6 +29,9 @@
 | `05_WORKFLOW_AND_REVIEW.md` | 收件、评审、返工、批准、接入、回滚、维护流程 |
 | `06_RIGHTS_AND_PROVENANCE.md` | 来源、授权、AI 生成记录、禁止项和归属要求 |
 | `07_CURRENT_ASSET_AUDIT.md` | 现有素材、占位项、真实缺口与推荐替换顺序 |
+| `08_NARRATIVE_REQUIREMENTS.md` | 爱丽丝被带走前的正典兼容叙事需求与交付定义 |
+| `09_PRECAPTURE_STORY_TARGET.md` | 长期故事结构、人物深度和世界观目标 |
+| `10_CANON_CONTINUITY_CHECKLIST.md` | 每次新增内容的正典连续性与可玩性检查 |
 | `REQUESTS.csv` | 机器可读请求状态；更新 `status` 即可跟踪 |
 | `MANIFEST_TEMPLATE.csv` | 每个实际文件的来源、许可证、哈希与接入记录模板 |
 | `inbox/README.md` | 你放文件时必须遵守的最简规则 |

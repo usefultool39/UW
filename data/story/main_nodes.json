@@ -366,6 +366,55 @@
         "title": "进入第四月边界余波",
         "description": "第三月阶段承诺已经完成一次回访；第四月将读取村务参与、源头样本或情报责任链的长期后果。"
       }
+    },
+    "104": {
+      "required_events": [
+        "ch1_d104_fourth_month_entry"
+      ],
+      "advance_to": 105,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 104 · 第四月值班表已经写下",
+      "next_goal": {
+        "title": "执行第一周值班",
+        "description": "在村道、北门或书库完成当前路线的一次实际值班，并保留资源余量。"
+      }
+    },
+    "110": {
+      "required_flags": {
+        "month04_route_activity_done": 1,
+        "month04_recovery_done": 1
+      },
+      "advance_to": 111,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 110 · 第一周值班与恢复完成",
+      "next_goal": {
+        "title": "复盘第四月第一周",
+        "description": "值班结果和资源限制已经记录；第一百一十一天决定方法是否值得继续。"
+      }
+    },
+    "111": {
+      "required_events": [
+        "ch1_d111_fourth_month_route_result"
+      ],
+      "advance_to": 112,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 111 · 第一周值班复盘",
+      "next_goal": {
+        "title": "兑现一次第四月路线承诺",
+        "description": "路线结果已写入关系和责任；下一周用一次短回访验证它是否能被持续执行。"
+      }
+    },
+    "117": {
+      "required_events": [
+        "ch1_d117_fourth_month_phase_result"
+      ],
+      "advance_to": 118,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 117 · 第四月方法留在村里",
+      "next_goal": {
+        "title": "进入第四月第二阶段",
+        "description": "公开短班、样本链或情报责任规则已经留存；后续将读取这条长期后果。"
+      }
     }
   }
 }

@@ -4789,6 +4789,1023 @@
           }
         }
       ]
+    },
+    {
+      "id": "village_fourth_month_shift",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第四月 · 村务短班",
+      "label": "完成一次公开短班或核心复核",
+      "description": "第四月公开路线开始执行值班表。每天只能做一次，在扩大参与和守住复核质量之间选择。",
+      "result_text": "回访完成，路线和资源结果已写回第四月记录。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month04",
+        "route",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 105,
+        "day_max": 110,
+        "required_flags": {
+          "month04_public_route": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month04_public_shift",
+      "player_facing_benefit": "体力用于现场协调；保守复核会恢复少量神圣力.",
+      "choices": [
+        {
+          "id": "guide_steward_pair",
+          "label": "带村务搭档完成低风险短班",
+          "hint": "体力 -4；积累独立轮值经验。",
+          "tone": "active",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "公开短班经验 +1",
+              "为 Day 111 提供独立轮值证据"
+            ]
+          },
+          "result_text": "你带村务搭档完成最短的一班，只报告事实并准时回撤。",
+          "effects": {
+            "stamina_cost": 4,
+            "flags": {
+              "month04_route_activity_done": 1,
+              "month04_public_activity_done": 1,
+              "month04_steward_pair_practiced": 1
+            },
+            "flag_deltas": {
+              "month04_public_shift_count": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_activity",
+                "summary": "第四月活动，玩家带村务搭档完成低风险短班。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_activity",
+                "summary": "第四月活动，尤吉欧陪搭档按停步点准时回撤。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "audit_public_template",
+          "label": "复核公开模板和安全余量",
+          "hint": "体力 -2，神圣力 +2；推进慢但误读风险更低。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "公开模板复核 +1",
+              "降低误读风险"
+            ]
+          },
+          "result_text": "你们逐条复核公开模板，把最容易被误解的词换成现场动作。",
+          "effects": {
+            "stamina_cost": 2,
+            "mp_restore": 2,
+            "flags": {
+              "month04_route_activity_done": 1,
+              "month04_public_activity_done": 1,
+              "month04_public_template_audited": 1
+            },
+            "flag_deltas": {
+              "month04_public_shift_count": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_activity",
+                "summary": "第四月活动，玩家复核公开模板与安全余量。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_activity",
+                "summary": "第四月活动，尤吉欧把容易误读的词换成现场动作。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "north_gate_fourth_month_sample_run",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第四月 · 固定短段样本",
+      "label": "完成一次样本取回或中止演练",
+      "description": "第四月源头路线不比较谁走得远，只比较相同条件下发生了什么。每天只能做一次。",
+      "result_text": "回访完成，路线和资源结果已写回第四月记录。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month04",
+        "route",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 105,
+        "day_max": 110,
+        "required_flags": {
+          "month04_frontier_route": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month04_sample_run",
+      "player_facing_benefit": "取样消耗体力；中止演练恢复少量神圣力并降低风险.",
+      "choices": [
+        {
+          "id": "collect_fixed_sample",
+          "label": "按固定距离取回一份样本",
+          "hint": "体力 -6；积累可比较样本。",
+          "tone": "frontier",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "可比样本 +1",
+              "为 Day 111 提供变化证据"
+            ]
+          },
+          "result_text": "尤吉欧按固定节拍前进，你在停步点取样，爱丽丝记录风向和无变化。",
+          "effects": {
+            "stamina_cost": 6,
+            "flags": {
+              "month04_route_activity_done": 1,
+              "month04_frontier_activity_done": 1,
+              "month04_fixed_sample_collected": 1
+            },
+            "flag_deltas": {
+              "month04_sample_count": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_activity",
+                "summary": "第四月活动，玩家按固定距离取回可比较样本。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_activity",
+                "summary": "第四月活动，尤吉欧按固定节拍取样并准时回撤。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "verify_abort_cache",
+          "label": "验证缓存和中止线",
+          "hint": "体力 -3，神圣力 +2；提高回撤可靠性。",
+          "tone": "safe",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "回撤可靠性 +1",
+              "降低无计划深入风险"
+            ]
+          },
+          "result_text": "你们在疲惫状态下复走缓存，确认中止线仍然能被执行。",
+          "effects": {
+            "stamina_cost": 3,
+            "mp_restore": 2,
+            "flags": {
+              "month04_route_activity_done": 1,
+              "month04_frontier_activity_done": 1,
+              "month04_abort_cache_verified": 1
+            },
+            "flag_deltas": {
+              "month04_sample_count": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_activity",
+                "summary": "第四月活动，玩家在疲惫状态下验证缓存与中止线。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_activity",
+                "summary": "第四月活动，尤吉欧练习在体力不足时仍准时回撤。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reading_hall_fourth_month_risk_review",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第四月 · 风险责任复核",
+      "label": "更新一次风险板或托管账",
+      "description": "第四月情报路线要让信息每天保持可用，同时不把推测写成事实。每天只能做一次。",
+      "result_text": "回访完成，路线和资源结果已写回第四月记录。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month04",
+        "route",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 105,
+        "day_max": 110,
+        "required_flags": {
+          "month04_intel_route": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month04_risk_review",
+      "player_facing_benefit": "更新风险板消耗神圣力；托管复核消耗体力并恢复少量神圣力.",
+      "choices": [
+        {
+          "id": "refresh_daily_risk_board",
+          "label": "更新今日风险等级和应对动作",
+          "hint": "神圣力 -5；必须保留未知部分。",
+          "tone": "brief",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "风险板更新 +1",
+              "村民更容易理解当前行动"
+            ]
+          },
+          "result_text": "爱丽丝删去旧日期和推测，尤吉欧把新动作贴上村务板。",
+          "effects": {
+            "mp_cost": 5,
+            "flags": {
+              "month04_route_activity_done": 1,
+              "month04_intel_activity_done": 1,
+              "month04_risk_board_refreshed": 1
+            },
+            "flag_deltas": {
+              "month04_intel_review_count": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_activity",
+                "summary": "第四月活动，玩家更新今日风险板并保留未知部分。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_activity",
+                "summary": "第四月活动，尤吉欧把风险等级翻成今日动作。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "audit_custody_ledger",
+          "label": "复核三重托管账和外页动作",
+          "hint": "体力 -2，神圣力 +2；责任链更完整。",
+          "tone": "sealed",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "责任链复核 +1",
+              "降低随意开封风险"
+            ]
+          },
+          "result_text": "你们核对托管人、开启条件和外页回撤动作，没有用紧急感替代责任。",
+          "effects": {
+            "stamina_cost": 2,
+            "mp_restore": 2,
+            "flags": {
+              "month04_route_activity_done": 1,
+              "month04_intel_activity_done": 1,
+              "month04_custody_ledger_audited": 1
+            },
+            "flag_deltas": {
+              "month04_intel_review_count": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_activity",
+                "summary": "第四月活动，玩家复核三重托管账与外页动作。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_activity",
+                "summary": "第四月活动，尤吉欧确认开启条件和回撤动作。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "home_fourth_month_recovery_plan",
+      "scene_id": "home_hearth",
+      "scene_ids": [
+        "home_hearth"
+      ],
+      "poi_id": "ix_home_bed",
+      "title": "第四月 · 值班恢复计划",
+      "label": "选择一次安全恢复，为 Day 111 留出余量",
+      "description": "第一周值班已经消耗资源。恢复其中一类资源，并把另一类不足写进复盘；恢复不会跨日。",
+      "result_text": "恢复计划完成，剩余限制被明确写进下一次选择。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month04",
+        "recovery",
+        "resources",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 107,
+        "day_max": 110,
+        "required_flags": {
+          "month04_route_activity_done": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month04_recovery",
+      "player_facing_benefit": "一次性恢复体力或神圣力；Day 110 前必须完成.",
+      "choices": [
+        {
+          "id": "recover_for_field_shift",
+          "label": "优先恢复体力，保留术式不足",
+          "hint": "体力 +10；更适合现场轮值或取样。",
+          "tone": "body",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "体力 +10",
+              "下一阶段更适合现场行动"
+            ]
+          },
+          "result_text": "尤吉欧把恢复后的体力安排进下一班，爱丽丝保留神圣力不足的警告。",
+          "effects": {
+            "stamina_restore": 10,
+            "flags": {
+              "month04_recovery_done": 1,
+              "month04_stamina_recovered": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_recovery",
+                "summary": "第四月恢复，玩家优先恢复体力并保留术式不足。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_recovery",
+                "summary": "第四月恢复，尤吉欧把体力余量安排进下一班。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "recover_for_record_shift",
+          "label": "优先恢复神圣力，接受身体疲惫",
+          "hint": "神圣力 +10，体力 -2；更适合风险板或记录。",
+          "tone": "arts",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "神圣力 +10",
+              "体力 -2",
+              "下一阶段更适合记录"
+            ]
+          },
+          "result_text": "爱丽丝帮你恢复神圣力，尤吉欧把体力疲惫写进值班限制。",
+          "effects": {
+            "stamina_cost": 2,
+            "mp_restore": 10,
+            "flags": {
+              "month04_recovery_done": 1,
+              "month04_mp_recovered": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_recovery",
+                "summary": "第四月恢复，玩家优先恢复神圣力并接受身体疲惫。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_recovery",
+                "summary": "第四月恢复，尤吉欧把体力不足写进值班限制。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "village_fourth_month_followup",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第四月 · 公开路线回访",
+      "label": "完成一次村务搭档或模板回访",
+      "description": "把 Day 111 的公开路线结果变成一次可复查的短回访。每天只能完成一次。",
+      "result_text": "回访完成，路线和资源结果已写回第四月记录。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month04",
+        "route",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 112,
+        "day_max": 116,
+        "required_any_flags": {
+          "month04_public_pair_approved": 1,
+          "month04_public_core_audit": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month04_public_followup",
+      "player_facing_benefit": "每天一次；验证独立轮值或公开模板是否能被他人执行.",
+      "choices": [
+        {
+          "id": "observe_steward_pair",
+          "label": "观察村务搭档独立短班",
+          "hint": "体力 -3；验证独立轮值。",
+          "tone": "active",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺回访 +1",
+              "为 Day 117 阶段结算提供证据"
+            ]
+          },
+          "result_text": "你只在远处复核，让村务搭档自己报告事实和停步点。",
+          "effects": {
+            "flags": {
+              "month04_followup_done": 1,
+              "observe_steward_pair_done": 1
+            },
+            "flag_deltas": {
+              "month04_followup_count": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_followup",
+                "summary": "第四月回访，玩家验证阶段方法能否被他人复述和执行。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_followup",
+                "summary": "第四月回访，尤吉欧把方法再次翻成现场动作。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 3
+          }
+        },
+        {
+          "id": "recheck_public_template",
+          "label": "复核公开模板是否仍能被复述",
+          "hint": "体力 -2，神圣力 +2；验证模板稳定性。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺回访 +1",
+              "为 Day 117 阶段结算提供证据"
+            ]
+          },
+          "result_text": "你请一名未参与编写的人复述模板，记录所有含糊之处。",
+          "effects": {
+            "flags": {
+              "month04_followup_done": 1,
+              "recheck_public_template_done": 1
+            },
+            "flag_deltas": {
+              "month04_followup_count": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_followup",
+                "summary": "第四月回访，玩家验证阶段方法能否被他人复述和执行。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_followup",
+                "summary": "第四月回访，尤吉欧把方法再次翻成现场动作。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 2,
+            "mp_restore": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "north_gate_fourth_month_followup",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第四月 · 样本路线回访",
+      "label": "完成一次样本链或中止余量回访",
+      "description": "把 Day 111 的源头路线结果变成一次可复查的短回访。每天只能完成一次。",
+      "result_text": "回访完成，路线和资源结果已写回第四月记录。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month04",
+        "route",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 112,
+        "day_max": 116,
+        "required_any_flags": {
+          "month04_frontier_second_sample": 1,
+          "month04_frontier_abort_margin": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month04_frontier_followup",
+      "player_facing_benefit": "每天一次；验证样本比较或中止边界是否能持续运行.",
+      "choices": [
+        {
+          "id": "compare_sample_pair",
+          "label": "并排比较两份固定短段样本",
+          "hint": "体力 -4；提取可验证变化。",
+          "tone": "active",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺回访 +1",
+              "为 Day 117 阶段结算提供证据"
+            ]
+          },
+          "result_text": "你们只标出两份样本真正不同的地方，不把噪声写成发现。",
+          "effects": {
+            "flags": {
+              "month04_followup_done": 1,
+              "compare_sample_pair_done": 1
+            },
+            "flag_deltas": {
+              "month04_followup_count": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_followup",
+                "summary": "第四月回访，玩家验证阶段方法能否被他人复述和执行。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_followup",
+                "summary": "第四月回访，尤吉欧把方法再次翻成现场动作。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 4
+          }
+        },
+        {
+          "id": "stress_test_abort_margin",
+          "label": "在低资源状态下验证中止余量",
+          "hint": "体力 -2，神圣力 +2；验证回撤可靠性。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺回访 +1",
+              "为 Day 117 阶段结算提供证据"
+            ]
+          },
+          "result_text": "你们在低资源状态下复走中止线，确认退路仍然成立。",
+          "effects": {
+            "flags": {
+              "month04_followup_done": 1,
+              "stress_test_abort_margin_done": 1
+            },
+            "flag_deltas": {
+              "month04_followup_count": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_followup",
+                "summary": "第四月回访，玩家验证阶段方法能否被他人复述和执行。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_followup",
+                "summary": "第四月回访，尤吉欧把方法再次翻成现场动作。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 2,
+            "mp_restore": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "reading_hall_fourth_month_followup",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第四月 · 情报责任回访",
+      "label": "完成一次应对卡或三重托管回访",
+      "description": "把 Day 111 的情报路线结果变成一次可复查的短回访。每天只能完成一次。",
+      "result_text": "回访完成，路线和资源结果已写回第四月记录。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month04",
+        "route",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 112,
+        "day_max": 116,
+        "required_any_flags": {
+          "month04_intel_response_card": 1,
+          "month04_intel_three_seal_audit": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month04_intel_followup",
+      "player_facing_benefit": "每天一次；验证信息是否易懂或责任链是否仍能阻止随意开封.",
+      "choices": [
+        {
+          "id": "test_response_card",
+          "label": "让旁观者按应对卡复述动作",
+          "hint": "神圣力 -4；验证信息是否易懂。",
+          "tone": "active",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺回访 +1",
+              "为 Day 117 阶段结算提供证据"
+            ]
+          },
+          "result_text": "一名旁观者按应对卡复述出正确动作，也指出了一处容易误解的词。",
+          "effects": {
+            "flags": {
+              "month04_followup_done": 1,
+              "test_response_card_done": 1
+            },
+            "flag_deltas": {
+              "month04_followup_count": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_followup",
+                "summary": "第四月回访，玩家验证阶段方法能否被他人复述和执行。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_followup",
+                "summary": "第四月回访，尤吉欧把方法再次翻成现场动作。",
+                "weight": 5
+              }
+            },
+            "mp_cost": 4
+          }
+        },
+        {
+          "id": "test_custody_question",
+          "label": "用行动价值问题复核一次开封请求",
+          "hint": "体力 -2，神圣力 +2；验证责任链。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺回访 +1",
+              "为 Day 117 阶段结算提供证据"
+            ]
+          },
+          "result_text": "你们拒绝了一次只为满足好奇的开封请求，并记录拒绝理由。",
+          "effects": {
+            "flags": {
+              "month04_followup_done": 1,
+              "test_custody_question_done": 1
+            },
+            "flag_deltas": {
+              "month04_followup_count": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_followup",
+                "summary": "第四月回访，玩家验证阶段方法能否被他人复述和执行。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_followup",
+                "summary": "第四月回访，尤吉欧把方法再次翻成现场动作。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 2,
+            "mp_restore": 2
+          }
+        }
+      ]
     }
   ]
 }

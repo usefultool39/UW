@@ -47,6 +47,12 @@ def _matches_forbidden_flags(state: WorldState, forbidden: dict[str, Any] | None
     return True
 
 
+def _matches_required_any_flags(state: WorldState, required: dict[str, Any] | None) -> bool:
+    if not required:
+        return True
+    return any(_flag_value(state, str(key)) >= int(expected) for key, expected in required.items())
+
+
 def _relationship_value(state: WorldState, path: str) -> int:
     if "." not in path:
         return 0
@@ -88,6 +94,8 @@ def _matches_conditions(state: WorldState, conditions: dict[str, Any] | None) ->
         return False
 
     if not _matches_required_flags(state, conditions.get("required_flags")):
+        return False
+    if not _matches_required_any_flags(state, conditions.get("required_any_flags")):
         return False
     if not _matches_forbidden_flags(state, conditions.get("forbidden_flags")):
         return False

@@ -28,3 +28,10 @@ REF-FONT-001,P1,received,research,可商用中文字体候选,3至5套,materials
 REF-MOOD-001,P1,requested,research,可追溯参考包,30至60项,materials/inbox/research/moodboards,,0.4.0-preview.2,user,"可并行; [暂停待续 2026-08-04 23:27: Wikimedia不可达(000), 已定Met OpenAccess方案, 见 RESUME_NEXT.md 第2节]"
 VIS-MARKETING-001,P2,deferred,visual,商店页封面横幅,5比例,materials/inbox/visual/keyart,QA-PLAY-001;VIS-KA-001,0.4.0-preview.3,user,玩法盲测后
 AUD-VOICE-001,P2,deferred,audio,临时角色语音小样,1套,materials/inbox/audio/sfx,NAR-VOICE-001,0.4.0-preview.3,user,当前不启动
+NAR-CANON-001,P0,requested,research,Underworld正典事实与时间线基线,1套,materials/inbox/research/canon_baseline,,0.5.0-pre-capture,user,核实露茵村、禁忌目录、尽头山脉、爱丽丝被带走前固定事实；不收集影视截图
+NAR-PRECAP-001,P0,requested,writing,爱丽丝被带走前的故事章节与事件卡,1阶段/4幕,materials/inbox/writing/pre_capture_story,NAR-CANON-001;NAR-VOICE-001,0.5.0-pre-capture,user,固定抓捕终点；允许玩家在事实层内分支
+WORLD-MACRO-001,P0,requested,writing,Underworld大世界宏观设定,1套,materials/inbox/writing/world_bible,NAR-CANON-001,0.5.0-pre-capture,user,世界规则、天命、禁忌目录、Human Empire、Dark Territory、中央大教堂、整合骑士
+WORLD-MICRO-001,P0,requested,writing,露茵村至尽头山脉微观设定,1套,materials/inbox/writing/location_bible,NAR-CANON-001;WORLD-MACRO-001,0.5.0-pre-capture,user,家庭、教会、书库、伐木场、村道、天气、食物、工具、路径和传闻
+CHAR-DEPTH-001,P0,requested,writing,核心人物宏观目标与微观行为设定,7人,materials/inbox/writing/character_depth,NAR-CANON-001;NAR-VOICE-001,0.5.0-pre-capture,user,爱丽丝、尤吉欧、桐人、赛尔卡、村长、村民代表、整合骑士；包含知道/害怕/不会说
+NAR-ADAPT-001,P0,requested,writing,正典兼容分支与玩家介入规则,1套,materials/inbox/writing/continuity_rules,NAR-CANON-001;NAR-PRECAP-001,0.5.0-pre-capture,user,定义可改变、不可改变、可延后揭示和固定终点
+QA-CANON-001,P0,requested,research,Pre-Capture正典连续性验收包,1套,materials/inbox/research/canon_qa,NAR-CANON-001;NAR-ADAPT-001,0.5.0-pre-capture,user,时间线、年龄阶段、角色语气、世界规则、事件闸门和素材来源检查

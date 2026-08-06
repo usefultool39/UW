@@ -800,3 +800,25 @@ def test_third_month_day_103_settlement_reads_followup_and_unlocks_day_104():
     advanced = sess.player_action(kind="rest_until_next_day")
     assert advanced["ok"] is True
     assert advanced["state"]["day"] == 104
+
+
+def test_story_event_conditions_require_at_least_one_required_any_flag():
+    sess = Session(run_id="test-story-required-any-flags")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 95,
+            "time_band": "morning",
+            "flags": {
+                "month03_stage_resolved": 1,
+                "month03_phase_activity_done": 1,
+                "month03_resource_status_done": 1,
+            },
+        }
+    )
+
+    event = next(
+        item for item in sess.available_story_events()["events"]
+        if item["id"] == "ch1_d95_third_month_consequence_review"
+    )
+
+    assert event["choices"] == []

@@ -4277,6 +4277,1248 @@
           }
         }
       ]
+    },
+    {
+      "id": "ch1_d104_fourth_month_entry",
+      "chapter": "chapter_01",
+      "kind": "month_bridge",
+      "title": "第一百零四天：第四月的第一份值班表",
+      "description": "第三月把承诺交给了明天。第四月的第一件事不是扩张边界，而是把村务参与、源头样本或情报责任链写成一份每天都能执行的值班表。",
+      "trigger": {
+        "day_min": 104,
+        "day_max": 104,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month03_day103_result_done": 1
+        },
+        "forbidden_flags": {
+          "month04_entry_ready": 1
+        }
+      },
+      "location": {
+        "scene_id": "home_hearth",
+        "tile_x": 11,
+        "tile_y": 27
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "required_for_day": true,
+      "day_end_gate": true,
+      "advance_policy": "after_evening_settlement",
+      "choices": [
+        {
+          "id": "open_steward_shift",
+          "label": "让村务轮值承担公开短班",
+          "hint": "把低风险守望拆成短班，轮值人员只报告事实；玩家与同伴负责复核。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_public_steward_trial": 1,
+              "month03_dual_review_maintained": 1
+            },
+            "forbidden_flags": {
+              "month03_small_scout_pair": 1,
+              "month03_signal_window_waiting": 1,
+              "month03_risk_index_published": 1,
+              "month03_custody_maintained": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "eugeo"
+            ],
+            "tensions": [],
+            "consequences": [
+              "第四月公开协作路线启动",
+              "日常活动将检验轮值与复核成本"
+            ]
+          },
+          "result_text": "你把第一份值班表分成短班、回撤和复核三栏。轮值人员不需要猜测源头，只需要把看见的事实交回来。",
+          "effects": {
+            "flags": {
+              "month04_entry_ready": 1,
+              "month04_public_route": 1,
+              "month04_public_shared_shift": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家把村务轮值写成短班、回撤和复核三栏。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家让尤吉欧陪轮值人员执行低风险守望。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "eugeo": "公开短班必须从低风险、可回撤的范围开始。"
+            }
+          }
+        },
+        {
+          "id": "maintain_dual_watch",
+          "label": "先由核心两人维持公开守望",
+          "hint": "保留双人复核，把流程做成任何人都能读懂的样子，再考虑扩大轮值。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_public_steward_trial": 1,
+              "month03_dual_review_maintained": 1
+            },
+            "forbidden_flags": {
+              "month03_small_scout_pair": 1,
+              "month03_signal_window_waiting": 1,
+              "month03_risk_index_published": 1,
+              "month03_custody_maintained": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "第四月公开复核路线启动",
+              "安全更高但参与增长较慢"
+            ]
+          },
+          "result_text": "你没有立即扩大名单，而是要求每份记录都能被另一人复述。爱丽丝负责证据边界，尤吉欧负责现场手势。",
+          "effects": {
+            "flags": {
+              "month04_entry_ready": 1,
+              "month04_public_route": 1,
+              "month04_public_dual_watch": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家先维持双人公开守望，要求每份记录都可复述。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家请尤吉欧把双人复核翻成现场手势。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "eugeo": "核心两人能守住质量，但村务轮值成长会更慢。"
+            }
+          }
+        },
+        {
+          "id": "open_comparable_sample_route",
+          "label": "开启固定短段的可比样本路线",
+          "hint": "让小队重复走固定短段；成果是可比较样本，不是推进距离。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_small_scout_pair": 1,
+              "month03_signal_window_waiting": 1
+            },
+            "forbidden_flags": {
+              "month03_public_steward_trial": 1,
+              "month03_dual_review_maintained": 1,
+              "month03_risk_index_published": 1,
+              "month03_custody_maintained": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [],
+            "consequences": [
+              "第四月源头取样路线启动",
+              "体力换取样本质量与可重复性"
+            ]
+          },
+          "result_text": "你把路线长度、取样顺序和回撤时间固定下来。尤吉欧负责脚步节拍，爱丽丝要求把“没有变化”也写进样本。",
+          "effects": {
+            "flags": {
+              "month04_entry_ready": 1,
+              "month04_frontier_route": 1,
+              "month04_frontier_sample_chain": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家开启固定短段的可比样本路线。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家让尤吉欧按固定节拍重复取样并准时回撤。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "每次取样都要记录无变化，不能只挑看起来重要的结果。"
+            }
+          }
+        },
+        {
+          "id": "guard_verified_signal_window",
+          "label": "守住可信信号窗口与中止线",
+          "hint": "不为沉默补写故事；先维护缓存和中止线，等可信信号再行动。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_small_scout_pair": 1,
+              "month03_signal_window_waiting": 1
+            },
+            "forbidden_flags": {
+              "month03_public_steward_trial": 1,
+              "month03_dual_review_maintained": 1,
+              "month03_risk_index_published": 1,
+              "month03_custody_maintained": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "第四月信号守望路线启动",
+              "推进慢但未知风险更低"
+            ]
+          },
+          "result_text": "你们把值班表写成“观察、确认、出发”三步。沉默不是失败，也不是邀请；缓存和中止线先于下一次推进。",
+          "effects": {
+            "flags": {
+              "month04_entry_ready": 1,
+              "month04_frontier_route": 1,
+              "month04_frontier_signal_guard": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家守住可信信号窗口，不为沉默补写结论。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家让尤吉欧先维护缓存与中止线。",
+                "weight": 5
+              }
+            },
+            "tensions": {
+              "eugeo": "等待更安全，但下一次短暂信号可能被错过。"
+            }
+          }
+        },
+        {
+          "id": "publish_daily_risk_board",
+          "label": "把风险等级写成每日村务板",
+          "hint": "公开风险等级、行动方式和未知部分，完整源头继续由复核者保管。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_risk_index_published": 1,
+              "month03_custody_maintained": 1
+            },
+            "forbidden_flags": {
+              "month03_public_steward_trial": 1,
+              "month03_dual_review_maintained": 1,
+              "month03_small_scout_pair": 1,
+              "month03_signal_window_waiting": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [],
+            "consequences": [
+              "第四月风险板路线启动",
+              "更易理解但需要持续审计"
+            ]
+          },
+          "result_text": "你把三档风险画在村务板上：可以观察、必须结伴、立即回撤。没人需要靠传闻决定今天是否出门。",
+          "effects": {
+            "flags": {
+              "month04_entry_ready": 1,
+              "month04_intel_route": 1,
+              "month04_intel_public_board": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家把风险等级和应对动作写成每日村务板。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家让尤吉欧把风险等级翻成村民能执行的动作。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "风险板必须每天复核，未知部分不能被旧记录冒充。"
+            }
+          }
+        },
+        {
+          "id": "maintain_custody_ledger",
+          "label": "继续三重托管与外页应急动作",
+          "hint": "完整源头继续封存；每天只复核托管责任链和外页应急动作。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_risk_index_published": 1,
+              "month03_custody_maintained": 1
+            },
+            "forbidden_flags": {
+              "month03_public_steward_trial": 1,
+              "month03_dual_review_maintained": 1,
+              "month03_small_scout_pair": 1,
+              "month03_signal_window_waiting": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "alice"
+            ],
+            "consequences": [
+              "第四月托管路线启动",
+              "误读风险最低但响应较慢"
+            ]
+          },
+          "result_text": "你们把三重托管的开启顺序重新写进值班表，只在外页保留回撤条件。爱丽丝承认答案会慢，但责任不会失踪。",
+          "effects": {
+            "flags": {
+              "month04_entry_ready": 1,
+              "month04_intel_route": 1,
+              "month04_intel_custody_ledger": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家继续三重托管，只把应急动作保留在外页。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_entry",
+                "summary": "第四月入口，玩家让尤吉欧按值班表复核外页回撤条件。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "alice": "严格托管会继续延迟完整背景的公开。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d111_fourth_month_route_result",
+      "chapter": "chapter_01",
+      "kind": "month_route_result",
+      "title": "第一百一十一天：第一周值班复盘",
+      "description": "一周值班已经留下真实消耗。现在要决定，是把方法交给更多人、继续积累可比样本，还是守住信息责任边界。",
+      "trigger": {
+        "day_min": 111,
+        "day_max": 111,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month04_entry_ready": 1,
+          "month04_route_activity_done": 1,
+          "month04_recovery_done": 1
+        },
+        "forbidden_flags": {
+          "month04_route_resolved": 1
+        }
+      },
+      "location": {
+        "scene_id": "reading_hall",
+        "tile_x": 22,
+        "tile_y": 14
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "required_for_day": true,
+      "day_end_gate": true,
+      "advance_policy": "after_evening_settlement",
+      "choices": [
+        {
+          "id": "approve_steward_pair",
+          "label": "批准一组村务搭档独立短班",
+          "hint": "让一组轮值搭档独立完成低风险短班，核心小队只做事后复核。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_public_shared_shift": 1,
+              "month04_public_dual_watch": 1
+            },
+            "forbidden_flags": {
+              "month04_frontier_sample_chain": 1,
+              "month04_frontier_signal_guard": 1,
+              "month04_intel_public_board": 1,
+              "month04_intel_custody_ledger": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "eugeo"
+            ],
+            "tensions": [],
+            "consequences": [
+              "解锁村务搭档回访",
+              "核心小队转为复核角色"
+            ]
+          },
+          "result_text": "你把最短的一班交给两名轮值者。他们没有追逐异常，只把事实、停步点和疑问完整带回。",
+          "effects": {
+            "flags": {
+              "month04_route_resolved": 1,
+              "month04_public_pair_approved": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，玩家批准一组村务搭档独立完成低风险短班。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，尤吉欧陪轮值搭档完成第一次独立短班。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "eugeo": "独立短班仍必须遵守固定停步点。"
+            }
+          }
+        },
+        {
+          "id": "keep_core_public_audit",
+          "label": "继续核心双人审核所有公开记录",
+          "hint": "暂不独立授权，把一周记录整理成稳定模板，降低公开协作的误读。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_public_shared_shift": 1,
+              "month04_public_dual_watch": 1
+            },
+            "forbidden_flags": {
+              "month04_frontier_sample_chain": 1,
+              "month04_frontier_signal_guard": 1,
+              "month04_intel_public_board": 1,
+              "month04_intel_custody_ledger": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "公开审核模板成形",
+              "安全稳定但成长较慢"
+            ]
+          },
+          "result_text": "你们继续审核每份公开记录，并把反复出现的疑问写成模板。推进变慢，但下一名轮值者不会从零开始。",
+          "effects": {
+            "flags": {
+              "month04_route_resolved": 1,
+              "month04_public_core_audit": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，玩家继续核心双人审核，先把疑问整理成模板。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，玩家让尤吉欧接受公开流程的慢速稳定。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "eugeo": "核心审核可靠，但轮值者仍缺少独立判断经验。"
+            }
+          }
+        },
+        {
+          "id": "compare_second_sample",
+          "label": "批准第二份固定短段样本",
+          "hint": "用同样距离和顺序再取一份样本，只比较变化，不扩大路线。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_frontier_sample_chain": 1,
+              "month04_frontier_signal_guard": 1
+            },
+            "forbidden_flags": {
+              "month04_public_shared_shift": 1,
+              "month04_public_dual_watch": 1,
+              "month04_intel_public_board": 1,
+              "month04_intel_custody_ledger": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [],
+            "consequences": [
+              "源头样本链开始可比较",
+              "继续消耗体力换证据质量"
+            ]
+          },
+          "result_text": "你批准第二次固定短段取样。两份记录第一次能并排比较，源头没有被解释得更浪漫，却变得更可验证。",
+          "effects": {
+            "flags": {
+              "month04_route_resolved": 1,
+              "month04_frontier_second_sample": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，玩家批准第二份固定短段样本，只比较变化。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，尤吉欧按相同距离和顺序完成第二次取样。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "第二份样本仍不得改变路线长度。"
+            }
+          }
+        },
+        {
+          "id": "keep_frontier_abort_margin",
+          "label": "保留中止余量，先验证缓存",
+          "hint": "不立即取第二份样本；先证明缓存和回撤线仍能在疲惫状态下使用。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_frontier_sample_chain": 1,
+              "month04_frontier_signal_guard": 1
+            },
+            "forbidden_flags": {
+              "month04_public_shared_shift": 1,
+              "month04_public_dual_watch": 1,
+              "month04_intel_public_board": 1,
+              "month04_intel_custody_ledger": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "回撤可靠性提高",
+              "样本进度暂缓"
+            ]
+          },
+          "result_text": "你让队伍在疲惫状态下复走缓存和中止线。结果没有新线索，却证明退路不是只在状态良好时才成立。",
+          "effects": {
+            "flags": {
+              "month04_route_resolved": 1,
+              "month04_frontier_abort_margin": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，玩家优先验证疲惫状态下的缓存与中止线。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，尤吉欧在疲惫状态下练习准时回撤。",
+                "weight": 5
+              }
+            },
+            "tensions": {
+              "eugeo": "没有新增样本，源头变化仍然无法比较。"
+            }
+          }
+        },
+        {
+          "id": "expand_response_card",
+          "label": "把风险板扩成一张应对卡",
+          "hint": "保留三档风险，同时给每档增加一句可执行动作；源头细节仍不公开。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_intel_public_board": 1,
+              "month04_intel_custody_ledger": 1
+            },
+            "forbidden_flags": {
+              "month04_public_shared_shift": 1,
+              "month04_public_dual_watch": 1,
+              "month04_frontier_sample_chain": 1,
+              "month04_frontier_signal_guard": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [],
+            "consequences": [
+              "风险信息更容易携带",
+              "每次更新仍需要复核"
+            ]
+          },
+          "result_text": "你把风险板缩成一张每个人都能带走的应对卡。爱丽丝删去推测，尤吉欧确认每句话都能在现场执行。",
+          "effects": {
+            "flags": {
+              "month04_route_resolved": 1,
+              "month04_intel_response_card": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，玩家把风险板扩成可携带的应对卡。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，尤吉欧确认每档风险都有现场可执行动作。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "应对卡只写事实和动作，不写未经确认的源头。"
+            }
+          }
+        },
+        {
+          "id": "retain_three_seal_audit",
+          "label": "继续三重托管并增加开启复核",
+          "hint": "完整源头继续封存；增加一次开启前复核，避免紧急状态成为随意开封的借口。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_intel_public_board": 1,
+              "month04_intel_custody_ledger": 1
+            },
+            "forbidden_flags": {
+              "month04_public_shared_shift": 1,
+              "month04_public_dual_watch": 1,
+              "month04_frontier_sample_chain": 1,
+              "month04_frontier_signal_guard": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "alice"
+            ],
+            "consequences": [
+              "托管责任链更严格",
+              "信息响应继续偏慢"
+            ]
+          },
+          "result_text": "你们在三重托管前再加一道问题：现在打开，能改变什么行动？如果答案只是满足好奇，封印继续保持。",
+          "effects": {
+            "flags": {
+              "month04_route_resolved": 1,
+              "month04_intel_three_seal_audit": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，玩家继续三重托管，并增加开启前行动价值复核。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_result",
+                "summary": "第四月第一周复盘，尤吉欧接受只有能改变行动时才开启完整源头。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "alice": "更严格的开启条件可能延迟真正有用的背景。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d117_fourth_month_phase_result",
+      "chapter": "chapter_01",
+      "kind": "month_phase_result",
+      "title": "第一百一十七天：把第四月方法留在村里",
+      "description": "第二周的回访证明了哪部分方法可以留在村里。现在要选一条能继续工作的规则，而不是留下只有主角能执行的英雄方案。",
+      "trigger": {
+        "day_min": 117,
+        "day_max": 117,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month04_route_resolved": 1,
+          "month04_followup_done": 1
+        },
+        "forbidden_flags": {
+          "month04_phase_resolved": 1
+        }
+      },
+      "location": {
+        "scene_id": "home_hearth",
+        "tile_x": 11,
+        "tile_y": 27
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "required_for_day": true,
+      "day_end_gate": true,
+      "advance_policy": "after_evening_settlement",
+      "choices": [
+        {
+          "id": "delegate_low_risk_shift",
+          "label": "保留村务搭档的低风险短班",
+          "hint": "把低风险短班正式留给村务搭档，核心小队负责复核和异常升级。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_public_pair_approved": 1,
+              "month04_public_core_audit": 1
+            },
+            "forbidden_flags": {
+              "month04_frontier_second_sample": 1,
+              "month04_frontier_abort_margin": 1,
+              "month04_intel_response_card": 1,
+              "month04_intel_three_seal_audit": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [],
+            "consequences": [
+              "第四月公开协作规则留在村务日常",
+              "后续可读取村民独立参与"
+            ]
+          },
+          "result_text": "你把一段短班正式写进村务轮值。它不需要英雄，也不需要秘密，只需要事实、回撤和复核。",
+          "effects": {
+            "flags": {
+              "month04_phase_resolved": 1,
+              "month04_public_shift_persisted": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，玩家把低风险短班正式留给村务搭档。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，尤吉欧转为陪练与异常升级角色。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "公开短班遇到未知时必须升级给核心复核者。"
+            }
+          }
+        },
+        {
+          "id": "keep_core_team_review",
+          "label": "保留核心复核，不急于独立授权",
+          "hint": "把模板和公开记录留在核心小队，等待更多稳定证据再扩大授权。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_public_pair_approved": 1,
+              "month04_public_core_audit": 1
+            },
+            "forbidden_flags": {
+              "month04_frontier_second_sample": 1,
+              "month04_frontier_abort_margin": 1,
+              "month04_intel_response_card": 1,
+              "month04_intel_three_seal_audit": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "第四月公开审核规则留存",
+              "参与扩张继续延后"
+            ]
+          },
+          "result_text": "你保留核心复核，把一周模板归档成任何人都能学习的版本。今天没有扩大名单，但下一次扩大不会从混乱开始。",
+          "effects": {
+            "flags": {
+              "month04_phase_resolved": 1,
+              "month04_public_review_persisted": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，玩家保留核心复核并归档公开模板。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，尤吉欧接受先把公开流程教清楚再扩大授权。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "eugeo": "村务参与仍然依赖核心小队是否有空。"
+            }
+          }
+        },
+        {
+          "id": "authorize_sample_chain",
+          "label": "保留固定短段样本链",
+          "hint": "让固定距离、顺序和回撤时间成为持续样本链，不用深入距离证明成果。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_frontier_second_sample": 1,
+              "month04_frontier_abort_margin": 1
+            },
+            "forbidden_flags": {
+              "month04_public_pair_approved": 1,
+              "month04_public_core_audit": 1,
+              "month04_intel_response_card": 1,
+              "month04_intel_three_seal_audit": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "eugeo"
+            ],
+            "tensions": [],
+            "consequences": [
+              "第四月源头样本链持续运行",
+              "证据积累取代距离竞赛"
+            ]
+          },
+          "result_text": "你把两份样本连成一条持续记录。下一次行动仍从同一停步点开始，比较变化，而不是追逐更远的边界。",
+          "effects": {
+            "flags": {
+              "month04_phase_resolved": 1,
+              "month04_frontier_sample_chain_persisted": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，玩家把固定短段取样保留为持续样本链。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，尤吉欧继续按固定停步点积累可比记录。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "eugeo": "样本链不因一次异常而临时延长路线。"
+            }
+          }
+        },
+        {
+          "id": "hold_for_clear_signal",
+          "label": "保留信号窗口与中止优先",
+          "hint": "没有可信信号时继续维护缓存；一旦信号出现，仍从固定短段开始。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_frontier_second_sample": 1,
+              "month04_frontier_abort_margin": 1
+            },
+            "forbidden_flags": {
+              "month04_public_pair_approved": 1,
+              "month04_public_core_audit": 1,
+              "month04_intel_response_card": 1,
+              "month04_intel_three_seal_audit": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "第四月信号守望持续运行",
+              "安全优先于样本速度"
+            ]
+          },
+          "result_text": "你把“等待”写成有动作的值班：检查缓存、复核刻印、确认中止线。沉默没有被浪费，也没有被编成故事。",
+          "effects": {
+            "flags": {
+              "month04_phase_resolved": 1,
+              "month04_signal_guard_persisted": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，玩家保留信号窗口与中止优先。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，尤吉欧把等待变成缓存与中止线维护。",
+                "weight": 5
+              }
+            },
+            "tensions": {
+              "eugeo": "持续等待仍可能错过短暂变化。"
+            }
+          }
+        },
+        {
+          "id": "publish_response_card_daily",
+          "label": "让应对卡成为每日村务信息",
+          "hint": "每天更新风险等级和应对动作；完整源头继续由责任链保管。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_intel_response_card": 1,
+              "month04_intel_three_seal_audit": 1
+            },
+            "forbidden_flags": {
+              "month04_public_pair_approved": 1,
+              "month04_public_core_audit": 1,
+              "month04_frontier_second_sample": 1,
+              "month04_frontier_abort_margin": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [],
+            "consequences": [
+              "第四月风险应对卡进入日常",
+              "易上手信息需要每日维护"
+            ]
+          },
+          "result_text": "你把应对卡放到村务板旁，要求每次晨班确认日期和未知部分。信息终于能被使用，而不是只被收藏。",
+          "effects": {
+            "flags": {
+              "month04_phase_resolved": 1,
+              "month04_response_card_persisted": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，玩家让风险应对卡成为每日村务信息。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，尤吉欧负责确认应对卡能在现场执行。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "每日应对卡过期后必须撤下，不能继续冒充今天的事实。"
+            }
+          }
+        },
+        {
+          "id": "keep_custody_rule",
+          "label": "保留三重托管与行动价值复核",
+          "hint": "完整源头继续封存；只有能改变现实行动时才允许开启。",
+          "conditions": {
+            "required_any_flags": {
+              "month04_intel_response_card": 1,
+              "month04_intel_three_seal_audit": 1
+            },
+            "forbidden_flags": {
+              "month04_public_pair_approved": 1,
+              "month04_public_core_audit": 1,
+              "month04_frontier_second_sample": 1,
+              "month04_frontier_abort_margin": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "alice"
+            ],
+            "consequences": [
+              "第四月托管规则持续运行",
+              "责任链优先于信息速度"
+            ]
+          },
+          "result_text": "你们把行动价值问题留在封印最上方。不是因为害怕真相，而是因为每次打开都必须有人承担后果。",
+          "effects": {
+            "flags": {
+              "month04_phase_resolved": 1,
+              "month04_custody_rule_persisted": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，玩家保留三重托管与行动价值复核。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month04_phase",
+                "summary": "第四月阶段收束，尤吉欧接受完整源头只在能改变行动时开启。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "alice": "严格托管仍会让一部分背景长期不可见。"
+            }
+          }
+        }
+      ]
     }
   ]
 }
