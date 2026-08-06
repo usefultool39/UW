@@ -9,17 +9,16 @@
 
 ```bash
 cd /Users/lzm/Desktop/UW
-python3 materials/tools/check_materials.py
-cd frontend
-npm run build
-PYTHON_BIN=../backend/.venv/bin/python npm run test:e2e
+./scripts/playtest-preflight.sh
+# 若只做启动前快速检查：
+./scripts/playtest-preflight.sh --quick
 ```
 
 启动试玩版本：
 
 ```bash
 cd /Users/lzm/Desktop/UW
-./start-macos.command
+./试玩盲测.command
 ```
 
 若端口冲突，使用仓库现有 Playwright 配置的隔离端口变量，不修改玩家看到的内容。

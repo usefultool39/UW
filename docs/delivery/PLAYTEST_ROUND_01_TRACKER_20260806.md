@@ -1,7 +1,7 @@
 # 首轮真人盲测批次跟踪表
 
 - **批次**：`QA-PLAY-001 / Round 01`
-- **版本基线**：`1b313c6`（Day 8–16 回响反馈切片）
+- **版本基线**：当前 `main`（Day 1–103 连续内容；启动记录会写入 `runs/playtest/`）
 - **当前状态**：`pending-human-run`
 - **目标**：收集 3 名未参与开发玩家的 Day 1 首次体验证据；不把自动化 E2E、开发者自测或 AI 代打当作真人数据。
 - **范围**：第一次有效互动、当天目标、行动代价/收益、剧情闸提示、继续意愿。
@@ -13,13 +13,32 @@ cd /Users/lzm/Desktop/UW
 ./scripts/quality.sh
 UW_RATE_LIMIT_ENABLED=0 E2E_BACKEND_PORT=8011 E2E_FRONTEND_PORT=4174 \
   npm --prefix frontend run test:e2e
-./start-macos.command
+./试玩盲测.command
 ```
 
 主持人必须使用全新浏览器上下文，从“新游戏”开始，不解释地图、日期或行动规则。具体话术和观察表使用：
 
 - `/Users/lzm/Desktop/UW/docs/delivery/DAY1_BLIND_TEST_RUNBOOK_20260805.md`
 - `/Users/lzm/Desktop/UW/materials/inbox/research/playtest/QA-PLAY-001_playtest_kit_v001.md`
+
+## 盲测交付入口
+
+执行前：
+
+```bash
+cd /Users/lzm/Desktop/UW
+./scripts/playtest-preflight.sh
+```
+
+交给主持人：
+
+```bash
+./试玩盲测.command
+```
+
+该入口会固定 `scripted`、使用 production build、验证内容校验、重置一次试玩存档，并在有 Chrome 时打开隐身窗口。`runs/playtest/launch_*.json` 只是环境启动元数据，不是玩家证据。
+
+三名玩家之间重新启动入口，或在游戏内选择新游戏；不要复用上一名玩家的存档。
 
 ## 玩家证据状态
 

@@ -13,19 +13,25 @@ command -v npm >/dev/null 2>&1 || {
   exit 1
 }
 
-echo "[1/4] Backend pytest"
+echo "[1/6] Materials registry and runtime assets"
+"$PYTHON_BIN" "$ROOT/materials/tools/check_materials.py"
+
+echo "[2/6] Human playtest record status"
+"$PYTHON_BIN" "$ROOT/scripts/check_playtest_round.py"
+
+echo "[3/6] Backend pytest"
 (
   cd "$ROOT"
   "$PYTHON_BIN" -m pytest -q
 )
 
-echo "[2/4] Frontend unit tests"
+echo "[4/6] Frontend unit tests"
 npm --prefix "$ROOT/frontend" run test:unit
 
-echo "[3/4] Frontend production build"
+echo "[5/6] Frontend production build"
 npm --prefix "$ROOT/frontend" run build
 
-echo "[4/4] Git diff hygiene"
+echo "[6/6] Git diff hygiene"
 (
   cd "$ROOT"
   git diff --check

@@ -233,3 +233,14 @@
 - 第三月计划现已覆盖 Day 61–103，新增 Week 13/14 维护性内容与素材替换需求。
 - 首轮真人盲测仍为 `pending-human-run`；自动化结果不替代真实玩家证据。
 - 本轮质量门：后端 `288 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `20 passed`；内容校验 `0 errors / 0 warnings`；`git diff --check` 通过。
+
+
+## 2026-08-06 素材完整性与真人盲测交付入口
+
+- 强化 `materials/tools/check_materials.py`：现在同时检查 REQUESTS、inbox sidecar、MANIFEST 来源文件 SHA-256，以及所有已登记 runtime 文件的路径、存在性、hash 和 `integrated_at`。
+- 修正 MANIFEST 中 `QA-PLAY-001_playtest_kit_v001.md` 与 `audio.meta.json` 的两条历史 hash 漂移；当前素材校验通过。
+- 新增 `/Users/lzm/Desktop/UW/试玩盲测.command`：固定 `scripted`、production build、内容校验、一次性重置试玩 Session；如果安装了 Chrome，会打开隐身窗口。
+- 新增 `/Users/lzm/Desktop/UW/scripts/playtest-preflight.sh`：默认执行依赖检查、素材校验、质量门和完整 E2E；`--quick` 跳过 E2E。
+- 新增 `/Users/lzm/Desktop/UW/scripts/check_playtest_round.py` 与三个空白匿名记录模板；默认只报告 `pending-human-run`，只有真实回填满足字段后才允许 `--require-complete` 通过。
+- 盲测启动记录写入被 Git 忽略的 `runs/playtest/`，只作为环境元数据，不伪造玩家证据。
+- 本轮快速预检：后端 `293 passed`；前端单测 `16 passed`；build 通过；材料与 runtime hash 校验通过；Playwright E2E `20 passed`。真人盲测仍为 `pending-human-run`。

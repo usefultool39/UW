@@ -2,7 +2,7 @@
 
 一款以 **NPC 记忆、关系后果与逐渐不安的乡村日常** 为核心的单人叙事 RPG 原型。项目参考《刀剑神域 Alicization》的 Underworld 氛围和公开设定，以原创“见习记录员”身份和分支时间线进行非商业二次创作。
 
-当前目标是打磨一段成熟、容易上手、可反复验证的 30–45 分钟卢利特村 Day 1–3 纵切片。默认 NPC 完全离线运行；未来准备好模型 API 后，可按角色切换 Hybrid / Agent，而不改写世界规则和存档核心。
+当前优先目标是打磨一段成熟、容易上手、可反复验证的卢利特村 Day 1–3 纵切片，同时把 authored 月度内容延伸到 Day 103，验证路线、资源和关系后果能否持续驱动玩家。默认 NPC 完全离线运行；未来准备好模型 API 后，可按角色切换 Hybrid / Agent，而不改写世界规则和存档核心。
 
 ## 项目导航
 
@@ -24,7 +24,7 @@
 - 时间、HP、MP、体力、flag、关系、记忆、承诺和紧张关系后果。
 - `scripted` / `hybrid` / `agent` NPC 模式与失败回退。
 - 存档导入导出、内容校验、pytest、Playwright E2E。
-- macOS 一键启动；Windows 和手动启动入口保留。
+- macOS 一键启动；Windows 和手动启动入口保留；新增 `试玩盲测.command`，固定 scripted + production build 并重置试玩存档。
 
 ## macOS 快速启动
 

@@ -57,3 +57,12 @@
    - writing 类：先在 agent/script 引用再转 approved
    - font：等许可证 + 哈希
    - research：mood/playtest 等数据回收
+
+
+## 2026-08-06 后续核验
+
+- `materials/tools/check_materials.py` 现在会逐行校验 MANIFEST 的来源文件 hash，并对已填写的 `runtime_file` 校验 runtime hash、路径边界和 `integrated_at`。
+- 修正 `QA-PLAY-001_playtest_kit_v001.md` 与 `audio.meta.json` 两行 MANIFEST 的历史 hash 漂移。
+- 当前命令结果：`materials check passed: 29 requests; manifest sources and runtime hashes verified`。
+- 首批关键图、肖像、BGM、ambience 与 UI 图标已经存在于 `/Users/lzm/Desktop/UW/frontend/public/assets/runtime/`；真正未完成的仍是 3 名真人盲测，而不是素材文件缺失。
+- `试玩盲测.command` 固定 scripted、构建 production 前端、执行内容校验并重置一次试玩存档；不调用真实 Provider。

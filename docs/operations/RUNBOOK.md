@@ -10,9 +10,10 @@ cd /path/to/UW
 ./启动游戏.command
 ./启动游戏.command --setup-only
 ./启动游戏.command --no-open
+./试玩盲测.command        # scripted production build，供真人盲测
 ```
 
-入口：游戏 http://127.0.0.1:3000；健康 http://127.0.0.1:8765/api/health；内容校验 http://127.0.0.1:8765/api/dev/content_validation。
+入口：开发游戏 http://127.0.0.1:3000；盲测入口默认同端口；健康 http://127.0.0.1:8765/api/health；内容校验 http://127.0.0.1:8765/api/dev/content_validation。真人盲测请优先运行 `./scripts/playtest-preflight.sh` 后使用 `./试玩盲测.command`。
 
 ## 手动启动
 

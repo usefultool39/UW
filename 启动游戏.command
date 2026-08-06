@@ -12,6 +12,7 @@ BACKEND_PORT="${BACKEND_PORT:-8765}"
 FRONTEND_PORT="${FRONTEND_PORT:-3000}"
 OPEN_BROWSER=1
 SETUP_ONLY=0
+PLAYTEST_MODE=0
 BACKEND_PID=""
 FRONTEND_PID=""
 
@@ -19,12 +20,14 @@ for arg in "$@"; do
   case "$arg" in
     --no-open) OPEN_BROWSER=0 ;;
     --setup-only) SETUP_ONLY=1; OPEN_BROWSER=0 ;;
+    --playtest) PLAYTEST_MODE=1 ;;
     -h|--help)
       cat <<'HELP'
 用法：双击“启动游戏.command”，或在终端执行：
   ./启动游戏.command              安装缺失依赖并启动游戏
   ./启动游戏.command --no-open    启动但不自动打开浏览器
   ./启动游戏.command --setup-only 只安装/检查依赖，不启动服务
+  ./启动游戏.command --playtest   scripted + production build 盲测模式；启动前重置存档
 
 可选环境变量：BACKEND_PORT、FRONTEND_PORT、PYTHON_BIN
 HELP
@@ -100,7 +103,11 @@ wait_for_url() {
 
 clear 2>/dev/null || true
 printf '\n========================================\n'
-printf '       边境回声 · macOS 一键启动\n'
+if [ "$PLAYTEST_MODE" -eq 1 ]; then
+  printf '       边境回声 · 真人盲测模式\n'
+else
+  printf '       边境回声 · macOS 一键启动\n'
+fi
 printf '========================================\n\n'
 info "项目目录：$ROOT"
 
@@ -153,6 +160,22 @@ if [ "$SETUP_ONLY" -eq 1 ]; then
   exit 0
 fi
 
+if [ "$PLAYTEST_MODE" -eq 1 ]; then
+  export NPC_RUNTIME=scripted
+  export NPC_RUNTIME_ALICE=scripted
+  export NPC_RUNTIME_EUGEO=scripted
+  export UW_RATE_LIMIT_ENABLED=0
+  export CORS_ALLOW_ORIGINS="http://127.0.0.1:$FRONTEND_PORT,http://localhost:$FRONTEND_PORT"
+  info "盲测模式固定为 scripted；不会调用外部 AI Provider。"
+  "$PYTHON" "$ROOT/materials/tools/check_materials.py"
+  "$PYTHON" "$ROOT/scripts/check_playtest_round.py"
+  info "构建稳定试玩前端..."
+  (
+    cd "$FRONTEND_DIR"
+    VITE_API_BASE_URL="http://127.0.0.1:$BACKEND_PORT" npm run build
+  )
+fi
+
 free_port() {
   local port=$1 pids
   trap - ERR
@@ -181,11 +204,48 @@ BACKEND_PID=$!
 wait_for_url "http://127.0.0.1:$BACKEND_PORT/api/health" "后端"
 ok "后端已启动"
 
-info "[2/2] 启动前端：http://127.0.0.1:$FRONTEND_PORT"
-(
-  cd "$FRONTEND_DIR"
-  exec npm run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT"
-) &
+if [ "$PLAYTEST_MODE" -eq 1 ]; then
+  curl -fsS "http://127.0.0.1:$BACKEND_PORT/api/dev/content_validation" |
+    "$PYTHON" -c 'import json,sys; data=json.load(sys.stdin); raise SystemExit(0 if data.get("ok") else 1)'
+  curl -fsS -X POST "http://127.0.0.1:$BACKEND_PORT/api/reset" >/dev/null
+  mkdir -p "$ROOT/runs/playtest"
+  PLAYTEST_RECORD="$ROOT/runs/playtest/launch_$(date +%Y%m%d_%H%M%S).json"
+  "$PYTHON" - "$PLAYTEST_RECORD" "$(git -C "$ROOT" rev-parse HEAD)" "$(cat "$ROOT/VERSION")" "$BACKEND_PORT" "$FRONTEND_PORT" <<'PYREC'
+import json, sys
+from datetime import datetime, timezone
+from pathlib import Path
+path, commit, version, backend_port, frontend_port = sys.argv[1:]
+record = {
+    "kind": "human_playtest_launch",
+    "round_id": "QA-PLAY-001",
+    "human_playtest_status": "pending-human-run",
+    "commit": commit,
+    "version": version,
+    "backend_port": int(backend_port),
+    "frontend_port": int(frontend_port),
+    "npc_runtime": "scripted",
+    "save_reset": True,
+    "created_at": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
+    "note": "Launch metadata only; not human evidence.",
+}
+Path(path).write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+PYREC
+  ok "内容校验通过，试玩存档已重置。"
+fi
+
+if [ "$PLAYTEST_MODE" -eq 1 ]; then
+  info "[2/2] 启动稳定试玩前端：http://127.0.0.1:$FRONTEND_PORT"
+  (
+    cd "$FRONTEND_DIR"
+    exec npm run preview -- --host 127.0.0.1 --port "$FRONTEND_PORT"
+  ) &
+else
+  info "[2/2] 启动开发前端：http://127.0.0.1:$FRONTEND_PORT"
+  (
+    cd "$FRONTEND_DIR"
+    exec npm run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT"
+  ) &
+fi
 FRONTEND_PID=$!
 wait_for_url "http://127.0.0.1:$FRONTEND_PORT" "前端"
 ok "前端已启动"
@@ -196,7 +256,16 @@ printf '不要关闭此终端窗口；按 Ctrl+C 可停止游戏。\n'
 printf '========================================\n\n'
 
 if [ "$OPEN_BROWSER" -eq 1 ] && command -v open >/dev/null 2>&1; then
-  open "http://127.0.0.1:$FRONTEND_PORT"
+  if [ "$PLAYTEST_MODE" -eq 1 ] && [ -d "/Applications/Google Chrome.app" ]; then
+    open -na "Google Chrome" --args --incognito --new-window "http://127.0.0.1:$FRONTEND_PORT"
+  else
+    open "http://127.0.0.1:$FRONTEND_PORT"
+  fi
+fi
+
+if [ "$PLAYTEST_MODE" -eq 1 ]; then
+  printf '\n盲测主持提醒：不要解释地图、日期或行动规则；只记录玩家行为和原话。\n'
+  printf '每位玩家结束后，请重新启动“试玩盲测.command”或在游戏内选择新游戏。\n\n'
 fi
 
 while kill -0 "$BACKEND_PID" 2>/dev/null && kill -0 "$FRONTEND_PID" 2>/dev/null; do

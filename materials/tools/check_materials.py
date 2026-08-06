@@ -3,16 +3,31 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUESTS = ROOT / "REQUESTS.csv"
+MANIFEST = ROOT / "MANIFEST.csv"
+REPO_ROOT = ROOT.parent
 VALID_STATUSES = {
     "requested", "received", "reviewing", "changes_requested",
     "approved", "integrated", "deferred", "rejected",
 }
+VALID_MANIFEST_STATUSES = {
+    "approved-candidate", "approved-for-direction", "changes_requested",
+    "received", "review-only", "integrated", "deferred", "rejected",
+}
+MANIFEST_COLUMNS = {
+    "asset_id", "request_id", "status", "source_file", "runtime_file",
+    "sha256", "creator", "tool_model", "created_at", "license",
+    "source_url", "attribution_required", "attribution_text",
+    "approved_by", "approved_at", "integrated_at", "replaces_asset_id", "notes",
+}
+RUNTIME_PREFIX = Path("frontend/public/assets/runtime")
+
 BINARY_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".webp", ".avif", ".svg", ".psd", ".clip",
     ".wav", ".ogg", ".mp3", ".m4a", ".aac", ".mp4", ".mov", ".zip",
@@ -115,13 +130,119 @@ def validate_inbox(request_ids: set[str]) -> int:
     return errors
 
 
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _safe_relative_path(raw: str, *, base: Path, label: str) -> tuple[Path | None, str | None]:
+    value = raw.strip()
+    if not value:
+        return None, f"{label} is empty"
+    candidate = Path(value)
+    if candidate.is_absolute() or ".." in candidate.parts:
+        return None, f"{label} must be a repository-relative path: {value}"
+    return base / candidate, None
+
+
+def validate_manifest(request_ids: set[str]) -> int:
+    errors = 0
+    manifest_rows: set[tuple[str, str]] = set()
+    runtime_paths: set[str] = set()
+
+    with MANIFEST.open(newline="", encoding="utf-8") as fh:
+        reader = csv.DictReader(fh)
+        fields = set(reader.fieldnames or [])
+        missing = MANIFEST_COLUMNS - fields
+        if missing:
+            fail(f"MANIFEST.csv missing columns: {sorted(missing)}")
+            return 1
+
+        for line, row in enumerate(reader, start=2):
+            asset_id = (row.get("asset_id") or "").strip()
+            request_id = (row.get("request_id") or "").strip()
+            status = (row.get("status") or "").strip()
+            source_raw = (row.get("source_file") or "").strip()
+            runtime_raw = (row.get("runtime_file") or "").strip()
+            expected_hash = (row.get("sha256") or "").strip().lower()
+            integrated_at = (row.get("integrated_at") or "").strip()
+            replaces = (row.get("replaces_asset_id") or "").strip()
+
+            if not asset_id:
+                fail(f"MANIFEST.csv:{line} missing asset_id")
+                errors += 1
+            row_key = (asset_id, source_raw)
+            if row_key in manifest_rows:
+                fail(f"MANIFEST.csv:{line} duplicate asset/source row {asset_id}: {source_raw}")
+                errors += 1
+            manifest_rows.add(row_key)
+
+            is_registry_metadata = status == "received" and Path(source_raw).suffix.lower() in {".json", ".csv"}
+            if request_id not in request_ids and not is_registry_metadata:
+                fail(f"MANIFEST.csv:{line} unknown request_id {request_id!r}")
+                errors += 1
+            if status not in VALID_MANIFEST_STATUSES:
+                fail(f"MANIFEST.csv:{line} invalid status {status!r}")
+                errors += 1
+            if not re.fullmatch(r"[0-9a-f]{64}", expected_hash):
+                fail(f"MANIFEST.csv:{line} invalid sha256 for {asset_id}")
+                errors += 1
+
+            source, path_error = _safe_relative_path(source_raw, base=ROOT, label="source_file")
+            if path_error:
+                fail(f"MANIFEST.csv:{line} {path_error}")
+                errors += 1
+            elif source is None or not source.is_file():
+                fail(f"MANIFEST.csv:{line} missing source_file {source_raw}")
+                errors += 1
+            elif expected_hash and _sha256(source) != expected_hash:
+                fail(f"MANIFEST.csv:{line} source hash mismatch for {asset_id}")
+                errors += 1
+
+            if runtime_raw:
+                runtime_rel = Path(runtime_raw)
+                if runtime_rel.parts[:len(RUNTIME_PREFIX.parts)] != RUNTIME_PREFIX.parts:
+                    fail(f"MANIFEST.csv:{line} runtime_file must stay under {RUNTIME_PREFIX}: {runtime_raw}")
+                    errors += 1
+                if runtime_raw in runtime_paths:
+                    fail(f"MANIFEST.csv:{line} duplicate runtime_file {runtime_raw}")
+                    errors += 1
+                runtime_paths.add(runtime_raw)
+                runtime, runtime_error = _safe_relative_path(runtime_raw, base=REPO_ROOT, label="runtime_file")
+                if runtime_error:
+                    fail(f"MANIFEST.csv:{line} {runtime_error}")
+                    errors += 1
+                elif runtime is None or not runtime.is_file():
+                    fail(f"MANIFEST.csv:{line} missing runtime_file {runtime_raw}")
+                    errors += 1
+                elif expected_hash and _sha256(runtime) != expected_hash:
+                    fail(f"MANIFEST.csv:{line} runtime hash mismatch for {asset_id}")
+                    errors += 1
+                if not integrated_at:
+                    fail(f"MANIFEST.csv:{line} runtime_file needs integrated_at for {asset_id}")
+                    errors += 1
+            elif integrated_at:
+                fail(f"MANIFEST.csv:{line} integrated_at exists without runtime_file for {asset_id}")
+                errors += 1
+
+            # replaces_asset_id is historical provenance and may point to an
+            # archived row intentionally omitted from the current manifest.
+            _ = replaces
+
+    return errors
+
 def main() -> int:
     request_ids, errors = validate_requests()
     errors += validate_inbox(request_ids)
+    errors += validate_manifest(request_ids)
     if errors:
         print(f"materials check failed: {errors} error(s)")
         return 1
-    print(f"materials check passed: {len(request_ids)} requests")
+    print(f"materials check passed: {len(request_ids)} requests; manifest sources and runtime hashes verified")
     return 0
 
 

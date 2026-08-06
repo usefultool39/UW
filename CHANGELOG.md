@@ -322,3 +322,25 @@
 
 - 后端 `288 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `20 passed`；内容校验 `0 errors / 0 warnings`。
 - 真人盲测仍为 `pending-human-run`；本轮没有读取或调用桌面外部 Provider。
+
+
+## 2026-08-06 长期目标续航：素材完整性与真人盲测交付
+
+### Added
+
+- 新增 `试玩盲测.command`，固定 scripted + production preview，校验内容并重置试玩 Session；不调用外部 Provider。
+- 新增 `scripts/playtest-preflight.sh`，支持完整质量门 / E2E 与 `--quick` 快速预检。
+- 新增 `scripts/check_playtest_round.py` 和三份空白匿名玩家记录模板；脚本不会把自动化结果写成真人数据。
+
+### Changed
+
+- `materials/tools/check_materials.py` 现在校验 MANIFEST 来源文件和 runtime 文件的 SHA-256、路径边界、runtime 存在性和集成时间。
+- 质量门增加素材完整性和真人记录状态检查。
+- 盲测跟踪文档改用真实存在的 `试玩盲测.command`，并明确 `pending-human-run` 的证据边界。
+- 修正 MANIFEST 两条历史 hash 漂移。
+
+### Verification
+
+- 材料校验：29 requests，来源与 runtime hash 全部通过。
+- 后端：`293 passed`；前端单测：`16 passed`；production build 通过；Playwright E2E：`20 passed`；快速预检通过。
+- 真人盲测仍为 `pending-human-run`，没有伪造玩家记录。
