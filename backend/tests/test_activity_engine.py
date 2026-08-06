@@ -70,3 +70,29 @@ def test_once_activity_and_hp_safety_use_existing_error_contract():
         assert exc.details["required"] == 11
     else:
         raise AssertionError("expected insufficient_hp")
+
+
+def test_authored_choice_activity_requires_explicit_choice():
+    choice_activity = activity(
+        choices=[
+            {"id": "safe", "effects": {"flags": {"safe_route": 1}}},
+            {"id": "bold", "effects": {"flags": {"bold_route": 1}}},
+        ]
+    )
+
+    try:
+        plan_scene_activity(
+            choice_activity,
+            activity_id="demo_activity",
+            activity_choice=None,
+            scene_id="reading_hall",
+            time_band="morning",
+            day=1,
+            flags={},
+            player=PlayerState(scene_id="reading_hall"),
+        )
+    except ActivityValidationError as exc:
+        assert exc.code == "activity_choice_required"
+        assert exc.details["choice_ids"] == ["safe", "bold"]
+    else:
+        raise AssertionError("expected activity_choice_required")

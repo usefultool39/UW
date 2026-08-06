@@ -65,7 +65,7 @@ async function advanceToMonthGate(request) {
 
 async function advanceToDay31OrderRoute(request) {
   await advanceToMonthGate(request)
-  await playerAction(request, { kind: 'scene_activity', activity_id: 'north_gate_month_end_vigil' })
+  await playerAction(request, { kind: 'scene_activity', activity_id: 'north_gate_month_end_vigil', activity_choice: 'review_promises' })
   await storyChoose(request, { event_id: 'ch1_d30_first_month_gate', choice_id: 'route_report_first' })
   await restToDay(request, 31)
   await playerAction(request, { kind: 'move_scene', scene_id: 'north_gate' })
@@ -494,6 +494,31 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.month-plan-entry').first()).toBeVisible()
   })
 
+  test('Day 32 第二月稳守路线要求玩家明确选择并解除日期闸门', async ({ page, request }) => {
+    await setFlags(request, ['month02_day31_entry_done', 'month02_route_order'])
+    await playerAction(request, { kind: 'set_day', day: 32 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'reading_hall' })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const action = page.locator('.interact-action[data-activity-id="church_month02_briefing"]')
+    await expect(action).toBeVisible()
+    await action.click()
+    await expect(page.locator('.event-panel')).toBeVisible()
+    const choice = page.locator('.event-choice').filter({ hasText: '公开完整轮值与上报格式' })
+    await expect(choice).toContainText('爱丽丝 信任 +2')
+    await choice.click()
+    await expect(page.locator('.result-panel')).toContainText('村子共同承担')
+
+    const afterChoice = await (await request.get(`${API}/api/state`)).json()
+    expect(afterChoice.flags.month02_order_briefing_done).toBe(1)
+    expect(afterChoice.flags.month02_order_open_rotation).toBe(1)
+
+    const advanced = await playerAction(request, { kind: 'rest_until_next_day' })
+    expect(advanced.state.day).toBe(33)
+  })
+
   test('Day 39 quiet route frequency crosscheck smoke', async ({ page, request }) => {
     await setFlags(request, [
       'month02_day31_entry_done',
@@ -554,11 +579,16 @@ test.describe('开放世界质量 smoke', () => {
     const convergenceAction = page.locator('.interact-action[data-activity-id="boundary_anomaly_convergence"]')
     await expect(convergenceAction).toBeVisible()
     await convergenceAction.click()
+    await expect(page.locator('.event-panel')).toBeVisible()
+    const convergenceChoice = page.locator('.event-choice').filter({ hasText: '共同异常地图交给村务复核' })
+    await expect(convergenceChoice).toContainText('爱丽丝 信任 +3')
+    await convergenceChoice.click()
     await expect(page.locator('.result-panel')).toBeVisible()
 
     const after = await (await request.get(`${API}/api/state`)).json()
     expect(after.flags.month02_anomaly_convergence_done).toBe(1)
     expect(after.flags.month02_anomaly_source_documented).toBe(1)
+    expect(after.flags.month02_shared_map_published).toBe(1)
 
     await page.locator('.result-primary').click()
     await expect(page.locator('.quest-tracker')).toContainText('\u7b2c\u4e8c\u6708\u540e\u6bb5')

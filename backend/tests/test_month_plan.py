@@ -35,6 +35,7 @@ def _reach_month_gate_after_vigil(sess: Session) -> None:
     vigil = sess.player_action(
         kind="scene_activity",
         activity_id="north_gate_month_end_vigil",
+        activity_choice="review_promises",
     )
     assert vigil["ok"] is True
 
@@ -401,8 +402,49 @@ def test_month_two_week_seven_convergence_activity_requires_any_week_six_route()
     sess.state = sess.state.model_copy(
         update={"flags": {**sess.state.flags, "month02_order_patrol_standby_done": 1}}
     )
-    done = sess.player_action(kind="scene_activity", activity_id="boundary_anomaly_convergence")
+    done = sess.player_action(
+        kind="scene_activity",
+        activity_id="boundary_anomaly_convergence",
+        activity_choice="publish_shared_anomaly_map",
+    )
 
     assert done["ok"] is True
     assert done["state"]["flags"]["month02_anomaly_convergence_done"] == 1
     assert done["state"]["flags"]["month02_anomaly_source_documented"] == 1
+
+
+def test_day_thirty_two_route_choice_is_required_and_unlocks_day_thirty_three():
+    sess = Session(run_id="test-month-two-day32-choice-gate")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 32,
+            "time_band": "morning",
+            "flags": {
+                "month02_day31_entry_done": 1,
+                "month02_route_order": 1,
+            },
+        }
+    )
+    sess.player_action(kind="move_scene", scene_id="reading_hall")
+
+    missing_choice = sess.player_action(
+        kind="scene_activity",
+        activity_id="church_month02_briefing",
+    )
+    assert missing_choice["ok"] is False
+    assert missing_choice["error"] == "activity_choice_required"
+    assert "month02_order_briefing_done" not in sess.state.flags
+
+    chosen = sess.player_action(
+        kind="scene_activity",
+        activity_id="church_month02_briefing",
+        activity_choice="publish_full_rotation",
+    )
+    assert chosen["ok"] is True
+    assert chosen["state"]["flags"]["month02_order_briefing_done"] == 1
+    assert chosen["state"]["flags"]["month02_order_open_rotation"] == 1
+    assert any(item["npc_id"] == "alice" for item in chosen["memory_written"])
+
+    advanced = sess.player_action(kind="rest_until_next_day")
+    assert advanced["ok"] is True
+    assert advanced["state"]["day"] == 33

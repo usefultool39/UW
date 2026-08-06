@@ -276,7 +276,11 @@ def test_save_import_preserves_month_two_required_any_flags_for_day_forty_six():
 
     done = client.post(
         "/api/player/action",
-        json={"kind": "scene_activity", "activity_id": "boundary_anomaly_convergence"},
+        json={
+            "kind": "scene_activity",
+            "activity_id": "boundary_anomaly_convergence",
+            "activity_choice": "publish_shared_anomaly_map",
+        },
     ).json()
     assert done["ok"] is True
     assert done["state"]["flags"]["month02_anomaly_convergence_done"] == 1

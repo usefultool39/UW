@@ -1062,7 +1062,13 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 intent_id="alice_formalizes_month02_patrol_board",
                 kind="npc_plan",
                 title="艾琳要把第二月巡逻板交给村务执行",
-                description="稳守线已经从书库简报走到中段。艾琳在村道广场等你，把北门巡逻、撤退信号和异常上报整理成村民能照着执行的轮值表。",
+                description=(
+                    "第二月入口已经选择公开完整轮值。艾琳在村道广场等你，把新增村民记录、撤退信号和异常上报变成真正能运行的公开巡逻板。"
+                    if _flag(state, "month02_order_open_rotation") >= 1
+                    else "第二月入口先建立了受训巡逻核心。艾琳在村道广场等你，把固定轮值、撤退信号和分级上报写成不会被传闻冲散的流程。"
+                    if _flag(state, "month02_order_trained_core") >= 1
+                    else "稳守线已经从书库简报走到中段。艾琳在村道广场等你，把北门巡逻、撤退信号和异常上报整理成村民能照着执行的轮值表。"
+                ),
                 priority=85,
                 reason="Week 06 order route needs a concrete village-operation follow-up after the Day 32 briefing.",
                 action={"type": "scene_activity", "activity_id": "village_month02_patrol_standby"},
@@ -1103,7 +1109,13 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 intent_id="eugeo_reviews_expedition_supplies",
                 kind="npc_plan",
                 title="尤吉欧要复核第二月远征补给",
-                description="远征线已经确认第一段路线。尤吉欧在北门等你，把干粮、标记粉、绳结和撤退口令重新点清，避免下一次越界只靠临场判断。",
+                description=(
+                    "第一段远征优先加固了回撤标记。尤吉欧在北门等你，准备按每个撤退点重新分配干粮、标记粉和绳结。"
+                    if _flag(state, "month02_expedition_return_markers") >= 1
+                    else "第一段远征已经把测距推进到下一个岔路。尤吉欧在北门等你，补足新增距离需要的干粮、标记粉和备用绳结。"
+                    if _flag(state, "month02_expedition_range_extended") >= 1
+                    else "远征线已经确认第一段路线。尤吉欧在北门等你，把干粮、标记粉、绳结和撤退口令重新点清，避免下一次越界只靠临场判断。"
+                ),
                 priority=85,
                 reason="Week 06 expedition route needs a supply review after the Day 32 route confirmation.",
                 action={"type": "scene_activity", "activity_id": "north_gate_expedition_supply_review"},
@@ -1144,7 +1156,13 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 intent_id="alice_conducts_quiet_frequency_crosscheck",
                 kind="npc_plan",
                 title="艾琳要复核静默线频率的第二周数据",
-                description="上次整理的频率记录已经过了一周。艾琳在书桌等你，把新见到的风声断点与第一周记录对照，确认异常是在靠近还是在漂移。",
+                description=(
+                    "第一周已经补全见证人链。艾琳在书桌等你，把第二周的新断点逐条对回时间、位置和见证人，确认是否有人看见同一个方向。"
+                    if _flag(state, "month02_quiet_witness_chain") >= 1
+                    else "第一周优先隔离了重复信号模式。艾琳在书桌等你，确认第二周是否再次出现相同时段和风声断点。"
+                    if _flag(state, "month02_quiet_signal_pattern") >= 1
+                    else "上次整理的频率记录已经过了一周。艾琳在书桌等你，把新见到的风声断点与第一周记录对照，确认异常是在靠近还是在漂移。"
+                ),
                 priority=85,
                 reason="Week 06 quiet route needs a frequency crosscheck after the Day 32 record.",
                 action={"type": "scene_activity", "activity_id": "reading_hall_quiet_frequency_crosscheck"},

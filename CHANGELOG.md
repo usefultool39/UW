@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased] 2026-08-06 — 第二月路线选择与剧情日期闸门
+
+### Added
+
+- Day 32 三条第二月路线各增加两种明确做法：稳守线决定公开完整轮值或受训核心；远征线决定加固回撤标记或扩大首段测距；静默线决定补全见证人链或优先隔离信号模式。
+- Day 39 NPC 会读取 Day 32 的选择，以不同语境引导巡逻板、远征补给或静默频率复核。
+- Day 46 异常汇流增加“公开共同异常地图 / 暂留三人记录”选择，写入不同关系、记忆、承诺和后半月 route flags。
+- Day 31、32、39、46 增加剧情日期闸门，玩家不能通过连续休息跳过第二月路线入口、中段活动或异常汇流。
+- 内容校验器开始检查 `required_any_flags` 的 authored 生产来源。
+
+### Changed
+
+- 所有含 authored choices 的场景活动必须提交明确 `activity_choice`；缺失选择会事务性返回 `activity_choice_required`，不再把一次性活动标记为完成。
+- `month_02_plan.json` 更新为当前已实现的 Day 32 → Day 39 → Day 46 短循环，不再显示“后续版本加入”的过时说明。
+
+### Verification
+
+- 后端：`253 passed`；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：`16 passed`；production build 通过。
+- Playwright E2E：`15 passed`，新增 Day 32 明确选择并解除日期闸门、Day 46 异常公开度选择路径。
+- `git diff --check`：通过。
+
 ## [Unreleased] 2026-08-06 — 数据驱动路线活动可直接游玩
 
 ### Added

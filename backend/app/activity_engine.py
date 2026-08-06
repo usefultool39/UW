@@ -77,6 +77,12 @@ def plan_scene_activity(
     selected_choice: dict[str, Any] | None = None
     choice_id = str(activity_choice or "").strip()
     choices = activity.get("choices") if isinstance(activity.get("choices"), list) else []
+    if choices and not choice_id:
+        raise ActivityValidationError(
+            "activity_choice_required",
+            activity_id=activity_id,
+            choice_ids=[str(choice.get("id") or "") for choice in choices if isinstance(choice, dict)],
+        )
     if choice_id:
         selected_choice = next(
             (choice for choice in choices if isinstance(choice, dict) and str(choice.get("id") or "") == choice_id),

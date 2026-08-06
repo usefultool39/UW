@@ -1353,20 +1353,66 @@
       },
       "effects": {
         "flags": {
-          "month02_order_briefing_done": 1
+          "month02_order_briefing_started": 1
         },
         "stamina_cost": 2,
         "relationship": {
-          "alice.trust": 2
+          "alice.trust": 1
+        }
+      },
+      "interaction_kind": "month02_order_briefing",
+      "player_facing_benefit": "确定稳守线的公开方式；选择会改变 Day 39 巡逻板的执行语境。",
+      "choices": [
+        {
+          "id": "publish_full_rotation",
+          "label": "公开完整轮值与上报格式",
+          "hint": "让更多村民能参与北门守望，村务支持更强。",
+          "tone": "open",
+          "result_text": "你把巡查轮值、异常上报和撤退信号写成完整公开格式。艾琳逐项检查后，把木牌交给村务轮值的人，稳守线从三人计划变成了村子共同承担的流程。",
+          "effects": {
+            "flags": {
+              "month02_order_briefing_done": 1,
+              "month02_order_open_rotation": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02",
+                "summary": "第二月入口，玩家选择公开完整巡查轮值与异常上报格式，让稳守路线进入村务共同执行。",
+                "weight": 5
+              }
+            }
+          }
         },
-        "memory": {
-          "alice": {
-            "type": "month02",
-            "summary": "第二月第二天，玩家和艾琳把稳守北门路线整理成村务协同简报。",
-            "weight": 4
+        {
+          "id": "keep_trained_core",
+          "label": "先建立受训巡逻核心",
+          "hint": "控制信息扩散，先由少数熟悉撤退信号的人执行。",
+          "tone": "cautious",
+          "result_text": "你没有立刻公开全部异常细节，而是先列出受训巡逻核心。艾琳把撤退信号和上报格式交给固定轮值，村务推进更慢，却减少了传闻把流程冲散的风险。",
+          "effects": {
+            "flags": {
+              "month02_order_briefing_done": 1,
+              "month02_order_trained_core": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02",
+                "summary": "第二月入口，玩家先建立受训巡逻核心，控制异常信息扩散并优先保证撤退流程。",
+                "weight": 5
+              }
+            }
           }
         }
-      }
+      ]
     },
     {
       "id": "north_gate_expedition_check",
@@ -1401,20 +1447,66 @@
       },
       "effects": {
         "flags": {
-          "month02_expedition_check_done": 1
+          "month02_expedition_check_started": 1
         },
         "stamina_cost": 3,
         "relationship": {
-          "eugeo.trust": 2
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month02_expedition_check",
+      "player_facing_benefit": "确定第一次远征的安全节拍；选择会改变 Day 39 补给复核重点。",
+      "choices": [
+        {
+          "id": "secure_return_markers",
+          "label": "先加固全部回撤标记",
+          "hint": "提高安全性，让艾琳更相信这次远征能回来。",
+          "tone": "steady",
+          "result_text": "你和尤吉欧先不扩大路线，只把每个回撤点重新撒粉、打结并复诵口令。第一段远征线没有变长，却第一次像一条可以可靠返回的路。",
+          "effects": {
+            "flags": {
+              "month02_expedition_check_done": 1,
+              "month02_expedition_return_markers": 1
+            },
+            "relationship": {
+              "eugeo.trust": 2,
+              "alice.trust": 2
+            },
+            "memory": {
+              "eugeo": {
+                "type": "month02",
+                "summary": "第二月入口，玩家优先加固第一段远征线的全部回撤标记和口令。",
+                "weight": 5
+              }
+            }
+          }
         },
-        "memory": {
-          "eugeo": {
-            "type": "month02",
-            "summary": "第二月第二天，玩家和尤里复核了北门远征第一段路线和撤退标记。",
-            "weight": 4
+        {
+          "id": "extend_first_range",
+          "label": "把测距标记推到下一个岔路",
+          "hint": "更快获得北门外信息，但会增加艾琳对撤退距离的担心。",
+          "tone": "bold",
+          "result_text": "你们把测距粉推到下一个岔路，第一次看见旧路线之外的石缝和折断枝条。尤吉欧记下新的距离，艾琳则要求把多出来的每一步都写进撤退记录。",
+          "effects": {
+            "flags": {
+              "month02_expedition_check_done": 1,
+              "month02_expedition_range_extended": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "eugeo.affinity": 1,
+              "alice.tension": 1
+            },
+            "memory": {
+              "eugeo": {
+                "type": "month02",
+                "summary": "第二月入口，玩家把第一段远征测距推进到下一个岔路，换取更早的边界信息。",
+                "weight": 5
+              }
+            }
           }
         }
-      }
+      ]
     },
     {
       "id": "reading_hall_silent_record",
@@ -1451,21 +1543,66 @@
       },
       "effects": {
         "flags": {
-          "month02_quiet_record_done": 1
+          "month02_quiet_record_started": 1
         },
         "stamina_cost": 2,
         "relationship": {
-          "alice.trust": 1,
-          "alice.tension": -1
+          "alice.trust": 1
+        }
+      },
+      "interaction_kind": "month02_quiet_record",
+      "player_facing_benefit": "确定静默线记录方法；选择会改变 Day 39 两周复核的证据重点。",
+      "choices": [
+        {
+          "id": "record_full_witness_chain",
+          "label": "记录完整见证人链",
+          "hint": "减少信息缺口，让艾琳更信任暗线调查。",
+          "tone": "careful",
+          "result_text": "你把每一次风声断点旁边都补上时间、位置和见证人。艾琳终于能追溯每条判断来自谁，静默路线第一次不再依赖某个人的直觉。",
+          "effects": {
+            "flags": {
+              "month02_quiet_record_done": 1,
+              "month02_quiet_witness_chain": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -2
+            },
+            "memory": {
+              "alice": {
+                "type": "month02",
+                "summary": "第二月入口，玩家为静默线记录补全时间、位置和见证人链，减少信息缺口。",
+                "weight": 5
+              }
+            }
+          }
         },
-        "memory": {
-          "alice": {
-            "type": "month02",
-            "summary": "第二月第二天，玩家和艾琳把静默线异常整理成可复查记录。",
-            "weight": 4
+        {
+          "id": "isolate_signal_pattern",
+          "label": "先隔离重复出现的信号模式",
+          "hint": "更快追查异常方向，但保留部分见证信息。",
+          "tone": "focused",
+          "result_text": "你先圈出重复出现的时段和风声断点，把无法重复的传闻压到页边。异常方向更快显现出来，但艾琳提醒你：被暂时放下的见证信息仍然可能回来追问。",
+          "effects": {
+            "flags": {
+              "month02_quiet_record_done": 1,
+              "month02_quiet_signal_pattern": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "alice.tension": 1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02",
+                "summary": "第二月入口，玩家优先隔离静默线的重复信号模式，以更快确认异常方向。",
+                "weight": 5
+              }
+            }
           }
         }
-      }
+      ]
     },
     {
       "id": "village_month02_patrol_standby",
@@ -1669,28 +1806,83 @@
       },
       "effects": {
         "flags": {
-          "month02_anomaly_convergence_done": 1,
-          "month02_anomaly_source_documented": 1
+          "month02_anomaly_convergence_started": 1
         },
         "stamina_cost": 2,
         "relationship": {
           "alice.trust": 1,
-          "eugeo.trust": 1,
-          "alice.tension": 1
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month02_convergence_choice",
+      "player_facing_benefit": "决定共同异常核心如何进入第二月后半段；选择会留下公开路线或三人暗线。",
+      "choices": [
+        {
+          "id": "publish_shared_anomaly_map",
+          "label": "把共同异常地图交给村务复核",
+          "hint": "公开证据，获得更稳的村内支持，但行动速度会放慢。",
+          "tone": "open",
+          "result_text": "你把三条路线重叠出的空白区域画成共同异常地图，交给村务复核。艾琳补上证据来源，尤吉欧写下撤退口令；第二月后半段获得了更多支持，也必须接受更多目光。",
+          "effects": {
+            "flags": {
+              "month02_anomaly_convergence_done": 1,
+              "month02_anomaly_source_documented": 1,
+              "month02_shared_map_published": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month02",
+                "summary": "第二月异常汇流时，玩家选择公开共同异常地图，接受村务复核与更广泛的责任。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02",
+                "summary": "第二月异常汇流时，玩家公开三条路线共同指向的异常地图，并把撤退口令写进公开记录。",
+                "weight": 5
+              }
+            }
+          }
         },
-        "memory": {
-          "alice": {
-            "type": "month02",
-            "summary": "第二月后段，玩家把三条路线的异常记录合并复核时，艾琳用刻印标记把共同方向压到地图上，也把能否让大家回来放在结论之前。",
-            "weight": 5
-          },
-          "eugeo": {
-            "type": "month02",
-            "summary": "第二月后段，玩家和同伴确认三条路线的异常信号正在收束，尤里把撤退口令写进共同记录。",
-            "weight": 5
+        {
+          "id": "seal_source_for_three",
+          "label": "先把异常源头留在三人记录里",
+          "hint": "保持调查速度和隐蔽性，但艾琳会担心信息再次不完整。",
+          "tone": "quiet",
+          "result_text": "你把共同异常核心封在三人记录里，只留下必要的村务警示。尤吉欧接受先追查源头，艾琳则要求每次推进都留下可交出的副本。第二月后半段更快，也更依赖三个人不互相隐瞒。",
+          "effects": {
+            "flags": {
+              "month02_anomaly_convergence_done": 1,
+              "month02_anomaly_source_documented": 1,
+              "month02_source_held_by_team": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "promises": {
+              "alice": "玩家答应艾琳，第二月后半段每次追查异常源头都保留一份可交出的记录副本。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month02",
+                "summary": "第二月异常汇流时，玩家暂时把源头留在三人记录里，并承诺保留可交出的副本。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02",
+                "summary": "第二月异常汇流时，玩家选择由三人先追查共同异常源头。",
+                "weight": 5
+              }
+            }
           }
         }
-      }
+      ]
     }
   ]
 }

@@ -300,6 +300,7 @@ def test_day_thirty_nine_order_patrol_board_intent_guides_player_to_square():
                 "month02_day31_entry_done": 1,
                 "month02_route_order": 1,
                 "month02_order_briefing_done": 1,
+                "month02_order_open_rotation": 1,
             },
         }
     )
@@ -312,6 +313,7 @@ def test_day_thirty_nine_order_patrol_board_intent_guides_player_to_square():
         "activity_id": "village_month02_patrol_standby",
     }
     assert intents["alice_formalizes_month02_patrol_board"].response_options
+    assert "公开完整轮值" in intents["alice_formalizes_month02_patrol_board"].description
 
 
 def test_day_thirty_nine_expedition_supply_intent_guides_player_to_north_gate():
@@ -324,6 +326,7 @@ def test_day_thirty_nine_expedition_supply_intent_guides_player_to_north_gate():
                 "month02_day31_entry_done": 1,
                 "month02_route_expedition": 1,
                 "month02_expedition_check_done": 1,
+                "month02_expedition_return_markers": 1,
             },
         }
     )
@@ -336,6 +339,7 @@ def test_day_thirty_nine_expedition_supply_intent_guides_player_to_north_gate():
         "activity_id": "north_gate_expedition_supply_review",
     }
     assert intents["eugeo_reviews_expedition_supplies"].response_options
+    assert "回撤标记" in intents["eugeo_reviews_expedition_supplies"].description
 
 
 def test_day_thirty_nine_quiet_frequency_intent_guides_player_to_reading_hall():
@@ -348,6 +352,7 @@ def test_day_thirty_nine_quiet_frequency_intent_guides_player_to_reading_hall():
                 "month02_day31_entry_done": 1,
                 "month02_route_quiet": 1,
                 "month02_quiet_record_done": 1,
+                "month02_quiet_witness_chain": 1,
             },
         }
     )
@@ -360,6 +365,7 @@ def test_day_thirty_nine_quiet_frequency_intent_guides_player_to_reading_hall():
         "activity_id": "reading_hall_quiet_frequency_crosscheck",
     }
     assert intents["alice_conducts_quiet_frequency_crosscheck"].response_options
+    assert "见证人链" in intents["alice_conducts_quiet_frequency_crosscheck"].description
 
 
 def test_day_forty_six_shared_convergence_intent_appears_after_any_week_six_route():

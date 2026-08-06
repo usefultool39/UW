@@ -1085,6 +1085,17 @@ def _validate_day_gate_producers(
                     path=f"{gate_path}.required_flags.{key}",
                     message=f"No authored story/activity effect writes day-gate flag '{key}'.",
                 )
+        for group_index, group in enumerate(gate.get("required_any_flags") or []):
+            if not isinstance(group, dict):
+                continue
+            for key in group:
+                if str(key) not in written_flags:
+                    _add_issue(
+                        errors,
+                        code="unproducible_day_gate_flag",
+                        path=f"{gate_path}.required_any_flags[{group_index}].{key}",
+                        message=f"No authored story/activity effect writes day-gate flag '{key}'.",
+                    )
         for index, event_id in enumerate(gate.get("required_events") or []):
             if str(event_id) not in event_ids:
                 _add_issue(

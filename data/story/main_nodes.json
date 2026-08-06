@@ -170,6 +170,62 @@
         "title": "决定第二月路线",
         "description": "带着第一月的记录和承诺，选择接下来要承担的方向。"
       }
+    },
+    "31": {
+      "required_flags": {
+        "month02_day31_entry_done": 1
+      },
+      "advance_to": 32,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 31 · 第二月路线落地",
+      "next_goal": {
+        "title": "执行第二月第一步",
+        "description": "把第一月末的路线决定变成一项可执行的场景行动。"
+      }
+    },
+    "32": {
+      "required_any_flags": [
+        {
+          "month02_order_briefing_done": 1,
+          "month02_expedition_check_done": 1,
+          "month02_quiet_record_done": 1
+        }
+      ],
+      "advance_to": 33,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 32 · 路线第一步",
+      "next_goal": {
+        "title": "观察路线后果",
+        "description": "让第一周选择进入村务、补给或静默线的后续反馈。"
+      }
+    },
+    "39": {
+      "required_any_flags": [
+        {
+          "month02_order_patrol_standby_done": 1,
+          "month02_expedition_supply_review_done": 1,
+          "month02_quiet_frequency_crosscheck_done": 1
+        }
+      ],
+      "advance_to": 40,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 39 · 路线进入中段",
+      "next_goal": {
+        "title": "等待异常信号汇流",
+        "description": "继续记录当前路线留下的异常方向，准备共同复核。"
+      }
+    },
+    "46": {
+      "required_flags": {
+        "month02_anomaly_convergence_done": 1
+      },
+      "advance_to": 47,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 46 · 三条信号汇流",
+      "next_goal": {
+        "title": "决定第二月后半段的公开度",
+        "description": "带着共同异常核心，进入公开村务或三人暗线的后续路线。"
+      }
     }
   }
 }

@@ -428,3 +428,23 @@ def test_day_twenty_four_event_reflects_day_twelve_village_route():
         assert event["variant_id"] == variant_id
         choice = next(item for item in event["choices"] if item["id"] == choice_id)
         assert expected_hint in choice["hint"]
+
+
+def test_second_month_key_days_cannot_skip_authored_route_content():
+    cases = [
+        (31, {"month01_gate_resolved": 1}, "flag", "month02_day31_entry_done"),
+        (32, {"month02_day31_entry_done": 1, "month02_route_order": 1}, "any_flags", None),
+        (39, {"month02_order_briefing_done": 1}, "any_flags", None),
+        (46, {"month02_order_patrol_standby_done": 1}, "flag", "month02_anomaly_convergence_done"),
+    ]
+    for day, flags, missing_type, missing_key in cases:
+        sess = Session(run_id=f"test-month02-day-gate-{day}")
+        sess.state = sess.state.model_copy(update={"day": day, "flags": flags})
+
+        out = sess.player_action(kind="rest_until_next_day")
+
+        assert out["ok"] is False
+        assert out["error"] == "day_end_gate_incomplete"
+        assert out["missing"][0]["type"] == missing_type
+        if missing_key:
+            assert out["missing"][0]["key"] == missing_key
