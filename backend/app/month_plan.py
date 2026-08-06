@@ -85,6 +85,16 @@ def _status_label(status: str) -> str:
 
 def _month_ending_path(state: WorldState, month_id: str) -> str:
     if month_id == "month_03":
+        for flag, path in (
+            ("month03_public_expansion", "public_expanded"),
+            ("month03_public_reserve_protected", "public_reserved"),
+            ("month03_frontier_extended", "frontier_extended"),
+            ("month03_frontier_cache_held", "frontier_held"),
+            ("month03_layered_intelligence_expanded", "intel_expanded"),
+            ("month03_intelligence_sealed", "intel_sealed"),
+        ):
+            if _flag_value(state, flag) > 0:
+                return path
         if any(
             _flag_value(state, flag) > 0
             for flag in (

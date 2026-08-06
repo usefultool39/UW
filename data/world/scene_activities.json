@@ -3170,6 +3170,602 @@
           }
         }
       ]
+    },
+    {
+      "id": "village_third_month_route_feedback",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第三月 · 公开协作反馈",
+      "label": "把公开协作测试写成下一轮村务反馈",
+      "description": "第一次路线测试已经显示公开协作的优势和限制。现在要把人力、信号、现场观察或后备队的结果写回村务板，决定下一次是扩大覆盖还是保留安全余量。",
+      "result_text": "公开协作的第一次结果被写成两栏：这次真正看见了什么，以及为了安全刻意没有做什么。村务不再只记录成功，而开始记录资源留下的边界。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "feedback",
+        "public_network",
+        "village",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 76,
+        "day_max": 82,
+        "required_flags": {
+          "month03_route_test_done": 1
+        },
+        "required_any_flags": {
+          "month03_public_watch_deployed": 1,
+          "month03_public_reserve_held": 1,
+          "month03_signal_lattice_raised": 1,
+          "month03_signal_reserve_saved": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_feedback_choice",
+      "player_facing_benefit": "让第一次公开协作测试的覆盖范围或后备规则进入下一阶段，并为 Day 83 阶段收束准备反馈。",
+      "choices": [
+        {
+          "id": "formalize_public_report",
+          "label": "把覆盖范围与资源边界写进公开报告",
+          "hint": "扩大可复用经验，但会让更多村民看见这次行动的限制。",
+          "tone": "open",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 83 可开启下一轮公开协作",
+              "村务会读取本次资源边界"
+            ]
+          },
+          "result_text": "你把覆盖范围、后备人手和神圣力余量都写进公开报告。爱丽丝拒绝删掉失败的部分，尤吉欧补上哪个信号不能重复使用；公开协作因此更诚实。",
+          "effects": {
+            "stamina_cost": 4,
+            "flags": {
+              "month03_feedback_done": 1,
+              "month03_public_feedback_done": 1,
+              "month03_public_report_formalized": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家把公开协作的覆盖范围、后备人手和资源余量写进公开报告。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家让尤吉欧记录哪些信号和人力不能在下一次重复透支。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "hold_public_safety_margin",
+          "label": "先保留一轮安全余量再扩大",
+          "hint": "减少公开速度，换取下一次行动不立即透支同一批人和术力。",
+          "tone": "steady",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 83 可开启保守的公开协作",
+              "下一轮保留更多安全余量"
+            ]
+          },
+          "result_text": "你没有立刻把覆盖范围扩到更远，而是把这一轮消耗写成安全余量。尤吉欧同意保留后备，爱丽丝则把“暂不扩大”写成可重新评估的决定，而不是失败。",
+          "effects": {
+            "stamina_cost": 2,
+            "flags": {
+              "month03_feedback_done": 1,
+              "month03_public_feedback_done": 1,
+              "month03_public_margin_held": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家保留一轮公开协作安全余量，再决定是否扩大覆盖。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家让下一轮公开行动不要立即透支同一批人和术力。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "north_gate_third_month_route_feedback",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第三月 · 源头追查反馈",
+      "label": "把第一次追查结果写回回撤线",
+      "description": "第一次源头测试没有给出最终答案，却留下了推进距离、缓存位置、刻印余量和搜索风险。尤吉欧要把这些限制变成下一次可以复走的路线。",
+      "result_text": "北门地图被分成推进、缓存和中止三层。你们没有把异常方向写成答案，而是把下一次可以安全复走的边界标了出来。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "feedback",
+        "frontier_probe",
+        "north_gate",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 76,
+        "day_max": 82,
+        "required_flags": {
+          "month03_route_test_done": 1
+        },
+        "required_any_flags": {
+          "month03_full_pack_advanced": 1,
+          "month03_return_cache_built": 1,
+          "month03_source_triangulated": 1,
+          "month03_distance_marks_conserved": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_feedback_choice",
+      "player_facing_benefit": "让第一次源头追查的推进距离、撤退缓存或刻印余量进入下一阶段，并为 Day 83 阶段收束准备反馈。",
+      "choices": [
+        {
+          "id": "map_repeatable_frontier_route",
+          "label": "把可复走的推进段与缓存点画成路线",
+          "hint": "扩大下一次行动的可重复性，但会公开更多安全边界。",
+          "tone": "mapped",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 83 可开启可复走的源头路线",
+              "下一次行动拥有明确缓存或推进段"
+            ]
+          },
+          "result_text": "你把推进段、缓存点和中止线画成三种颜色。爱丽丝只允许记录可信区间，尤吉欧补上回撤距离；源头仍未知，但路线开始可以被复走。",
+          "effects": {
+            "stamina_cost": 5,
+            "flags": {
+              "month03_feedback_done": 1,
+              "month03_frontier_feedback_done": 1,
+              "month03_repeatable_frontier_route": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家把源头追查的推进段、缓存点和中止线画成可复走路线。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家和尤吉欧记录回撤距离，让未知边界可以被安全复走。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "hold_frontier_abort_margin",
+          "label": "先把中止线与搜索点固定下来",
+          "hint": "推进较慢，换取下一次失联时更明确的搜索和撤回边界。",
+          "tone": "abort",
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "Day 83 可开启保守的源头路线",
+              "下一次失联风险更低"
+            ]
+          },
+          "result_text": "你先固定中止线、逾时搜索点和谁负责回报。尤吉欧接受下一次少走一段，爱丽丝把这项决定写进承诺：没有可确认的回撤，就不把未知当作勇气测试。",
+          "effects": {
+            "stamina_cost": 3,
+            "flags": {
+              "month03_feedback_done": 1,
+              "month03_frontier_feedback_done": 1,
+              "month03_abort_margin_fixed": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "promises": {
+              "alice": "下一次源头追查必须先确认中止线、逾时搜索点和回撤责任。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家先固定中止线和逾时搜索点，降低下一次源头追查的失联风险。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家接受少走一段以换取明确的撤回和搜索边界。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reading_hall_third_month_route_feedback",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第三月 · 情报风险反馈",
+      "label": "把第一次情报测试的风险写回托管协议",
+      "description": "第一次情报测试已经显示多重审计或轻量托管的优势。现在要决定下一阶段优先保护完整性，还是优先让村务更快拿到必要警告。",
+      "result_text": "托管协议增加了一页“为什么现在公开 / 为什么现在不公开”。情报不再只按秘密或公开二分，而开始按风险和可验证程度分层。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "feedback",
+        "accountable_intel",
+        "reading_hall",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 76,
+        "day_max": 82,
+        "required_flags": {
+          "month03_route_test_done": 1
+        },
+        "required_any_flags": {
+          "month03_verified_summary_shared": 1,
+          "month03_three_seal_audit_done": 1,
+          "month03_fast_warning_issued": 1,
+          "month03_source_kept_sealed": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_feedback_choice",
+      "player_facing_benefit": "让第一次情报测试的完整性与响应速度进入下一阶段，并为 Day 83 阶段收束准备风险反馈。",
+      "choices": [
+        {
+          "id": "layer_intelligence_access",
+          "label": "把情报分成可验证摘要与完整源头两层",
+          "hint": "让村务先拿到必要信息，同时保持完整源头的责任边界。",
+          "tone": "layered",
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 83 可开启分层情报路线",
+              "下一次公开不再只有全部公开或全部封存"
+            ]
+          },
+          "result_text": "你把时间、退路和可信区间放进摘要，把完整源头留在托管记录里。爱丽丝认可这种分层，尤吉欧则要求每层都写明谁可以继续追问。",
+          "effects": {
+            "mp_cost": 4,
+            "flags": {
+              "month03_feedback_done": 1,
+              "month03_intel_feedback_done": 1,
+              "month03_layered_access_ready": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家将情报分成可验证摘要与完整源头两层，避免公开决策二分化。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家让每层情报都写明谁可以继续追问和复核。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "keep_intelligence_quiet",
+          "label": "先保留完整源头，只更新必要警告",
+          "hint": "保密性最高，村务反馈较慢；下一阶段会继续承受单一来源或延迟风险。",
+          "tone": "quiet",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "Day 83 可开启保守情报路线",
+              "完整源头继续不外泄"
+            ]
+          },
+          "result_text": "你只更新必要警告和逾时搜索点，不公开完整源头。爱丽丝接受保密，却要求下一次重复信号出现时必须重新检查是否仍能承担延迟；尤吉欧把警告写进村务板。",
+          "effects": {
+            "stamina_cost": 2,
+            "flags": {
+              "month03_feedback_done": 1,
+              "month03_intel_feedback_done": 1,
+              "month03_quiet_intel_held": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "promises": {
+              "alice": "若重复信号再次出现，必须重新评估完整源头继续封存是否仍然安全。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家保留完整源头，只更新必要警告并承受延迟风险。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_feedback",
+                "summary": "第三月反馈，玩家把必要警告写进村务板，但不外泄完整源头。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "home_third_month_recovery_debrief",
+      "scene_id": "home_hearth",
+      "scene_ids": [
+        "home_hearth",
+        "reading_hall"
+      ],
+      "poi_id": "ix_home_bed",
+      "title": "第三月 · 资源恢复与复盘",
+      "label": "安全恢复一次资源，再复盘第三月第一次行动",
+      "description": "第一次路线测试和反馈已经消耗了体力或神圣力。现在可以安全地恢复其中一类资源，同时把这次选择的限制写进第三月记录。",
+      "result_text": "你没有把恢复当成无代价的自动重置，而是选择优先补回一种资源，并把另一种资源的不足保留在复盘页。下一阶段会读取这次恢复偏好。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "recovery",
+        "resources",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 78,
+        "day_max": 82,
+        "required_flags": {
+          "month03_feedback_done": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_recovery_choice",
+      "player_facing_benefit": "安全恢复一次体力或神圣力；选择不会跨日，但会决定 Day 83 阶段收束读取哪种资源余量。",
+      "choices": [
+        {
+          "id": "recover_stamina_priority",
+          "label": "优先恢复体力，保留神圣力不足",
+          "hint": "体力 +12；不消耗神圣力。下一阶段更适合实地行动。",
+          "tone": "body",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "体力 +12",
+              "Day 83 更适合现场推进"
+            ]
+          },
+          "result_text": "尤吉欧把恢复后的体力安排进下一次实地行动，爱丽丝则把神圣力不足写成必须节制的限制。你恢复了行动能力，却没有假装另一种资源不存在。",
+          "effects": {
+            "stamina_restore": 12,
+            "flags": {
+              "month03_recovery_done": 1,
+              "month03_stamina_recovered": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_recovery",
+                "summary": "第三月恢复，玩家优先恢复体力，把神圣力不足保留为下一阶段限制。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_recovery",
+                "summary": "第三月恢复，玩家为下一次实地行动优先补回体力。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "recover_mp_priority",
+          "label": "优先恢复神圣力，接受体力仍然疲惫",
+          "hint": "神圣力 +12；体力 -3。下一阶段更适合信号、封印或远距判断。",
+          "tone": "arts",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "神圣力 +12",
+              "体力 -3",
+              "Day 83 更适合术式或情报行动"
+            ]
+          },
+          "result_text": "爱丽丝带你重新整理刻印术短句，神圣力恢复到可以应急的程度；尤吉欧提醒你体力还没有完全回来，下一次行动不能把移动距离当作理所当然。",
+          "effects": {
+            "stamina_cost": 3,
+            "mp_restore": 12,
+            "flags": {
+              "month03_recovery_done": 1,
+              "month03_mp_recovered": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_recovery",
+                "summary": "第三月恢复，玩家优先恢复神圣力，把体力疲惫保留为下一阶段限制。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_recovery",
+                "summary": "第三月恢复，玩家接受体力仍然疲惫，以换取可用的神圣力储备。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

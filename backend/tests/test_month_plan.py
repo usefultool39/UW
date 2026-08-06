@@ -708,3 +708,88 @@ def test_month_three_resource_activity_rejects_insufficient_mp_without_partial_w
     assert sess.state.player.mp == 5
     assert sess.state.player.stamina == 100
     assert "month03_preparation_done" not in sess.state.flags
+
+
+def test_month_three_feedback_and_recovery_close_the_resource_loop():
+    sess = Session(run_id="test-month-three-feedback-recovery")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 76,
+            "time_band": "morning",
+            "flags": {
+                "month03_route_test_done": 1,
+                "month03_signal_reserve_saved": 1,
+            },
+            "player": sess.state.player.model_copy(update={"stamina": 70, "mp": 60}),
+        }
+    )
+    sess.player_action(kind="move_scene", scene_id="village_square")
+
+    feedback = sess.player_action(
+        kind="scene_activity",
+        activity_id="village_third_month_route_feedback",
+        activity_choice="hold_public_safety_margin",
+    )
+    assert feedback["ok"] is True
+    assert feedback["state"]["flags"]["month03_feedback_done"] == 1
+    assert feedback["state"]["flags"]["month03_public_margin_held"] == 1
+    assert feedback["state"]["player"]["stamina"] == 68
+
+    sess.state = sess.state.model_copy(update={"day": 78})
+    sess.player_action(kind="move_scene", scene_id="home_hearth")
+    recovery = sess.player_action(
+        kind="scene_activity",
+        activity_id="home_third_month_recovery_debrief",
+        activity_choice="recover_mp_priority",
+    )
+    assert recovery["ok"] is True
+    assert recovery["state"]["flags"]["month03_recovery_done"] == 1
+    assert recovery["state"]["flags"]["month03_mp_recovered"] == 1
+    assert recovery["state"]["player"]["stamina"] == 65
+    assert recovery["state"]["player"]["mp"] == 72
+
+
+def test_month_three_feedback_activity_is_route_specific():
+    cases = [
+        ("month03_public_watch_deployed", "village_square", "village_third_month_route_feedback", "month03_public_feedback_done"),
+        ("month03_full_pack_advanced", "north_gate", "north_gate_third_month_route_feedback", "month03_frontier_feedback_done"),
+        ("month03_verified_summary_shared", "reading_hall", "reading_hall_third_month_route_feedback", "month03_intel_feedback_done"),
+    ]
+    for result_flag, scene_id, activity_id, done_flag in cases:
+        sess = Session(run_id=f"test-month-three-feedback-{activity_id}")
+        sess.state = sess.state.model_copy(
+            update={"day": 76, "time_band": "morning", "flags": {"month03_route_test_done": 1, result_flag: 1}}
+        )
+        sess.player_action(kind="move_scene", scene_id=scene_id)
+        choice_id = {
+            "village_third_month_route_feedback": "formalize_public_report",
+            "north_gate_third_month_route_feedback": "map_repeatable_frontier_route",
+            "reading_hall_third_month_route_feedback": "layer_intelligence_access",
+        }[activity_id]
+        out = sess.player_action(kind="scene_activity", activity_id=activity_id, activity_choice=choice_id)
+        assert out["ok"] is True
+        assert out["state"]["flags"]["month03_feedback_done"] == 1
+        assert out["state"]["flags"][done_flag] == 1
+
+
+def test_month_three_plan_exposes_feedback_recovery_and_stage_result():
+    sess = Session(run_id="test-month-three-week-eleven-twelve")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 83,
+            "time_band": "morning",
+            "flags": {
+                "month03_public_council_trial": 1,
+                "month03_feedback_done": 1,
+                "month03_recovery_done": 1,
+            },
+        }
+    )
+    plan = public_month_plan(sess.root, sess.state, month_id="month_03")
+    week11 = next(item for item in plan["weeks"] if item["id"] == "week_11")
+    week12 = next(item for item in plan["weeks"] if item["id"] == "week_12")
+    milestones11 = {item["id"]: item for item in week11["milestones"]}
+    milestones12 = {item["id"]: item for item in week12["milestones"]}
+
+    assert milestones11["m03_recovery_debrief"]["status"] == "completed"
+    assert milestones12["m03_stage_result"]["status"] == "active"

@@ -1641,6 +1641,166 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    month03_feedback_routes = [
+        {
+            "required_flags": ["month03_public_watch_deployed", "month03_public_reserve_held", "month03_signal_lattice_raised", "month03_signal_reserve_saved"],
+            "done_flag": "activity_done.village_third_month_route_feedback",
+            "npc_id": "alice",
+            "intent_id": "alice_reviews_public_route_feedback",
+            "title": "爱丽丝要把公开协作的资源边界写回村务板",
+            "description": "第一次公开协作已经留下覆盖范围、后备人手和神圣力余量。爱丽丝在村道广场等你决定公开经验，还是先保留一轮安全余量。",
+            "activity_id": "village_third_month_route_feedback",
+            "scene_id": "village_square",
+            "tile_x": 28,
+            "tile_y": 25,
+            "label": "和爱丽丝复盘公开协作边界",
+            "hint": "把第一次公开测试的覆盖与余量写成下一阶段可以读懂的反馈。",
+        },
+        {
+            "required_flags": ["month03_full_pack_advanced", "month03_return_cache_built", "month03_source_triangulated", "month03_distance_marks_conserved"],
+            "done_flag": "activity_done.north_gate_third_month_route_feedback",
+            "npc_id": "eugeo",
+            "intent_id": "eugeo_reviews_frontier_route_feedback",
+            "title": "尤吉欧要把第一次源头追查写回回撤线",
+            "description": "推进段、缓存点和刻印余量已经留下真实限制。尤吉欧在北门等你决定把路线画成可复走经验，还是先固定中止线与搜索点。",
+            "activity_id": "north_gate_third_month_route_feedback",
+            "scene_id": "north_gate",
+            "tile_x": 67,
+            "tile_y": 24,
+            "label": "和尤吉欧复盘源头路线边界",
+            "hint": "让推进、缓存和中止线进入下一阶段。",
+        },
+        {
+            "required_flags": ["month03_verified_summary_shared", "month03_three_seal_audit_done", "month03_fast_warning_issued", "month03_source_kept_sealed"],
+            "done_flag": "activity_done.reading_hall_third_month_route_feedback",
+            "npc_id": "alice",
+            "intent_id": "alice_reviews_intelligence_risk_feedback",
+            "title": "爱丽丝要把情报测试的风险分层",
+            "description": "第一次情报测试已经显示完整性与响应速度的冲突。爱丽丝在书库等你决定扩大可验证摘要，还是继续封存完整源头。",
+            "activity_id": "reading_hall_third_month_route_feedback",
+            "scene_id": "reading_hall",
+            "tile_x": 42,
+            "tile_y": 18,
+            "label": "和爱丽丝复盘情报风险",
+            "hint": "把公开、封存和延迟风险写进下一阶段托管协议。",
+        },
+    ]
+    if 76 <= day <= 82 and band in {"morning", "afternoon", "evening", "night"}:
+        for route in month03_feedback_routes:
+            if not _any_flag(state, route["required_flags"]) or _flag(state, route["done_flag"]) >= 1:
+                continue
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id=route["npc_id"],
+                    intent_id=route["intent_id"],
+                    kind="npc_plan",
+                    title=route["title"],
+                    description=route["description"],
+                    priority=91,
+                    reason="Day 76-82 must expose a readable consequence of the Day 69 resource route.",
+                    action={"type": "scene_activity", "activity_id": route["activity_id"]},
+                    stakes=[
+                        "这一步会把资源消耗后的覆盖、缓存或情报风险写入下一阶段。",
+                        "Day 79 会阻止玩家跳过路线反馈和安全恢复。",
+                    ],
+                    response_options=[
+                        _social_response(
+                            response_id=f"review_{route['intent_id']}",
+                            label=route["label"],
+                            hint=route["hint"],
+                            result_text="同伴把第一次行动的结果和资源余量放到同一页，等待你决定下一阶段要公开什么、保留什么。",
+                            tone="careful",
+                            effects={
+                                "flags": {f"{route['intent_id']}_agreed": 1},
+                                "relationship": {f"{route['npc_id']}.trust": 1},
+                            },
+                        )
+                    ],
+                    fallback=(route["tile_x"], route["tile_y"], route["scene_id"]),
+                    scene_id=route["scene_id"],
+                    tile_x=route["tile_x"],
+                    tile_y=route["tile_y"],
+                )
+            )
+
+    if (
+        78 <= day <= 82
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month03_feedback_done") >= 1
+        and _flag(state, "activity_done.home_third_month_recovery_debrief") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_calls_third_month_recovery_debrief",
+                kind="npc_plan",
+                title="爱丽丝建议先安全恢复一种资源",
+                description="第一次路线反馈已经完成，但体力或神圣力的消耗还留在状态上。爱丽丝请你回到炉火边，选择优先恢复哪一种资源，并把另一种不足写进复盘。",
+                priority=93,
+                reason="Day 78-82 needs an authored, non-automatic recovery decision before the stage result.",
+                action={"type": "scene_activity", "activity_id": "home_third_month_recovery_debrief"},
+                stakes=[
+                    "恢复不会跨日，也不会自动抹掉另一种资源的不足。",
+                    "Day 79 会阻止玩家跳过安全恢复。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="agree_to_safe_recovery",
+                        label="和爱丽丝做一次安全资源复盘",
+                        hint="在体力恢复和神圣力恢复之间选择。",
+                        result_text="爱丽丝把两种资源的余量写到复盘页，等你决定下一阶段更需要身体还是术式。",
+                        tone="steady",
+                        effects={"flags": {"alice_third_month_recovery_agreed": 1}, "relationship": {"alice.trust": 1}},
+                    )
+                ],
+                fallback=(11, 27, "home_hearth"),
+                scene_id="home_hearth",
+                tile_x=11,
+                tile_y=27,
+            )
+        )
+
+    if (
+        83 <= day <= 88
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month03_feedback_done") >= 1
+        and _flag(state, "month03_recovery_done") >= 1
+        and _flag(state, "month03_stage_resolved") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_calls_third_month_stage_result",
+                kind="story_event",
+                title="爱丽丝请你在书库决定第三月下一阶段",
+                description="第一次资源投入、路线测试、反馈和恢复都已经留下限制。爱丽丝和尤吉欧把记录摊开，等你决定扩大覆盖、保护余量、延长追查或重新划分情报公开范围。",
+                priority=96,
+                reason="Day 83-88 must close the first third-month resource loop with route-specific consequences.",
+                action={"type": "story_event", "event_id": "ch1_d83_third_month_stage_result"},
+                stakes=[
+                    "事件只显示当前玩法族对应的两个阶段决定。",
+                    "选择会继续写入关系、承诺、紧张和第三月路线摘要。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="review_third_month_stage_result",
+                        label="和同伴复核第三月阶段决定",
+                        hint="根据当前资源余量与承诺进入路线专属收束事件。",
+                        result_text="爱丽丝把公开范围、回撤线和托管协议放在同一张桌上，等你决定下一阶段要承担什么。",
+                        tone="steady",
+                        effects={"flags": {"third_month_stage_result_agreed": 1}, "relationship": {"alice.trust": 1, "eugeo.trust": 1}},
+                    )
+                ],
+                fallback=(42, 18, "reading_hall"),
+                scene_id="reading_hall",
+                tile_x=42,
+                tile_y=18,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

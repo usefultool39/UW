@@ -12,7 +12,13 @@
     "unresolved": "第三月路线尚未准备。先完成第六十一天的出发准则。",
     "public_network": "公开协作族：用村务人力或神圣术信号支持边界行动。",
     "frontier_probe": "源头追查族：在重装回撤补给与远距刻印之间分配资源。",
-    "accountable_intel": "责任情报族：在多重审计和轻量托管之间权衡可靠性与响应速度。"
+    "accountable_intel": "责任情报族：在多重审计和轻量托管之间权衡可靠性与响应速度。",
+    "public_expanded": "公开协作进入扩大覆盖阶段，资源上限成为村务共同规则。",
+    "public_reserved": "公开协作优先保护安全余量，下一次行动保留更多后备。",
+    "frontier_extended": "源头路线沿可复走推进段延长，新增部分仍需确认。",
+    "frontier_held": "源头路线守住缓存与中止线，等待重复信号。",
+    "intel_expanded": "分层情报摘要扩大使用范围，完整源头继续托管。",
+    "intel_sealed": "完整情报继续封存，重复信号会重新触发公开评估。"
   },
   "weeks": [
     {
@@ -145,6 +151,166 @@
             "决定扩大成果还是保留后备"
           ],
           "reward": "第三月第一个资源型短循环完成。"
+        }
+      ]
+    },
+    {
+      "id": "week_11",
+      "week": 11,
+      "day_range": [
+        76,
+        82
+      ],
+      "title": "第 11 周：后果反馈与安全恢复",
+      "summary": "Day 69 的资源投入和路线测试会被三类反馈活动读取；完成反馈后，玩家可以安全恢复体力或神圣力，但另一类资源的不足会保留在复盘里。",
+      "goals": [
+        "让 Day 69 结果改变 NPC 任务",
+        "完成一次路线反馈",
+        "选择一次有代价的资源恢复"
+      ],
+      "play_hooks": [
+        "结果反馈",
+        "资源恢复",
+        "当前承诺与紧张"
+      ],
+      "milestones": [
+        {
+          "id": "m03_public_feedback",
+          "title": "Day 76-82：公开协作反馈",
+          "day_range": [
+            76,
+            82
+          ],
+          "scene_id": "village_square",
+          "related_activity_id": "village_third_month_route_feedback",
+          "completed_flag": "month03_public_feedback_done",
+          "requirements": {
+            "required_any_flags": {
+              "month03_public_watch_deployed": 1,
+              "month03_public_reserve_held": 1,
+              "month03_signal_lattice_raised": 1,
+              "month03_signal_reserve_saved": 1
+            }
+          },
+          "goals": [
+            "记录公开协作覆盖与余量",
+            "决定扩大经验或保留安全边界"
+          ],
+          "reward": "公开协作族进入第三月阶段决定。"
+        },
+        {
+          "id": "m03_frontier_feedback",
+          "title": "Day 76-82：源头追查反馈",
+          "day_range": [
+            76,
+            82
+          ],
+          "scene_id": "north_gate",
+          "related_activity_id": "north_gate_third_month_route_feedback",
+          "completed_flag": "month03_frontier_feedback_done",
+          "requirements": {
+            "required_any_flags": {
+              "month03_full_pack_advanced": 1,
+              "month03_return_cache_built": 1,
+              "month03_source_triangulated": 1,
+              "month03_distance_marks_conserved": 1
+            }
+          },
+          "goals": [
+            "记录推进、缓存与中止线",
+            "决定延长路线或等待重复信号"
+          ],
+          "reward": "源头追查族进入第三月阶段决定。"
+        },
+        {
+          "id": "m03_intel_feedback",
+          "title": "Day 76-82：情报风险反馈",
+          "day_range": [
+            76,
+            82
+          ],
+          "scene_id": "reading_hall",
+          "related_activity_id": "reading_hall_third_month_route_feedback",
+          "completed_flag": "month03_intel_feedback_done",
+          "requirements": {
+            "required_any_flags": {
+              "month03_verified_summary_shared": 1,
+              "month03_three_seal_audit_done": 1,
+              "month03_fast_warning_issued": 1,
+              "month03_source_kept_sealed": 1
+            }
+          },
+          "goals": [
+            "记录完整性与响应速度",
+            "决定扩大摘要或继续封存"
+          ],
+          "reward": "责任情报族进入第三月阶段决定。"
+        },
+        {
+          "id": "m03_recovery_debrief",
+          "title": "Day 78-82：资源恢复与复盘",
+          "day_range": [
+            78,
+            82
+          ],
+          "scene_id": "home_hearth",
+          "related_activity_id": "home_third_month_recovery_debrief",
+          "completed_flag": "month03_recovery_done",
+          "requirements": {
+            "required_flags": {
+              "month03_feedback_done": 1
+            }
+          },
+          "goals": [
+            "安全恢复体力或神圣力",
+            "保留另一种资源的限制记录"
+          ],
+          "reward": "恢复选择会影响第三月阶段收束的可见提示。"
+        }
+      ]
+    },
+    {
+      "id": "week_12",
+      "week": 12,
+      "day_range": [
+        83,
+        89
+      ],
+      "title": "第 12 周：第三月阶段决定",
+      "summary": "反馈和恢复已经完成。第八十三天根据当前玩法族只显示两个阶段决定，写入下一轮公开范围、源头推进或情报责任边界。",
+      "goals": [
+        "选择第三月下一阶段方向",
+        "读取承诺与紧张后果",
+        "通过 Day 89 阶段闸门"
+      ],
+      "play_hooks": [
+        "路线结果",
+        "关系结算",
+        "阶段收束"
+      ],
+      "milestones": [
+        {
+          "id": "m03_stage_result",
+          "title": "Day 83-88：第一次方法受验后的决定",
+          "day_range": [
+            83,
+            88
+          ],
+          "scene_id": "reading_hall",
+          "related_event_id": "ch1_d83_third_month_stage_result",
+          "completed_flag": "month03_stage_resolved",
+          "requirements": {
+            "required_flags": {
+              "month03_feedback_done": 1,
+              "month03_recovery_done": 1
+            }
+          },
+          "goals": [
+            "扩大或保护公开协作",
+            "延长或守住源头路线",
+            "扩大摘要或继续封存情报"
+          ],
+          "reward": "第三月第一次资源型循环收束，Day 90 继续读取后果。"
         }
       ]
     }

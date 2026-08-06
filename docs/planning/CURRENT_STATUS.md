@@ -207,3 +207,16 @@
 - 第三月活动和事件都补充 NPC 主动入口，scripted 模式保持完整离线可玩；没有读取 `ai-shop`，没有调用真实 Provider。
 - 首轮真人盲测仍为 `pending-human-run`，自动化结果不替代真实玩家数据。
 - 本轮质量门：后端 `277 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `18 passed`；内容校验 0 errors / 0 warnings；`git diff --check` 通过。
+
+
+## 2026-08-06 第三月 Day 76 → 89 后果反馈与安全恢复
+
+- Day 76–82 新增三类路线反馈活动：公开协作反馈、源头追查反馈、情报风险反馈；每项都读取 Day 69 的具体结果 flag，并把覆盖范围、缓存 / 中止线或情报风险写回下一阶段。
+- Day 78–82 新增 `home_third_month_recovery_debrief`，玩家必须在体力恢复和神圣力恢复之间做一次安全选择；恢复不会跨日，也不会自动抹掉另一种资源的不足。
+- Day 79 新增闸门，必须完成路线反馈和安全恢复；Day 83–88 新增 `ch1_d83_third_month_stage_result`，按三类玩法族只显示两个阶段决定；Day 89 必须完成阶段事件。
+- 阶段决定会写入公开协作扩大 / 保守、源头路线延长 / 守住缓存、分层情报扩大 / 继续封存等后果 flags，并继续影响月计划摘要。
+- 日志新增独立“当前承诺 / 紧张点”栏目，将 NPC profile 中的承诺与紧张从关系数值区分出来；不暴露永久记忆正文或控制 flags。
+- 第三月 Week 11/12 已写入 `/Users/lzm/Desktop/UW/data/story/month_03_plan.json`；第三月第一次资源型循环现在完整覆盖 Day 62–89。
+- scripted 模式、Session 权威状态和 AI 回退边界保持不变；没有读取 `ai-shop`，没有调用真实 Provider。
+- 首轮真人盲测仍为 `pending-human-run`，自动化结果不替代真实玩家数据。
+- 本轮质量门：后端 `284 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `19 passed`；内容校验 0 errors / 0 warnings；`git diff --check` 通过。

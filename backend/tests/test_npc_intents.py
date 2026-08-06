@@ -611,3 +611,51 @@ def test_day_sixty_nine_route_test_intent_requires_resource_preparation():
         "type": "story_event",
         "event_id": "ch1_d69_third_month_route_test",
     }
+
+
+def test_day_seventy_six_feedback_intent_and_recovery_intent_are_visible_in_order():
+    sess = Session(run_id="test-day76-feedback-recovery-intents")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 76,
+            "time_band": "morning",
+            "flags": {"month03_route_test_done": 1, "month03_public_watch_deployed": 1},
+        }
+    )
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    assert intents["alice_reviews_public_route_feedback"].action == {
+        "type": "scene_activity",
+        "activity_id": "village_third_month_route_feedback",
+    }
+    assert "alice_calls_third_month_recovery_debrief" not in intents
+
+    sess.state = sess.state.model_copy(
+        update={"day": 78, "flags": {**sess.state.flags, "month03_feedback_done": 1}}
+    )
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    assert intents["alice_calls_third_month_recovery_debrief"].action == {
+        "type": "scene_activity",
+        "activity_id": "home_third_month_recovery_debrief",
+    }
+
+
+def test_day_eighty_three_stage_result_intent_requires_feedback_and_recovery():
+    sess = Session(run_id="test-day83-stage-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 83,
+            "time_band": "morning",
+            "flags": {"month03_feedback_done": 1},
+        }
+    )
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    assert "alice_calls_third_month_stage_result" not in intents
+
+    sess.state = sess.state.model_copy(
+        update={"flags": {**sess.state.flags, "month03_recovery_done": 1}}
+    )
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    assert intents["alice_calls_third_month_stage_result"].action == {
+        "type": "story_event",
+        "event_id": "ch1_d83_third_month_stage_result",
+    }

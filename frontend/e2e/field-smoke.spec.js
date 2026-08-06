@@ -750,4 +750,64 @@ test.describe('开放世界质量 smoke', () => {
     expect(state.flags.month03_signal_reserve_saved).toBe(1)
   })
 
+
+  test('Day 76 到 Day 83 会读取路线结果、提供资源恢复并收束第三月阶段', async ({ page, request }) => {
+    await setFlags(request, [
+      'month03_route_test_done',
+      'month03_signal_reserve_saved'
+    ])
+    await playerAction(request, { kind: 'set_day', day: 76 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'village_square' })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const feedback = page.locator('.interact-action[data-activity-id="village_third_month_route_feedback"]')
+    await expect(feedback).toBeVisible()
+    await feedback.click()
+    await page.locator('.event-choice').filter({ hasText: '把覆盖范围与资源边界写进公开报告' }).click()
+    await expect(page.locator('.result-panel')).toContainText('公开协作因此更诚实')
+
+    let state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month03_feedback_done).toBe(1)
+    expect(state.flags.month03_public_feedback_done).toBe(1)
+
+    await playerAction(request, { kind: 'set_day', day: 78 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'home_hearth' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const recovery = page.locator('.interact-action[data-activity-id="home_third_month_recovery_debrief"]')
+    await expect(recovery).toBeVisible()
+    await recovery.click()
+    const recoverMp = page.locator('.event-choice').filter({ hasText: '优先恢复神圣力' })
+    await expect(recoverMp).toContainText('神圣力 +12')
+    await expect(recoverMp).toContainText('体力 -3')
+    await recoverMp.click()
+    await expect(page.locator('.result-panel')).toContainText('神圣力恢复到可以应急')
+
+    await playerAction(request, { kind: 'set_day', day: 83 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'reading_hall' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const stage = page.locator('.interact-action').filter({ hasText: '第三月下一阶段' })
+    await expect(stage).toBeVisible()
+    await stage.click()
+    await expect(page.locator('.event-choice')).toHaveCount(2)
+    await expect(page.locator('.event-choice').filter({ hasText: '扩大公开协作覆盖范围' })).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '先保护公开协作安全余量' })).toBeVisible()
+    await page.locator('.event-choice').filter({ hasText: '扩大公开协作覆盖范围' }).click()
+    await expect(page.locator('.result-panel')).toContainText('公开协作覆盖')
+
+    state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month03_stage_resolved).toBe(1)
+    expect(state.flags.month03_public_expansion).toBe(1)
+
+    await page.locator('.result-primary').click()
+    await page.locator('.action-journal').click()
+    await expect(page.locator('.journal-panel')).toContainText('公开协作进入扩大覆盖阶段')
+    await expect(page.locator('.journal-panel')).toContainText('当前承诺 / 紧张点')
+  })
+
 })

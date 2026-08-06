@@ -54,6 +54,18 @@
           </template>
         </section>
 
+        <section class="journal-column">
+          <h4>当前承诺 / 紧张点</h4>
+          <p v-if="!commitmentEntries.length" class="journal-empty">当前没有需要特别记住的承诺或紧张点。</p>
+          <template v-else>
+            <article v-for="entry in commitmentEntries" :key="entry.key" class="journal-entry relation">
+              <span class="entry-status">{{ entry.npc }}</span>
+              <strong>{{ entry.title }}</strong>
+              <p>{{ entry.body }}</p>
+            </article>
+          </template>
+        </section>
+
         <section class="journal-column month-column">
           <h4>{{ monthDisplayTitle(monthPlan) }}</h4>
           <p v-if="!monthWeeks.length" class="journal-empty">月度路线还在同步。完成当前关键事件后，这里会显示后续目标。</p>
@@ -227,6 +239,11 @@ const relationshipEntries = computed(() => {
     })
   }
 
+  return out.slice(0, 10)
+})
+
+const commitmentEntries = computed(() => {
+  const out = []
   for (const [npcId, profile] of Object.entries(props.npcProfiles || {})) {
     for (const promise of Array.isArray(profile?.promises) ? profile.promises : []) {
       out.push({
@@ -245,8 +262,7 @@ const relationshipEntries = computed(() => {
       })
     }
   }
-
-  return out.slice(0, 10)
+  return out.slice(0, 8)
 })
 
 function monthDisplayTitle(plan) {

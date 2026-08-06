@@ -1,5 +1,29 @@
 # Changelog
 
+## [Unreleased] 2026-08-06 — 第三月 Day 76–89 后果反馈与安全恢复
+
+### Added
+
+- Day 76–82 新增公开协作、源头追查、情报风险三类路线反馈活动，分别读取 Day 69 的资源方法和结果。
+- 新增 `home_third_month_recovery_debrief`，提供体力优先 / 神圣力优先两种安全恢复选择，恢复不会自动跨日或抹平另一种资源不足。
+- Day 83 新增 `ch1_d83_third_month_stage_result`，按当前玩法族只显示两个阶段决定；Day 79、Day 89 新增日期闸门。
+- 日志新增独立“当前承诺 / 紧张点”栏目，帮助玩家理解 NPC 关系后果。
+- Playwright 新增从 Day 76 路线反馈 → Day 78 资源恢复 → Day 83 阶段决定的完整 UI 路径。
+
+### Changed
+
+- `month_03_plan.json` Week 11/12 补齐 Day 76–89 的反馈、恢复与阶段收束里程碑。
+- 第三月阶段摘要优先读取 Day 83 的扩大 / 保守、延长 / 守住、分层 / 封存结果。
+- `ClueJournalPanel.vue` 将承诺和紧张从关系数值中独立展示，保持永久记忆和控制 flags 不直接暴露。
+- `NEXT_PHASE.md` 转向 Day 90–103 第二条第三月循环。
+
+### Verification
+
+- 后端：`284 passed`；内容校验 `ok=True`、0 errors、0 warnings；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：`16 passed`；production build 通过；Phaser chunk 约 1.48 MB 的既有体积警告保持不变。
+- Playwright E2E：`19 passed`。
+- `git diff --check`：通过。
+
 ## [Unreleased] 2026-08-06 — 第三月 Day 62–69 资源型短循环
 
 ### Added

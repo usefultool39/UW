@@ -655,3 +655,50 @@ def test_third_month_day_sixty_five_gate_requires_resource_preparation():
     assert out["ok"] is False
     assert out["error"] == "day_end_gate_incomplete"
     assert out["missing"][0]["key"] == "month03_preparation_done"
+
+
+def test_day_eighty_three_stage_result_only_exposes_current_family_choices():
+    cases = [
+        ("month03_public_feedback_done", {"expand_public_cooperation", "protect_public_reserve"}),
+        ("month03_frontier_feedback_done", {"extend_repeatable_frontier", "hold_frontier_cache"}),
+        ("month03_intel_feedback_done", {"share_layered_intelligence", "keep_intelligence_sealed"}),
+    ]
+    for feedback_flag, expected_choices in cases:
+        sess = Session(run_id=f"test-day83-stage-choices-{feedback_flag}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 83,
+                "time_band": "morning",
+                "flags": {"month03_feedback_done": 1, "month03_recovery_done": 1, feedback_flag: 1},
+            }
+        )
+        event = next(
+            item for item in sess.available_story_events()["events"]
+            if item["id"] == "ch1_d83_third_month_stage_result"
+        )
+        assert {choice["id"] for choice in event["choices"]} == expected_choices
+
+
+def test_day_eighty_nine_gate_requires_stage_result():
+    sess = Session(run_id="test-day89-stage-gate")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 89,
+            "time_band": "morning",
+            "flags": {"month03_feedback_done": 1, "month03_recovery_done": 1, "month03_public_feedback_done": 1},
+        }
+    )
+    blocked = sess.player_action(kind="rest_until_next_day")
+    assert blocked["ok"] is False
+    assert blocked["missing"][0]["id"] == "ch1_d83_third_month_stage_result"
+
+    sess.state = sess.state.model_copy(update={"day": 83})
+    chosen = sess.choose_story_event("ch1_d83_third_month_stage_result", "protect_public_reserve")
+    assert chosen["ok"] is True
+    assert chosen["state"]["flags"]["month03_stage_resolved"] == 1
+    assert chosen["state"]["flags"]["month03_public_reserve_protected"] == 1
+
+    sess.state = sess.state.model_copy(update={"day": 89})
+    advanced = sess.player_action(kind="rest_until_next_day")
+    assert advanced["ok"] is True
+    assert advanced["state"]["day"] == 90

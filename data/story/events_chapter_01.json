@@ -3092,6 +3092,357 @@
           }
         }
       ]
+    },
+    {
+      "id": "ch1_d83_third_month_stage_result",
+      "chapter": "chapter_01",
+      "kind": "month_result",
+      "title": "第三月：第一次方法受验后的决定",
+      "description": "资源、路线和恢复选择已经留下真实限制。现在要决定第三月下一阶段是扩大覆盖、保护余量、继续追查，还是按信息风险重新划分公开范围。",
+      "trigger": {
+        "day_min": 83,
+        "day_max": 88,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month03_feedback_done": 1,
+          "month03_recovery_done": 1
+        },
+        "forbidden_flags": {
+          "month03_stage_resolved": 1
+        }
+      },
+      "location": {
+        "scene_id": "reading_hall",
+        "tile_x": 22,
+        "tile_y": 14
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "choices": [
+        {
+          "id": "expand_public_cooperation",
+          "label": "扩大公开协作覆盖范围",
+          "hint": "公开反馈路线：把可复用的覆盖经验交给更多轮值。",
+          "conditions": {
+            "required_flags": {
+              "month03_public_feedback_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月公开协作范围扩大",
+              "资源上限成为村务共同规则"
+            ]
+          },
+          "result_text": "你决定扩大公开协作，但先把每一层轮值的体力和信号上限写进授权。村务获得更大的行动空间，也必须学会在资源不足时主动停下。",
+          "effects": {
+            "flags": {
+              "month03_stage_resolved": 1,
+              "month03_public_expansion": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家扩大公开协作覆盖，并把体力与信号上限写进授权。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家让更多轮值参与边界行动，同时保留主动停下的规则。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "protect_public_reserve",
+          "label": "先保护公开协作安全余量",
+          "hint": "公开反馈路线：维持较小范围，优先保证下一次仍有后备。",
+          "conditions": {
+            "required_flags": {
+              "month03_public_feedback_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月公开协作保守推进",
+              "下一次行动保留更多后备"
+            ]
+          },
+          "result_text": "你没有立刻扩大覆盖，而是把安全余量定为第三月公开协作的第一条红线。村务可以慢一些，却不再因为一次成功就默认下一次也能承担同样代价。",
+          "effects": {
+            "flags": {
+              "month03_stage_resolved": 1,
+              "month03_public_reserve_protected": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家保护公开协作安全余量，不因一次成功透支下一次行动。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家让公开协作保持较小范围并保留后备。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "extend_repeatable_frontier",
+          "label": "沿可复走路线再延长一段",
+          "hint": "源头反馈路线：使用已经标出的推进段和缓存点，继续验证未知边界。",
+          "conditions": {
+            "required_flags": {
+              "month03_frontier_feedback_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "源头路线再次向外延长",
+              "新增部分仍需后续确认"
+            ],
+            "promises": [
+              "alice"
+            ]
+          },
+          "result_text": "你沿着已经验证的推进段再延长一小段，没有跳过新的中止线。尤吉欧获得更清楚的距离，爱丽丝把新增部分标成待确认而不是结论。",
+          "effects": {
+            "flags": {
+              "month03_stage_resolved": 1,
+              "month03_frontier_extended": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家沿可复走推进段延长一小段，并把新增部分标成待确认。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家和尤吉欧用已验证缓存继续测试未知边界。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "源头路线每次延长都必须先标出新的中止线，再把新增读数写成待确认。"
+            }
+          }
+        },
+        {
+          "id": "hold_frontier_cache",
+          "label": "守住缓存与中止线，等待重复信号",
+          "hint": "源头反馈路线：不立即延长，优先把下一次出发条件变得可靠。",
+          "conditions": {
+            "required_flags": {
+              "month03_frontier_feedback_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "源头路线优先保护缓存",
+              "下一次重复信号将决定是否延长"
+            ],
+            "promises": [
+              "alice"
+            ]
+          },
+          "result_text": "你选择守住缓存和中止线，等待第二次可交叉确认的信号。尤吉欧接受路线暂时不远，爱丽丝则把等待写成主动策略，而不是停滞。",
+          "effects": {
+            "flags": {
+              "month03_stage_resolved": 1,
+              "month03_frontier_cache_held": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家守住缓存和中止线，等待重复信号再延长源头路线。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家把等待可信信号变成主动的路线策略。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "下一次源头路线只有在信号可交叉确认时才延长。"
+            }
+          }
+        },
+        {
+          "id": "share_layered_intelligence",
+          "label": "扩大分层情报摘要的使用范围",
+          "hint": "情报反馈路线：公开可验证摘要，让更多人能避险，但完整源头仍受托管。",
+          "conditions": {
+            "required_flags": {
+              "month03_intel_feedback_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月分层情报覆盖扩大",
+              "完整源头继续受到托管保护"
+            ]
+          },
+          "result_text": "你把时间、退路和可信区间的摘要交给更多轮值，同时保持完整源头封存。爱丽丝要求每一份摘要都带上可追溯来源，尤吉欧把它改写成村民听得懂的警告。",
+          "effects": {
+            "flags": {
+              "month03_stage_resolved": 1,
+              "month03_layered_intelligence_expanded": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家扩大分层情报摘要的使用范围，同时保护完整源头。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家让更多轮值得到带来源的可验证警告。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "keep_intelligence_sealed",
+          "label": "继续封存完整情报，只发布必要警告",
+          "hint": "情报反馈路线：优先保护来源完整性，接受村务得到的信息更少。",
+          "conditions": {
+            "required_flags": {
+              "month03_intel_feedback_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月完整情报继续封存",
+              "重复信号增加时必须重新评估公开范围"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [
+              "alice"
+            ]
+          },
+          "result_text": "你继续封存完整源头，只发布必要警告和逾时搜索点。爱丽丝保留这份谨慎，却在紧张记录里写下：如果重复信号增加，延迟本身也会成为风险。",
+          "effects": {
+            "flags": {
+              "month03_stage_resolved": 1,
+              "month03_intelligence_sealed": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家继续封存完整情报，只发布必要警告并承受延迟风险。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_stage",
+                "summary": "第三月阶段结果，玩家维持暗线保密，同时更新逾时搜索点。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "若重复信号增加，必须重新评估完整情报继续封存是否仍然安全。"
+            },
+            "tensions": {
+              "alice": "第三月继续封存完整情报，若重复信号增加，延迟本身可能成为风险。"
+            }
+          }
+        }
+      ]
     }
   ]
 }

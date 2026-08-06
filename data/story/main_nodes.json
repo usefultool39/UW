@@ -301,6 +301,31 @@
         "title": "复盘资源与路线后果",
         "description": "第一次资源型循环已经完成；下一阶段将让 NPC 和世界继续读取这次结果。"
       }
+    },
+    "79": {
+      "required_flags": {
+        "month03_feedback_done": 1,
+        "month03_recovery_done": 1
+      },
+      "advance_to": 80,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 79 · 第三月资源复盘完成",
+      "next_goal": {
+        "title": "准备第三月阶段决定",
+        "description": "第一次路线的后果与恢复偏好已经写入记录，等待第八十三天决定下一阶段。"
+      }
+    },
+    "89": {
+      "required_events": [
+        "ch1_d83_third_month_stage_result"
+      ],
+      "advance_to": 90,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 89 · 第三月第一次方法受验",
+      "next_goal": {
+        "title": "进入下一阶段边界剧情",
+        "description": "第三月第一次资源型循环已经收束；后续事件会读取公开范围、缓存、情报和安全余量。"
+      }
     }
   }
 }
