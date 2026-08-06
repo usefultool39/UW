@@ -220,3 +220,16 @@
 - scripted 模式、Session 权威状态和 AI 回退边界保持不变；没有读取 `ai-shop`，没有调用真实 Provider。
 - 首轮真人盲测仍为 `pending-human-run`，自动化结果不替代真实玩家数据。
 - 本轮质量门：后端 `284 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `19 passed`；内容校验 0 errors / 0 warnings；`git diff --check` 通过。
+
+
+## 2026-08-06 第三月 Day 90 → 103 后果与承诺循环
+
+- Day 90–94 新增三项路线专属每日一次活动：公开协作短轮值、源头固定短段取样、分层情报责任复核；活动复用村道广场、北门和书库，不扩张地图。
+- 新增 `home_third_month_resource_status`，玩家必须明确选择优先恢复体力或神圣力；面板和结果会说明保留的另一类资源限制，恢复不会自动跨日。
+- Day 94 新增日期闸门，要求至少完成一次路线练习和一次资源状态说明；Day 95 的 `ch1_d95_third_month_consequence_review` 只显示当前玩法族的两个后果选择。
+- Day 96–102 新增三项可重复承诺回访活动；每天最多一次，至少完成一次后才能完成 Day 103 阶段结算。
+- Day 103 新增 `ch1_d103_third_month_boundary_decision`，将公开轮值、源头取样或三重托管的后果写入下一阶段入口。
+- NPC authored intent 已覆盖 Day 90–103 全部关键入口；scripted 离线基线、Session 权威状态和 AI 不越权边界保持不变。
+- 第三月计划现已覆盖 Day 61–103，新增 Week 13/14 维护性内容与素材替换需求。
+- 首轮真人盲测仍为 `pending-human-run`；自动化结果不替代真实玩家证据。
+- 本轮质量门：后端 `288 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `20 passed`；内容校验 `0 errors / 0 warnings`；`git diff --check` 通过。

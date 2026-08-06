@@ -3766,6 +3766,1029 @@
           }
         }
       ]
+    },
+    {
+      "id": "village_third_month_consequence_practice",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第三月 · 公开后果练习",
+      "label": "练习公开协作的低风险轮值",
+      "description": "Day 83 的公开决定已经进入村务日常。这里不会再凭空增加地图，而是让玩家用一次短练习看清“扩大参与”和“保护余量”分别需要付出什么。",
+      "result_text": "你把一次公开协作拆成可复查的小步骤：先说明目标，再执行低风险轮值，最后把没有发生的异常也记下来。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "consequence",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 90,
+        "day_max": 94,
+        "required_flags": {
+          "month03_stage_resolved": 1
+        },
+        "required_any_flags": {
+          "month03_public_expansion": 1,
+          "month03_public_reserve_protected": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_consequence_practice",
+      "player_facing_benefit": "每天可做一次；选择承担体力协调，或保留安全余量并恢复少量神圣力。",
+      "choices": [
+        {
+          "id": "run_steward_rotation",
+          "label": "带轮值人员完成一次短段守望",
+          "hint": "体力 -4；积累公开轮值经验。不会推进日期。",
+          "tone": "social",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "公开协作经验 +1",
+              "为后续阶段决定提供真实反馈"
+            ]
+          },
+          "result_text": "你带着轮值人员完成一段最短守望，只让他们报告事实，不要求他们猜测源头。尤吉欧把每个人的回撤位置标清，爱丽丝在记录边上补上“未发生的异常”。",
+          "effects": {
+            "stamina_cost": 4,
+            "flags": {
+              "month03_phase_activity_done": 1,
+              "month03_public_practice_active": 1
+            },
+            "flag_deltas": {
+              "month03_public_practice_count": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家带村务轮值完成短段守望，强调只报告事实。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家让尤吉欧标清轮值人员的回撤位置。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "practice_reserve_protocol",
+          "label": "复走双人复核与安全余量",
+          "hint": "体力 -2，神圣力 +2；公开推进较慢，但能减少误读。不会推进日期。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "安全余量 +1",
+              "降低公开协作的误读风险"
+            ]
+          },
+          "result_text": "你们暂时不把更多人带到边界，只复走双人复核和回撤余量。爱丽丝把神圣力用在确认记录一致性，尤吉欧承认慢一点也比让村民互相猜疑好。",
+          "effects": {
+            "stamina_cost": 2,
+            "mp_restore": 2,
+            "flags": {
+              "month03_phase_activity_done": 1,
+              "month03_public_reserve_practice": 1
+            },
+            "flag_deltas": {
+              "month03_public_practice_count": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家复走双人复核和公开安全余量，接受推进较慢。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家让尤吉欧承认稳定的回撤比公开速度更重要。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "north_gate_third_month_repeatable_probe",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第三月 · 重复源头取样",
+      "label": "执行一次固定短段的源头取样",
+      "description": "Day 83 的源头决定要接受重复路线或守住中止边界。每次只走固定短段、记录距离与回撤时间，让玩家看到推进不是一次性赌博。",
+      "result_text": "你们只推进到固定短段就回撤，把变化和没有变化的地方同时带回书库。路线因此变成可以比较的证据，而不是一条越走越深的直线。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "consequence",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 90,
+        "day_max": 94,
+        "required_flags": {
+          "month03_stage_resolved": 1
+        },
+        "required_any_flags": {
+          "month03_frontier_extended": 1,
+          "month03_frontier_cache_held": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_repeatable_probe",
+      "player_facing_benefit": "每天可做一次；路线推进消耗体力，中止演练会恢复少量神圣力并降低紧张。",
+      "choices": [
+        {
+          "id": "take_repeatable_sample",
+          "label": "推进固定短段并取样",
+          "hint": "体力 -6；积累一份可比较的源头样本。不会推进日期。",
+          "tone": "frontier",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "重复样本 +1",
+              "为下一阶段提供路线证据"
+            ]
+          },
+          "result_text": "尤吉欧按固定距离推进，你在标记处取样，爱丽丝记录风向和停步时间。回撤时没有人把沉默夸成答案，只有一组更容易比较的记录留了下来。",
+          "effects": {
+            "stamina_cost": 6,
+            "flags": {
+              "month03_phase_activity_done": 1,
+              "month03_repeatable_sample_taken": 1
+            },
+            "flag_deltas": {
+              "month03_frontier_sample_count": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家沿固定短段重复取样，不把深入距离当成成果。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家让尤吉欧按固定距离推进并准时回撤。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "rehearse_abort_margin",
+          "label": "复走中止边界与回撤缓存",
+          "hint": "体力 -3，神圣力 +2；降低源头路线风险。不会推进日期。",
+          "tone": "safe",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "中止边界 +1",
+              "下一次行动更容易安全回撤"
+            ]
+          },
+          "result_text": "你们没有追着沉默往前走，而是把中止边界、缓存位置和失联后的第一步重新走了一遍。尤吉欧练会了先回头，爱丽丝把这次保守也写进证据。",
+          "effects": {
+            "stamina_cost": 3,
+            "mp_restore": 2,
+            "flags": {
+              "month03_phase_activity_done": 1,
+              "month03_abort_margin_rehearsed": 1
+            },
+            "flag_deltas": {
+              "month03_frontier_sample_count": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家复走中止边界与回撤缓存，拒绝追着沉默深入。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家让尤吉欧先练会回头，再考虑下一次推进。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reading_hall_third_month_responsibility_practice",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第三月 · 分层情报复核",
+      "label": "复核一次情报公开边界",
+      "description": "Day 83 的情报决定要面对速度与责任的拉扯。每次复核只处理一小层：让玩家知道公开什么、隐藏什么，以及资源不足会影响哪一步。",
+      "result_text": "你把一页情报拆成事实、应对动作和未确认源头三层。公开或封存都不再是按钮，而是一次需要承担后果的复核。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "consequence",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 90,
+        "day_max": 94,
+        "required_flags": {
+          "month03_stage_resolved": 1
+        },
+        "required_any_flags": {
+          "month03_layered_intelligence_expanded": 1,
+          "month03_intelligence_sealed": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_responsibility_practice",
+      "player_facing_benefit": "每天可做一次；公开摘要消耗神圣力，封存复核消耗体力并降低紧张。不会推进日期。",
+      "choices": [
+        {
+          "id": "review_layered_brief",
+          "label": "公开事实与应对动作两层摘要",
+          "hint": "神圣力 -5；提高响应速度，但每次都要重新确认未知部分。不会推进日期。",
+          "tone": "brief",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "分层摘要 +1",
+              "村民更容易理解今天该怎么做"
+            ]
+          },
+          "result_text": "爱丽丝删去所有未经确认的推测，只留下事实和应对动作。尤吉欧把两层摘要贴到村务板上，提醒大家：不知道的部分仍然是不知道。",
+          "effects": {
+            "mp_cost": 5,
+            "flags": {
+              "month03_phase_activity_done": 1,
+              "month03_layered_brief_practiced": 1
+            },
+            "flag_deltas": {
+              "month03_intelligence_review_count": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家公开事实与应对动作两层摘要，保留未知部分。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家让尤吉欧把分层摘要翻成村务板上的行动提示。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "audit_sealed_source",
+          "label": "封存源头并复核责任链",
+          "hint": "体力 -2，神圣力 +2；误读风险更低，但响应速度会变慢。不会推进日期。",
+          "tone": "sealed",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "责任链 +1",
+              "保留完整源头的安全边界"
+            ]
+          },
+          "result_text": "你们重新核对三重印记、托管人和开启顺序，只把应急动作留在外页。封存让答案来得慢，却没有把猜测伪装成事实。",
+          "effects": {
+            "stamina_cost": 2,
+            "mp_restore": 2,
+            "flags": {
+              "month03_phase_activity_done": 1,
+              "month03_sealed_source_practiced": 1
+            },
+            "flag_deltas": {
+              "month03_intelligence_review_count": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家封存源头并复核责任链，只公开应急动作。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_practice",
+                "summary": "第三月后果练习，玩家和尤吉欧重新确认托管与开启顺序。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "home_third_month_resource_status",
+      "scene_id": "home_hearth",
+      "scene_ids": [
+        "home_hearth"
+      ],
+      "poi_id": "ix_home_bed",
+      "title": "第三月 · 资源状态说明",
+      "label": "选择一次安全恢复并读懂资源限制",
+      "description": "第三月阶段决定已经落地。先把当前体力、神圣力和下一步的代价说清楚，再选择一次安全恢复；恢复不会跨日，也不会抹掉另一种资源的不足。",
+      "result_text": "炉火边的记录把“能做什么”和“还不能做什么”写在一起。你恢复了一类资源，同时保留另一类资源的限制，明天的选择因此更容易理解。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "consequence",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 90,
+        "day_max": 94,
+        "required_flags": {
+          "month03_stage_resolved": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_resource_status",
+      "player_facing_benefit": "一次性安全恢复；面板明确显示恢复量、保留的不足和下一阶段适合的行动。",
+      "choices": [
+        {
+          "id": "stabilize_body_status",
+          "label": "优先恢复体力，承认术式余量不足",
+          "hint": "体力 +10，神圣力不变；更适合重复路线或村务轮值。不会推进日期。",
+          "tone": "body",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "体力 +10",
+              "下一阶段更适合现场活动"
+            ]
+          },
+          "result_text": "尤吉欧把恢复后的体力安排进短段行动，爱丽丝把神圣力不足写在记录最上方。你没有得到万能的重置，只得到了一个清楚的优先级。",
+          "effects": {
+            "stamina_restore": 10,
+            "flags": {
+              "month03_resource_status_done": 1,
+              "month03_body_status_stabilized": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_resource_status",
+                "summary": "第三月资源说明中，玩家优先恢复体力，明确术式余量仍然不足。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_resource_status",
+                "summary": "第三月资源说明中，玩家让尤吉欧把恢复后的体力用于短段行动。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "stabilize_sacred_status",
+          "label": "优先恢复神圣力，接受身体仍然疲惫",
+          "hint": "神圣力 +10，体力 -2；更适合情报复核或远距标记。不会推进日期。",
+          "tone": "arts",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "神圣力 +10",
+              "体力 -2",
+              "下一阶段更适合术式与情报活动"
+            ]
+          },
+          "result_text": "爱丽丝带你重新整理刻印术短句，神圣力恢复到可以应急的程度；尤吉欧提醒你身体还没完全回来，明天不能把移动距离当作理所当然。",
+          "effects": {
+            "stamina_cost": 2,
+            "mp_restore": 10,
+            "flags": {
+              "month03_resource_status_done": 1,
+              "month03_sacred_status_stabilized": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_resource_status",
+                "summary": "第三月资源说明中，玩家优先恢复神圣力，明确体力仍然疲惫。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_resource_status",
+                "summary": "第三月资源说明中，玩家接受身体疲惫，以换取可用的术式余量。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "village_third_month_commitment_followup",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "公开轮值 · 承诺回访",
+      "label": "完成一次村务轮值回访",
+      "description": "把 Day 95 的公开承诺落成一次短回访。只处理已知事实，不扩张地图。",
+      "result_text": "回访完成。承诺、资源和下一步限制都被写回记录，玩家可以继续行动而不被迫跨日。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "consequence",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 96,
+        "day_max": 102,
+        "required_any_flags": {
+          "month03_public_steward_rotation": 1,
+          "month03_public_two_person_review": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_commitment_followup",
+      "player_facing_benefit": "每天可做一次；重复活动积累承诺反馈，至少完成一次后才能完成 Day 103 阶段结算。",
+      "choices": [
+        {
+          "id": "invite_steward_questions",
+          "label": "邀请轮值人员复述疑问",
+          "hint": "体力 -3；增加承诺反馈。",
+          "tone": "active",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺反馈 +1",
+              "不会自动推进日期"
+            ]
+          },
+          "result_text": "你把阶段决定变成一次短而明确的回访，并把结果写回记录。这次主动行动让下一次选择有了可比较的依据。",
+          "effects": {
+            "flags": {
+              "month03_followup_done": 1,
+              "month03_steward_questions": 1
+            },
+            "flag_deltas": {
+              "month03_followup_progress": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家把阶段决定落实为可复查的小步骤。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家让尤吉欧把下一步变成可执行的现场安排。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 3
+          }
+        },
+        {
+          "id": "recheck_two_person_log",
+          "label": "复核双人记录再给出答复",
+          "hint": "体力 -2，神圣力 +2；保留安全余量。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺反馈 +1",
+              "不会自动推进日期"
+            ]
+          },
+          "result_text": "你把阶段决定变成一次短而明确的回访，并把结果写回记录。这次保守让安全边界更清楚。",
+          "effects": {
+            "flags": {
+              "month03_followup_done": 1,
+              "month03_dual_log_review": 1
+            },
+            "flag_deltas": {
+              "month03_followup_progress": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家把阶段决定落实为可复查的小步骤。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家让尤吉欧把下一步变成可执行的现场安排。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 2,
+            "mp_restore": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "north_gate_third_month_commitment_followup",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "源头追查 · 回撤回访",
+      "label": "完成一次短段路线回访",
+      "description": "把 Day 95 的路线承诺落成一次固定短段回访。推进和中止都产生记录。",
+      "result_text": "回访完成。承诺、资源和下一步限制都被写回记录，玩家可以继续行动而不被迫跨日。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "consequence",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 96,
+        "day_max": 102,
+        "required_any_flags": {
+          "month03_repeatable_frontier_authorized": 1,
+          "month03_frontier_abort_protected": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_commitment_followup",
+      "player_facing_benefit": "每天可做一次；重复活动积累承诺反馈，至少完成一次后才能完成 Day 103 阶段结算。",
+      "choices": [
+        {
+          "id": "repeat_short_route",
+          "label": "重复一次固定短段取样",
+          "hint": "体力 -5；增加可比较样本。",
+          "tone": "active",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺反馈 +1",
+              "不会自动推进日期"
+            ]
+          },
+          "result_text": "你把阶段决定变成一次短而明确的回访，并把结果写回记录。这次主动行动让下一次选择有了可比较的依据。",
+          "effects": {
+            "flags": {
+              "month03_followup_done": 1,
+              "month03_route_sample_followup": 1
+            },
+            "flag_deltas": {
+              "month03_followup_progress": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家把阶段决定落实为可复查的小步骤。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家让尤吉欧把下一步变成可执行的现场安排。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 5
+          }
+        },
+        {
+          "id": "verify_abort_cache",
+          "label": "验证回撤缓存与中止标记",
+          "hint": "体力 -2，神圣力 +2；降低无计划深入风险。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺反馈 +1",
+              "不会自动推进日期"
+            ]
+          },
+          "result_text": "你把阶段决定变成一次短而明确的回访，并把结果写回记录。这次保守让安全边界更清楚。",
+          "effects": {
+            "flags": {
+              "month03_followup_done": 1,
+              "month03_abort_cache_followup": 1
+            },
+            "flag_deltas": {
+              "month03_followup_progress": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家把阶段决定落实为可复查的小步骤。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家让尤吉欧把下一步变成可执行的现场安排。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 2,
+            "mp_restore": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "reading_hall_third_month_commitment_followup",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "情报责任 · 分层回访",
+      "label": "完成一次情报责任回访",
+      "description": "把 Day 95 的公开或封存承诺落成一次小范围复核，让玩家持续看到资源限制的意义。",
+      "result_text": "回访完成。承诺、资源和下一步限制都被写回记录，玩家可以继续行动而不被迫跨日。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "consequence",
+        "repeatable",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 96,
+        "day_max": 102,
+        "required_any_flags": {
+          "month03_risk_brief_published": 1,
+          "month03_three_seal_custody": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_commitment_followup",
+      "player_facing_benefit": "每天可做一次；重复活动积累承诺反馈，至少完成一次后才能完成 Day 103 阶段结算。",
+      "choices": [
+        {
+          "id": "refresh_risk_brief",
+          "label": "更新事实与应对动作摘要",
+          "hint": "神圣力 -4；提高响应速度。",
+          "tone": "active",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺反馈 +1",
+              "不会自动推进日期"
+            ]
+          },
+          "result_text": "你把阶段决定变成一次短而明确的回访，并把结果写回记录。这次主动行动让下一次选择有了可比较的依据。",
+          "effects": {
+            "flags": {
+              "month03_followup_done": 1,
+              "month03_brief_followup": 1
+            },
+            "flag_deltas": {
+              "month03_followup_progress": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家把阶段决定落实为可复查的小步骤。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家让尤吉欧把下一步变成可执行的现场安排。",
+                "weight": 5
+              }
+            },
+            "mp_cost": 4
+          }
+        },
+        {
+          "id": "recheck_custody_chain",
+          "label": "复核三重托管责任链",
+          "hint": "体力 -2，神圣力 +2；降低误读风险。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "承诺反馈 +1",
+              "不会自动推进日期"
+            ]
+          },
+          "result_text": "你把阶段决定变成一次短而明确的回访，并把结果写回记录。这次保守让安全边界更清楚。",
+          "effects": {
+            "flags": {
+              "month03_followup_done": 1,
+              "month03_custody_followup": 1
+            },
+            "flag_deltas": {
+              "month03_followup_progress": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家把阶段决定落实为可复查的小步骤。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_followup",
+                "summary": "第三月承诺回访，玩家让尤吉欧把下一步变成可执行的现场安排。",
+                "weight": 5
+              }
+            },
+            "stamina_cost": 2,
+            "mp_restore": 2
+          }
+        }
+      ]
     }
   ]
 }

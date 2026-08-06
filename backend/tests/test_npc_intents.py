@@ -659,3 +659,56 @@ def test_day_eighty_three_stage_result_intent_requires_feedback_and_recovery():
         "type": "story_event",
         "event_id": "ch1_d83_third_month_stage_result",
     }
+
+
+def test_day_ninety_to_one_hundred_three_npc_intents_guide_the_new_loop():
+    sess = Session(run_id="test-day90-103-intents")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 90,
+            "time_band": "morning",
+            "flags": {"month03_stage_resolved": 1, "month03_public_expansion": 1},
+        }
+    )
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    assert intents["alice_invites_third_month_public_practice"].action == {
+        "type": "scene_activity",
+        "activity_id": "village_third_month_consequence_practice",
+    }
+    assert intents["alice_explains_third_month_resource_status"].action == {
+        "type": "scene_activity",
+        "activity_id": "home_third_month_resource_status",
+    }
+
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 95,
+            "flags": {
+                "month03_stage_resolved": 1,
+                "month03_phase_activity_done": 1,
+                "month03_resource_status_done": 1,
+                "month03_public_expansion": 1,
+            },
+        }
+    )
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    assert intents["alice_calls_third_month_consequence_review"].action == {
+        "type": "story_event",
+        "event_id": "ch1_d95_third_month_consequence_review",
+    }
+
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 103,
+            "flags": {
+                "month03_consequence_review_done": 1,
+                "month03_followup_done": 1,
+                "month03_public_steward_rotation": 1,
+            },
+        }
+    )
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    assert intents["eugeo_calls_third_month_boundary_decision"].action == {
+        "type": "story_event",
+        "event_id": "ch1_d103_third_month_boundary_decision",
+    }

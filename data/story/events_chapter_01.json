@@ -3443,6 +3443,840 @@
           }
         }
       ]
+    },
+    {
+      "id": "ch1_d95_third_month_consequence_review",
+      "chapter": "chapter_01",
+      "kind": "month_consequence_review",
+      "title": "第九十五天：方法的回声",
+      "description": "第三月第一次方法受验之后，公开范围、源头路线和情报责任已经不再只是纸上的选择。你们把几天的练习、资源余量和同伴的承诺摊在书库长桌上，决定哪一种后果值得继续承担。",
+      "trigger": {
+        "day_min": 95,
+        "day_max": 102,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month03_stage_resolved": 1,
+          "month03_phase_activity_done": 1,
+          "month03_resource_status_done": 1
+        },
+        "forbidden_flags": {
+          "month03_consequence_review_done": 1
+        }
+      },
+      "location": {
+        "scene_id": "reading_hall",
+        "tile_x": 22,
+        "tile_y": 14
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "required_for_day": true,
+      "day_end_gate": true,
+      "advance_policy": "after_evening_settlement",
+      "choices": [
+        {
+          "id": "commission_public_steward_rotation",
+          "label": "让村务轮值真正参与边界判断",
+          "hint": "公开协作已经扩大覆盖；把轮值人员带进记录复核，换取更广的保护网，但你们要承担解释成本。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_public_expansion": 1,
+              "month03_public_reserve_protected": 1
+            },
+            "forbidden_flags": {
+              "month03_frontier_extended": 1,
+              "month03_frontier_cache_held": 1,
+              "month03_layered_intelligence_expanded": 1,
+              "month03_intelligence_sealed": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice",
+              "eugeo"
+            ],
+            "tensions": [],
+            "consequences": [
+              "公开协作进入轮值反馈",
+              "后续活动会增加解释与协调收益"
+            ]
+          },
+          "result_text": "你把轮值表和公开记录放到同一页，邀请村务人员先复述安全距离，再让他们提出疑问。爱丽丝提醒大家：参与不是随意改写证据；尤吉欧则把分歧整理成可执行的撤退手势。",
+          "effects": {
+            "flags": {
+              "month03_consequence_review_done": 1,
+              "month03_public_steward_rotation": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家邀请村务轮值参与边界判断，同时坚持证据边界。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家让尤吉欧把村务分歧整理成可执行的撤退手势。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "公开参与必须以可复核的证据边界为前提。",
+              "eugeo": "把村务分歧翻译成所有人都能执行的撤退手势。"
+            }
+          }
+        },
+        {
+          "id": "keep_public_two_person_review",
+          "label": "守住双人复核和安全余量",
+          "hint": "公开协作已经扩大；暂不再扩大参与面，让爱丽丝与尤吉欧继续双人复核，减少误读风险。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_public_expansion": 1,
+              "month03_public_reserve_protected": 1
+            },
+            "forbidden_flags": {
+              "month03_frontier_extended": 1,
+              "month03_frontier_cache_held": 1,
+              "month03_layered_intelligence_expanded": 1,
+              "month03_intelligence_sealed": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "公开路线保留安全余量",
+              "后续活动更稳但推进较慢"
+            ]
+          },
+          "result_text": "你们暂时收回一部分公开表格，只保留能被双人复核的安全余量。爱丽丝明显放松下来，但尤吉欧也提醒：村里的人不会因为记录变少就停止提问。",
+          "effects": {
+            "flags": {
+              "month03_consequence_review_done": 1,
+              "month03_public_two_person_review": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家守住双人复核和公开安全余量，暂不继续扩大参与。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家接受公开范围变慢，以换取双人复核的安全边界。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "eugeo": "公开协作的解释速度可能跟不上村民的疑问。"
+            }
+          }
+        },
+        {
+          "id": "authorize_repeatable_frontier_route",
+          "label": "批准小队重复走同一条源头路线",
+          "hint": "追查线已经确认可重复路径；授权小队在固定距离内重复采样，让一次异常变成可比较的证据。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_frontier_extended": 1,
+              "month03_frontier_cache_held": 1
+            },
+            "forbidden_flags": {
+              "month03_public_expansion": 1,
+              "month03_public_reserve_protected": 1,
+              "month03_layered_intelligence_expanded": 1,
+              "month03_intelligence_sealed": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2,
+              "alice.tension": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "eugeo"
+            ],
+            "tensions": [
+              "alice"
+            ],
+            "consequences": [
+              "源头路线解锁重复采样",
+              "每次活动都会消耗体力但积累可比记录"
+            ]
+          },
+          "result_text": "你批准小队在固定距离内重复走同一路线，每次只推进一小段并留下回撤标记。尤吉欧终于有了可以练习的节拍；爱丽丝要求每一轮都把“没有发现什么”也记进记录。",
+          "effects": {
+            "flags": {
+              "month03_consequence_review_done": 1,
+              "month03_repeatable_frontier_authorized": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2,
+              "alice.tension": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家批准固定距离、固定回撤标记的重复源头路线。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家让尤吉欧把源头追查拆成可以重复练习的小段。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "eugeo": "每次重复路线都必须留下可比较的回撤记录。"
+            },
+            "tensions": {
+              "alice": "重复推进会放大未知源头带来的诱惑。"
+            }
+          }
+        },
+        {
+          "id": "protect_frontier_abort_margin",
+          "label": "把中止边界放在推进之前",
+          "hint": "追查线已经留下缓存；继续保留中止余量，宁愿少拿一条结果，也不让一次失联变成无计划深入。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_frontier_extended": 1,
+              "month03_frontier_cache_held": 1
+            },
+            "forbidden_flags": {
+              "month03_public_expansion": 1,
+              "month03_public_reserve_protected": 1,
+              "month03_layered_intelligence_expanded": 1,
+              "month03_intelligence_sealed": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "源头路线更安全",
+              "后续活动会提供中止奖励但推进机会更少"
+            ]
+          },
+          "result_text": "你把中止边界画在所有人都能看见的位置，并让尤吉欧先演练“现在就回撤”。他不太甘心，但承认一个能被执行的退路比勇敢的口号更可靠。",
+          "effects": {
+            "flags": {
+              "month03_consequence_review_done": 1,
+              "month03_frontier_abort_protected": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家把源头中止边界放在推进之前，保留回撤余量。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家要求尤吉欧先练习回撤，而不是把深入当成唯一答案。",
+                "weight": 5
+              }
+            },
+            "tensions": {
+              "eugeo": "源头的下一次信号可能在保守等待时消失。"
+            }
+          }
+        },
+        {
+          "id": "publish_layered_risk_brief",
+          "label": "公开分层风险摘要",
+          "hint": "情报线已经完成一轮分层；公开风险等级、应对方式和未知部分，不公开未经确认的源头细节。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_layered_intelligence_expanded": 1,
+              "month03_intelligence_sealed": 1
+            },
+            "forbidden_flags": {
+              "month03_public_expansion": 1,
+              "month03_public_reserve_protected": 1,
+              "month03_frontier_extended": 1,
+              "month03_frontier_cache_held": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [],
+            "consequences": [
+              "村民获得可执行的风险摘要",
+              "情报活动会更快，但每次公开都需要重新审计"
+            ]
+          },
+          "result_text": "你们把情报拆成三层：村民能做什么、巡查队需要注意什么、只有复核者才能看到什么。爱丽丝负责删去会诱导猜测的词，尤吉欧把警告转成简单的动作。",
+          "effects": {
+            "flags": {
+              "month03_consequence_review_done": 1,
+              "month03_risk_brief_published": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家公开分层风险摘要，只公开应对方法和未知部分。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家请尤吉欧把分层警告翻译成简单动作。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "任何公开摘要都要保留未知部分，不能把推测写成事实。"
+            }
+          }
+        },
+        {
+          "id": "retain_three_seal_custody",
+          "label": "继续三重封存与慢速复核",
+          "hint": "情报线已经维持封存；继续三重封存，接受响应变慢来保护源头和未成年人不被卷入猜测。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_layered_intelligence_expanded": 1,
+              "month03_intelligence_sealed": 1
+            },
+            "forbidden_flags": {
+              "month03_public_expansion": 1,
+              "month03_public_reserve_protected": 1,
+              "month03_frontier_extended": 1,
+              "month03_frontier_cache_held": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "alice"
+            ],
+            "consequences": [
+              "源头责任链保持完整",
+              "情报响应较慢但误读风险最低"
+            ]
+          },
+          "result_text": "你把源头页重新封进三重印记，只把应急动作写进外页。爱丽丝确认责任链没有断裂，尤吉欧把等待信号的时间写进值班表。",
+          "effects": {
+            "flags": {
+              "month03_consequence_review_done": 1,
+              "month03_three_seal_custody": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家继续三重封存与慢速复核，保护源头不被猜测污染。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_consequence",
+                "summary": "第三月后果复盘中，玩家把等待可信信号的时间写入值班表。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "alice": "封存会让真正需要帮助的人更晚看到完整背景。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1_d103_third_month_boundary_decision",
+      "chapter": "chapter_01",
+      "kind": "month_consequence_settlement",
+      "title": "第一百零三天：把承诺交给明天",
+      "description": "几天的重复练习证明了方法，也暴露了方法的代价。你们在炉火和记录之间做出一次阶段性决定：把承诺交给更多人、交给更深的路线，还是交给更严格的责任链。",
+      "trigger": {
+        "day_min": 103,
+        "day_max": 103,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month03_consequence_review_done": 1,
+          "month03_followup_done": 1
+        },
+        "forbidden_flags": {
+          "month03_day103_result_done": 1
+        }
+      },
+      "location": {
+        "scene_id": "home_hearth",
+        "tile_x": 11,
+        "tile_y": 27
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "required_for_day": true,
+      "day_end_gate": true,
+      "advance_policy": "after_evening_settlement",
+      "choices": [
+        {
+          "id": "invite_village_stewards",
+          "label": "让村务轮值承担一小段守望",
+          "hint": "公开轮值已经开始；把一段低风险守望交给村务人员，玩家负责复核，不把责任全部压在同伴身上。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_public_steward_rotation": 1,
+              "month03_public_two_person_review": 1
+            },
+            "forbidden_flags": {
+              "month03_repeatable_frontier_authorized": 1,
+              "month03_frontier_abort_protected": 1,
+              "month03_risk_brief_published": 1,
+              "month03_three_seal_custody": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "eugeo"
+            ],
+            "tensions": [],
+            "consequences": [
+              "村务轮值正式拥有低风险守望试行",
+              "下一阶段可在不扩张地图的前提下增加村民参与"
+            ]
+          },
+          "result_text": "你把最短的一段守望交给轮值人员，并约定他们只报告看到的事实。爱丽丝负责复核，尤吉欧负责在现场陪跑；第一次有人没有逞强，反而让所有人都更安心。",
+          "effects": {
+            "flags": {
+              "month03_day103_result_done": 1,
+              "month03_public_steward_trial": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家让村务轮值承担低风险守望，并保留复核责任。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家让尤吉欧陪村务轮值完成第一次现场守望。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "eugeo": "下一轮守望继续从短段、可回撤的范围开始。"
+            }
+          }
+        },
+        {
+          "id": "retain_dual_review",
+          "label": "继续由两人守住公开边界",
+          "hint": "公开路线仍需要安全余量；暂不把低风险守望外包，先把双人复核流程做成稳定日常。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_public_steward_rotation": 1,
+              "month03_public_two_person_review": 1
+            },
+            "forbidden_flags": {
+              "month03_repeatable_frontier_authorized": 1,
+              "month03_frontier_abort_protected": 1,
+              "month03_risk_brief_published": 1,
+              "month03_three_seal_custody": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "公开路线保持稳定",
+              "下一阶段更偏向安全与复核"
+            ]
+          },
+          "result_text": "你们继续由两个人守住公开边界，把每一次记录都写成别人能复查的样子。村里的人暂时看不到全部答案，却知道什么时候该停下。",
+          "effects": {
+            "flags": {
+              "month03_day103_result_done": 1,
+              "month03_dual_review_maintained": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家继续由双人复核守住公开边界。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家把每次公开记录都保留为可复查的低风险流程。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "eugeo": "双人复核稳定，但会限制村务轮值的成长速度。"
+            }
+          }
+        },
+        {
+          "id": "send_small_scout_pair",
+          "label": "派出小队重复取样，不追求一次走到底",
+          "hint": "重复路线已经授权；只派两人走固定短段，带回可比较样本，避免把深入距离当成成果。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_repeatable_frontier_authorized": 1,
+              "month03_frontier_abort_protected": 1
+            },
+            "forbidden_flags": {
+              "month03_public_steward_rotation": 1,
+              "month03_public_two_person_review": 1,
+              "month03_risk_brief_published": 1,
+              "month03_three_seal_custody": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "tensions": [],
+            "consequences": [
+              "源头路线进入可比较样本循环",
+              "下一阶段会继续消耗体力换取证据质量"
+            ]
+          },
+          "result_text": "尤吉欧背上轻装包，爱丽丝把取样顺序写成三步。你们只走到固定短段就回撤，带回的不是“源头答案”，而是一组终于可以比较的变化。",
+          "effects": {
+            "flags": {
+              "month03_day103_result_done": 1,
+              "month03_small_scout_pair": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家派出小队重复取样，不把深入距离当成成果。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家和尤吉欧用轻装短段带回可比较样本。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "每次源头取样都要把无变化也记录下来。"
+            }
+          }
+        },
+        {
+          "id": "wait_for_signal_window",
+          "label": "等待可信信号窗口，不为沉默加戏",
+          "hint": "中止边界仍然优先；等待下一次可信信号，同时用现有缓存验证退路是否保持安全。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_repeatable_frontier_authorized": 1,
+              "month03_frontier_abort_protected": 1
+            },
+            "forbidden_flags": {
+              "month03_public_steward_rotation": 1,
+              "month03_public_two_person_review": 1,
+              "month03_risk_brief_published": 1,
+              "month03_three_seal_custody": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "eugeo"
+            ],
+            "consequences": [
+              "源头路线保留安全余量",
+              "下一阶段会更重视信号质量而非推进速度"
+            ]
+          },
+          "result_text": "你们没有把沉默解释成失败，也没有把它解释成邀请。尤吉欧检查缓存，爱丽丝复核封存页；等信号出现时，至少知道应该从哪里开始，也知道何时停止。",
+          "effects": {
+            "flags": {
+              "month03_day103_result_done": 1,
+              "month03_signal_window_waiting": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家等待可信信号窗口，不把沉默强行解释成答案。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家让尤吉欧先检查缓存和退路，再等待下一次信号。",
+                "weight": 5
+              }
+            },
+            "tensions": {
+              "eugeo": "等待会让源头信号错过，但也避免用猜测代替证据。"
+            }
+          }
+        },
+        {
+          "id": "publish_risk_index",
+          "label": "公开风险等级，保留源头细节",
+          "hint": "分层摘要已经公开；公布风险等级和应对方式，源头细节继续由复核者保管。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_risk_brief_published": 1,
+              "month03_three_seal_custody": 1
+            },
+            "forbidden_flags": {
+              "month03_public_steward_rotation": 1,
+              "month03_public_two_person_review": 1,
+              "month03_repeatable_frontier_authorized": 1,
+              "month03_frontier_abort_protected": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "eugeo"
+            ],
+            "tensions": [],
+            "consequences": [
+              "情报责任变成村庄日常提示",
+              "下一阶段更容易上手但需要持续审计"
+            ]
+          },
+          "result_text": "你们把风险等级画成村民看得懂的三种标记：可以观察、需要结伴、立即回撤。源头细节仍然封在书库里，但没人再需要靠传闻决定要不要害怕。",
+          "effects": {
+            "flags": {
+              "month03_day103_result_done": 1,
+              "month03_risk_index_published": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 3
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家公开三档风险等级与应对方式，继续保护源头细节。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家让尤吉欧把风险等级变成村民能执行的动作。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "eugeo": "下一轮警告继续只说事实和动作，不替村民制造结论。"
+            }
+          }
+        },
+        {
+          "id": "keep_three_seal_custody",
+          "label": "继续三重托管，把应急动作写在外页",
+          "hint": "三重封存仍然有效；不公开新的细节，只把应急动作保持在外页，确保责任链不被热情打断。",
+          "conditions": {
+            "required_any_flags": {
+              "month03_risk_brief_published": 1,
+              "month03_three_seal_custody": 1
+            },
+            "forbidden_flags": {
+              "month03_public_steward_rotation": 1,
+              "month03_public_two_person_review": 1,
+              "month03_repeatable_frontier_authorized": 1,
+              "month03_frontier_abort_protected": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [],
+            "tensions": [
+              "alice"
+            ],
+            "consequences": [
+              "情报责任链保持完整",
+              "下一阶段更偏向慢速验证与低风险提示"
+            ]
+          },
+          "result_text": "你们再次确认三重托管的开启顺序，把“何时必须回撤”写在外页。爱丽丝承认这不是最让人满足的答案，但它让每个人都知道自己没有被迫替未知负责。",
+          "effects": {
+            "flags": {
+              "month03_day103_result_done": 1,
+              "month03_custody_maintained": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": 1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家继续三重托管，只把应急动作写在外页。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_settlement",
+                "summary": "第三月阶段收束，玩家和尤吉欧把回撤条件写在所有人都能看到的外页。",
+                "weight": 4
+              }
+            },
+            "tensions": {
+              "alice": "严格托管会让部分人继续等待答案。"
+            }
+          }
+        }
+      ]
     }
   ]
 }

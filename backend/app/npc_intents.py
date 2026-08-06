@@ -1801,6 +1801,253 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+
+    # Day 90-103: make the third-month stage decision feel like a lived-in loop.
+    # Each route exposes one short repeatable activity in the existing scene, then
+    # a single consequence event and one follow-up before the next date gate.
+    consequence_routes = [
+        {
+            "route_flags": ["month03_public_expansion", "month03_public_reserve_protected"],
+            "done_flag": "activity_day.village_third_month_consequence_practice",
+            "activity_id": "village_third_month_consequence_practice",
+            "npc_id": "alice",
+            "intent_id": "alice_invites_third_month_public_practice",
+            "title": "爱丽丝想把公开决定练成一次短轮值",
+            "description": "第三月阶段决定已经进入村务，但公开参与不能只停留在文书上。爱丽丝在村道广场等你做一次低风险轮值，看看扩大参与和保护余量分别会消耗什么。",
+            "scene_id": "village_square",
+            "tile_x": 28,
+            "tile_y": 25,
+            "label": "和爱丽丝练习公开轮值",
+            "hint": "每天一次；在扩大参与和保留安全余量之间选择。",
+            "response_id": "agree_public_consequence_practice",
+            "response_text": "爱丽丝把轮值表和安全余量放在一起：先做一小段，再决定明天是否值得扩大。",
+            "reason": "Day 90-94 must turn the public stage result into a repeatable, low-risk activity.",
+        },
+        {
+            "route_flags": ["month03_frontier_extended", "month03_frontier_cache_held"],
+            "done_flag": "activity_day.north_gate_third_month_repeatable_probe",
+            "activity_id": "north_gate_third_month_repeatable_probe",
+            "npc_id": "eugeo",
+            "intent_id": "eugeo_calls_third_month_repeatable_probe",
+            "title": "尤吉欧想把源头路线拆成可重复短段",
+            "description": "第三月阶段决定已经进入北门。尤吉欧不再问要不要一口气走到底，而是请你选择推进固定短段，或先复走中止边界和回撤缓存。",
+            "scene_id": "north_gate",
+            "tile_x": 67,
+            "tile_y": 24,
+            "label": "和尤吉欧做一次重复取样",
+            "hint": "每天一次；推进与中止都会产生可比较的记录。",
+            "response_id": "agree_repeatable_frontier_probe",
+            "response_text": "尤吉欧把固定距离、取样顺序和回撤标记写在同一张纸上：今天只做一小段。",
+            "reason": "Day 90-94 must make frontier progress repeatable instead of a one-shot gamble.",
+        },
+        {
+            "route_flags": ["month03_layered_intelligence_expanded", "month03_intelligence_sealed"],
+            "done_flag": "activity_day.reading_hall_third_month_responsibility_practice",
+            "activity_id": "reading_hall_third_month_responsibility_practice",
+            "npc_id": "alice",
+            "intent_id": "alice_calls_third_month_responsibility_practice",
+            "title": "爱丽丝要复核一次情报责任边界",
+            "description": "第三月阶段决定已经进入书库。爱丽丝把事实、应对动作和未确认源头分成三层，请你亲手决定今天公开哪一层、封存哪一层。",
+            "scene_id": "reading_hall",
+            "tile_x": 42,
+            "tile_y": 18,
+            "label": "和爱丽丝复核分层情报",
+            "hint": "每天一次；速度和责任边界不能同时拉满。",
+            "response_id": "agree_responsibility_practice",
+            "response_text": "爱丽丝把三层纸页错开：今天只处理一层，剩下的风险不会因为沉默就消失。",
+            "reason": "Day 90-94 must show the cost of publishing versus sealing information.",
+        },
+    ]
+    if 90 <= day <= 94 and band in {"morning", "afternoon", "evening", "night"}:
+        for route in consequence_routes:
+            if not _any_flag(state, route["route_flags"]) or _done_today(state, route["activity_id"]):
+                continue
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id=route["npc_id"],
+                    intent_id=route["intent_id"],
+                    kind="npc_plan",
+                    title=route["title"],
+                    description=route["description"],
+                    priority=92,
+                    reason=route["reason"],
+                    action={"type": "scene_activity", "activity_id": route["activity_id"]},
+                    stakes=[
+                        "每天只允许完成一次，选择会真实消耗体力或神圣力。",
+                        "这不是主动推进日期的按钮；完成后仍由日结算闸推进。",
+                    ],
+                    response_options=[
+                        _social_response(
+                            response_id=route["response_id"],
+                            label=route["label"],
+                            hint=route["hint"],
+                            result_text=route["response_text"],
+                            tone="steady",
+                            effects={
+                                "flags": {f"{route['intent_id']}_agreed": 1},
+                                "relationship": {f"{route['npc_id']}.trust": 1},
+                            },
+                        )
+                    ],
+                    fallback=(route["tile_x"], route["tile_y"], route["scene_id"]),
+                    scene_id=route["scene_id"],
+                    tile_x=route["tile_x"],
+                    tile_y=route["tile_y"],
+                )
+            )
+
+    if (
+        90 <= day <= 94
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month03_stage_resolved") >= 1
+        and _flag(state, "activity_done.home_third_month_resource_status") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_explains_third_month_resource_status",
+                kind="npc_plan",
+                title="爱丽丝要先把资源限制说清楚",
+                description="第三月的路线后果会继续读取体力和神圣力。回到炉火边选择一次安全恢复，面板会明确告诉你下一步适合什么、另一类资源还缺什么。",
+                priority=94,
+                reason="A clear resource explanation prevents players from reading stamina/MP costs as arbitrary punishment.",
+                action={"type": "scene_activity", "activity_id": "home_third_month_resource_status"},
+                stakes=[
+                    "恢复不会跨日，也不会把另一类资源的不足抹掉。",
+                    "Day 94 会要求完成一次路线练习和资源说明。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="read_third_month_resource_status",
+                        label="和爱丽丝读一次资源状态",
+                        hint="选择优先恢复体力或神圣力，并查看保留的限制。",
+                        result_text="爱丽丝把资源余量、行动代价和明天的适用路线写成三行清楚的提示。",
+                        tone="careful",
+                        effects={"flags": {"alice_third_month_resource_status_agreed": 1}, "relationship": {"alice.trust": 1}},
+                    )
+                ],
+                fallback=(11, 27, "home_hearth"),
+                scene_id="home_hearth",
+                tile_x=11,
+                tile_y=27,
+            )
+        )
+
+    if (
+        95 <= day <= 102
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month03_stage_resolved") >= 1
+        and _flag(state, "month03_phase_activity_done") >= 1
+        and _flag(state, "month03_resource_status_done") >= 1
+        and _flag(state, "month03_consequence_review_done") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_calls_third_month_consequence_review",
+                kind="story_event",
+                title="爱丽丝请你复盘第三月方法的回声",
+                description="公开轮值、源头短段或分层情报已经留下真实代价。爱丽丝和尤吉欧把几天的记录摊开，等待你把其中一种后果写成新的承诺。",
+                priority=96,
+                reason="Day 95-102 must turn the repeatable activity into a route-specific authored consequence.",
+                action={"type": "story_event", "event_id": "ch1_d95_third_month_consequence_review"},
+                stakes=[
+                    "事件只显示当前玩法族对应的两个选择。",
+                    "选择会写入承诺和紧张，Day 103 会继续读取。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="review_third_month_consequence",
+                        label="和同伴复核方法的回声",
+                        hint="把当前路线的练习、资源余量和关系后果放在一起判断。",
+                        result_text="爱丽丝把练习记录和安全边界排成一条线，尤吉欧等你决定下一步要把承诺交给谁。",
+                        tone="steady",
+                        effects={"flags": {"third_month_consequence_review_agreed": 1}, "relationship": {"alice.trust": 1, "eugeo.trust": 1}},
+                    )
+                ],
+                fallback=(42, 18, "reading_hall"),
+                scene_id="reading_hall",
+                tile_x=42,
+                tile_y=18,
+            )
+        )
+
+    followup_routes = [
+        ("month03_public_steward_rotation", "month03_public_two_person_review", "village_third_month_commitment_followup", "alice", "alice_calls_public_commitment_followup", "爱丽丝想回访一次公开协作承诺", "village_square", 28, 25, "把公开承诺落实成一次短回访。"),
+        ("month03_repeatable_frontier_authorized", "month03_frontier_abort_protected", "north_gate_third_month_commitment_followup", "eugeo", "eugeo_calls_frontier_commitment_followup", "尤吉欧想回访一次源头路线承诺", "north_gate", 67, 24, "把源头推进或中止承诺落实成一次短回访。"),
+        ("month03_risk_brief_published", "month03_three_seal_custody", "reading_hall_third_month_commitment_followup", "alice", "alice_calls_intelligence_commitment_followup", "爱丽丝想回访一次情报责任承诺", "reading_hall", 42, 18, "把公开摘要或三重托管承诺落实成一次短回访。"),
+    ]
+    if 96 <= day <= 102 and band in {"morning", "afternoon", "evening", "night"}:
+        for f1, f2, activity_id, npc_id, intent_id, title, scene_id, tile_x, tile_y, desc in followup_routes:
+            if not _any_flag(state, [f1, f2]) or _done_today(state, activity_id):
+                continue
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id=npc_id,
+                    intent_id=intent_id,
+                    kind="npc_plan",
+                    title=title,
+                    description=desc + "每天只能做一次；完成后日期仍需通过正常日结算。",
+                    priority=90,
+                    reason="The follow-up loop gives the player one low-scope repeatable action before the Day 103 settlement.",
+                    action={"type": "scene_activity", "activity_id": activity_id},
+                    stakes=["至少完成一次，Day 103 才能结算第三月阶段。", "选择会保留承诺、关系和资源限制。"],
+                    response_options=[
+                        _social_response(
+                            response_id=f"agree_{intent_id}",
+                            label="和同伴做一次承诺回访",
+                            hint="选择主动落实或保守复核；不会自动推进日期。",
+                            result_text="你们把阶段决定缩成一次短而可复查的回访，先验证承诺是否真的能被执行。",
+                            tone="steady",
+                            effects={"flags": {f"{intent_id}_agreed": 1}, "relationship": {f"{npc_id}.trust": 1}},
+                        )
+                    ],
+                    fallback=(tile_x, tile_y, scene_id),
+                    scene_id=scene_id,
+                    tile_x=tile_x,
+                    tile_y=tile_y,
+                )
+            )
+
+    if (
+        103 == day
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month03_consequence_review_done") >= 1
+        and _flag(state, "month03_followup_done") >= 1
+        and _flag(state, "month03_day103_result_done") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_calls_third_month_boundary_decision",
+                kind="story_event",
+                title="尤吉欧请你把第三月承诺交给明天",
+                description="承诺回访已经完成。尤吉欧和爱丽丝在炉火边等你决定：让更多人承担、让小队继续取样，还是让责任链继续保护未知。",
+                priority=97,
+                reason="Day 103 closes the third-month consequence loop and hands a route-specific promise to the next phase.",
+                action={"type": "story_event", "event_id": "ch1_d103_third_month_boundary_decision"},
+                stakes=["事件只显示当前路线对应的两个收束选择。", "选择会成为第四月入口读取的长期后果。"],
+                response_options=[
+                    _social_response(
+                        response_id="settle_third_month_boundary",
+                        label="在炉火边完成阶段结算",
+                        hint="根据已经兑现的承诺，决定下一阶段的责任边界。",
+                        result_text="你把回访记录放到炉火边，三个人终于用同一组事实讨论明天。",
+                        tone="steady",
+                        effects={"flags": {"third_month_boundary_decision_agreed": 1}, "relationship": {"alice.trust": 1, "eugeo.trust": 1}},
+                    )
+                ],
+                fallback=(11, 27, "home_hearth"),
+                scene_id="home_hearth",
+                tile_x=11,
+                tile_y=27,
+            )
+        )
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

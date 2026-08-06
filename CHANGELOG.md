@@ -299,3 +299,26 @@
 - 内容校验器现在会检查每个 `day_gate.required_flags` 是否确实由 authored 故事选择或场景活动写入，避免新增日期闸门后出现永远无法满足的软锁。
 - 同时校验 `day_gate.required_events` 是否引用当前存在的故事事件。
 - 新增坏配置回归测试；本轮后端质量门：`244 passed`。
+
+
+## 2026-08-06 长期目标续航：第三月 Day 90–103 后果与承诺循环
+
+### Added
+
+- 新增三项 Day 90–94 路线后果每日活动：公开协作短轮值、源头固定短段取样、分层情报责任复核。
+- 新增 `home_third_month_resource_status`，以明确的体力 / 神圣力恢复选择解释下一阶段的资源限制。
+- 新增 `ch1_d95_third_month_consequence_review`，将 Day 83 阶段决定转化为公开轮值、重复源头、风险摘要或三重托管等路线承诺。
+- 新增三项 Day 96–102 每日承诺回访活动，以及 `ch1_d103_third_month_boundary_decision` 阶段收束事件。
+- 第三月月计划扩展到 Day 103，并补充 Week 13/14 的玩法目标、路线钩子和素材替换需求。
+- NPC authored intent 覆盖新增活动、资源说明、后果复盘、承诺回访和 Day 103 结算。
+
+### Changed
+
+- 新增 Day 94、Day 95、Day 103 日期闸门；没有主动推进日期按钮，自动推进仍必须经过剧情 / 活动条件。
+- Day 95 与 Day 103 事件按玩法族只显示两个当前路线选择，避免把不相关的分支同时塞给玩家。
+- 可重复活动每天最多一次，活动选择仍由 FastAPI Session 原子结算资源、关系、flags 和记忆。
+
+### Verification
+
+- 后端 `288 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `20 passed`；内容校验 `0 errors / 0 warnings`。
+- 真人盲测仍为 `pending-human-run`；本轮没有读取或调用桌面外部 Provider。

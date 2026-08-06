@@ -702,3 +702,101 @@ def test_day_eighty_nine_gate_requires_stage_result():
     advanced = sess.player_action(kind="rest_until_next_day")
     assert advanced["ok"] is True
     assert advanced["state"]["day"] == 90
+
+
+def test_third_month_day_ninety_five_only_exposes_current_route_consequence_choices():
+    cases = [
+        ({"month03_public_expansion": 1}, {"commission_public_steward_rotation", "keep_public_two_person_review"}),
+        ({"month03_frontier_extended": 1}, {"authorize_repeatable_frontier_route", "protect_frontier_abort_margin"}),
+        ({"month03_layered_intelligence_expanded": 1}, {"publish_layered_risk_brief", "retain_three_seal_custody"}),
+    ]
+    for route_flag, expected in cases:
+        sess = Session(run_id=f"test-day95-route-{next(iter(route_flag))}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 95,
+                "time_band": "morning",
+                "flags": {
+                    "month03_stage_resolved": 1,
+                    "month03_phase_activity_done": 1,
+                    "month03_resource_status_done": 1,
+                    **route_flag,
+                },
+            }
+        )
+        event = next(
+            item for item in sess.available_story_events()["events"]
+            if item["id"] == "ch1_d95_third_month_consequence_review"
+        )
+        assert {choice["id"] for choice in event["choices"]} == expected
+
+
+def test_third_month_day_ninety_four_gate_requires_practice_and_resource_status():
+    sess = Session(run_id="test-day94-resource-explanation-gate")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 94,
+            "flags": {"month03_stage_resolved": 1},
+        }
+    )
+
+    blocked = sess.player_action(kind="rest_until_next_day")
+    assert blocked["ok"] is False
+    assert blocked["error"] == "day_end_gate_incomplete"
+    assert blocked["missing"] == [
+        {"type": "flag", "key": "month03_phase_activity_done", "expected": 1, "actual": 0},
+        {"type": "flag", "key": "month03_resource_status_done", "expected": 1, "actual": 0},
+    ]
+
+    sess.state = sess.state.model_copy(
+        update={"flags": {"month03_stage_resolved": 1, "month03_phase_activity_done": 1}}
+    )
+    blocked = sess.player_action(kind="rest_until_next_day")
+    assert blocked["ok"] is False
+    assert blocked["missing"][0]["key"] == "month03_resource_status_done"
+
+    sess.state = sess.state.model_copy(
+        update={
+            "flags": {
+                "month03_stage_resolved": 1,
+                "month03_phase_activity_done": 1,
+                "month03_resource_status_done": 1,
+            }
+        }
+    )
+    advanced = sess.player_action(kind="rest_until_next_day")
+    assert advanced["ok"] is True
+    assert advanced["state"]["day"] == 95
+
+
+def test_third_month_day_103_settlement_reads_followup_and_unlocks_day_104():
+    sess = Session(run_id="test-day103-settlement")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 103,
+            "time_band": "evening",
+            "flags": {
+                "month03_consequence_review_done": 1,
+                "month03_followup_done": 1,
+                "month03_public_steward_rotation": 1,
+            },
+        }
+    )
+
+    event = next(
+        item for item in sess.available_story_events()["events"]
+        if item["id"] == "ch1_d103_third_month_boundary_decision"
+    )
+    assert {choice["id"] for choice in event["choices"]} == {"invite_village_stewards", "retain_dual_review"}
+
+    chosen = sess.choose_story_event(
+        "ch1_d103_third_month_boundary_decision",
+        "invite_village_stewards",
+    )
+    assert chosen["ok"] is True
+    assert chosen["state"]["flags"]["month03_day103_result_done"] == 1
+    assert chosen["state"]["flags"]["month03_public_steward_trial"] == 1
+
+    advanced = sess.player_action(kind="rest_until_next_day")
+    assert advanced["ok"] is True
+    assert advanced["state"]["day"] == 104

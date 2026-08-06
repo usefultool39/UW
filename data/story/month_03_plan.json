@@ -3,10 +3,10 @@
   "id": "month_03",
   "title": "第三月：边界方法第一次受验",
   "subtitle": "资源投入与路线回响",
-  "summary": "第三月从 Day 61 的行动准则展开。八个入口归并为公开协作、源头追查、责任情报三类玩法族，先选择真实资源投入，再在边界测试中承担后果。",
+  "summary": "第三月从 Day 61 的行动准则展开。八个入口归并为公开协作、源头追查、责任情报三类玩法族，先选择真实资源投入，再在边界测试中承担后果。 本轮扩展 Day 90-103：后果练习、资源状态说明、承诺回访和阶段结算。",
   "day_range": [
-    62,
-    89
+    61,
+    103
   ],
   "ending_paths": {
     "unresolved": "第三月路线尚未准备。先完成第六十一天的出发准则。",
@@ -311,6 +311,128 @@
             "扩大摘要或继续封存情报"
           ],
           "reward": "第三月第一次资源型循环收束，Day 90 继续读取后果。"
+        }
+      ]
+    },
+    {
+      "id": "week_13",
+      "week": 13,
+      "day_range": [
+        90,
+        94
+      ],
+      "title": "第 13 周：后果变成日常",
+      "summary": "第三月阶段决定不再停留在一次结果。玩家在现有村务、北门和书库场景中重复练习，理解资源不足会影响哪一种行动，并选择一次安全恢复。",
+      "goals": [
+        "完成一次路线后果练习",
+        "选择一次资源状态恢复",
+        "让 NPC 记住当前承诺与紧张点"
+      ],
+      "play_hooks": [
+        "可重复活动",
+        "资源解释",
+        "关系反馈"
+      ],
+      "milestones": [
+        {
+          "id": "m03_consequence_practice",
+          "title": "Day 90-94：路线后果练习与资源状态说明",
+          "day_range": [
+            90,
+            94
+          ],
+          "scene_id": "village_square",
+          "related_activity_ids": [
+            "village_third_month_consequence_practice",
+            "north_gate_third_month_repeatable_probe",
+            "reading_hall_third_month_responsibility_practice",
+            "home_third_month_resource_status"
+          ],
+          "completed_flag": "month03_phase_activity_done",
+          "requirements": {
+            "required_flags": {
+              "month03_stage_resolved": 1
+            }
+          },
+          "goals": [
+            "完成当前玩法族的一次可重复练习",
+            "理解体力/神圣力不足的具体影响",
+            "通过 Day 94 资源闸门"
+          ],
+          "reward": "路线反馈会在 Day 95 复盘事件中变成新的承诺。"
+        }
+      ]
+    },
+    {
+      "id": "week_14",
+      "week": 14,
+      "day_range": [
+        95,
+        103
+      ],
+      "title": "第 14 周：兑现承诺",
+      "summary": "Day 95 把方法的回声写成公开轮值、源头重复取样或情报责任链。Day 96-102 的每日短回访让玩家亲手验证一次，Day 103 再决定把承诺交给谁。",
+      "goals": [
+        "完成路线专属后果复盘",
+        "至少做一次承诺回访",
+        "通过 Day 103 阶段结算"
+      ],
+      "play_hooks": [
+        "承诺兑现",
+        "重复活动",
+        "关系与紧张反馈"
+      ],
+      "milestones": [
+        {
+          "id": "m03_consequence_review",
+          "title": "Day 95-102：方法后果与承诺回访",
+          "day_range": [
+            95,
+            102
+          ],
+          "scene_id": "reading_hall",
+          "related_event_id": "ch1_d95_third_month_consequence_review",
+          "related_activity_ids": [
+            "village_third_month_commitment_followup",
+            "north_gate_third_month_commitment_followup",
+            "reading_hall_third_month_commitment_followup"
+          ],
+          "completed_flag": "month03_consequence_review_done",
+          "requirements": {
+            "required_flags": {
+              "month03_phase_activity_done": 1,
+              "month03_resource_status_done": 1
+            }
+          },
+          "goals": [
+            "根据当前路线做出两选一后果决定",
+            "在不跨日的前提下完成至少一次回访",
+            "让 NPC 记住你选择承担的限制"
+          ],
+          "reward": "Day 103 会根据已兑现的承诺给出不同阶段收束。"
+        },
+        {
+          "id": "m03_day103_settlement",
+          "title": "Day 103：把承诺交给明天",
+          "day_range": [
+            103,
+            103
+          ],
+          "scene_id": "home_hearth",
+          "related_event_id": "ch1_d103_third_month_boundary_decision",
+          "completed_flag": "month03_day103_result_done",
+          "requirements": {
+            "required_flags": {
+              "month03_consequence_review_done": 1,
+              "month03_followup_done": 1
+            }
+          },
+          "goals": [
+            "选择下一阶段的责任承担方式",
+            "结算关系、记忆、承诺与紧张",
+            "进入第四月边界余波"
+          ],
+          "reward": "第四月入口将读取第三月最终选择。"
         }
       ]
     }

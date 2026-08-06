@@ -810,4 +810,73 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.journal-panel')).toContainText('当前承诺 / 紧张点')
   })
 
+
+  test('Day 90 到 Day 103 会把第三月后果变成可重复活动与阶段结算', async ({ page, request }) => {
+    await setFlags(request, [
+      'month03_stage_resolved',
+      'month03_public_expansion'
+    ])
+    await playerAction(request, { kind: 'set_day', day: 90 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'village_square' })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const practice = page.locator('.interact-action[data-activity-id="village_third_month_consequence_practice"]')
+    await expect(practice).toBeVisible()
+    await practice.click()
+    await page.locator('.event-choice').filter({ hasText: '带轮值人员完成一次短段守望' }).click()
+    await expect(page.locator('.result-panel')).toContainText('轮值人员完成一段最短守望')
+
+    await playerAction(request, { kind: 'move_scene', scene_id: 'home_hearth' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const resourceStatus = page.locator('.interact-action[data-activity-id="home_third_month_resource_status"]')
+    await expect(resourceStatus).toBeVisible()
+    await resourceStatus.click()
+    await page.locator('.event-choice').filter({ hasText: '优先恢复体力' }).click()
+    await expect(page.locator('.result-panel')).toContainText('恢复后的体力')
+
+    await playerAction(request, { kind: 'set_day', day: 94 })
+    await playerAction(request, { kind: 'rest_until_next_day' })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'reading_hall' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const review = page.locator('[data-action-id="intent:alice_calls_third_month_consequence_review"]')
+    await expect(review).toBeVisible()
+    await review.click()
+    await expect(page.locator('.event-choice')).toHaveCount(2)
+    await page.locator('.event-choice').filter({ hasText: '让村务轮值真正参与边界判断' }).click()
+    await expect(page.locator('.result-panel')).toContainText('邀请村务人员')
+
+    await playerAction(request, { kind: 'set_day', day: 96 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'village_square' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const followup = page.locator('.interact-action[data-activity-id="village_third_month_commitment_followup"]')
+    await expect(followup).toBeVisible()
+    await followup.click()
+    await page.locator('.event-choice').filter({ hasText: '邀请轮值人员复述疑问' }).click()
+    await expect(page.locator('.result-panel')).toContainText('阶段决定变成一次短而明确的回访')
+
+    await playerAction(request, { kind: 'set_day', day: 103 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'home_hearth' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const settlement = page.locator('[data-action-id="intent:eugeo_calls_third_month_boundary_decision"]')
+    await expect(settlement).toBeVisible()
+    await settlement.click()
+    await expect(page.locator('.event-choice')).toHaveCount(2)
+    await page.locator('.event-choice').filter({ hasText: '让村务轮值承担一小段守望' }).click()
+    await expect(page.locator('.result-panel')).toContainText('第一次有人没有逞强')
+
+    const state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month03_day103_result_done).toBe(1)
+    expect(state.flags.month03_public_steward_trial).toBe(1)
+  })
+
 })
