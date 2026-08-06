@@ -85,6 +85,14 @@ def _status_label(status: str) -> str:
 
 def _month_ending_path(state: WorldState, month_id: str) -> str:
     if month_id == "month_02":
+        for flag, path in (
+            ("month02_result_formal_hearing", "formal_hearing"),
+            ("month02_result_warning_only", "guarded_warning"),
+            ("month02_result_team_probe_continues", "source_pursuit"),
+            ("month02_result_sealed_copy_handed_over", "accountable_probe"),
+        ):
+            if _flag_value(state, flag) > 0:
+                return path
         if _flag_value(state, "month02_route_order") > 0:
             return "order"
         if _flag_value(state, "month02_route_expedition") > 0:

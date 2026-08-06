@@ -253,6 +253,30 @@
         "title": "进入第三月入口",
         "description": "第二月结果已写入世界状态；下一阶段将沿公开边界或源头追查路线展开。"
       }
+    },
+    "58": {
+      "required_flags": {
+        "month02_tail_feedback_done": 1
+      },
+      "advance_to": 59,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 58 · 第二月结果已经落地",
+      "next_goal": {
+        "title": "准备第三月出发准则",
+        "description": "带着已经落实的村务、警告、追查或托管方案，等待第六十一天完成交接。"
+      }
+    },
+    "61": {
+      "required_events": [
+        "ch1_d61_third_month_departure"
+      ],
+      "advance_to": 62,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 61 · 第三月出发准备",
+      "next_goal": {
+        "title": "进入第三月行动线",
+        "description": "第三月第一条准则已经写入；下一阶段将围绕新路线展开可玩内容。"
+      }
     }
   }
 }

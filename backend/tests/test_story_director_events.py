@@ -438,6 +438,8 @@ def test_second_month_key_days_cannot_skip_authored_route_content():
         (46, {"month02_order_patrol_standby_done": 1}, "flag", "month02_anomaly_convergence_done"),
         (49, {"month02_anomaly_convergence_done": 1}, "any_flags", None),
         (53, {"month02_shared_map_hearing_done": 1}, "event", None),
+        (58, {"month02_second_month_result_done": 1}, "flag", "month02_tail_feedback_done"),
+        (61, {"month02_tail_feedback_done": 1}, "event", None),
     ]
     for day, flags, missing_type, missing_key in cases:
         sess = Session(run_id=f"test-month02-day-gate-{day}")
@@ -509,3 +511,73 @@ def test_day_fifty_three_result_writes_third_month_route_and_unlocks_next_day():
     advanced = sess.player_action(kind="rest_until_next_day")
     assert advanced["ok"] is True
     assert advanced["state"]["day"] == 54
+
+
+def test_day_sixty_one_departure_only_exposes_current_result_choices():
+    cases = [
+        (
+            "month02_formal_hearing_followthrough_done",
+            {"open_council_trial", "assemble_public_scout_briefing"},
+        ),
+        (
+            "month02_warning_route_drill_done",
+            {"activate_warning_bell_network", "launch_mobile_watch_route"},
+        ),
+        (
+            "month02_source_pursuit_calibration_done",
+            {"depart_at_dawn_markers", "wait_for_verified_signal"},
+        ),
+        (
+            "month02_sealed_copy_protocol_done",
+            {"adopt_paired_custody", "entrust_audited_key"},
+        ),
+    ]
+    for route_flag, expected_choices in cases:
+        sess = Session(run_id=f"test-day61-choices-{route_flag}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 61,
+                "time_band": "morning",
+                "flags": {
+                    "month02_tail_feedback_done": 1,
+                    route_flag: 1,
+                },
+            }
+        )
+
+        event = next(
+            item for item in sess.available_story_events()["events"]
+            if item["id"] == "ch1_d61_third_month_departure"
+        )
+
+        assert {choice["id"] for choice in event["choices"]} == expected_choices
+
+
+def test_day_sixty_one_departure_choice_unlocks_day_sixty_two():
+    sess = Session(run_id="test-day61-departure-gate")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 61,
+            "time_band": "morning",
+            "flags": {
+                "month02_tail_feedback_done": 1,
+                "month02_warning_route_drill_done": 1,
+            },
+        }
+    )
+
+    blocked = sess.player_action(kind="rest_until_next_day")
+    assert blocked["ok"] is False
+    assert blocked["missing"][0]["id"] == "ch1_d61_third_month_departure"
+
+    chosen = sess.choose_story_event(
+        "ch1_d61_third_month_departure",
+        "activate_warning_bell_network",
+    )
+    assert chosen["ok"] is True
+    assert chosen["state"]["flags"]["month03_departure_ready"] == 1
+    assert chosen["state"]["flags"]["month03_warning_bell_network"] == 1
+
+    advanced = sess.player_action(kind="rest_until_next_day")
+    assert advanced["ok"] is True
+    assert advanced["state"]["day"] == 62

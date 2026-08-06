@@ -1366,6 +1366,152 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    tail_routes = [
+        {
+            "required_flag": "month02_result_formal_hearing",
+            "done_flag": "activity_done.village_formal_hearing_followthrough",
+            "npc_id": "alice",
+            "intent_id": "alice_lands_formal_hearing_rules",
+            "title": "爱丽丝要把正式听证写成可轮值的村务规则",
+            "description": "听证已经给出公开方向，但村民还需要知道谁记录、谁复核、谁发出撤退信号。爱丽丝把空白轮值板带到广场，等你决定建立双人复核还是说明小队。",
+            "activity_id": "village_formal_hearing_followthrough",
+            "scene_id": "village_square",
+            "tile_x": 28,
+            "tile_y": 25,
+            "response_id": "land_formal_hearing_rules",
+            "response_label": "和爱丽丝把听证规则落到轮值板",
+            "response_hint": "让公开决定变成三人不在场时也能执行的村务。",
+            "response_text": "爱丽丝把听证簿和轮值板并排放好，等你决定先训练记录人还是说明员。",
+        },
+        {
+            "required_flag": "month02_result_warning_only",
+            "done_flag": "activity_done.village_warning_route_drill",
+            "npc_id": "eugeo",
+            "intent_id": "eugeo_drills_guarded_warning_route",
+            "title": "尤吉欧想验证只公开警告是否真的够用",
+            "description": "村里知道异常时段和退路，却不知道未经确认的源头。尤吉欧请你到广场，选择演练三段钟声或可移动路线卡，确认克制的信息也能保护人。",
+            "activity_id": "village_warning_route_drill",
+            "scene_id": "village_square",
+            "tile_x": 28,
+            "tile_y": 25,
+            "response_id": "drill_guarded_warning",
+            "response_label": "和尤吉欧演练分层警告",
+            "response_hint": "不公布源头答案，也要让村民知道下一步。",
+            "response_text": "尤吉欧先敲了一次集合信号，等你决定接下来用固定钟声还是移动路线卡。",
+        },
+        {
+            "required_flag": "month02_result_team_probe_continues",
+            "done_flag": "activity_done.north_gate_source_pursuit_calibration",
+            "npc_id": "eugeo",
+            "intent_id": "eugeo_calibrates_source_pursuit",
+            "title": "尤吉欧要在第三月前校准源头追查节拍",
+            "description": "三人暗线会继续，但下一段不能只靠勇气。尤吉欧在北门等你验证回撤标记，爱丽丝则要求完整演练一次失联与中止协议。",
+            "activity_id": "north_gate_source_pursuit_calibration",
+            "scene_id": "north_gate",
+            "tile_x": 67,
+            "tile_y": 24,
+            "response_id": "calibrate_source_pursuit",
+            "response_label": "和尤吉欧校准第三月追查节拍",
+            "response_hint": "在主动推进与完整中止协议之间决定优先级。",
+            "response_text": "尤吉欧把下一枚回撤标记和中止协议放在一起，等三个人都确认后才开始。",
+        },
+        {
+            "required_flag": "month02_result_sealed_copy_handed_over",
+            "done_flag": "activity_done.reading_hall_sealed_copy_protocol",
+            "npc_id": "alice",
+            "intent_id": "alice_writes_sealed_copy_protocol",
+            "title": "爱丽丝要把密封副本的开启条件写清",
+            "description": "密封副本已经交出，但托管人、开启条件和通知顺序仍需落成协议。爱丽丝在书库等你选择双人托管，或由她保管一把受审计的钥匙。",
+            "activity_id": "reading_hall_sealed_copy_protocol",
+            "scene_id": "reading_hall",
+            "tile_x": 42,
+            "tile_y": 18,
+            "response_id": "write_sealed_copy_protocol",
+            "response_label": "和爱丽丝写下密封副本协议",
+            "response_hint": "让暗线信息的每次开启都有责任边界。",
+            "response_text": "爱丽丝把木匣放到桌面中央，只在外页写下三个问题：谁保管、何时打开、先通知谁。",
+        },
+    ]
+    if 54 <= day <= 60 and band in {"morning", "afternoon", "evening", "night"}:
+        for route in tail_routes:
+            if _flag(state, route["required_flag"]) < 1 or _flag(state, route["done_flag"]) >= 1:
+                continue
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id=route["npc_id"],
+                    intent_id=route["intent_id"],
+                    kind="npc_plan",
+                    title=route["title"],
+                    description=route["description"],
+                    priority=89,
+                    reason="Day 54-60 must make the selected Day 53 result playable before the third-month bridge.",
+                    action={"type": "scene_activity", "activity_id": route["activity_id"]},
+                    stakes=[
+                        "这一步会把第二月结果变成可执行规则，而不只是月末文本。",
+                        "Day 58 会阻止玩家跳过对应尾声活动。",
+                    ],
+                    response_options=[
+                        _social_response(
+                            response_id=route["response_id"],
+                            label=route["response_label"],
+                            hint=route["response_hint"],
+                            result_text=route["response_text"],
+                            tone="steady",
+                            effects={
+                                "flags": {f"{route['intent_id']}_agreed": 1},
+                                "relationship": {f"{route['npc_id']}.trust": 1},
+                            },
+                        )
+                    ],
+                    fallback=(route["tile_x"], route["tile_y"], route["scene_id"]),
+                    scene_id=route["scene_id"],
+                    tile_x=route["tile_x"],
+                    tile_y=route["tile_y"],
+                )
+            )
+
+    if (
+        day == 61
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month02_tail_feedback_done") >= 1
+        and _flag(state, "month03_departure_ready") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_calls_third_month_departure",
+                kind="story_event",
+                title="爱丽丝和尤吉欧在北门等你写下第三月准则",
+                description="第二月结果已经真正落地。两名同伴把轮值板、路线卡、回撤标记或密封协议带到北门，等你决定第三月第一条行动准则。",
+                priority=94,
+                reason="Day 61 needs a visible route-specific bridge into the third month.",
+                action={"type": "story_event", "event_id": "ch1_d61_third_month_departure"},
+                stakes=[
+                    "事件只显示当前第二月结果对应的两个第三月入口。",
+                    "选择会写入第三月路线、关系、承诺和长期记忆。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="review_third_month_departure",
+                        label="和两名同伴复核第三月出发准则",
+                        hint="进入第六十一天路线专属选择。",
+                        result_text="爱丽丝摊开记录，尤吉欧按住路线标记，等你写下第三月真正要承担的第一步。",
+                        tone="steady",
+                        effects={
+                            "flags": {"third_month_departure_review_agreed": 1},
+                            "relationship": {"alice.trust": 1, "eugeo.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

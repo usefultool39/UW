@@ -2164,6 +2164,575 @@
           }
         }
       ]
+    },
+    {
+      "id": "village_formal_hearing_followthrough",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第二月尾声 · 听证规则落地",
+      "label": "把正式边界听证变成第一轮值班规则",
+      "description": "正式听证已经结束，但村民还需要知道谁记录、谁复核、谁有权发出撤退信号。爱丽丝把空白轮值板交给你完成最后一道落地。",
+      "result_text": "听证记录从书页走到巡逻板。每条报告都有记录人和复核人，撤退信号不再依赖某一个人的勇气；第二月公开路线第一次可以在三人不在场时继续运行。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "tail",
+        "formal_hearing",
+        "village",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 54,
+        "day_max": 60,
+        "required_flags": {
+          "month02_result_formal_hearing": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month02_tail_choice",
+      "player_facing_benefit": "决定正式听证如何进入第三月：培养轮值记录员，或先建立小规模边界说明队。",
+      "choices": [
+        {
+          "id": "rotate_testimony_clerks",
+          "label": "建立轮值记录与双人复核",
+          "hint": "公开制度最稳；第三月村务可以独立留下可核验证词。",
+          "tone": "structured",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 61 可把第三月入口写成公开议事试行",
+              "村务记录可靠性提高"
+            ]
+          },
+          "result_text": "你把记录员和复核人分开轮值，任何异常都必须由两个人签名。爱丽丝把这条规则写在听证簿第一页，村民也知道如何修正一次误报。",
+          "effects": {
+            "flags": {
+              "month02_tail_feedback_done": 1,
+              "month02_formal_hearing_followthrough_done": 1,
+              "month02_rotating_clerks_ready": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家为正式听证建立轮值记录与双人复核，让村务能独立留下可靠证词。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家让巡逻报告必须经过记录人和复核人共同确认。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "train_boundary_speakers",
+          "label": "先训练一支边界说明小队",
+          "hint": "行动更灵活；第三月能更快向不同轮值解释风险和退路。",
+          "tone": "practical",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 61 可组织公开侦察说明会",
+              "村民理解撤退规则的速度提高"
+            ]
+          },
+          "result_text": "你让尤吉欧演示撤退手势，再让每个说明员用自己的话复述风险。爱丽丝只纠正证据边界，不替他们背答案；第一支能把规则讲明白的小队因此形成。",
+          "effects": {
+            "flags": {
+              "month02_tail_feedback_done": 1,
+              "month02_formal_hearing_followthrough_done": 1,
+              "month02_boundary_speakers_ready": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家训练边界说明小队，让公开规则能被不同轮值准确复述。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家请尤吉欧带领村民演练撤退手势和边界说明。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "village_warning_route_drill",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square",
+        "north_gate"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第二月尾声 · 分层警告演练",
+      "label": "把警告与退路变成村民能执行的演练",
+      "description": "你只公开了可验证的警告与退路。现在要确认村民遇到异常时，不需要知道源头推断也能做出正确反应。",
+      "result_text": "演练没有提及异常源头，只反复确认时段、距离和退路。村民在第三次信号响起前已经能主动让开北门通道；克制的信息第一次产生了具体的安全效果。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "tail",
+        "warning_only",
+        "village",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 54,
+        "day_max": 60,
+        "required_flags": {
+          "month02_result_warning_only": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month02_tail_choice",
+      "player_facing_benefit": "决定分层警告如何进入第三月：固定钟声网络，或可移动的夜间守望路线。",
+      "choices": [
+        {
+          "id": "drill_warning_bells",
+          "label": "演练三段钟声与家庭退路",
+          "hint": "覆盖全村、容易上手；源头细节继续不公开。",
+          "tone": "protective",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 61 可建立固定警告钟网络",
+              "新玩家式村民也能快速理解避险方法"
+            ]
+          },
+          "result_text": "你把异常、集合和撤退分别写成三段钟声。爱丽丝逐户确认退路，尤吉欧故意打乱一次节拍检验反应；即使没有源头答案，村民也知道下一步。",
+          "effects": {
+            "flags": {
+              "month02_tail_feedback_done": 1,
+              "month02_warning_route_drill_done": 1,
+              "month02_warning_bells_drilled": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家用三段钟声和家庭退路落实分层警告，不公开未经确认的源头。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家让尤吉欧通过打乱钟声节拍检验村民避险反应。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "prepare_mobile_watch_cards",
+          "label": "制作可移动守望路线卡",
+          "hint": "不依赖固定设施；适合第三月把警告带到北门外侧。",
+          "tone": "mobile",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 61 可建立移动守望路线",
+              "警告能力能跟随侦察队向外延伸"
+            ]
+          },
+          "result_text": "你把安全距离、集合点和撤退方向画成小卡，交给移动轮值。尤吉欧带他们从广场走到北门再折返，爱丽丝确认每张卡都不包含未经核验的源头推断。",
+          "effects": {
+            "flags": {
+              "month02_tail_feedback_done": 1,
+              "month02_warning_route_drill_done": 1,
+              "month02_mobile_watch_cards_ready": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家把分层警告画成不泄露源头推断的移动守望路线卡。",
+                "weight": 4
+              },
+              "eugeo": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家和尤吉欧带移动轮值从村道走到北门演练退路。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "north_gate_source_pursuit_calibration",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第二月尾声 · 源头追查校准",
+      "label": "校准第三月源头追查的推进与停步节拍",
+      "description": "你决定继续三人追查。出发前还要把下一段回撤标记、失联搜索起点和任何人都能叫停的规则重新演练一次。",
+      "result_text": "三个人在北门内完成了一次没有真正越界的校准。每一步推进都对应一枚回撤标记，每个停步信号都得到另外两人的复述；第三月的勇气第一次有了可以检查的形状。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "tail",
+        "source_pursuit",
+        "north_gate",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 54,
+        "day_max": 60,
+        "required_flags": {
+          "month02_result_team_probe_continues": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 3,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month02_tail_choice",
+      "player_facing_benefit": "决定源头追查何时进入第三月：黎明按回撤标记出发，或等待下一次可信异常信号。",
+      "choices": [
+        {
+          "id": "test_next_return_marker",
+          "label": "先验证下一枚回撤标记",
+          "hint": "保持主动推进；同伴压力较高，但第三月能在黎明直接出发。",
+          "tone": "bold",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "Day 61 可选择黎明按标记出发",
+              "源头路线保持最快推进速度"
+            ]
+          },
+          "result_text": "你们只越过北门到下一枚回撤标记，确认它在雨后仍能被看见。尤吉欧重新描深刻线，爱丽丝则把逾时搜索起点写进副本，主动推进没有丢掉退路。",
+          "effects": {
+            "flags": {
+              "month02_tail_feedback_done": 1,
+              "month02_source_pursuit_calibration_done": 1,
+              "month02_next_return_marker_tested": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "promises": {
+              "alice": "第三月黎明出发时，队伍必须在第一枚回撤标记前再次确认停步权。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家验证下一枚回撤标记，并保留第三月黎明出发前的再次停步确认。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家和尤吉欧确认雨后的下一枚回撤标记仍然可见。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "rehearse_abort_protocol",
+          "label": "先完整演练失联与中止协议",
+          "hint": "降低同伴压力；第三月等待可信信号后再出发。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 61 可选择等待可信信号",
+              "失联和误判风险最低"
+            ]
+          },
+          "result_text": "你让三个人轮流扮演失联者、搜索者和叫停者，把中止协议完整走了一遍。爱丽丝终于确认这条暗线不是靠默契猜测，尤吉欧也把等待信号写进出发条件。",
+          "effects": {
+            "flags": {
+              "month02_tail_feedback_done": 1,
+              "month02_source_pursuit_calibration_done": 1,
+              "month02_abort_protocol_rehearsed": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家完整演练失联、搜索与叫停协议，让源头暗线有了明确中止边界。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家把等待可信信号写进第三月源头追查的出发条件。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reading_hall_sealed_copy_protocol",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第二月尾声 · 密封副本托管",
+      "label": "把密封副本的开启条件写成可执行协议",
+      "description": "密封副本已经交给村务，但谁保管、什么条件下打开、打开后如何通知三人仍需写清。爱丽丝不希望责任只停留在一句承诺里。",
+      "result_text": "密封副本被放进有两道签名的木匣。开启条件、逾时标准和通知顺序都写在外页；暗线仍保留速度，却不再把所有风险压在三个人的记忆里。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "tail",
+        "sealed_copy",
+        "reading_hall",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 54,
+        "day_max": 60,
+        "required_flags": {
+          "month02_result_sealed_copy_handed_over": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 1,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month02_tail_choice",
+      "player_facing_benefit": "决定密封副本如何进入第三月：双人共同托管，或由爱丽丝保管开启钥匙并接受明确审计。",
+      "choices": [
+        {
+          "id": "create_paired_custody_log",
+          "label": "建立双人托管与开启日志",
+          "hint": "责任最分散；第三月任何开启都留下两人签名。",
+          "tone": "accountable",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 61 可采用双人共同托管",
+              "任何信息公开都有可追溯记录"
+            ]
+          },
+          "result_text": "你规定副本必须由两名不同轮值共同保管，开启时留下原因、时间和通知对象。爱丽丝确认这不是把责任推给村务，而是让任何人都不能悄悄改写记录。",
+          "effects": {
+            "flags": {
+              "month02_tail_feedback_done": 1,
+              "month02_sealed_copy_protocol_done": 1,
+              "month02_paired_custody_ready": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家为密封副本建立双人托管和开启日志，避免任何人单独改写记录。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家让密封副本的每次开启都留下原因、时间和通知对象。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "entrust_alice_with_audit_key",
+          "label": "由爱丽丝保管钥匙，另设公开审计页",
+          "hint": "响应最快；爱丽丝承担更重责任，但每次开启仍需公开说明。",
+          "tone": "trust",
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "Day 61 可由爱丽丝保管审计钥匙",
+              "紧急情况下响应更快，但责任集中"
+            ]
+          },
+          "result_text": "你把开启钥匙交给爱丽丝，同时要求每次开启都先在外页写明原因。她接过钥匙，没有把这当成特权，只让尤吉欧保管一份空白审计页，确保她也会被复核。",
+          "effects": {
+            "flags": {
+              "month02_tail_feedback_done": 1,
+              "month02_sealed_copy_protocol_done": 1,
+              "month02_alice_audit_key_ready": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 1
+            },
+            "promises": {
+              "alice": "爱丽丝保管密封副本钥匙，但每次开启前必须在公开审计页写明原因。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家把密封副本钥匙交给爱丽丝，并要求每次开启前留下公开审计原因。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month02_tail",
+                "summary": "第二月尾声，玩家请尤吉欧保管空白审计页，以复核爱丽丝对密封副本的每次开启。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

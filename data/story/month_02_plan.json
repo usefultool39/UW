@@ -12,7 +12,11 @@
     "unresolved": "第二月路线还没有写入。先完成第三十一天的第二月交接。",
     "order": "第二月从稳守北门和村务协同展开。重点是公开巡查、补给线和许可远征。",
     "expedition": "第二月从三人边境远征展开。重点是北门外路线、撤退标记和异常源头。",
-    "quiet": "第二月从静默观察和暗线复核展开。重点是异常频率、记录完整性和同伴信任。"
+    "quiet": "第二月从静默观察和暗线复核展开。重点是异常频率、记录完整性和同伴信任。",
+    "formal_hearing": "第二月以正式边界听证收束。村务记录、证词和撤退规则将共同进入第三月公开边界路线。",
+    "guarded_warning": "第二月以分层警告收束。村民掌握避险方法，源头推断继续由小队负责。",
+    "source_pursuit": "第二月以三人源头追查收束。回撤标记和停步权将决定第三月何时出发。",
+    "accountable_probe": "第二月以密封副本托管收束。暗线继续保留，但开启条件和责任已经可追溯。"
   },
   "weeks": [
     {
@@ -290,16 +294,17 @@
         61
       ],
       "title": "第 8 周：第二月收束",
-      "summary": "Day 53 根据公开地图或三人暗线只展示对应的两个结果选择，把第二月写成第三月可继续读取的长期路线。",
+      "summary": "Day 53 确认第二月结果，Day 54–60 把结果落成村务规则、警告演练、源头校准或密封托管；Day 61 写下第三月第一条出发准则。",
       "goals": [
         "完成第二月路线结果",
-        "写入第三月入口 flag",
-        "结算同伴信任、紧张与承诺"
+        "让结果进入可操作的尾声活动",
+        "写入第三月出发准则"
       ],
       "play_hooks": [
-        "路线专属月末选择",
-        "关系结算",
-        "第三月入口"
+        "路线专属尾声活动",
+        "NPC 主动反馈",
+        "第三月出发选择",
+        "月计划路线摘要"
       ],
       "milestones": [
         {
@@ -324,6 +329,111 @@
             "打开对应第三月路线"
           ],
           "reward": "第二月完成收束，并生成第三月公开边界或源头追查入口。"
+        },
+        {
+          "id": "m02_formal_hearing_followthrough",
+          "title": "Day 54-60：听证规则落地",
+          "day_range": [
+            54,
+            60
+          ],
+          "scene_id": "village_square",
+          "related_activity_id": "village_formal_hearing_followthrough",
+          "completed_flag": "month02_formal_hearing_followthrough_done",
+          "requirements": {
+            "required_flags": {
+              "month02_result_formal_hearing": 1
+            }
+          },
+          "goals": [
+            "建立轮值复核或说明小队",
+            "让公开规则脱离三人也能运行"
+          ],
+          "reward": "第三月获得公开议事或公开侦察入口。"
+        },
+        {
+          "id": "m02_warning_route_drill",
+          "title": "Day 54-60：分层警告演练",
+          "day_range": [
+            54,
+            60
+          ],
+          "scene_id": "village_square",
+          "related_activity_id": "village_warning_route_drill",
+          "completed_flag": "month02_warning_route_drill_done",
+          "requirements": {
+            "required_flags": {
+              "month02_result_warning_only": 1
+            }
+          },
+          "goals": [
+            "演练固定钟声或移动路线卡",
+            "验证不公开源头也能安全行动"
+          ],
+          "reward": "第三月获得固定警告或移动守望入口。"
+        },
+        {
+          "id": "m02_source_pursuit_calibration",
+          "title": "Day 54-60：源头追查校准",
+          "day_range": [
+            54,
+            60
+          ],
+          "scene_id": "north_gate",
+          "related_activity_id": "north_gate_source_pursuit_calibration",
+          "completed_flag": "month02_source_pursuit_calibration_done",
+          "requirements": {
+            "required_flags": {
+              "month02_result_team_probe_continues": 1
+            }
+          },
+          "goals": [
+            "验证回撤标记或中止协议",
+            "决定第三月出发节拍"
+          ],
+          "reward": "第三月获得黎明出发或可信信号入口。"
+        },
+        {
+          "id": "m02_sealed_copy_protocol",
+          "title": "Day 54-60：密封副本托管",
+          "day_range": [
+            54,
+            60
+          ],
+          "scene_id": "reading_hall",
+          "related_activity_id": "reading_hall_sealed_copy_protocol",
+          "completed_flag": "month02_sealed_copy_protocol_done",
+          "requirements": {
+            "required_flags": {
+              "month02_result_sealed_copy_handed_over": 1
+            }
+          },
+          "goals": [
+            "明确开启条件与托管责任",
+            "让暗线风险可追溯"
+          ],
+          "reward": "第三月获得共同托管或审计钥匙入口。"
+        },
+        {
+          "id": "m02_third_month_departure",
+          "title": "Day 61：第三月出发准备",
+          "day_range": [
+            61,
+            61
+          ],
+          "scene_id": "north_gate",
+          "related_event_id": "ch1_d61_third_month_departure",
+          "completed_flag": "month03_departure_ready",
+          "requirements": {
+            "required_flags": {
+              "month02_tail_feedback_done": 1
+            }
+          },
+          "goals": [
+            "选择第三月第一条行动准则",
+            "结算第二月尾声承诺与关系"
+          ],
+          "reward": "第三月路线正式进入可扩展状态。"
         }
       ]
     }

@@ -2,7 +2,7 @@
 
 - **状态**：Current / 权威事实页
 - **快照日期**：2026-08-06
-- **Git 基线**：`main` / `origin/main`（第二月 Day 53 结果切片；具体提交以 `git log -1` 为准）
+- **Git 基线**：`main` / `origin/main`（第二月 Day 61 尾声闭环；具体提交以 `git log -1` 为准）
 - **版本标识**：`0.4.0-preview.1`（候选工作区；首批 runtime 素材与 AI 安全增强已接入；未创建 tag）
 
 ## 版本收束（2026-08-04）
@@ -179,3 +179,17 @@
 - scripted 模式继续完整离线可玩；FastAPI Session 仍是日期、flags、关系、记忆和存档的唯一权威。
 - 首轮真人盲测仍为 `pending-human-run`；本轮 E2E 只证明自动化路径，不替代真实玩家证据。
 - 本轮质量门：后端 `261 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `16 passed`；`git diff --check` 通过。既有 Starlette/httpx 弃用警告和 Phaser 约 1.48 MB chunk 警告保持非阻塞。
+
+
+## 2026-08-06 第二月 Day 54 → 61 尾声闭环
+
+- Day 53 四种结果现在各有一项 Day 54–60 路线专属尾声活动：听证规则落地、分层警告演练、源头追查校准、密封副本托管。
+- 四项活动各有两个明确做法，都会写入共同的 `month02_tail_feedback_done`、路线专属 flag、关系、长期记忆，并在部分路线记录承诺或紧张变化。
+- Day 58 新增尾声剧情闸门，玩家必须把第二月结果落成可执行规则，不能直接睡到月末。
+- Day 61 新增 `ch1_d61_third_month_departure`；事件根据当前尾声路线只显示两个第三月准则，共八种可到达入口。
+- Day 61 结果写入 `month03_departure_ready` 和对应第三月 route flag；完成事件后才能进入 Day 62。
+- 月计划路线摘要现在优先显示 Day 53 的最终结果，不再只显示 Day 31 的稳守 / 远征 / 静默入口。
+- 四种尾声都有 authored NPC 主动入口；Playwright 已覆盖正式听证 → 双人复核 → 第三月公开议事的完整 UI 路径。
+- scripted 模式、Session 权威状态和 AI 回退边界保持不变；没有读取 `ai-shop`，没有调用真实 Provider。
+- 首轮真人盲测仍为 `pending-human-run`，自动化测试不冒充玩家证据。
+- 本轮质量门：后端 `268 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `17 passed`；内容校验 0 errors / 0 warnings；`git diff --check` 通过。

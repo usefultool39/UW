@@ -1,5 +1,28 @@
 # Changelog
 
+## [Unreleased] 2026-08-06 — 第二月 Day 54–61 尾声闭环
+
+### Added
+
+- Day 53 四种结果分别新增听证规则落地、分层警告演练、源头追查校准、密封副本托管活动；每项活动有两个明确选择。
+- 四条尾声均有 NPC 主动入口、关系/记忆/承诺后果和玩家可见收益预览。
+- Day 61 新增 `ch1_d61_third_month_departure`，按当前尾声只展示两个第三月准则，共八个 authored 入口。
+- Day 58 与 Day 61 新增剧情日期闸门，防止跳过第二月结果落地或第三月交接。
+- Playwright 新增 Day 54 正式听证规则落地 → Day 61 公开议事准则的完整 UI 路径。
+
+### Changed
+
+- 第二月月计划 Week 08 现在覆盖 Day 53 结果、Day 54–60 四种尾声活动和 Day 61 第三月交接。
+- 月计划的 `ending_path` 优先读取 Day 53 最终结果，日志可显示正式听证、分层警告、源头追查或密封托管摘要。
+- `NEXT_PHASE.md` 转向 Day 62–75 第三月资源短循环和承诺/紧张可见摘要。
+
+### Verification
+
+- 后端：`268 passed`；内容校验 `ok=True`、0 errors、0 warnings；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：`16 passed`；production build 通过；Phaser chunk 约 1.48 MB 的既有体积警告保持不变。
+- Playwright E2E：`17 passed`。
+- `git diff --check`：通过。
+
 ## [Unreleased] 2026-08-06 — 第二月 Day 47–53 路线结果
 
 ### Added

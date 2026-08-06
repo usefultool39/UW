@@ -645,4 +645,53 @@ test.describe('开放世界质量 smoke', () => {
     expect(state.flags.month03_route_public_boundary).toBe(1)
   })
 
+
+  test('Day 54 到 Day 61 正式听证尾声可落地第三月准则', async ({ page, request }) => {
+    await setFlags(request, [
+      'month02_second_month_result_done',
+      'month02_result_formal_hearing'
+    ])
+    await playerAction(request, { kind: 'set_day', day: 54 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'village_square' })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const followthrough = page.locator('.interact-action[data-activity-id="village_formal_hearing_followthrough"]')
+    await expect(followthrough).toBeVisible()
+    await expect(followthrough).toContainText('正式听证')
+    await followthrough.click()
+
+    const clerks = page.locator('.event-choice').filter({ hasText: '建立轮值记录与双人复核' })
+    await expect(clerks).toContainText('爱丽丝 信任 +3')
+    await expect(clerks).toContainText('Day 61')
+    await clerks.click()
+    await expect(page.locator('.result-panel')).toContainText('任何异常都必须由两个人签名')
+
+    let state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month02_tail_feedback_done).toBe(1)
+    expect(state.flags.month02_formal_hearing_followthrough_done).toBe(1)
+    expect(state.flags.month02_rotating_clerks_ready).toBe(1)
+
+    await playerAction(request, { kind: 'set_day', day: 61 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'north_gate' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const departure = page.locator('.interact-action').filter({ hasText: '第三月准则' })
+    await expect(departure).toBeVisible()
+    await departure.click()
+
+    await expect(page.locator('.event-choice')).toHaveCount(2)
+    const council = page.locator('.event-choice').filter({ hasText: '启动公开边界议事试行' })
+    await expect(council).toContainText('第三月公开议事路线启动')
+    await council.click()
+    await expect(page.locator('.result-panel')).toContainText('公开议事试行')
+
+    state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month02_tail_resolved).toBe(1)
+    expect(state.flags.month03_departure_ready).toBe(1)
+    expect(state.flags.month03_public_council_trial).toBe(1)
+  })
+
 })

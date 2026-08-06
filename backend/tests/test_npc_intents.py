@@ -526,3 +526,47 @@ def test_day_fifty_three_result_intent_reads_current_route():
             "event_id": "ch1_d53_second_month_result",
         }
         assert expected_text in intent.description
+
+
+def test_day_fifty_four_tail_intent_matches_day_fifty_three_result():
+    cases = [
+        ("month02_result_formal_hearing", "alice_lands_formal_hearing_rules", "village_formal_hearing_followthrough"),
+        ("month02_result_warning_only", "eugeo_drills_guarded_warning_route", "village_warning_route_drill"),
+        ("month02_result_team_probe_continues", "eugeo_calibrates_source_pursuit", "north_gate_source_pursuit_calibration"),
+        ("month02_result_sealed_copy_handed_over", "alice_writes_sealed_copy_protocol", "reading_hall_sealed_copy_protocol"),
+    ]
+    all_ids = {item[1] for item in cases}
+    for flag, expected_id, activity_id in cases:
+        sess = Session(run_id=f"test-day54-tail-intent-{expected_id}")
+        sess.state = sess.state.model_copy(
+            update={"day": 54, "time_band": "morning", "flags": {flag: 1}}
+        )
+
+        intents = {item.id: item for item in sess.public_state().npc_intents}
+
+        assert expected_id in intents
+        assert intents[expected_id].action == {
+            "type": "scene_activity",
+            "activity_id": activity_id,
+        }
+        assert not (all_ids - {expected_id}) & set(intents)
+
+
+def test_day_sixty_one_departure_intent_appears_after_tail_feedback():
+    sess = Session(run_id="test-day61-departure-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 61,
+            "time_band": "morning",
+            "flags": {"month02_tail_feedback_done": 1},
+        }
+    )
+
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+    intent = intents["alice_calls_third_month_departure"]
+
+    assert intent.scene_id == "north_gate"
+    assert intent.action == {
+        "type": "story_event",
+        "event_id": "ch1_d61_third_month_departure",
+    }

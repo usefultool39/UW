@@ -2032,6 +2032,446 @@
           }
         }
       ]
+    },
+    {
+      "id": "ch1_d61_third_month_departure",
+      "chapter": "chapter_01",
+      "kind": "month_bridge",
+      "title": "第六十一天：第三月出发准备",
+      "description": "第二月的结果已经通过村务规则、警告演练、源头校准或密封托管真正落地。现在要为第三月写下第一条出发准则。",
+      "trigger": {
+        "day_min": 61,
+        "day_max": 61,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month02_tail_feedback_done": 1
+        },
+        "forbidden_flags": {
+          "month03_departure_ready": 1
+        }
+      },
+      "location": {
+        "scene_id": "north_gate",
+        "tile_x": 67,
+        "tile_y": 24
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "choices": [
+        {
+          "id": "open_council_trial",
+          "label": "启动公开边界议事试行",
+          "hint": "正式听证结果：让双人复核的村务记录参与第三月边界决定。",
+          "conditions": {
+            "required_flags": {
+              "month02_formal_hearing_followthrough_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月公开议事路线启动",
+              "调查决定更稳但推进较慢"
+            ]
+          },
+          "result_text": "你把第三月第一条准则写成公开议事试行：证据簿、轮值记录与撤退规则都能进入决定。爱丽丝负责证据边界，尤吉欧负责把决定翻成现场手势。",
+          "effects": {
+            "flags": {
+              "month02_tail_resolved": 1,
+              "month03_departure_ready": 1,
+              "month03_public_council_trial": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家启动公开边界议事试行，让双人复核记录进入边境决定。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家请尤吉欧把公开议事决定转成现场撤退手势。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "assemble_public_scout_briefing",
+          "label": "组织公开侦察说明会",
+          "hint": "正式听证结果：先由说明小队讲清风险与退路，再批准小规模侦察。",
+          "conditions": {
+            "required_flags": {
+              "month02_formal_hearing_followthrough_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月公开侦察路线启动",
+              "村民理解更快，现场适应性更高"
+            ]
+          },
+          "result_text": "你让边界说明小队先讲清安全距离、撤退手势和未知部分，再讨论谁能参加侦察。第三月的公开不是公布答案，而是让更多人学会对未知负责。",
+          "effects": {
+            "flags": {
+              "month02_tail_resolved": 1,
+              "month03_departure_ready": 1,
+              "month03_public_scout_assembly": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家先组织公开侦察说明会，明确未知部分后再批准行动。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家让尤吉欧带说明小队讲清风险、退路和现场手势。",
+                "weight": 6
+              }
+            }
+          }
+        },
+        {
+          "id": "activate_warning_bell_network",
+          "label": "启用固定警告钟网络",
+          "hint": "分层警告结果：用三段钟声保护村庄，源头调查继续由小队负责。",
+          "conditions": {
+            "required_flags": {
+              "month02_warning_route_drill_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月固定警告网络启动",
+              "村内安全最易理解"
+            ]
+          },
+          "result_text": "第三月第一条准则被写成三段钟声：异常、集合、撤退。村民不需要知道未经确认的源头，也能在调查队不在时保护自己。",
+          "effects": {
+            "flags": {
+              "month02_tail_resolved": 1,
+              "month03_departure_ready": 1,
+              "month03_warning_bell_network": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家启用三段警告钟网络，在不公开源头推断的前提下保护村庄。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家把异常、集合和撤退写成固定钟声。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "launch_mobile_watch_route",
+          "label": "启动移动守望路线",
+          "hint": "分层警告结果：让路线卡随侦察队向北门外侧延伸。",
+          "conditions": {
+            "required_flags": {
+              "month02_warning_route_drill_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月移动守望路线启动",
+              "警告和撤退能力可随队伍扩展"
+            ]
+          },
+          "result_text": "你把路线卡交给第一组移动守望，要求每次向外延伸都先标出能回到村里的方向。尤吉欧领队试走，爱丽丝保留证据边界；警告系统开始跟着人移动。",
+          "effects": {
+            "flags": {
+              "month02_tail_resolved": 1,
+              "month03_departure_ready": 1,
+              "month03_mobile_watch_route": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家启动不泄露源头推断的移动守望路线。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家让尤吉欧带第一组移动守望试走北门退路。",
+                "weight": 6
+              }
+            }
+          }
+        },
+        {
+          "id": "depart_at_dawn_markers",
+          "label": "黎明沿回撤标记出发",
+          "hint": "源头追查结果：保持最快推进，但在第一枚标记前再次确认停步权。",
+          "conditions": {
+            "required_flags": {
+              "month02_source_pursuit_calibration_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "第三月黎明源头追查启动",
+              "推进最快、同伴压力最高"
+            ]
+          },
+          "result_text": "你把第三月出发时间定在黎明。三个人会先走到第一枚回撤标记，再重新确认任何人都能叫停；尤吉欧收好绳标，爱丽丝将搜索起点交给村务。",
+          "effects": {
+            "flags": {
+              "month02_tail_resolved": 1,
+              "month03_departure_ready": 1,
+              "month03_source_depart_dawn": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "promises": {
+              "alice": "第三月黎明追查必须在第一枚回撤标记前重新确认停步权。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家决定黎明沿回撤标记出发，并在第一枚标记前再次确认停步权。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家选择与尤吉欧在黎明继续源头追查。",
+                "weight": 6
+              }
+            }
+          }
+        },
+        {
+          "id": "wait_for_verified_signal",
+          "label": "等待下一次可信信号再出发",
+          "hint": "源头追查结果：保持暗线，但用完整中止协议降低误判和失联风险。",
+          "conditions": {
+            "required_flags": {
+              "month02_source_pursuit_calibration_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月可信信号路线启动",
+              "风险最低，但推进速度较慢"
+            ]
+          },
+          "result_text": "你没有把黎明当成必须出发的理由，而是等待下一次能被两份记录交叉确认的信号。爱丽丝把中止协议放在最上层，尤吉欧保留已画好的回撤标记。",
+          "effects": {
+            "flags": {
+              "month02_tail_resolved": 1,
+              "month03_departure_ready": 1,
+              "month03_source_wait_for_signal": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家决定等待可交叉确认的可信信号，并把中止协议置于优先位置。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家保留回撤标记但不因日期到来而冒险出发。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "adopt_paired_custody",
+          "label": "采用双人共同托管",
+          "hint": "密封副本结果：任何开启都需两人签名，暗线继续保留。",
+          "conditions": {
+            "required_flags": {
+              "month02_sealed_copy_protocol_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月双人托管路线启动",
+              "信息公开最可追溯"
+            ]
+          },
+          "result_text": "你把第三月第一条准则写成双人托管：没有任何人能独自打开或改写密封记录。暗线仍然属于三人小队，但它的安全边界由更多人共同守住。",
+          "effects": {
+            "flags": {
+              "month02_tail_resolved": 1,
+              "month03_departure_ready": 1,
+              "month03_shared_custody_record": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家采用双人共同托管，让密封记录的每次开启都可追溯。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家让三人暗线由村务双人托管机制守住安全边界。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "entrust_audited_key",
+          "label": "由爱丽丝保管审计钥匙",
+          "hint": "密封副本结果：紧急响应更快，但爱丽丝每次开启都必须公开说明。",
+          "conditions": {
+            "required_flags": {
+              "month02_sealed_copy_protocol_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "第三月审计钥匙路线启动",
+              "响应最快，但责任集中在爱丽丝"
+            ]
+          },
+          "result_text": "爱丽丝接过第三月的审计钥匙，尤吉欧保管空白开启页。你们约定紧急情况可以先响应，但任何一次开启都必须在回村后公开原因；信任因此有了可检查的边界。",
+          "effects": {
+            "flags": {
+              "month02_tail_resolved": 1,
+              "month03_departure_ready": 1,
+              "month03_alice_custody_key": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": 1,
+              "eugeo.trust": 1
+            },
+            "promises": {
+              "alice": "爱丽丝可在紧急情况下开启密封副本，但回村后必须公开原因并接受尤吉欧复核。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家将审计钥匙交给爱丽丝，同时要求紧急开启后公开原因。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_entry",
+                "summary": "第三月入口，玩家请尤吉欧保管空白开启页并复核审计钥匙使用。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

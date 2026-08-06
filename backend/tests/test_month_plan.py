@@ -542,3 +542,96 @@ def test_month_two_week_seven_route_milestones_are_exclusive_and_track_completio
     week = next(item for item in completed["weeks"] if item["id"] == "week_07")
     milestones = {item["id"]: item for item in week["milestones"]}
     assert milestones["m02_shared_map_hearing"]["status"] == "completed"
+
+
+def test_month_two_day_fifty_four_tail_activities_are_route_specific_and_playable():
+    cases = [
+        (
+            "month02_result_formal_hearing",
+            "village_square",
+            "village_formal_hearing_followthrough",
+            "rotate_testimony_clerks",
+            "month02_formal_hearing_followthrough_done",
+        ),
+        (
+            "month02_result_warning_only",
+            "village_square",
+            "village_warning_route_drill",
+            "drill_warning_bells",
+            "month02_warning_route_drill_done",
+        ),
+        (
+            "month02_result_team_probe_continues",
+            "north_gate",
+            "north_gate_source_pursuit_calibration",
+            "rehearse_abort_protocol",
+            "month02_source_pursuit_calibration_done",
+        ),
+        (
+            "month02_result_sealed_copy_handed_over",
+            "reading_hall",
+            "reading_hall_sealed_copy_protocol",
+            "create_paired_custody_log",
+            "month02_sealed_copy_protocol_done",
+        ),
+    ]
+    for route_flag, scene_id, activity_id, choice_id, done_flag in cases:
+        sess = Session(run_id=f"test-month-two-tail-{activity_id}")
+        sess.state = sess.state.model_copy(
+            update={"day": 54, "time_band": "morning", "flags": {route_flag: 1}}
+        )
+        sess.player_action(kind="move_scene", scene_id=scene_id)
+
+        out = sess.player_action(
+            kind="scene_activity",
+            activity_id=activity_id,
+            activity_choice=choice_id,
+        )
+
+        assert out["ok"] is True
+        assert out["state"]["flags"]["month02_tail_feedback_done"] == 1
+        assert out["state"]["flags"][done_flag] == 1
+        assert out["memory_written"]
+
+
+def test_month_two_result_summary_prefers_day_fifty_three_outcome():
+    cases = [
+        ("month02_result_formal_hearing", "formal_hearing", "正式边界听证"),
+        ("month02_result_warning_only", "guarded_warning", "分层警告"),
+        ("month02_result_team_probe_continues", "source_pursuit", "三人源头追查"),
+        ("month02_result_sealed_copy_handed_over", "accountable_probe", "密封副本托管"),
+    ]
+    for flag, expected_path, expected_note in cases:
+        sess = Session(run_id=f"test-month-two-result-summary-{expected_path}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 54,
+                "flags": {"month02_route_order": 1, flag: 1},
+            }
+        )
+
+        plan = public_month_plan(sess.root, sess.state, month_id="month_02")
+
+        assert plan["current"]["ending_path"] == expected_path
+        assert expected_note in plan["current"]["ending_note"]
+
+
+def test_month_two_week_eight_tracks_tail_and_departure_milestones():
+    sess = Session(run_id="test-month-two-week-eight-tail")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 54,
+            "flags": {
+                "month02_result_formal_hearing": 1,
+                "month02_second_month_result_done": 1,
+            },
+        }
+    )
+
+    plan = public_month_plan(sess.root, sess.state, month_id="month_02")
+    week = next(item for item in plan["weeks"] if item["id"] == "week_08")
+    milestones = {item["id"]: item for item in week["milestones"]}
+
+    assert milestones["m02_formal_hearing_followthrough"]["status"] == "active"
+    assert milestones["m02_warning_route_drill"]["status"] == "locked"
+    assert milestones["m02_third_month_departure"]["status"] == "locked"
