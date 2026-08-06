@@ -758,6 +758,16 @@ function activityAvailability(activity) {
     return { ok: false, reason: `开放时段：${timeBands.map(getTimeBandLabel).join('、')}` }
   }
 
+  const currentDay = Number(props.simState?.day || 1)
+  const dayMin = activity.requirements?.day_min
+  const dayMax = activity.requirements?.day_max
+  if (dayMin != null && currentDay < Number(dayMin)) {
+    return { ok: false, reason: `第 ${dayMin} 天起开放` }
+  }
+  if (dayMax != null && currentDay > Number(dayMax)) {
+    return { ok: false, reason: `已在第 ${dayMax} 天结束` }
+  }
+
   const requiredFlags = activity.requirements?.required_flags || {}
   const flags = props.simState?.flags || {}
   for (const [key, value] of Object.entries(requiredFlags)) {
@@ -1467,6 +1477,8 @@ async function doWithBusy(fn) {
     const msg = e.message || String(e)
     if (msg.includes('wrong_time_band')) {
       localError.value = '现在时段不适合这个行动。先推进时间，或去做当前时段的场景活动。'
+    } else if (msg.includes('wrong_day_range')) {
+      localError.value = '这个行动不在当前剧情日期开放。先完成今天的关键目标并推进剧情。'
     } else if (msg.includes('wrong_scene')) {
       localError.value = '你还没有进入对应场景。先走到地图上的地点范围。'
     } else if (msg.includes('requirements_not_met')) {

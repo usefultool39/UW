@@ -4,7 +4,10 @@
   "title": "第二月：边境远征线",
   "subtitle": "三路线并行入口",
   "summary": "第二月从第一月末的路线选择展开。稳守线先把北门行动接入村务，远征线先复核北门外第一段路线，静默线先把异常频率整理成可复查记录。",
-  "day_range": [32, 61],
+  "day_range": [
+    32,
+    61
+  ],
   "ending_paths": {
     "unresolved": "第二月路线还没有写入。先完成第三十一天的第二月交接。",
     "order": "第二月从稳守北门和村务协同展开。重点是公开巡查、补给线和许可远征。",
@@ -15,43 +18,87 @@
     {
       "id": "week_05",
       "week": 5,
-      "day_range": [32, 38],
+      "day_range": [
+        32,
+        38
+      ],
       "title": "第 5 周：第二月路线入口",
       "summary": "把第一月末的决定转成第二月第一组可执行动作，让玩家立刻看到三条路线的差异。",
-      "goals": ["完成对应路线的 Day 32 承接活动", "让同伴主动把路线变成行动", "为第二月后续事件留下明确 flag"],
-      "play_hooks": ["NPC 主动意图", "路线专属场景活动", "同伴记忆"],
+      "goals": [
+        "完成对应路线的 Day 32 承接活动",
+        "让同伴主动把路线变成行动",
+        "为第二月后续事件留下明确 flag"
+      ],
+      "play_hooks": [
+        "NPC 主动意图",
+        "路线专属场景活动",
+        "同伴记忆"
+      ],
       "milestones": [
         {
           "id": "m02_order_briefing",
           "title": "Day 32：稳守线村务简报",
-          "day_range": [32, 32],
+          "day_range": [
+            32,
+            32
+          ],
           "scene_id": "reading_hall",
           "related_activity_id": "church_month02_briefing",
           "completed_flag": "month02_order_briefing_done",
-          "requirements": { "required_flags": { "month02_route_order": 1 } },
-          "goals": ["整理巡查公开度", "确认补给线", "把撤退信号写成村务流程"],
+          "requirements": {
+            "required_flags": {
+              "month02_route_order": 1
+            }
+          },
+          "goals": [
+            "整理巡查公开度",
+            "确认补给线",
+            "把撤退信号写成村务流程"
+          ],
           "reward": "稳守线进入村务协同阶段。"
         },
         {
           "id": "m02_expedition_check",
           "title": "Day 32：远征线北门复核",
-          "day_range": [32, 32],
+          "day_range": [
+            32,
+            32
+          ],
           "scene_id": "north_gate",
           "related_activity_id": "north_gate_expedition_check",
           "completed_flag": "month02_expedition_check_done",
-          "requirements": { "required_flags": { "month02_route_expedition": 1 } },
-          "goals": ["复核第一段路线", "确认测距粉和绳标", "把撤退点写入同伴记忆"],
+          "requirements": {
+            "required_flags": {
+              "month02_route_expedition": 1
+            }
+          },
+          "goals": [
+            "复核第一段路线",
+            "确认测距粉和绳标",
+            "把撤退点写入同伴记忆"
+          ],
           "reward": "远征线进入北门外路线复核阶段。"
         },
         {
           "id": "m02_quiet_record",
           "title": "Day 32：静默线频率记录",
-          "day_range": [32, 32],
+          "day_range": [
+            32,
+            32
+          ],
           "scene_id": "reading_hall",
           "related_activity_id": "reading_hall_silent_record",
           "completed_flag": "month02_quiet_record_done",
-          "requirements": { "required_flags": { "month02_route_quiet": 1 } },
-          "goals": ["整理异常频率", "记录风声断点", "明确见证人和信息缺口"],
+          "requirements": {
+            "required_flags": {
+              "month02_route_quiet": 1
+            }
+          },
+          "goals": [
+            "整理异常频率",
+            "记录风声断点",
+            "明确见证人和信息缺口"
+          ],
           "reward": "静默线进入可复查记录阶段。"
         }
       ]
@@ -59,43 +106,87 @@
     {
       "id": "week_06",
       "week": 6,
-      "day_range": [39, 45],
+      "day_range": [
+        39,
+        45
+      ],
       "title": "第 6 周：路线深化",
       "summary": "Day 32 的公开度、撤退节拍或证据方法会改变本周 NPC 对巡逻板、补给和频率复核的描述；完成对应活动后才能跨过 Day 39。",
-      "goals": ["读取 Day 32 路线选择", "完成路线专属中段活动", "通过第二月中段日期闸门"],
-      "play_hooks": ["路线事件", "场景验证", "关系压力"],
+      "goals": [
+        "读取 Day 32 路线选择",
+        "完成路线专属中段活动",
+        "通过第二月中段日期闸门"
+      ],
+      "play_hooks": [
+        "路线事件",
+        "场景验证",
+        "关系压力"
+      ],
       "milestones": [
         {
           "id": "m02_order_patrol_standby",
           "title": "Day 39-45：稳守线巡逻板正式运营",
-          "day_range": [39, 45],
+          "day_range": [
+            39,
+            45
+          ],
           "scene_id": "village_square",
           "related_activity_id": "village_month02_patrol_standby",
           "completed_flag": "month02_order_patrol_standby_done",
-          "requirements": { "required_flags": { "month02_order_briefing_done": 1 } },
-          "goals": ["公开第二月巡逻轮值", "把北门撤退信号写进村务流程", "让村民知道何时报告异常"],
+          "requirements": {
+            "required_flags": {
+              "month02_order_briefing_done": 1
+            }
+          },
+          "goals": [
+            "公开第二月巡逻轮值",
+            "把北门撤退信号写进村务流程",
+            "让村民知道何时报告异常"
+          ],
           "reward": "稳守线进入村务协同运营阶段。"
         },
         {
           "id": "m02_expedition_supply_check",
           "title": "Day 39-45：远征线补给复核",
-          "day_range": [39, 45],
+          "day_range": [
+            39,
+            45
+          ],
           "scene_id": "north_gate",
           "related_activity_id": "north_gate_expedition_supply_review",
           "completed_flag": "month02_expedition_supply_review_done",
-          "requirements": { "required_flags": { "month02_expedition_check_done": 1 } },
-          "goals": ["确认干粮和标记粉余量", "把补给缺口记入同伴记忆", "决定下一次越界前的最低携带量"],
+          "requirements": {
+            "required_flags": {
+              "month02_expedition_check_done": 1
+            }
+          },
+          "goals": [
+            "确认干粮和标记粉余量",
+            "把补给缺口记入同伴记忆",
+            "决定下一次越界前的最低携带量"
+          ],
           "reward": "远征线进入补给确认阶段。"
         },
         {
           "id": "m02_quiet_frequency_crosscheck",
           "title": "Day 39-45：静默线频率复核",
-          "day_range": [39, 45],
+          "day_range": [
+            39,
+            45
+          ],
           "scene_id": "reading_hall",
           "related_activity_id": "reading_hall_quiet_frequency_crosscheck",
           "completed_flag": "month02_quiet_frequency_crosscheck_done",
-          "requirements": { "required_flags": { "month02_quiet_record_done": 1 } },
-          "goals": ["对比两周频率数据", "确认静默线是否移动", "更新记录可复查性"],
+          "requirements": {
+            "required_flags": {
+              "month02_quiet_record_done": 1
+            }
+          },
+          "goals": [
+            "对比两周频率数据",
+            "确认静默线是否移动",
+            "更新记录可复查性"
+          ],
           "reward": "静默线进入两周频率对比阶段。"
         }
       ]
@@ -103,16 +194,31 @@
     {
       "id": "week_07",
       "week": 7,
-      "day_range": [46, 52],
+      "day_range": [
+        46,
+        52
+      ],
       "title": "第 7 周：路线收敛",
-      "summary": "三条路线的中段记录在 Day 46 汇流；玩家必须决定公开共同异常地图，或暂时把源头保留在三人记录里。",
-      "goals": ["收束路线差异", "确认异常源头线索", "决定异常证据的公开度"],
-      "play_hooks": ["共同线索", "同伴分歧", "世界观察器"],
+      "summary": "三条路线在 Day 46 汇流后分成两条可玩的后半段：公开共同地图进入村务听证准备，三人暗线进入北门源头试探。Day 49 会阻止玩家跳过对应后续活动。",
+      "goals": [
+        "收束路线差异",
+        "决定异常证据的公开度",
+        "完成公开听证准备或三人源头试探"
+      ],
+      "play_hooks": [
+        "共同线索",
+        "路线专属活动",
+        "同伴分歧",
+        "可见选择后果"
+      ],
       "milestones": [
         {
           "id": "m02_anomaly_convergence",
           "title": "Day 46-52：异常信号收束",
-          "day_range": [46, 52],
+          "day_range": [
+            46,
+            52
+          ],
           "scene_id": "reading_hall",
           "related_activity_id": "boundary_anomaly_convergence",
           "completed_flag": "month02_anomaly_convergence_done",
@@ -123,20 +229,103 @@
               "month02_quiet_frequency_crosscheck_done": 1
             }
           },
-          "goals": ["把三条路线的异常发现写成共同记录", "确认异常是否指向同一个源头", "让同伴对异常判断形成共同认知"],
+          "goals": [
+            "把三条路线的异常发现写成共同记录",
+            "确认异常是否指向同一个源头",
+            "让同伴对异常判断形成共同认知"
+          ],
           "reward": "三条路线在异常源头上完成初步共识，并留下公开地图或三人暗线。"
+        },
+        {
+          "id": "m02_shared_map_hearing",
+          "title": "Day 47-52：共同地图听证准备",
+          "day_range": [
+            47,
+            52
+          ],
+          "scene_id": "village_square",
+          "related_activity_id": "village_shared_map_hearing",
+          "completed_flag": "month02_shared_map_hearing_done",
+          "requirements": {
+            "required_flags": {
+              "month02_shared_map_published": 1
+            }
+          },
+          "goals": [
+            "收集可核验的村民证词",
+            "区分亲历、转述与推测",
+            "为 Day 53 决定公开范围"
+          ],
+          "reward": "公开地图路线获得村内支持或更稳的证据口径。"
+        },
+        {
+          "id": "m02_team_source_probe",
+          "title": "Day 47-52：三人源头试探",
+          "day_range": [
+            47,
+            52
+          ],
+          "scene_id": "north_gate",
+          "related_activity_id": "north_gate_team_source_probe",
+          "completed_flag": "month02_team_source_probe_done",
+          "requirements": {
+            "required_flags": {
+              "month02_source_held_by_team": 1
+            }
+          },
+          "goals": [
+            "验证下一枚刻印方向",
+            "补全回撤标记或密封副本",
+            "为 Day 53 决定暗线责任边界"
+          ],
+          "reward": "三人暗线路线获得更深的源头线索或可交代的安全副本。"
         }
       ]
     },
     {
       "id": "week_08",
       "week": 8,
-      "day_range": [53, 61],
+      "day_range": [
+        53,
+        61
+      ],
       "title": "第 8 周：第二月收束",
-      "summary": "后续版本在这里加入第二月末的路线结果和第三月入口。",
-      "goals": ["完成第二月路线结果", "写入长期 flags", "打开第三月入口"],
-      "play_hooks": ["月末路线选择", "关系结算", "新区域入口"],
-      "milestones": []
+      "summary": "Day 53 根据公开地图或三人暗线只展示对应的两个结果选择，把第二月写成第三月可继续读取的长期路线。",
+      "goals": [
+        "完成第二月路线结果",
+        "写入第三月入口 flag",
+        "结算同伴信任、紧张与承诺"
+      ],
+      "play_hooks": [
+        "路线专属月末选择",
+        "关系结算",
+        "第三月入口"
+      ],
+      "milestones": [
+        {
+          "id": "m02_second_month_result",
+          "title": "Day 53：第二月阶段结果",
+          "day_range": [
+            53,
+            53
+          ],
+          "scene_id": "reading_hall",
+          "related_event_id": "ch1_d53_second_month_result",
+          "completed_flag": "month02_second_month_result_done",
+          "requirements": {
+            "required_any_flags": {
+              "month02_shared_map_hearing_done": 1,
+              "month02_team_source_probe_done": 1
+            }
+          },
+          "goals": [
+            "决定公开听证、分层警告、继续追查或交出副本",
+            "把选择写入同伴长期记忆",
+            "打开对应第三月路线"
+          ],
+          "reward": "第二月完成收束，并生成第三月公开边界或源头追查入口。"
+        }
+      ]
     }
   ]
 }

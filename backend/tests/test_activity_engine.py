@@ -96,3 +96,38 @@ def test_authored_choice_activity_requires_explicit_choice():
         assert exc.details["choice_ids"] == ["safe", "bold"]
     else:
         raise AssertionError("expected activity_choice_required")
+
+
+def test_activity_plan_enforces_authored_day_window_before_effects():
+    gated = activity(requirements={"day_min": 47, "day_max": 52})
+    for day in (46, 53):
+        try:
+            plan_scene_activity(
+                gated,
+                activity_id="demo_activity",
+                activity_choice=None,
+                scene_id="reading_hall",
+                time_band="morning",
+                day=day,
+                flags={},
+                player=PlayerState(scene_id="reading_hall"),
+            )
+        except ActivityValidationError as exc:
+            assert exc.code == "wrong_day_range"
+            assert exc.details["day"] == day
+            assert exc.details["day_min"] == 47
+            assert exc.details["day_max"] == 52
+        else:
+            raise AssertionError("expected wrong_day_range")
+
+    plan = plan_scene_activity(
+        gated,
+        activity_id="demo_activity",
+        activity_choice=None,
+        scene_id="reading_hall",
+        time_band="morning",
+        day=49,
+        flags={},
+        player=PlayerState(scene_id="reading_hall"),
+    )
+    assert plan.next_flags["clue_count"] == 1

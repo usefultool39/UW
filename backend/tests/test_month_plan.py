@@ -448,3 +448,97 @@ def test_day_thirty_two_route_choice_is_required_and_unlocks_day_thirty_three():
     advanced = sess.player_action(kind="rest_until_next_day")
     assert advanced["ok"] is True
     assert advanced["state"]["day"] == 33
+
+
+def test_month_two_public_map_followup_requires_day_window_and_choice():
+    sess = Session(run_id="test-month-two-shared-map-hearing")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 46,
+            "time_band": "morning",
+            "flags": {
+                "month02_anomaly_convergence_done": 1,
+                "month02_shared_map_published": 1,
+            },
+        }
+    )
+    sess.player_action(kind="move_scene", scene_id="village_square")
+
+    early = sess.player_action(
+        kind="scene_activity",
+        activity_id="village_shared_map_hearing",
+        activity_choice="invite_village_testimony",
+    )
+    assert early["ok"] is False
+    assert early["error"] == "wrong_day_range"
+    assert "month02_shared_map_hearing_done" not in sess.state.flags
+
+    sess.state = sess.state.model_copy(update={"day": 47})
+    missing = sess.player_action(
+        kind="scene_activity",
+        activity_id="village_shared_map_hearing",
+    )
+    assert missing["ok"] is False
+    assert missing["error"] == "activity_choice_required"
+
+    chosen = sess.player_action(
+        kind="scene_activity",
+        activity_id="village_shared_map_hearing",
+        activity_choice="invite_village_testimony",
+    )
+    assert chosen["ok"] is True
+    assert chosen["state"]["flags"]["month02_shared_map_hearing_done"] == 1
+    assert chosen["state"]["flags"]["month02_village_testimony_gathered"] == 1
+    assert {row["npc_id"] for row in chosen["memory_written"]} == {"alice", "eugeo"}
+
+
+def test_month_two_team_probe_followup_records_sealed_copy_route():
+    sess = Session(run_id="test-month-two-team-source-probe")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 49,
+            "time_band": "morning",
+            "flags": {
+                "month02_anomaly_convergence_done": 1,
+                "month02_source_held_by_team": 1,
+            },
+        }
+    )
+    sess.player_action(kind="move_scene", scene_id="north_gate")
+
+    chosen = sess.player_action(
+        kind="scene_activity",
+        activity_id="north_gate_team_source_probe",
+        activity_choice="prepare_sealed_duplicate",
+    )
+
+    assert chosen["ok"] is True
+    assert chosen["state"]["flags"]["month02_team_source_probe_done"] == 1
+    assert chosen["state"]["flags"]["month02_sealed_duplicate_ready"] == 1
+    assert any(row["npc_id"] == "alice" for row in chosen["memory_written"])
+
+
+def test_month_two_week_seven_route_milestones_are_exclusive_and_track_completion():
+    public = Session(run_id="test-month-two-week-seven-public")
+    public.state = public.state.model_copy(
+        update={
+            "day": 47,
+            "flags": {
+                "month02_anomaly_convergence_done": 1,
+                "month02_shared_map_published": 1,
+            },
+        }
+    )
+    public_plan = public_month_plan(public.root, public.state, month_id="month_02")
+    week = next(item for item in public_plan["weeks"] if item["id"] == "week_07")
+    milestones = {item["id"]: item for item in week["milestones"]}
+    assert milestones["m02_shared_map_hearing"]["status"] == "active"
+    assert milestones["m02_team_source_probe"]["status"] == "locked"
+
+    public.state = public.state.model_copy(
+        update={"flags": {**public.state.flags, "month02_shared_map_hearing_done": 1}}
+    )
+    completed = public_month_plan(public.root, public.state, month_id="month_02")
+    week = next(item for item in completed["weeks"] if item["id"] == "week_07")
+    milestones = {item["id"]: item for item in week["milestones"]}
+    assert milestones["m02_shared_map_hearing"]["status"] == "completed"

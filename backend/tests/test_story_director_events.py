@@ -436,6 +436,8 @@ def test_second_month_key_days_cannot_skip_authored_route_content():
         (32, {"month02_day31_entry_done": 1, "month02_route_order": 1}, "any_flags", None),
         (39, {"month02_order_briefing_done": 1}, "any_flags", None),
         (46, {"month02_order_patrol_standby_done": 1}, "flag", "month02_anomaly_convergence_done"),
+        (49, {"month02_anomaly_convergence_done": 1}, "any_flags", None),
+        (53, {"month02_shared_map_hearing_done": 1}, "event", None),
     ]
     for day, flags, missing_type, missing_key in cases:
         sess = Session(run_id=f"test-month02-day-gate-{day}")
@@ -448,3 +450,62 @@ def test_second_month_key_days_cannot_skip_authored_route_content():
         assert out["missing"][0]["type"] == missing_type
         if missing_key:
             assert out["missing"][0]["key"] == missing_key
+
+
+def test_day_fifty_three_result_only_exposes_current_route_choices():
+    cases = [
+        (
+            {"month02_anomaly_convergence_done": 1, "month02_shared_map_hearing_done": 1},
+            {"hold_formal_boundary_hearing", "publish_warning_not_source"},
+        ),
+        (
+            {"month02_anomaly_convergence_done": 1, "month02_team_source_probe_done": 1},
+            {"continue_three_person_probe", "hand_over_sealed_copy"},
+        ),
+    ]
+    for flags, expected_choices in cases:
+        sess = Session(run_id=f"test-day53-route-choices-{sorted(expected_choices)[0]}")
+        sess.state = sess.state.model_copy(
+            update={"day": 53, "time_band": "morning", "flags": flags}
+        )
+
+        event = next(
+            item for item in sess.available_story_events()["events"]
+            if item["id"] == "ch1_d53_second_month_result"
+        )
+
+        assert {choice["id"] for choice in event["choices"]} == expected_choices
+
+
+def test_day_fifty_three_result_writes_third_month_route_and_unlocks_next_day():
+    sess = Session(run_id="test-day53-formal-hearing-result")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 53,
+            "time_band": "morning",
+            "flags": {
+                "month02_anomaly_convergence_done": 1,
+                "month02_shared_map_hearing_done": 1,
+            },
+        }
+    )
+
+    blocked = sess.player_action(kind="rest_until_next_day")
+    assert blocked["ok"] is False
+    assert blocked["missing"][0] == {
+        "type": "event",
+        "id": "ch1_d53_second_month_result",
+    }
+
+    chosen = sess.choose_story_event(
+        "ch1_d53_second_month_result",
+        "hold_formal_boundary_hearing",
+    )
+    assert chosen["ok"] is True
+    assert chosen["state"]["flags"]["month02_second_month_result_done"] == 1
+    assert chosen["state"]["flags"]["month03_route_public_boundary"] == 1
+    assert {row["npc_id"] for row in chosen["memory_written"]} == {"alice", "eugeo"}
+
+    advanced = sess.player_action(kind="rest_until_next_day")
+    assert advanced["ok"] is True
+    assert advanced["state"]["day"] == 54

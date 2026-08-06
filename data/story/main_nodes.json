@@ -226,6 +226,33 @@
         "title": "决定第二月后半段的公开度",
         "description": "带着共同异常核心，进入公开村务或三人暗线的后续路线。"
       }
+    },
+    "49": {
+      "required_any_flags": [
+        {
+          "month02_shared_map_hearing_done": 1,
+          "month02_team_source_probe_done": 1
+        }
+      ],
+      "advance_to": 50,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 49 · 第二月后半段落地",
+      "next_goal": {
+        "title": "准备第二月结果",
+        "description": "带着公开听证记录或三人试探副本，等待第五十三天完成路线收束。"
+      }
+    },
+    "53": {
+      "required_events": [
+        "ch1_d53_second_month_result"
+      ],
+      "advance_to": 54,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 53 · 第二月的答案",
+      "next_goal": {
+        "title": "进入第三月入口",
+        "description": "第二月结果已写入世界状态；下一阶段将沿公开边界或源头追查路线展开。"
+      }
     }
   }
 }

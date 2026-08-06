@@ -1,8 +1,8 @@
 # 当前状态
 
 - **状态**：Current / 权威事实页
-- **快照日期**：2026-08-05
-- **Git 基线**：`main` / `ac67991`（AI 安全边界、第一月关键剧情闸门、活动反馈与内容可达性校验已提交并推送）
+- **快照日期**：2026-08-06
+- **Git 基线**：`main` / `origin/main`（第二月 Day 53 结果切片；具体提交以 `git log -1` 为准）
 - **版本标识**：`0.4.0-preview.1`（候选工作区；首批 runtime 素材与 AI 安全增强已接入；未创建 tag）
 
 ## 版本收束（2026-08-04）
@@ -166,3 +166,16 @@
 - 含 choices 的场景活动现在必须明确选择；缺失选择会在任何状态写入前返回 `activity_choice_required`。
 - 内容校验覆盖 `required_any_flags` 的生产来源，避免三路线任一完成条件配置成无法到达。
 - 本轮质量门：后端 `253 passed`、前端 `16 passed`、build 通过、Playwright `15 passed`、`git diff --check` 通过。
+
+
+## 2026-08-06 第二月 Day 47 → 53 路线结果
+
+- Day 46 的公开地图 / 三人暗线选择现在各自进入一项 Day 47–52 可玩活动：`village_shared_map_hearing` 或 `north_gate_team_source_probe`。
+- 两项活动都要求玩家明确选择做法，并在行动前展示关系数值、记忆对象、承诺和 Day 53 后果；活动只在 Day 47–52 开放。
+- Day 49 新增剧情闸门，公开路线必须完成共同地图听证准备，暗线路线必须完成三人源头试探，不能连续休息跳过。
+- Day 53 新增 `ch1_d53_second_month_result`：公开路线只显示“正式边界听证 / 只公开警告”，暗线路线只显示“继续三人追查 / 交出密封副本”。
+- 四个结果会写入不同的第三月入口 flag、关系、紧张、承诺和长期记忆；Day 53 完成事件后才能进入 Day 54。
+- 场景活动引擎和前端可用性判断新增 authored `day_min` / `day_max` 日期窗口，越界调用会原子返回 `wrong_day_range`。
+- scripted 模式继续完整离线可玩；FastAPI Session 仍是日期、flags、关系、记忆和存档的唯一权威。
+- 首轮真人盲测仍为 `pending-human-run`；本轮 E2E 只证明自动化路径，不替代真实玩家证据。
+- 本轮质量门：后端 `261 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `16 passed`；`git diff --check` 通过。既有 Starlette/httpx 弃用警告和 Phaser 约 1.48 MB chunk 警告保持非阻塞。

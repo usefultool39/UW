@@ -1883,6 +1883,287 @@
           }
         }
       ]
+    },
+    {
+      "id": "village_shared_map_hearing",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square",
+        "reading_hall"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第二月 · 共同地图听证准备",
+      "label": "和爱丽丝主持共同地图听证准备",
+      "description": "共同异常地图已经进入村务复核。爱丽丝希望在正式决定前，先让村民补充亲眼见过的时间、方向和撤退经历，同时避免把未经确认的源头写成事实。",
+      "result_text": "共同地图被钉在巡逻板旁。爱丽丝逐条区分亲历、转述与推测，尤吉欧把撤退手势画在地图边缘。村民第一次不只是听说北门外有危险，而是知道自己的观察怎样进入一份可复查的记录。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "shared_map",
+        "village",
+        "route_followup",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 47,
+        "day_max": 52,
+        "required_flags": {
+          "month02_shared_map_published": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_shared_map_hearing_started": 1
+        },
+        "stamina_cost": 2,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month02_route_followup_choice",
+      "player_facing_benefit": "完成公开地图路线的第二步，并决定 Day 53 收束时更偏向村民证词还是证据口径。",
+      "choices": [
+        {
+          "id": "invite_village_testimony",
+          "label": "邀请村民按亲历顺序补充证词",
+          "hint": "获得更广的村内支持；记录会更丰富，也需要花力气排除传闻。",
+          "tone": "open",
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 53 正式听证获得更多村民证词",
+              "公开路线的共同承担感增强"
+            ]
+          },
+          "result_text": "你让村民按亲眼看见、听别人说、自己推测的顺序发言。爱丽丝把三类记录用不同墨色分开，尤吉欧补上每条证词对应的安全距离；公开地图因此不再只是三个人的结论。",
+          "effects": {
+            "flags": {
+              "month02_shared_map_hearing_done": 1,
+              "month02_village_testimony_gathered": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_followup",
+                "summary": "第二月后半段，玩家邀请村民按亲历、转述和推测补充共同地图，让公开路线获得可复查的村民证词。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_followup",
+                "summary": "第二月后半段，玩家让尤吉欧把村民证词对应到安全距离和撤退手势。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "audit_evidence_ledger",
+          "label": "先审核证据簿，再公开可确认部分",
+          "hint": "减少误报和恐慌；公开速度较慢，但 Day 53 的证据口径更稳。",
+          "tone": "careful",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice"
+            ],
+            "consequences": [
+              "Day 53 可以清楚区分警告与源头证据",
+              "爱丽丝对记录完整性的担心下降"
+            ]
+          },
+          "result_text": "你先和爱丽丝逐条审核证据簿，只把时间、方向和撤退信号写上公开地图，暂不公开未经确认的源头推断。地图少了煽动性的答案，却多了一套任何人都能复核的口径。",
+          "effects": {
+            "flags": {
+              "month02_shared_map_hearing_done": 1,
+              "month02_evidence_ledger_audited": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_followup",
+                "summary": "第二月后半段，玩家先审核共同地图证据簿，只公开可确认的时间、方向和撤退信号。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "north_gate_team_source_probe",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第二月 · 三人源头试探",
+      "label": "和尤吉欧执行三人源头试探",
+      "description": "异常源头暂时留在三人记录里。尤吉欧已经把绳标和测距粉摆到北门石阶上，爱丽丝则带来一册可随时封存交出的副本。",
+      "result_text": "三个人只向空白区域推进到能看清下一枚刻印的位置。尤吉欧每走一段就补回撤标记，爱丽丝把观察写进密封副本；这次试探没有给出答案，却把继续追查与及时交代都变成了真实选择。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month02",
+        "team_source",
+        "north_gate",
+        "route_followup",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 47,
+        "day_max": 52,
+        "required_flags": {
+          "month02_source_held_by_team": 1
+        }
+      },
+      "effects": {
+        "flags": {
+          "month02_team_source_probe_started": 1
+        },
+        "stamina_cost": 3,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month02_route_followup_choice",
+      "player_facing_benefit": "完成三人暗线路线的第二步，并决定 Day 53 收束时更偏向继续追查还是交出可核验副本。",
+      "choices": [
+        {
+          "id": "advance_with_return_marks",
+          "label": "沿回撤标记再推进一段",
+          "hint": "更接近异常源头；尤吉欧更信任你的判断，但爱丽丝会承担额外压力。",
+          "tone": "bold",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "Day 53 继续三人追查时拥有更清楚的回撤线",
+              "暗线推进更快但同伴压力上升"
+            ]
+          },
+          "result_text": "你要求每看见一枚新刻印，就先补一枚回撤标记再前进。尤吉欧守住节拍，爱丽丝没有阻止，只让你再次确认：任何人说停，三个人都必须一起回来。",
+          "effects": {
+            "flags": {
+              "month02_team_source_probe_done": 1,
+              "month02_probe_line_extended": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "promises": {
+              "alice": "玩家答应爱丽丝，三人源头试探中任何一人发出停步信号，所有人立即共同撤回。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_followup",
+                "summary": "第二月后半段，玩家沿回撤标记继续试探异常源头，并重申任何人都能叫停。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_followup",
+                "summary": "第二月后半段，玩家和尤吉欧以一段推进、一枚回撤标记的节拍延长三人暗线。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "prepare_sealed_duplicate",
+          "label": "先完成一份可交出的密封副本",
+          "hint": "保留暗线速度，同时兑现对爱丽丝的承诺；源头距离暂时不再推进。",
+          "tone": "accountable",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 53 可以交出不暴露全部行动细节的密封副本",
+              "三人暗线获得更可靠的责任边界"
+            ]
+          },
+          "result_text": "你先停在北门内，把地图刻度、观察时间和停步信号抄成密封副本。爱丽丝确认即使三人暂时失联，村务也知道该从哪里开始找；尤吉欧则把未公开的下一段路线留在原记录里。",
+          "effects": {
+            "flags": {
+              "month02_team_source_probe_done": 1,
+              "month02_sealed_duplicate_ready": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_followup",
+                "summary": "第二月后半段，玩家兑现承诺，先完成一份包含地图刻度、观察时间与停步信号的密封副本。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month02_followup",
+                "summary": "第二月后半段，玩家把可交代的安全信息封存，同时保留三人暗线的下一段路线。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

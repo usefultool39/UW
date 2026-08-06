@@ -594,4 +594,55 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.quest-tracker')).toContainText('\u7b2c\u4e8c\u6708\u540e\u6bb5')
     await expect(page.locator('.quest-tracker')).not.toContainText('\u7ec6\u96e8\u521a\u505c')
   })
+
+  test('Day 47 到 Day 53 公开地图路线可完成并进入第三月', async ({ page, request }) => {
+    await setFlags(request, [
+      'month02_anomaly_convergence_done',
+      'month02_shared_map_published'
+    ])
+    await playerAction(request, { kind: 'set_day', day: 47 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'village_square' })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const hearingAction = page.locator('.interact-action[data-activity-id="village_shared_map_hearing"]')
+    await expect(hearingAction).toBeVisible()
+    await expect(hearingAction).toContainText('共同异常地图')
+    await hearingAction.click()
+
+    await expect(page.locator('.event-panel')).toBeVisible()
+    const testimony = page.locator('.event-choice').filter({ hasText: '邀请村民按亲历顺序补充证词' })
+    await expect(testimony).toContainText('爱丽丝 信任 +2')
+    await expect(testimony).toContainText('Day 53 正式听证')
+    await testimony.click()
+    await expect(page.locator('.result-panel')).toContainText('公开地图因此不再只是三个人的结论')
+
+    let state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month02_shared_map_hearing_done).toBe(1)
+    expect(state.flags.month02_village_testimony_gathered).toBe(1)
+
+    await playerAction(request, { kind: 'set_day', day: 53 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'reading_hall' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const resultAction = page.locator('.interact-action').filter({ hasText: '爱丽丝请你在书库写下第二月的答案' })
+    await expect(resultAction).toBeVisible()
+    await expect(resultAction).toContainText('第二月的答案')
+    await resultAction.click()
+
+    await expect(page.locator('.event-choice')).toHaveCount(2)
+    await expect(page.locator('.event-choice').filter({ hasText: '举行正式边界听证' })).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '只公开警告与退路' })).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '继续三人源头追查' })).toHaveCount(0)
+    await page.locator('.event-choice').filter({ hasText: '举行正式边界听证' }).click()
+    await expect(page.locator('.result-panel')).toContainText('共同执行的边界规则')
+
+    state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month02_second_month_result_done).toBe(1)
+    expect(state.flags.month02_result_formal_hearing).toBe(1)
+    expect(state.flags.month03_route_public_boundary).toBe(1)
+  })
+
 })

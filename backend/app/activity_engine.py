@@ -61,6 +61,23 @@ def plan_scene_activity(
         raise ActivityValidationError("wrong_time_band", allowed_time_bands=time_bands)
 
     requirements = _as_dict(activity.get("requirements"))
+    day_min = requirements.get("day_min")
+    day_max = requirements.get("day_max")
+    if day_min is not None and int(day) < int(day_min):
+        raise ActivityValidationError(
+            "wrong_day_range",
+            day=int(day),
+            day_min=int(day_min),
+            day_max=int(day_max) if day_max is not None else None,
+        )
+    if day_max is not None and int(day) > int(day_max):
+        raise ActivityValidationError(
+            "wrong_day_range",
+            day=int(day),
+            day_min=int(day_min) if day_min is not None else None,
+            day_max=int(day_max),
+        )
+
     required_flags = _as_dict(requirements.get("required_flags"))
     for key, value in required_flags.items():
         if int(flags.get(str(key), 0)) < int(value):

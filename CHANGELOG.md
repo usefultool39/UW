@@ -1,5 +1,29 @@
 # Changelog
 
+## [Unreleased] 2026-08-06 — 第二月 Day 47–53 路线结果
+
+### Added
+
+- 公开共同地图路线新增 `village_shared_map_hearing`：玩家可选择收集村民亲历证词，或先审核证据簿再公开可确认部分。
+- 三人暗线路线新增 `north_gate_team_source_probe`：玩家可选择沿回撤标记继续推进，或先完成一份可交给村务的密封副本。
+- Day 53 新增 `ch1_d53_second_month_result`，根据当前路线只展示对应两个结果，并写入四种第三月入口 flag。
+- Day 47–52 路线活动与 Day 53 结果均有 NPC 主动入口、关系/记忆/承诺后果和玩家可见收益预览。
+- Day 49 与 Day 53 新增剧情日期闸门，防止跳过第二月后半段活动或月末结果。
+- Playwright 新增 Day 47 公开地图活动 → Day 53 正式边界听证 → 第三月入口的完整 UI 路径。
+
+### Changed
+
+- 场景活动 requirements 支持 `day_min` / `day_max`；后端越界调用原子返回 `wrong_day_range`，前端显示明确开放日期。
+- `month_02_plan.json` 的 Week 07/08 更新为实际可玩的路线专属活动、第二月结果和第三月入口，不再保留空里程碑。
+- `NEXT_PHASE.md` 转向 Day 54–61 尾声循环、第二月路线摘要和四种结果的 NPC 反馈。
+
+### Verification
+
+- 后端：`261 passed`；内容校验 `ok=True`、0 errors、0 warnings；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：`16 passed`；production build 通过；Phaser chunk 约 1.48 MB 的既有体积警告保持不变。
+- Playwright E2E：`16 passed`。
+- `git diff --check`：通过。
+
 ## [Unreleased] 2026-08-06 — 第二月路线选择与剧情日期闸门
 
 ### Added

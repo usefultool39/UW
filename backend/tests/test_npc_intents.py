@@ -468,3 +468,61 @@ def test_optional_first_month_activity_intent_disappears_after_completion():
     intent_ids = {item.id for item in sess.public_state().npc_intents}
 
     assert "alice_opens_patrol_board_review" not in intent_ids
+
+
+def test_day_forty_seven_route_followup_intents_are_exclusive():
+    cases = [
+        (
+            {"month02_shared_map_published": 1},
+            "alice_hosts_shared_map_hearing",
+            "village_square",
+            "village_shared_map_hearing",
+        ),
+        (
+            {"month02_source_held_by_team": 1},
+            "eugeo_prepares_team_source_probe",
+            "north_gate",
+            "north_gate_team_source_probe",
+        ),
+    ]
+    all_route_intents = {
+        "alice_hosts_shared_map_hearing",
+        "eugeo_prepares_team_source_probe",
+    }
+    for flags, expected_id, scene_id, activity_id in cases:
+        sess = Session(run_id=f"test-day47-route-followup-{expected_id}")
+        sess.state = sess.state.model_copy(
+            update={"day": 47, "time_band": "morning", "flags": flags}
+        )
+
+        intents = {item.id: item for item in sess.public_state().npc_intents}
+
+        assert expected_id in intents
+        assert intents[expected_id].scene_id == scene_id
+        assert intents[expected_id].action == {
+            "type": "scene_activity",
+            "activity_id": activity_id,
+        }
+        assert not (all_route_intents - {expected_id}) & set(intents)
+
+
+def test_day_fifty_three_result_intent_reads_current_route():
+    cases = [
+        ({"month02_shared_map_hearing_done": 1}, "正式边界听证"),
+        ({"month02_team_source_probe_done": 1}, "继续三人追查"),
+    ]
+    for flags, expected_text in cases:
+        sess = Session(run_id=f"test-day53-result-{expected_text}")
+        sess.state = sess.state.model_copy(
+            update={"day": 53, "time_band": "morning", "flags": flags}
+        )
+
+        intents = {item.id: item for item in sess.public_state().npc_intents}
+        intent = intents["alice_calls_second_month_result"]
+
+        assert intent.scene_id == "reading_hall"
+        assert intent.action == {
+            "type": "story_event",
+            "event_id": "ch1_d53_second_month_result",
+        }
+        assert expected_text in intent.description

@@ -1794,6 +1794,244 @@
           }
         }
       ]
+    },
+    {
+      "id": "ch1_d53_second_month_result",
+      "chapter": "chapter_01",
+      "kind": "month_result",
+      "title": "第五十三天：第二月的答案",
+      "description": "异常核心已经走过一次公开复核或三人试探。现在必须决定第二月留下什么：一套村子共同承担的边界规则，或一条仍由三个人负责的源头追查线。",
+      "trigger": {
+        "day_min": 53,
+        "day_max": 53,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month02_anomaly_convergence_done": 1
+        },
+        "forbidden_flags": {
+          "month02_second_month_result_done": 1
+        }
+      },
+      "location": {
+        "scene_id": "reading_hall",
+        "tile_x": 22,
+        "tile_y": 14
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "choices": [
+        {
+          "id": "hold_formal_boundary_hearing",
+          "label": "举行正式边界听证",
+          "hint": "公开地图路线：让村民证词、撤退规则和证据簿共同成为边境决定的依据。",
+          "conditions": {
+            "required_flags": {
+              "month02_shared_map_hearing_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月获得公开边界协作入口",
+              "行动速度较慢但村内支持最稳"
+            ]
+          },
+          "result_text": "你没有把共同地图当成结论，而是把它变成正式听证的起点。爱丽丝主持证据口径，尤吉欧演示撤退手势，村民逐条确认自己愿意承担的轮值。第二月留下的不是恐慌，而是一套能共同执行的边界规则。",
+          "effects": {
+            "flags": {
+              "month02_second_month_result_done": 1,
+              "month02_result_formal_hearing": 1,
+              "month03_route_public_boundary": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_result",
+                "summary": "第二月收束时，玩家举行正式边界听证，让证据口径、村民证词与撤退规则共同进入公开决定。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month02_result",
+                "summary": "第二月收束时，玩家让尤吉欧在正式听证中演示撤退手势，使村庄共同承担边界安全。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "publish_warning_not_source",
+          "label": "只公开警告与退路，不公开源头推断",
+          "hint": "公开地图路线：维持村内安全共识，同时避免未经确认的源头信息引发恐慌。",
+          "conditions": {
+            "required_flags": {
+              "month02_shared_map_hearing_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月获得分层公开入口",
+              "村民知道如何避险，但源头调查仍由小队负责"
+            ]
+          },
+          "result_text": "你公开了异常时段、安全距离与撤退信号，却把源头推断留在证据簿中。爱丽丝确认每一条警告都能追溯来源，尤吉欧把巡逻板改成任何人都看得懂的避险图。村子得到了行动方法，而不是一个未经确认的敌人。",
+          "effects": {
+            "flags": {
+              "month02_second_month_result_done": 1,
+              "month02_result_warning_only": 1,
+              "month03_route_guarded_warning": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_result",
+                "summary": "第二月收束时，玩家只公开可验证的警告、退路和安全距离，把源头推断保留在证据簿中。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month02_result",
+                "summary": "第二月收束时，玩家把公开巡逻板改成避险图，同时保留源头调查空间。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "continue_three_person_probe",
+          "label": "继续三人源头追查",
+          "hint": "三人暗线路线：依靠回撤标记继续接近源头，保留最少必要的村务警告。",
+          "conditions": {
+            "required_flags": {
+              "month02_team_source_probe_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "promises": [
+              "alice"
+            ],
+            "consequences": [
+              "第三月直接打开源头追查入口",
+              "调查更快，但三人的承诺与压力更重"
+            ]
+          },
+          "result_text": "你决定继续由三个人追查源头，只向村务留下异常时段与失联后的搜索起点。尤吉欧把下一段回撤标记排好，爱丽丝接受这个决定，却要求每次出发前都重新确认谁有权叫停。",
+          "effects": {
+            "flags": {
+              "month02_second_month_result_done": 1,
+              "month02_result_team_probe_continues": 1,
+              "month03_route_source_pursuit": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "promises": {
+              "alice": "进入第三月后，每次源头追查前都重新确认停步权与失联后的搜索起点。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_result",
+                "summary": "第二月收束时，玩家决定继续三人源头追查，并承诺每次出发前重申停步权。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month02_result",
+                "summary": "第二月收束时，玩家选择沿回撤标记继续三人追查异常源头。",
+                "weight": 6
+              }
+            }
+          }
+        },
+        {
+          "id": "hand_over_sealed_copy",
+          "label": "交出密封副本，再保留下一段暗线",
+          "hint": "三人暗线路线：兑现对爱丽丝的承诺，让村务掌握搜索起点，但不公开全部源头细节。",
+          "conditions": {
+            "required_flags": {
+              "month02_team_source_probe_done": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "第三月获得可追责暗线入口",
+              "调查速度稍慢，但失联与信息风险显著降低"
+            ]
+          },
+          "result_text": "你把密封副本交给村务保管，只说明打开它的条件：三人逾时未归，或任何一人主动要求公开。爱丽丝终于放下压在记录本上的手，尤吉欧则把下一段路线另页封好。暗线仍在，却不再建立在失联和隐瞒上。",
+          "effects": {
+            "flags": {
+              "month02_second_month_result_done": 1,
+              "month02_result_sealed_copy_handed_over": 1,
+              "month03_route_accountable_probe": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month02_result",
+                "summary": "第二月收束时，玩家交出密封副本，并约定失联或主动要求时由村务打开。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month02_result",
+                "summary": "第二月收束时，玩家让暗线保留下一段路线，同时给村务留下明确的搜索起点。",
+                "weight": 5
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

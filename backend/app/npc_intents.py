@@ -1238,6 +1238,134 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    if (
+        47 <= day <= 52
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month02_shared_map_published") >= 1
+        and _flag(state, "activity_done.village_shared_map_hearing") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_hosts_shared_map_hearing",
+                kind="npc_plan",
+                title="爱丽丝要把共同异常地图带到村道广场",
+                description="共同异常地图已经公开，但爱丽丝不想让传闻替代证据。她请你到村道广场，决定先收集村民亲历，还是先审核证据簿的公开口径。",
+                priority=88,
+                reason="The public-map route needs a playable Day 47-52 follow-up before the Day 53 result.",
+                action={"type": "scene_activity", "activity_id": "village_shared_map_hearing"},
+                stakes=[
+                    "这一步会决定正式听证更依赖村民证词，还是更严格的证据口径。",
+                    "Day 49 会阻止玩家跳过这项公开地图后续行动。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="bring_map_to_square",
+                        label="和爱丽丝把共同地图带到广场",
+                        hint="主持一次可复查的听证准备，而不是直接宣布源头答案。",
+                        result_text="爱丽丝卷起地图，先提醒你：要让每个人说清自己亲眼看见了什么。",
+                        tone="open",
+                        effects={
+                            "flags": {"alice_shared_map_hearing_agreed": 1},
+                            "relationship": {"alice.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(28, 25, "village_square"),
+                scene_id="village_square",
+                tile_x=28,
+                tile_y=25,
+            )
+        )
+
+    if (
+        47 <= day <= 52
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month02_source_held_by_team") >= 1
+        and _flag(state, "activity_done.north_gate_team_source_probe") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_prepares_team_source_probe",
+                kind="npc_plan",
+                title="尤吉欧在北门排好三人试探的回撤标记",
+                description="异常源头仍留在三人记录里。尤吉欧想再验证一枚刻印的方向，爱丽丝则带来了可随时交给村务的密封副本。",
+                priority=88,
+                reason="The held-source route needs a playable Day 47-52 follow-up before the Day 53 result.",
+                action={"type": "scene_activity", "activity_id": "north_gate_team_source_probe"},
+                stakes=[
+                    "继续推进会更接近源头，但增加同伴压力。",
+                    "先完成密封副本会降低失联风险，并兑现对爱丽丝的承诺。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="meet_at_north_gate_probe",
+                        label="和尤吉欧在北门确认试探节拍",
+                        hint="在继续推进与先封存副本之间作出明确选择。",
+                        result_text="尤吉欧把绳标递给你，等三个人都确认停步信号后才准备越过北门。",
+                        tone="careful",
+                        effects={
+                            "flags": {"eugeo_team_source_probe_agreed": 1},
+                            "relationship": {"eugeo.trust": 1, "alice.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
+    if (
+        day == 53
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _any_flag(state, ["month02_shared_map_hearing_done", "month02_team_source_probe_done"])
+        and _flag(state, "month02_second_month_result_done") < 1
+    ):
+        public_route = _flag(state, "month02_shared_map_hearing_done") >= 1
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_calls_second_month_result",
+                kind="story_event",
+                title="爱丽丝请你在书库写下第二月的答案",
+                description=(
+                    "共同地图已经经过村务听证准备。爱丽丝在书库等你决定：举行正式边界听证，还是只公开警告与退路。"
+                    if public_route
+                    else "三人源头试探已经留下回撤线与可交代的记录。爱丽丝在书库等你决定：继续三人追查，还是先交出密封副本。"
+                ),
+                priority=92,
+                reason="Day 53 must surface the route-specific second-month result as a clear authored event.",
+                action={"type": "story_event", "event_id": "ch1_d53_second_month_result"},
+                stakes=[
+                    "选择会写入第三月路线入口。",
+                    "关系、紧张、承诺和长期记忆会根据第二月结果结算。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="review_second_month_result",
+                        label="和爱丽丝复核第二月结果",
+                        hint="进入只显示当前路线结果的第五十三天事件。",
+                        result_text="爱丽丝把两页空白分别留给公开边界与源头追查，等你写下真正要承担的那一页。",
+                        tone="steady",
+                        effects={
+                            "flags": {"alice_second_month_result_agreed": 1},
+                            "relationship": {"alice.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(42, 18, "reading_hall"),
+                scene_id="reading_hall",
+                tile_x=42,
+                tile_y=18,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 
