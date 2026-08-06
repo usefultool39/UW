@@ -42,6 +42,16 @@ def test_world_scene_activities_json():
     patrol = next(item for item in body["activities"] if item["id"] == "north_gate_boundary_patrol")
     assert patrol["preview"]["variable_resource_cost"] is True
     assert "effects" not in reading
+    third_month = next(
+        item for item in body["activities"]
+        if item["id"] == "village_third_month_support_allocation"
+    )
+    sacred_signal = next(
+        item for item in third_month["choices"]
+        if item["id"] == "commit_sacred_signal"
+    )
+    assert sacred_signal["preview"]["resource_costs"] == {"mp": 10, "stamina": 3}
+    assert "effects" not in sacred_signal
 
 
 def test_world_map_by_id_default():

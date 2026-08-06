@@ -1,0 +1,152 @@
+{
+  "v": 1,
+  "id": "month_03",
+  "title": "第三月：边界方法第一次受验",
+  "subtitle": "资源投入与路线回响",
+  "summary": "第三月从 Day 61 的行动准则展开。八个入口归并为公开协作、源头追查、责任情报三类玩法族，先选择真实资源投入，再在边界测试中承担后果。",
+  "day_range": [
+    62,
+    89
+  ],
+  "ending_paths": {
+    "unresolved": "第三月路线尚未准备。先完成第六十一天的出发准则。",
+    "public_network": "公开协作族：用村务人力或神圣术信号支持边界行动。",
+    "frontier_probe": "源头追查族：在重装回撤补给与远距刻印之间分配资源。",
+    "accountable_intel": "责任情报族：在多重审计和轻量托管之间权衡可靠性与响应速度。"
+  },
+  "weeks": [
+    {
+      "id": "week_09",
+      "week": 9,
+      "day_range": [
+        62,
+        68
+      ],
+      "title": "第 9 周：第一次资源投入",
+      "summary": "Day 61 的路线不再只改变文字；本周必须投入体力或神圣力，准备一次可以被后续事件读取的行动方法。",
+      "goals": [
+        "选择资源投入方式",
+        "看见体力与神圣力真实扣除",
+        "写入路线准备 flag"
+      ],
+      "play_hooks": [
+        "资源取舍",
+        "NPC 主动计划",
+        "选择后果预览"
+      ],
+      "milestones": [
+        {
+          "id": "m03_public_support_allocation",
+          "title": "Day 62-68：村务支持分配",
+          "day_range": [
+            62,
+            68
+          ],
+          "scene_id": "village_square",
+          "related_activity_id": "village_third_month_support_allocation",
+          "completed_flag": "month03_public_preparation_done",
+          "requirements": {
+            "required_any_flags": {
+              "month03_public_council_trial": 1,
+              "month03_public_scout_assembly": 1,
+              "month03_warning_bell_network": 1,
+              "month03_mobile_watch_route": 1
+            }
+          },
+          "goals": [
+            "在人力轮值与神圣术信号之间选择",
+            "保留另一种资源作为后备"
+          ],
+          "reward": "公开协作族进入第一次路线测试。"
+        },
+        {
+          "id": "m03_frontier_loading",
+          "title": "Day 62-68：边境负载选择",
+          "day_range": [
+            62,
+            68
+          ],
+          "scene_id": "north_gate",
+          "related_activity_id": "north_gate_third_month_expedition_loading",
+          "completed_flag": "month03_frontier_preparation_done",
+          "requirements": {
+            "required_any_flags": {
+              "month03_source_depart_dawn": 1,
+              "month03_source_wait_for_signal": 1
+            }
+          },
+          "goals": [
+            "在完整回撤补给与远距刻印之间选择",
+            "明确推进和撤退的资源边界"
+          ],
+          "reward": "源头追查族进入第一次路线测试。"
+        },
+        {
+          "id": "m03_intel_budget",
+          "title": "Day 62-68：情报托管预算",
+          "day_range": [
+            62,
+            68
+          ],
+          "scene_id": "reading_hall",
+          "related_activity_id": "reading_hall_third_month_intelligence_budget",
+          "completed_flag": "month03_intel_preparation_done",
+          "requirements": {
+            "required_any_flags": {
+              "month03_shared_custody_record": 1,
+              "month03_alice_custody_key": 1
+            }
+          },
+          "goals": [
+            "在多重审计与轻量托管之间选择",
+            "承担可靠性、响应速度和资源代价"
+          ],
+          "reward": "责任情报族进入第一次路线测试。"
+        }
+      ]
+    },
+    {
+      "id": "week_10",
+      "week": 10,
+      "day_range": [
+        69,
+        75
+      ],
+      "title": "第 10 周：第一次路线测试",
+      "summary": "把第 9 周投入的资源用于真实边界测试；事件只显示所选资源方法对应的两个选择，并把限制写入关系、记忆、承诺或紧张。",
+      "goals": [
+        "执行第一次路线测试",
+        "让准备方法产生可见后果",
+        "通过 Day 75 阶段闸门"
+      ],
+      "play_hooks": [
+        "路线事件",
+        "资源后果",
+        "关系与记忆反馈"
+      ],
+      "milestones": [
+        {
+          "id": "m03_first_route_test",
+          "title": "Day 69-74：第一次路线测试",
+          "day_range": [
+            69,
+            74
+          ],
+          "scene_id": "north_gate",
+          "related_event_id": "ch1_d69_third_month_route_test",
+          "completed_flag": "month03_route_test_done",
+          "requirements": {
+            "required_flags": {
+              "month03_preparation_done": 1
+            }
+          },
+          "goals": [
+            "使用已投入的人力、术力、补给或审计方法",
+            "决定扩大成果还是保留后备"
+          ],
+          "reward": "第三月第一个资源型短循环完成。"
+        }
+      ]
+    }
+  ]
+}

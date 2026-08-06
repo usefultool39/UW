@@ -55,8 +55,8 @@
         </section>
 
         <section class="journal-column month-column">
-          <h4>第一月路线</h4>
-          <p v-if="!monthWeeks.length" class="journal-empty">月度路线还在同步。完成前三天边界事件后，这里会给出后续 30 日目标。</p>
+          <h4>{{ monthDisplayTitle(monthPlan) }}</h4>
+          <p v-if="!monthWeeks.length" class="journal-empty">月度路线还在同步。完成当前关键事件后，这里会显示后续目标。</p>
           <template v-else>
             <div class="month-current">
               <span>Day {{ monthCurrent.day || 1 }}</span>
@@ -249,6 +249,14 @@ const relationshipEntries = computed(() => {
   return out.slice(0, 10)
 })
 
+function monthDisplayTitle(plan) {
+  const title = String(plan?.title || '').trim()
+  if (!title) return '月度路线'
+  // Preserve the familiar first-month label used by existing players while
+  // allowing later months to show their authored titles verbatim.
+  return title.startsWith('第一月') ? `第一月路线 · ${title}` : title
+}
+
 const monthWeeks = computed(() =>
   Array.isArray(props.monthPlan?.weeks) ? props.monthPlan.weeks : []
 )
@@ -256,8 +264,17 @@ const monthWeeks = computed(() =>
 const monthCurrent = computed(() => {
   const current = props.monthPlan?.current || {}
   const labels = {
-    unresolved: '第三天未收束',
-    order: '秩序路线',
+    unresolved: '路线尚未收束',
+    order: '稳守路线',
+    expedition: '远征路线',
+    quiet: '静默路线',
+    formal_hearing: '正式边界听证',
+    guarded_warning: '分层警告',
+    source_pursuit: '三人源头追查',
+    accountable_probe: '密封副本托管',
+    public_network: '公开协作族',
+    frontier_probe: '源头追查族',
+    accountable_intel: '责任情报族',
     cross: '越界路线',
     hide: '隐秘路线'
   }

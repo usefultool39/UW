@@ -1512,6 +1512,135 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
             )
         )
 
+    month03_families = [
+        {
+            "route_flags": [
+                "month03_public_council_trial",
+                "month03_public_scout_assembly",
+                "month03_warning_bell_network",
+                "month03_mobile_watch_route",
+            ],
+            "done_flag": "activity_done.village_third_month_support_allocation",
+            "npc_id": "alice",
+            "intent_id": "alice_allocates_third_month_support",
+            "title": "爱丽丝要你决定第三月第一次行动的资源投入",
+            "description": "公开议事、侦察说明、警告钟和移动守望都需要真实资源。爱丽丝把村务板带到广场，等你在人力轮值和神圣术信号之间分配体力与神圣力。",
+            "activity_id": "village_third_month_support_allocation",
+            "scene_id": "village_square",
+            "tile_x": 28,
+            "tile_y": 25,
+            "label": "和爱丽丝分配村务支持",
+            "hint": "在人力投入与神圣术信号之间选择真实资源代价。",
+        },
+        {
+            "route_flags": ["month03_source_depart_dawn", "month03_source_wait_for_signal"],
+            "done_flag": "activity_done.north_gate_third_month_expedition_loading",
+            "npc_id": "eugeo",
+            "intent_id": "eugeo_loads_third_month_expedition",
+            "title": "尤吉欧在北门等你分配第三月追查负载",
+            "description": "第一次源头行动不能同时拥有最重的回撤补给和最多的远距刻印。尤吉欧请你在高体力负载与高神圣力消耗之间选择。",
+            "activity_id": "north_gate_third_month_expedition_loading",
+            "scene_id": "north_gate",
+            "tile_x": 67,
+            "tile_y": 24,
+            "label": "和尤吉欧分配边境负载",
+            "hint": "在完整回撤补给与远距刻印之间选择。",
+        },
+        {
+            "route_flags": ["month03_shared_custody_record", "month03_alice_custody_key"],
+            "done_flag": "activity_done.reading_hall_third_month_intelligence_budget",
+            "npc_id": "alice",
+            "intent_id": "alice_budgets_third_month_intelligence",
+            "title": "爱丽丝要把第三月情报托管写进资源预算",
+            "description": "密封副本已经有责任边界，但多重校验会消耗神圣力，轻量托管又会增加人为风险。爱丽丝在书库等你决定第一次情报预算。",
+            "activity_id": "reading_hall_third_month_intelligence_budget",
+            "scene_id": "reading_hall",
+            "tile_x": 42,
+            "tile_y": 18,
+            "label": "和爱丽丝决定情报托管预算",
+            "hint": "在多重审计与轻量托管之间权衡可靠性和资源。",
+        },
+    ]
+    if 62 <= day <= 68 and band in {"morning", "afternoon", "evening", "night"}:
+        for family in month03_families:
+            if not _any_flag(state, family["route_flags"]) or _flag(state, family["done_flag"]) >= 1:
+                continue
+            intents.append(
+                _intent(
+                    state=state,
+                    npc_id=family["npc_id"],
+                    intent_id=family["intent_id"],
+                    kind="npc_plan",
+                    title=family["title"],
+                    description=family["description"],
+                    priority=91,
+                    reason="Day 62-68 must turn the third-month route into a real stamina/MP resource decision.",
+                    action={"type": "scene_activity", "activity_id": family["activity_id"]},
+                    stakes=[
+                        "不同做法会真实扣除体力和神圣力。",
+                        "Day 69 路线测试只显示所选资源方法对应的两个结果。",
+                    ],
+                    response_options=[
+                        _social_response(
+                            response_id=f"review_{family['intent_id']}",
+                            label=family["label"],
+                            hint=family["hint"],
+                            result_text="同伴把资源清单和行动目标放在一起，等待你确认这次真正愿意花掉什么。",
+                            tone="careful",
+                            effects={
+                                "flags": {f"{family['intent_id']}_agreed": 1},
+                                "relationship": {f"{family['npc_id']}.trust": 1},
+                            },
+                        )
+                    ],
+                    fallback=(family["tile_x"], family["tile_y"], family["scene_id"]),
+                    scene_id=family["scene_id"],
+                    tile_x=family["tile_x"],
+                    tile_y=family["tile_y"],
+                )
+            )
+
+    if (
+        69 <= day <= 74
+        and band in {"morning", "afternoon", "evening", "night"}
+        and _flag(state, "month03_preparation_done") >= 1
+        and _flag(state, "month03_route_test_done") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_calls_first_third_month_test",
+                kind="story_event",
+                title="尤吉欧请你把第一次资源投入带到北门测试",
+                description="人力、神圣力、回撤补给或审计封印已经准备好。尤吉欧在北门等你决定扩大成果，还是保留后备并接受较小范围。",
+                priority=95,
+                reason="Day 69-74 must close the first third-month resource loop with a route-specific authored result.",
+                action={"type": "story_event", "event_id": "ch1_d69_third_month_route_test"},
+                stakes=[
+                    "事件只显示当前资源方法对应的两个选择。",
+                    "结果会写入关系、长期记忆，并可能留下承诺或紧张点。",
+                ],
+                response_options=[
+                    _social_response(
+                        response_id="review_first_third_month_test",
+                        label="和尤吉欧复核第一次路线测试",
+                        hint="把已投入资源用于真实边界行动。",
+                        result_text="尤吉欧把准备清单折到只剩两种可执行结果，等你决定扩大成果还是保留后备。",
+                        tone="steady",
+                        effects={
+                            "flags": {"third_month_route_test_review_agreed": 1},
+                            "relationship": {"eugeo.trust": 1, "alice.trust": 1},
+                        },
+                    )
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
     return sorted(intents, key=lambda item: (-int(item.priority), item.id))
 
 

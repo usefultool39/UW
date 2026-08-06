@@ -694,4 +694,60 @@ test.describe('开放世界质量 smoke', () => {
     expect(state.flags.month03_public_council_trial).toBe(1)
   })
 
+
+  test('Day 62 到 Day 69 第三月资源投入会真实扣除并改变路线测试', async ({ page, request }) => {
+    await setFlags(request, [
+      'month03_departure_ready',
+      'month03_public_council_trial'
+    ])
+    await playerAction(request, { kind: 'set_day', day: 62 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'village_square' })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const allocation = page.locator('.interact-action[data-activity-id="village_third_month_support_allocation"]')
+    await expect(allocation).toBeVisible()
+    await allocation.click()
+
+    const sacredSignal = page.locator('.event-choice').filter({ hasText: '编织神圣术信号与远距回报' })
+    await expect(sacredSignal).toContainText('体力 -3')
+    await expect(sacredSignal).toContainText('神圣力 -10')
+    await expect(sacredSignal).toContainText('Day 69')
+    await sacredSignal.click()
+    await expect(page.locator('.result-panel')).toContainText('神圣力明显下降')
+
+    let state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.player.stamina).toBe(97)
+    expect(state.player.mp).toBe(90)
+    expect(state.flags.month03_preparation_done).toBe(1)
+    expect(state.flags.month03_public_sacred_signal).toBe(1)
+
+    await page.locator('.result-primary').click()
+    await page.locator('.action-journal').click()
+    await expect(page.locator('.journal-panel')).toContainText('第三月：边界方法第一次受验')
+    await expect(page.locator('.journal-panel')).toContainText('公开协作族')
+    await page.locator('.journal-close').click()
+
+    await playerAction(request, { kind: 'set_day', day: 69 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'north_gate' })
+    await page.reload()
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const routeTest = page.locator('.interact-action').filter({ hasText: '第一次资源投入带到北门测试' })
+    await expect(routeTest).toBeVisible()
+    await routeTest.click()
+
+    await expect(page.locator('.event-choice')).toHaveCount(2)
+    await expect(page.locator('.event-choice').filter({ hasText: '展开完整神圣术信号网' })).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '只启用两处信号' })).toBeVisible()
+    await expect(page.locator('.event-choice').filter({ hasText: '把人力轮值投入' })).toHaveCount(0)
+    await page.locator('.event-choice').filter({ hasText: '只启用两处信号' }).click()
+    await expect(page.locator('.result-panel')).toContainText('第三枚保持熄灭')
+
+    state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.month03_route_test_done).toBe(1)
+    expect(state.flags.month03_signal_reserve_saved).toBe(1)
+  })
+
 })

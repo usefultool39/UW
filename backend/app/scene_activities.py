@@ -43,12 +43,30 @@ def _public_choice_preview(choice: dict[str, Any]) -> dict[str, Any]:
     memory = effects.get("memory") if isinstance(effects.get("memory"), dict) else {}
     promises = effects.get("promises") if isinstance(effects.get("promises"), dict) else {}
     tensions = effects.get("tensions") if isinstance(effects.get("tensions"), dict) else {}
+    resource_costs: dict[str, int] = {}
+    resource_restores: dict[str, int] = {}
+    for source_key, public_key in (("hp_cost", "hp"), ("mp_cost", "mp"), ("stamina_cost", "stamina")):
+        try:
+            amount = int(effects.get(source_key) or 0)
+        except (TypeError, ValueError):
+            amount = 0
+        if amount > 0:
+            resource_costs[public_key] = amount
+    for source_key, public_key in (("hp_restore", "hp"), ("mp_restore", "mp"), ("stamina_restore", "stamina")):
+        try:
+            amount = int(effects.get(source_key) or 0)
+        except (TypeError, ValueError):
+            amount = 0
+        if amount > 0:
+            resource_restores[public_key] = amount
     return {
         "relationship": explicit.get("relationship") if isinstance(explicit.get("relationship"), dict) else relationship,
         "remembered_by": explicit.get("remembered_by") if isinstance(explicit.get("remembered_by"), list) else list(memory.keys()),
         "promises": explicit.get("promises") if isinstance(explicit.get("promises"), list) else list(promises.keys()),
         "tensions": explicit.get("tensions") if isinstance(explicit.get("tensions"), list) else list(tensions.keys()),
         "consequences": explicit.get("consequences") if isinstance(explicit.get("consequences"), list) else [],
+        "resource_costs": resource_costs,
+        "resource_restores": resource_restores,
     }
 
 

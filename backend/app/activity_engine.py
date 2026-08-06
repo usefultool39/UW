@@ -122,7 +122,9 @@ def plan_scene_activity(
         raise ActivityValidationError("already_done_today")
 
     tree_damage = max(0, int(effects.get("tree_damage") or 0))
-    stamina_cost = max(0, int(effects.get("stamina_cost") or 8))
+    # An authored zero is meaningful for route resource choices. Preserve the
+    # legacy default of 8 stamina only when the field is absent.
+    stamina_cost = max(0, int(effects["stamina_cost"])) if "stamina_cost" in effects else 8
     hp_cost = max(0, int(effects.get("hp_cost") or 0))
     mp_cost = max(0, int(effects.get("mp_cost") or 0))
     stamina_restore = max(0, int(effects.get("stamina_restore") or 0))

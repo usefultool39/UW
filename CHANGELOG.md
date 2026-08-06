@@ -1,5 +1,29 @@
 # Changelog
 
+## [Unreleased] 2026-08-06 — 第三月 Day 62–69 资源型短循环
+
+### Added
+
+- 新增 `/Users/lzm/Desktop/UW/data/story/month_03_plan.json`，将 Day 61 的八种入口归并为公开协作、源头追查、责任情报三类玩法族。
+- 新增三项 Day 62–68 路线专属资源活动：村务支持分配、边境负载选择、情报托管预算。
+- 每项资源活动都有两个选择，真实扣除体力 / 神圣力，并将资源方法写入后续路线 flag。
+- 新增 `ch1_d69_third_month_route_test`，根据具体资源方案只显示对应的两个路线结果；Day 65、Day 75 新增日期闸门。
+- 第三月计划、活动和路线测试均有 NPC 主动入口；Playwright 新增从资源选择到 Day 69 结果的 UI 路径。
+
+### Changed
+
+- activity engine 现在区分“未配置 stamina_cost”和 authored `stamina_cost: 0`，支持低体力 / 高神圣力的合法方案。
+- 场景选择安全预览增加 `resource_costs` / `resource_restores`；前端选择卡会显示生命、体力、神圣力代价。
+- 日志按 Day 62 或 `month03_departure_ready` 自动切换到第三月计划，路线摘要显示三类玩法族；第一月标题兼容保留。
+- `NEXT_PHASE.md` 转向 Day 76–89 资源后果反馈、资源恢复决策和第三月阶段收束。
+
+### Verification
+
+- 后端：`277 passed`；内容校验 `ok=True`、0 errors、0 warnings；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：`16 passed`；production build 通过；Phaser chunk 约 1.48 MB 的既有体积警告保持不变。
+- Playwright E2E：`18 passed`。
+- `git diff --check`：通过。
+
 ## [Unreleased] 2026-08-06 — 第二月 Day 54–61 尾声闭环
 
 ### Added

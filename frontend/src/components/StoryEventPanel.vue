@@ -80,6 +80,21 @@ const FIELD_LABELS = {
   tension: '紧张'
 }
 
+const RESOURCE_LABELS = { hp: '生命', mp: '神圣力', stamina: '体力' }
+
+function resourcePreviewText(costs, restores) {
+  const lines = []
+  for (const [key, value] of Object.entries(costs || {})) {
+    const amount = Number(value || 0)
+    if (amount > 0) lines.push(`${RESOURCE_LABELS[key] || key} -${amount}`)
+  }
+  for (const [key, value] of Object.entries(restores || {})) {
+    const amount = Number(value || 0)
+    if (amount > 0) lines.push(`${RESOURCE_LABELS[key] || key} +${amount}`)
+  }
+  return lines
+}
+
 function relationshipPreviewText(relationship) {
   const rel = relationship && typeof relationship === 'object' ? relationship : {}
   return Object.entries(rel)
@@ -101,6 +116,7 @@ function choicePreview(choice) {
   const tensions = Array.isArray(preview.tensions) ? preview.tensions : []
   const consequences = Array.isArray(preview.consequences) ? preview.consequences : []
   if (remembered.length) lines.push(`${remembered.map(getAgentLabel).join('、')}会记住`)
+  lines.push(...resourcePreviewText(preview.resource_costs, preview.resource_restores))
   lines.push(...consequences.slice(0, 2))
   lines.push(...relationshipPreviewText(preview.relationship).slice(0, 3))
   if (promises.length) lines.push(`${promises.map(getAgentLabel).join('、')}会留下承诺`)

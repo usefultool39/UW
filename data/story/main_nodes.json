@@ -277,6 +277,30 @@
         "title": "进入第三月行动线",
         "description": "第三月第一条准则已经写入；下一阶段将围绕新路线展开可玩内容。"
       }
+    },
+    "65": {
+      "required_flags": {
+        "month03_preparation_done": 1
+      },
+      "advance_to": 66,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 65 · 第三月资源已经投入",
+      "next_goal": {
+        "title": "等待第一次路线测试",
+        "description": "资源方法已经确定；第六十九天起在北门验证这次投入真正带来的限制。"
+      }
+    },
+    "75": {
+      "required_events": [
+        "ch1_d69_third_month_route_test"
+      ],
+      "advance_to": 76,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Day 75 · 第三月第一次路线测试",
+      "next_goal": {
+        "title": "复盘资源与路线后果",
+        "description": "第一次资源型循环已经完成；下一阶段将让 NPC 和世界继续读取这次结果。"
+      }
     }
   }
 }

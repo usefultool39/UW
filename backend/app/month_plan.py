@@ -84,6 +84,28 @@ def _status_label(status: str) -> str:
 
 
 def _month_ending_path(state: WorldState, month_id: str) -> str:
+    if month_id == "month_03":
+        if any(
+            _flag_value(state, flag) > 0
+            for flag in (
+                "month03_public_council_trial",
+                "month03_public_scout_assembly",
+                "month03_warning_bell_network",
+                "month03_mobile_watch_route",
+            )
+        ):
+            return "public_network"
+        if any(
+            _flag_value(state, flag) > 0
+            for flag in ("month03_source_depart_dawn", "month03_source_wait_for_signal")
+        ):
+            return "frontier_probe"
+        if any(
+            _flag_value(state, flag) > 0
+            for flag in ("month03_shared_custody_record", "month03_alice_custody_key")
+        ):
+            return "accountable_intel"
+        return "unresolved"
     if month_id == "month_02":
         for flag, path in (
             ("month02_result_formal_hearing", "formal_hearing"),

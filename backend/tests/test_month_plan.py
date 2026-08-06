@@ -635,3 +635,76 @@ def test_month_two_week_eight_tracks_tail_and_departure_milestones():
     assert milestones["m02_formal_hearing_followthrough"]["status"] == "active"
     assert milestones["m02_warning_route_drill"]["status"] == "locked"
     assert milestones["m02_third_month_departure"]["status"] == "locked"
+
+
+def test_month_three_plan_groups_eight_entries_into_three_resource_families():
+    cases = [
+        ("month03_public_council_trial", "public_network", "m03_public_support_allocation"),
+        ("month03_source_depart_dawn", "frontier_probe", "m03_frontier_loading"),
+        ("month03_shared_custody_record", "accountable_intel", "m03_intel_budget"),
+    ]
+    for route_flag, ending_path, active_id in cases:
+        sess = Session(run_id=f"test-month-three-plan-{ending_path}")
+        sess.state = sess.state.model_copy(
+            update={"day": 62, "time_band": "morning", "flags": {route_flag: 1}}
+        )
+
+        plan = public_month_plan(sess.root, sess.state, month_id="month_03")
+        week = next(item for item in plan["weeks"] if item["id"] == "week_09")
+        milestones = {item["id"]: item for item in week["milestones"]}
+
+        assert plan["current"]["ending_path"] == ending_path
+        assert plan["current"]["active_milestone_id"] == active_id
+        assert milestones[active_id]["status"] == "active"
+        assert sum(item["status"] == "active" for item in milestones.values()) == 1
+
+
+def test_month_three_public_resource_choice_deducts_real_player_resources():
+    sess = Session(run_id="test-month-three-public-resource-cost")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 62,
+            "time_band": "morning",
+            "flags": {"month03_public_council_trial": 1},
+        }
+    )
+    sess.player_action(kind="move_scene", scene_id="village_square")
+
+    out = sess.player_action(
+        kind="scene_activity",
+        activity_id="village_third_month_support_allocation",
+        activity_choice="commit_sacred_signal",
+    )
+
+    assert out["ok"] is True
+    assert out["state"]["player"]["stamina"] == 97
+    assert out["state"]["player"]["mp"] == 90
+    assert out["activity_result"]["resource_changes"]["stamina"]["delta"] == -3
+    assert out["activity_result"]["resource_changes"]["mp"]["delta"] == -10
+    assert out["state"]["flags"]["month03_preparation_done"] == 1
+    assert out["state"]["flags"]["month03_public_sacred_signal"] == 1
+
+
+def test_month_three_resource_activity_rejects_insufficient_mp_without_partial_write():
+    sess = Session(run_id="test-month-three-resource-atomic-reject")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 62,
+            "time_band": "morning",
+            "flags": {"month03_public_council_trial": 1},
+            "player": sess.state.player.model_copy(update={"mp": 5, "stamina": 100}),
+        }
+    )
+    sess.player_action(kind="move_scene", scene_id="village_square")
+
+    out = sess.player_action(
+        kind="scene_activity",
+        activity_id="village_third_month_support_allocation",
+        activity_choice="commit_sacred_signal",
+    )
+
+    assert out["ok"] is False
+    assert out["error"] == "insufficient_mp"
+    assert sess.state.player.mp == 5
+    assert sess.state.player.stamina == 100
+    assert "month03_preparation_done" not in sess.state.flags

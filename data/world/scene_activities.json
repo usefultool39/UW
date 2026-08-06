@@ -2733,6 +2733,443 @@
           }
         }
       ]
+    },
+    {
+      "id": "village_third_month_support_allocation",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "第三月 · 村务支持分配",
+      "label": "决定第三月第一次边界行动如何投入村务支持",
+      "description": "第三月已经开始。公开议事、侦察说明、警告钟或移动守望都需要真实投入：可以让更多人承担体力劳动，也可以消耗神圣力建立更稳定的信号。",
+      "result_text": "村务板上第一次同时写下了行动目标和资源代价。无论选择人力轮值还是神圣术信号，村民都知道这次边界行动花掉了什么、保留了什么。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "public_network",
+        "resources",
+        "village",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 62,
+        "day_max": 68,
+        "required_any_flags": {
+          "month03_public_council_trial": 1,
+          "month03_public_scout_assembly": 1,
+          "month03_warning_bell_network": 1,
+          "month03_mobile_watch_route": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_resource_choice",
+      "player_facing_benefit": "在体力密集的人力轮值和神圣力密集的信号网络之间选择；资源会真实扣除，并改变 Day 69 路线测试。",
+      "choices": [
+        {
+          "id": "commit_people_power",
+          "label": "投入人力轮值与实地搬运",
+          "hint": "消耗较多体力、不消耗神圣力；Day 69 获得更强的现场人手。",
+          "tone": "physical",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 69 解锁现场部署或保留后备队",
+              "保留神圣力，应对后续异常"
+            ]
+          },
+          "result_text": "你和尤吉欧把路线牌、绳索和警告木牌逐一搬到轮值点。爱丽丝负责核对名单；大量体力被花在真实准备上，但神圣力完整保留下来。",
+          "effects": {
+            "stamina_cost": 12,
+            "mp_cost": 0,
+            "flags": {
+              "month03_preparation_done": 1,
+              "month03_public_preparation_done": 1,
+              "month03_public_people_power": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_resource",
+                "summary": "第三月第一次准备，玩家投入大量体力建立人力轮值，保留神圣力作为异常储备。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_resource",
+                "summary": "第三月第一次准备，玩家和尤吉欧亲自搬运路线牌、绳索和警告木牌。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "commit_sacred_signal",
+          "label": "编织神圣术信号与远距回报",
+          "hint": "消耗神圣力、节省体力；Day 69 获得更稳定的远距信号。",
+          "tone": "arts",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 69 解锁信号网展开或保留术力储备",
+              "现场人手较少，但回报更稳定"
+            ]
+          },
+          "result_text": "你和爱丽丝把刻印术短句编进钟声与路线卡，尤吉欧只需完成少量实地布置。体力消耗较少，但神圣力明显下降；远处的回报因此更清楚。",
+          "effects": {
+            "stamina_cost": 3,
+            "mp_cost": 10,
+            "flags": {
+              "month03_preparation_done": 1,
+              "month03_public_preparation_done": 1,
+              "month03_public_sacred_signal": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_resource",
+                "summary": "第三月第一次准备，玩家消耗神圣力建立远距信号，减少村民实地搬运负担。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_resource",
+                "summary": "第三月第一次准备，玩家用神圣术信号替代部分人力轮值与搬运。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "north_gate_third_month_expedition_loading",
+      "scene_id": "north_gate",
+      "scene_ids": [
+        "north_gate"
+      ],
+      "poi_id": "ix_north_gate",
+      "title": "第三月 · 边境负载选择",
+      "label": "为第三月第一次源头行动分配负载",
+      "description": "源头追查已经准备出发，或正在等待可信信号。小队只能在携带更完整的回撤补给，与消耗神圣力建立远距刻印之间选择优先级。",
+      "result_text": "北门石阶上的负载被重新分成可解释的代价。更多补给意味着更重的体力消耗；更多远距刻印意味着更少负载，却会提前消耗神圣力。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "frontier_probe",
+        "resources",
+        "north_gate",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 62,
+        "day_max": 68,
+        "required_any_flags": {
+          "month03_source_depart_dawn": 1,
+          "month03_source_wait_for_signal": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_resource_choice",
+      "player_facing_benefit": "在重装回撤补给与远距刻印之间选择；资源会真实扣除，并改变 Day 69 的源头路线测试。",
+      "choices": [
+        {
+          "id": "carry_full_return_pack",
+          "label": "携带完整回撤补给与双份绳标",
+          "hint": "体力代价最高、神圣力消耗很少；Day 69 能更安全地推进或建立补给缓存。",
+          "tone": "prepared",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 69 解锁重装推进或半程缓存",
+              "撤退容错最高，但出发时体力较低"
+            ]
+          },
+          "result_text": "你们把干粮、绳标、测距粉和密封副本全部装入回撤包。尤吉欧重新分配重量，爱丽丝确认搜索起点；负载很重，却允许队伍在异常天气里仍有退路。",
+          "effects": {
+            "stamina_cost": 14,
+            "mp_cost": 2,
+            "flags": {
+              "month03_preparation_done": 1,
+              "month03_frontier_preparation_done": 1,
+              "month03_full_return_pack": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_resource",
+                "summary": "第三月第一次源头准备，玩家承担高体力负载，携带完整回撤补给和搜索副本。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_resource",
+                "summary": "第三月第一次源头准备，玩家和尤吉欧分配双份绳标、干粮与测距粉。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "weave_distance_marks",
+          "label": "用神圣力编织远距刻印，减轻负载",
+          "hint": "消耗较多神圣力、节省体力；Day 69 能远距三角定位或保留刻印储备。",
+          "tone": "technical",
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 69 解锁远距定位或保留刻印",
+              "移动更轻快，但神圣力储备较低"
+            ]
+          },
+          "result_text": "你和爱丽丝把距离、方向和停步信号编成三枚远距刻印，只携带必要绳标。尤吉欧试走后确认负载更轻，但如果刻印失效，队伍必须更早撤回。",
+          "effects": {
+            "stamina_cost": 6,
+            "mp_cost": 10,
+            "flags": {
+              "month03_preparation_done": 1,
+              "month03_frontier_preparation_done": 1,
+              "month03_distance_marks": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_resource",
+                "summary": "第三月第一次源头准备，玩家消耗神圣力编织远距刻印，以减轻实物负载。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_resource",
+                "summary": "第三月第一次源头准备，玩家用三枚远距刻印替代部分绳标与补给重量。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reading_hall_third_month_intelligence_budget",
+      "scene_id": "reading_hall",
+      "scene_ids": [
+        "reading_hall",
+        "church_library"
+      ],
+      "poi_id": "ix_reading_desk",
+      "title": "第三月 · 情报托管预算",
+      "label": "决定第三月密封情报如何消耗神圣力与人力",
+      "description": "双人托管或审计钥匙已经建立。第三月第一次情报行动必须决定：消耗神圣力制作可核验副本，还是保持轻量托管并承担更少冗余。",
+      "result_text": "密封情报第一次有了真实预算。更多神圣力可以换来更多校验副本；更轻的托管消耗较少，却要求每个人更严格地遵守开启与通知顺序。",
+      "time_cost": 2,
+      "repeat": "once",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "month03",
+        "accountable_intel",
+        "resources",
+        "reading_hall",
+        "npc_intent"
+      ],
+      "requirements": {
+        "day_min": 62,
+        "day_max": 68,
+        "required_any_flags": {
+          "month03_shared_custody_record": 1,
+          "month03_alice_custody_key": 1
+        }
+      },
+      "effects": {
+        "stamina_cost": 0,
+        "mp_cost": 0,
+        "relationship": {
+          "alice.trust": 1,
+          "eugeo.trust": 1
+        }
+      },
+      "interaction_kind": "month03_resource_choice",
+      "player_facing_benefit": "在高神圣力消耗的多重校验和低消耗的轻量托管之间选择；选择会改变 Day 69 情报测试。",
+      "choices": [
+        {
+          "id": "duplicate_audit_seals",
+          "label": "制作三份可交叉核验的审计封印",
+          "hint": "神圣力代价最高；Day 69 能安全分享有限摘要或进行交叉审计。",
+          "tone": "redundant",
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 69 解锁有限摘要共享或交叉审计",
+              "情报可靠性最高，神圣力储备最低"
+            ]
+          },
+          "result_text": "你和爱丽丝为同一份记录制作三道相互校验的封印，尤吉欧保管独立编号。神圣力消耗明显，但任何一份被改动，另外两份都会留下差异。",
+          "effects": {
+            "stamina_cost": 4,
+            "mp_cost": 12,
+            "flags": {
+              "month03_preparation_done": 1,
+              "month03_intel_preparation_done": 1,
+              "month03_audit_seals_tripled": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_resource",
+                "summary": "第三月第一次情报准备，玩家消耗大量神圣力制作三份可交叉核验的审计封印。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_resource",
+                "summary": "第三月第一次情报准备，玩家请尤吉欧独立保管三份审计封印的编号。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "keep_lean_custody",
+          "label": "维持单份密封记录与轻量托管",
+          "hint": "资源消耗最低；Day 69 能快速发布警告或保持完整源头封存，但冗余较少。",
+          "tone": "lean",
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 2,
+              "alice.trust": 2,
+              "alice.tension": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "Day 69 解锁快速警告或继续封存",
+              "保留最多资源，但单份记录责任更重"
+            ]
+          },
+          "result_text": "你保留一份密封记录，只补上开启顺序与逾时通知。爱丽丝接受节省神圣力的决定，却要求任何转抄都必须重新进入审计；轻量托管换来了更高的人为责任。",
+          "effects": {
+            "stamina_cost": 5,
+            "mp_cost": 4,
+            "flags": {
+              "month03_preparation_done": 1,
+              "month03_intel_preparation_done": 1,
+              "month03_lean_custody": 1
+            },
+            "relationship": {
+              "eugeo.trust": 2,
+              "alice.trust": 2,
+              "alice.tension": 1
+            },
+            "tensions": {
+              "alice": "第三月轻量托管只有一份密封记录，任何转抄遗漏都会放大信息风险。"
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_resource",
+                "summary": "第三月第一次情报准备，玩家选择轻量托管以保留资源，同时承担单份记录风险。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_resource",
+                "summary": "第三月第一次情报准备，玩家保留单份密封记录并明确逾时通知顺序。",
+                "weight": 4
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

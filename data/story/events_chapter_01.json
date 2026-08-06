@@ -2472,6 +2472,626 @@
           }
         }
       ]
+    },
+    {
+      "id": "ch1_d69_third_month_route_test",
+      "chapter": "chapter_01",
+      "kind": "route_test",
+      "title": "第三月：第一次路线测试",
+      "description": "第一次资源准备已经完成。现在必须把投入的人力、神圣力、回撤补给或审计封印用于一次真实边界测试，并看见选择带来的限制。",
+      "trigger": {
+        "day_min": 69,
+        "day_max": 74,
+        "time_bands": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+        ],
+        "required_flags": {
+          "month03_preparation_done": 1
+        },
+        "forbidden_flags": {
+          "month03_route_test_done": 1
+        }
+      },
+      "location": {
+        "scene_id": "north_gate",
+        "tile_x": 67,
+        "tile_y": 24
+      },
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "choices": [
+        {
+          "id": "deploy_people_watch",
+          "label": "把人力轮值投入第一次实地守望",
+          "hint": "人力路线：扩大现场观察范围，接受更高体力消耗后的谨慎推进。",
+          "conditions": {
+            "required_flags": {
+              "month03_public_people_power": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "公开路线获得更大的现场观察范围",
+              "后续需要恢复较低的体力储备"
+            ]
+          },
+          "result_text": "轮值队在北门内外形成两层观察。尤吉欧带外圈，爱丽丝核对回报；第三月第一次行动把人力投入变成了更大的现场视野。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_public_watch_deployed": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家把人力轮值投入北门两层实地守望。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家让尤吉欧带领外圈守望扩大现场视野。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "hold_people_reserve",
+          "label": "保留一半人力作为撤退后备",
+          "hint": "人力路线：观察范围较小，但任何异常都有人接替和护送。",
+          "conditions": {
+            "required_flags": {
+              "month03_public_people_power": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "公开路线获得稳定后备与护送能力",
+              "现场观察范围较小"
+            ]
+          },
+          "result_text": "你只派出一半轮值，另一半留在村道与北门之间。第一次异常回报出现时，后备队没有追问源头，先把疲惫的观察员带回安全线。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_public_reserve_held": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家保留一半人力作为撤退和接替后备。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家没有把全部轮值投入前线，而是保留护送人手。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "raise_signal_lattice",
+          "label": "展开完整神圣术信号网",
+          "hint": "信号路线：消耗既有术力投入，获得最清楚的远距回报。",
+          "conditions": {
+            "required_flags": {
+              "month03_public_sacred_signal": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "公开路线获得清晰远距回报",
+              "神圣力准备被用于完整信号网"
+            ]
+          },
+          "result_text": "三处刻印在同一时刻亮起，村道、北门和外侧观察点第一次共享同一条回报。爱丽丝迅速发现一处时间偏差，信号网让误报在扩散前被纠正。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_signal_lattice_raised": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家展开完整神圣术信号网并在误报扩散前发现时间偏差。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家让村道、北门和外侧观察点共享远距回报。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "save_signal_reserve",
+          "label": "只启用两处信号，保留术力储备",
+          "hint": "信号路线：回报覆盖较小，但保留应对未知异常的神圣力。",
+          "conditions": {
+            "required_flags": {
+              "month03_public_sacred_signal": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "公开路线保留神圣力应急储备",
+              "远距覆盖范围较小"
+            ]
+          },
+          "result_text": "你只启用村道与北门两处刻印，把第三枚保持熄灭。回报没有覆盖更远位置，却在一次异常波动出现时保留了立即加固边界的术力。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_signal_reserve_saved": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家只启用两处信号并保留一枚刻印作为异常储备。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家接受较小覆盖以保留应急神圣力。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "push_with_full_pack",
+          "label": "带完整回撤包推进一个安全段",
+          "hint": "重装路线：用高负载换取更远的安全推进与撤退容错。",
+          "conditions": {
+            "required_flags": {
+              "month03_full_return_pack": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "源头路线安全推进一段",
+              "高负载准备得到完整利用"
+            ]
+          },
+          "result_text": "完整回撤包让三人跨过旧标记后仍有余量。尤吉欧建立新缓存，爱丽丝记录搜索起点；队伍没有到达源头，却把安全边界向外推进了一段。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_full_pack_advanced": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家依靠完整回撤包把安全边界向外推进一段。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家和尤吉欧用重装补给建立新的外侧缓存。",
+                "weight": 6
+              }
+            }
+          }
+        },
+        {
+          "id": "cache_half_pack",
+          "label": "把一半补给留成固定撤退缓存",
+          "hint": "重装路线：降低前进范围，建立之后可以重复使用的安全节点。",
+          "conditions": {
+            "required_flags": {
+              "month03_full_return_pack": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "源头路线获得固定撤退缓存",
+              "本次推进距离较短"
+            ]
+          },
+          "result_text": "你没有把全部补给带向未知，而是在旧标记旁建立固定缓存。爱丽丝写下开启条件，尤吉欧标出返回距离；第三月第一次行动留下了可重复使用的退路。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_return_cache_built": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "alice.tension": -1,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家把半份回撤补给建立成固定安全缓存。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家减少推进距离以留下可重复使用的补给节点。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "triangulate_distance_marks",
+          "label": "同时点亮三枚远距刻印定位异常",
+          "hint": "刻印路线：用准备好的术式换取一次更精确的源头方向。",
+          "conditions": {
+            "required_flags": {
+              "month03_distance_marks": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "源头路线获得更精确方向",
+              "远距刻印准备被完整消耗"
+            ]
+          },
+          "result_text": "三枚刻印依次回应，异常方向第一次收束成可以复走的夹角。爱丽丝没有把它写成答案，只记录可信区间；尤吉欧补上最近的退路。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_source_triangulated": 1
+            },
+            "relationship": {
+              "alice.trust": 3,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家用三枚远距刻印把异常方向收束成可信区间。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家定位异常夹角后仍优先补上最近退路。",
+                "weight": 5
+              }
+            }
+          }
+        },
+        {
+          "id": "conserve_distance_marks",
+          "label": "只点亮一枚刻印验证信号真实性",
+          "hint": "刻印路线：信息较少，但为下一次异常保留两枚远距刻印。",
+          "conditions": {
+            "required_flags": {
+              "month03_distance_marks": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "源头路线确认信号真实",
+              "保留两枚刻印用于后续"
+            ]
+          },
+          "result_text": "你只点亮第一枚刻印，用它确认异常信号并非风声误差。方向仍然模糊，但另外两枚刻印保持完整；三人没有为一次读数耗尽全部准备。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_distance_marks_conserved": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "alice.tension": -1,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家只用一枚刻印验证信号真实性，保留两枚后备。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家没有为一次模糊读数耗尽远距刻印。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "share_verified_summary",
+          "label": "从三份审计封印中公开有限摘要",
+          "hint": "多重审计路线：公开可交叉验证的警告，不暴露完整源头记录。",
+          "conditions": {
+            "required_flags": {
+              "month03_audit_seals_tripled": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "情报路线公开可信有限摘要",
+              "完整源头继续受保护"
+            ]
+          },
+          "result_text": "三份封印给出了相同的时间与方向，你只公开重合部分。村务获得可信警告，完整源头仍留在托管记录中；公开第一次建立在可验证差异上。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_verified_summary_shared": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "alice.tension": -2,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家从三份审计封印中只公开可交叉验证的重合摘要。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家向村务提供可信警告但不暴露完整源头。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "audit_all_three_seals",
+          "label": "暂不公开，先完成三份封印交叉审计",
+          "hint": "多重审计路线：延迟反馈，换取最高的信息完整性。",
+          "conditions": {
+            "required_flags": {
+              "month03_audit_seals_tripled": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 4,
+              "eugeo.trust": 1
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "情报路线获得最高完整性",
+              "村务反馈较慢"
+            ]
+          },
+          "result_text": "你和爱丽丝逐项核对三份封印，发现一处由抄写时刻造成的偏差。村务暂时只收到维持警戒的通知，但源头记录因此没有带着错误进入第三月。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_three_seal_audit_done": 1
+            },
+            "relationship": {
+              "alice.trust": 4,
+              "eugeo.trust": 1
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家延迟公开并完成三份封印交叉审计，发现一处时间偏差。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家只先发布维持警戒通知，避免错误记录扩散。",
+                "weight": 4
+              }
+            }
+          }
+        },
+        {
+          "id": "issue_fast_warning",
+          "label": "从单份托管记录中快速发布必要警告",
+          "hint": "轻量托管路线：响应最快，但爱丽丝会留下单份来源风险。",
+          "conditions": {
+            "required_flags": {
+              "month03_lean_custody": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "情报路线响应最快",
+              "单份来源风险上升"
+            ],
+            "tensions": [
+              "alice"
+            ]
+          },
+          "result_text": "你从单份记录中提取异常时段和退路，迅速交给村务。警告及时生效，爱丽丝却在审计页写下这次决定的风险：所有人都依赖同一份来源。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_fast_warning_issued": 1
+            },
+            "relationship": {
+              "eugeo.trust": 3,
+              "alice.trust": 1,
+              "alice.tension": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家从单份托管记录快速发布必要警告，同时承认单一来源风险。",
+                "weight": 6
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家优先让村务及时获得异常时段和退路。",
+                "weight": 5
+              }
+            },
+            "tensions": {
+              "alice": "第三月快速警告依赖单份托管记录，若来源有误，村务会一起被误导。"
+            }
+          }
+        },
+        {
+          "id": "keep_source_sealed",
+          "label": "保持完整源头封存，只更新逾时搜索点",
+          "hint": "轻量托管路线：保密最强、资源消耗最低，但村务只能获得有限安全信息。",
+          "conditions": {
+            "required_flags": {
+              "month03_lean_custody": 1
+            }
+          },
+          "preview": {
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "remembered_by": [
+              "alice",
+              "eugeo"
+            ],
+            "consequences": [
+              "情报路线保密性最高",
+              "村务只能获得有限安全信息"
+            ],
+            "promises": [
+              "alice"
+            ]
+          },
+          "result_text": "你没有转抄源头，只更新三人逾时后的搜索起点。尤吉欧接受村务知道得更少，爱丽丝则要求下一次出现重复信号时必须重新评估公开范围。",
+          "effects": {
+            "flags": {
+              "month03_route_test_done": 1,
+              "month03_source_kept_sealed": 1
+            },
+            "relationship": {
+              "alice.trust": 2,
+              "eugeo.trust": 2
+            },
+            "memory": {
+              "alice": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家保持完整源头封存，只向村务更新逾时搜索点。",
+                "weight": 5
+              },
+              "eugeo": {
+                "type": "month03_test",
+                "summary": "第三月路线测试，玩家保留暗线隐蔽性并给村务留下最低安全信息。",
+                "weight": 5
+              }
+            },
+            "promises": {
+              "alice": "若第三月再次出现相同异常信号，玩家会重新评估源头信息的公开范围。"
+            }
+          }
+        }
+      ]
     }
   ]
 }

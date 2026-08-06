@@ -581,3 +581,77 @@ def test_day_sixty_one_departure_choice_unlocks_day_sixty_two():
     advanced = sess.player_action(kind="rest_until_next_day")
     assert advanced["ok"] is True
     assert advanced["state"]["day"] == 62
+
+
+def test_day_sixty_nine_route_test_only_exposes_selected_resource_method():
+    cases = [
+        ("month03_public_people_power", {"deploy_people_watch", "hold_people_reserve"}),
+        ("month03_public_sacred_signal", {"raise_signal_lattice", "save_signal_reserve"}),
+        ("month03_full_return_pack", {"push_with_full_pack", "cache_half_pack"}),
+        ("month03_distance_marks", {"triangulate_distance_marks", "conserve_distance_marks"}),
+        ("month03_audit_seals_tripled", {"share_verified_summary", "audit_all_three_seals"}),
+        ("month03_lean_custody", {"issue_fast_warning", "keep_source_sealed"}),
+    ]
+    for method_flag, expected_choices in cases:
+        sess = Session(run_id=f"test-day69-route-test-{method_flag}")
+        sess.state = sess.state.model_copy(
+            update={
+                "day": 69,
+                "time_band": "morning",
+                "flags": {"month03_preparation_done": 1, method_flag: 1},
+            }
+        )
+
+        event = next(
+            item for item in sess.available_story_events()["events"]
+            if item["id"] == "ch1_d69_third_month_route_test"
+        )
+
+        assert {choice["id"] for choice in event["choices"]} == expected_choices
+
+
+def test_day_seventy_five_gate_requires_route_test_and_then_unlocks():
+    sess = Session(run_id="test-day75-third-month-gate")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 75,
+            "time_band": "morning",
+            "flags": {
+                "month03_preparation_done": 1,
+                "month03_public_people_power": 1,
+            },
+        }
+    )
+
+    blocked = sess.player_action(kind="rest_until_next_day")
+    assert blocked["ok"] is False
+    assert blocked["missing"][0]["id"] == "ch1_d69_third_month_route_test"
+
+    # The event is authored for Day 69-74, so complete it at the last available
+    # day before returning to the Day 75 gate.
+    sess.state = sess.state.model_copy(update={"day": 74})
+    chosen = sess.choose_story_event(
+        "ch1_d69_third_month_route_test",
+        "hold_people_reserve",
+    )
+    assert chosen["ok"] is True
+    assert chosen["state"]["flags"]["month03_route_test_done"] == 1
+    assert chosen["state"]["flags"]["month03_public_reserve_held"] == 1
+
+    sess.state = sess.state.model_copy(update={"day": 75})
+    advanced = sess.player_action(kind="rest_until_next_day")
+    assert advanced["ok"] is True
+    assert advanced["state"]["day"] == 76
+
+
+def test_third_month_day_sixty_five_gate_requires_resource_preparation():
+    sess = Session(run_id="test-day65-resource-gate")
+    sess.state = sess.state.model_copy(
+        update={"day": 65, "flags": {"month03_departure_ready": 1}}
+    )
+
+    out = sess.player_action(kind="rest_until_next_day")
+
+    assert out["ok"] is False
+    assert out["error"] == "day_end_gate_incomplete"
+    assert out["missing"][0]["key"] == "month03_preparation_done"

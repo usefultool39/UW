@@ -131,3 +131,32 @@ def test_activity_plan_enforces_authored_day_window_before_effects():
         player=PlayerState(scene_id="reading_hall"),
     )
     assert plan.next_flags["clue_count"] == 1
+
+
+def test_activity_plan_preserves_explicit_zero_stamina_for_mp_route_choice():
+    resource_choice = activity(
+        effects={"stamina_cost": 0, "mp_cost": 0},
+        choices=[
+            {
+                "id": "use_arts",
+                "effects": {"stamina_cost": 0, "mp_cost": 10, "flags": {"arts_route": 1}},
+            }
+        ],
+    )
+    player = PlayerState(scene_id="reading_hall", stamina=40, mp=30)
+
+    plan = plan_scene_activity(
+        resource_choice,
+        activity_id="demo_activity",
+        activity_choice="use_arts",
+        scene_id="reading_hall",
+        time_band="morning",
+        day=1,
+        flags={},
+        player=player,
+    )
+
+    assert plan.stamina_cost == 0
+    assert plan.mp_cost == 10
+    assert plan.next_player.stamina == 40
+    assert plan.next_player.mp == 20

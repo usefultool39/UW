@@ -193,3 +193,17 @@
 - scripted 模式、Session 权威状态和 AI 回退边界保持不变；没有读取 `ai-shop`，没有调用真实 Provider。
 - 首轮真人盲测仍为 `pending-human-run`，自动化测试不冒充玩家证据。
 - 本轮质量门：后端 `268 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `17 passed`；内容校验 0 errors / 0 warnings；`git diff --check` 通过。
+
+
+## 2026-08-06 第三月 Day 62 → 69 资源型短循环
+
+- 新增 `/Users/lzm/Desktop/UW/data/story/month_03_plan.json`，第三月 Day 62–75 归并为三类可维护玩法族：公开协作、源头追查、责任情报。
+- Day 62–68 新增三项路线专属资源活动：村务支持分配、边境负载选择、情报托管预算。
+- 每项活动有两个真实资源方案，玩家会在行动前看到选择的体力 / 神圣力代价；后端会原子校验资源，不足时不会写入 flags、关系、记忆或一次性完成状态。
+- 修复 authored `stamina_cost: 0` 被旧默认值误读为 8 的问题，允许“低体力、高神圣力”和“高体力、低神圣力”成为真实取舍。
+- 场景选择公开预览增加资源代价 / 恢复信息，前端选择卡可以直接显示“体力 -3、神圣力 -10”等后果。
+- Day 65 新增资源准备闸门；Day 69–74 新增 `ch1_d69_third_month_route_test`，根据具体资源方案只显示两个路线结果；Day 75 必须完成路线测试后才能进入 Day 76。
+- 日志现在自动切换到第三月计划，并显示第三月标题与公开协作 / 源头追查 / 责任情报路线摘要；第一月旧标题保持兼容。
+- 第三月活动和事件都补充 NPC 主动入口，scripted 模式保持完整离线可玩；没有读取 `ai-shop`，没有调用真实 Provider。
+- 首轮真人盲测仍为 `pending-human-run`，自动化结果不替代真实玩家数据。
+- 本轮质量门：后端 `277 passed`；前端单测 `16 passed`；production build 通过；Playwright E2E `18 passed`；内容校验 0 errors / 0 warnings；`git diff --check` 通过。

@@ -570,3 +570,44 @@ def test_day_sixty_one_departure_intent_appears_after_tail_feedback():
         "type": "story_event",
         "event_id": "ch1_d61_third_month_departure",
     }
+
+
+def test_day_sixty_two_resource_intent_matches_third_month_family():
+    cases = [
+        ("month03_public_council_trial", "alice_allocates_third_month_support", "village_third_month_support_allocation"),
+        ("month03_source_depart_dawn", "eugeo_loads_third_month_expedition", "north_gate_third_month_expedition_loading"),
+        ("month03_shared_custody_record", "alice_budgets_third_month_intelligence", "reading_hall_third_month_intelligence_budget"),
+    ]
+    all_ids = {item[1] for item in cases}
+    for route_flag, expected_id, activity_id in cases:
+        sess = Session(run_id=f"test-day62-resource-intent-{expected_id}")
+        sess.state = sess.state.model_copy(
+            update={"day": 62, "time_band": "morning", "flags": {route_flag: 1}}
+        )
+
+        intents = {item.id: item for item in sess.public_state().npc_intents}
+
+        assert expected_id in intents
+        assert intents[expected_id].action == {
+            "type": "scene_activity",
+            "activity_id": activity_id,
+        }
+        assert not (all_ids - {expected_id}) & set(intents)
+
+
+def test_day_sixty_nine_route_test_intent_requires_resource_preparation():
+    sess = Session(run_id="test-day69-route-test-intent")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 69,
+            "time_band": "morning",
+            "flags": {"month03_preparation_done": 1},
+        }
+    )
+
+    intents = {item.id: item for item in sess.public_state().npc_intents}
+
+    assert intents["eugeo_calls_first_third_month_test"].action == {
+        "type": "story_event",
+        "event_id": "ch1_d69_third_month_route_test",
+    }
