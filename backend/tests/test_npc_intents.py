@@ -405,3 +405,60 @@ def test_day_forty_six_shared_convergence_intent_stays_locked_without_week_six_r
     intents = {item.id: item for item in sess.public_state().npc_intents}
 
     assert "alice_calls_anomaly_convergence" not in intents
+
+
+def test_optional_first_month_choice_activities_have_authored_npc_entries():
+    cases = [
+        (
+            5,
+            {"month01_debrief_done": 1},
+            "north_gate",
+            "eugeo_offers_route_walkthrough",
+            "north_gate_drill_walkthrough",
+        ),
+        (
+            8,
+            {"month01_drill_done": 1},
+            "village_square",
+            "alice_opens_patrol_board_review",
+            "village_patrol_board_review",
+        ),
+        (
+            13,
+            {"month01_village_trust": 1},
+            "north_gate",
+            "eugeo_requests_silent_line_recheck",
+            "north_gate_silent_line_recheck",
+        ),
+    ]
+    for day, flags, scene_id, intent_id, activity_id in cases:
+        sess = Session(run_id=f"test-optional-intent-{day}")
+        sess.state = sess.state.model_copy(
+            update={"day": day, "time_band": "morning", "flags": flags}
+        )
+
+        intents = {item.id: item for item in sess.public_state().npc_intents}
+
+        assert intents[intent_id].scene_id == scene_id
+        assert intents[intent_id].action == {
+            "type": "scene_activity",
+            "activity_id": activity_id,
+        }
+
+
+def test_optional_first_month_activity_intent_disappears_after_completion():
+    sess = Session(run_id="test-optional-intent-complete")
+    sess.state = sess.state.model_copy(
+        update={
+            "day": 8,
+            "time_band": "morning",
+            "flags": {
+                "month01_drill_done": 1,
+                "activity_done.village_patrol_board_review": 1,
+            },
+        }
+    )
+
+    intent_ids = {item.id for item in sess.public_state().npc_intents}
+
+    assert "alice_opens_patrol_board_review" not in intent_ids

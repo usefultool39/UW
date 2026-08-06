@@ -45,6 +45,11 @@ export function shouldOpenActivityPanel(action) {
   return activityPresentationForAction(action) !== null
 }
 
+export function shouldOpenActivityChoicePanel(action) {
+  const choices = Array.isArray(action?.activity?.choices) ? action.activity.choices : []
+  return action?.type === 'scene_activity' && choices.length > 0 && !shouldOpenActivityPanel(action)
+}
+
 export function activityPanelKind(action) {
   return activityPresentationForAction(action)?.panel || ''
 }

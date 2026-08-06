@@ -7,6 +7,7 @@ import {
   activityPanelKind,
   activityResultExtras,
   activityResultField,
+  shouldOpenActivityChoicePanel,
   shouldOpenActivityPanel
 } from '../src/field/activityRegistry.js'
 
@@ -40,4 +41,22 @@ test('unknown activity does not invent a panel, result field or result payload',
   assert.equal(activityPanelKind(action), '')
   assert.equal(activityResultField(action), '')
   assert.deepEqual(activityResultExtras(action, { label: 'unknown' }), {})
+})
+
+test('generic authored choices open a choice panel instead of silently using base effects', () => {
+  const genericChoice = {
+    type: 'scene_activity',
+    activity: {
+      id: 'village_patrol_board_review',
+      interaction_kind: 'public_record',
+      choices: [{ id: 'publish_safe_summary' }, { id: 'invite_village_notes' }]
+    }
+  }
+  assert.equal(shouldOpenActivityPanel(genericChoice), false)
+  assert.equal(shouldOpenActivityChoicePanel(genericChoice), true)
+  assert.equal(shouldOpenActivityChoicePanel({ type: 'scene_activity', activity: { choices: [] } }), false)
+  assert.equal(shouldOpenActivityChoicePanel({
+    type: 'scene_activity',
+    activity: { interaction_kind: 'meal_choice', choices: [{ id: 'support_alice' }] }
+  }), false)
 })

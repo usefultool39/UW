@@ -35,6 +35,23 @@ def find_scene_activity(project_root: Path, activity_id: str) -> dict[str, Any] 
     return None
 
 
+def _public_choice_preview(choice: dict[str, Any]) -> dict[str, Any]:
+    """Expose choice stakes without leaking authored memory text or control effects."""
+    effects = choice.get("effects") if isinstance(choice.get("effects"), dict) else {}
+    explicit = choice.get("preview") if isinstance(choice.get("preview"), dict) else {}
+    relationship = effects.get("relationship") if isinstance(effects.get("relationship"), dict) else {}
+    memory = effects.get("memory") if isinstance(effects.get("memory"), dict) else {}
+    promises = effects.get("promises") if isinstance(effects.get("promises"), dict) else {}
+    tensions = effects.get("tensions") if isinstance(effects.get("tensions"), dict) else {}
+    return {
+        "relationship": explicit.get("relationship") if isinstance(explicit.get("relationship"), dict) else relationship,
+        "remembered_by": explicit.get("remembered_by") if isinstance(explicit.get("remembered_by"), list) else list(memory.keys()),
+        "promises": explicit.get("promises") if isinstance(explicit.get("promises"), list) else list(promises.keys()),
+        "tensions": explicit.get("tensions") if isinstance(explicit.get("tensions"), list) else list(tensions.keys()),
+        "consequences": explicit.get("consequences") if isinstance(explicit.get("consequences"), list) else [],
+    }
+
+
 def _public_activity_preview(item: dict[str, Any]) -> dict[str, Any]:
     """Expose decision-relevant categories without leaking authored effects or memory text."""
     effects = item.get("effects") if isinstance(item.get("effects"), dict) else {}
@@ -103,9 +120,12 @@ def public_scene_activities(project_root: Path) -> dict[str, Any]:
         if isinstance(choices, list):
             row["choices"] = [
                 {
-                    key: choice.get(key)
-                    for key in ("id", "label", "hint", "tone")
-                    if isinstance(choice, dict) and key in choice
+                    **{
+                        key: choice.get(key)
+                        for key in ("id", "label", "hint", "tone")
+                        if isinstance(choice, dict) and key in choice
+                    },
+                    "preview": _public_choice_preview(choice),
                 }
                 for choice in choices
                 if isinstance(choice, dict)

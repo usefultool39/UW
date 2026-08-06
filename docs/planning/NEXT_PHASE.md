@@ -169,3 +169,17 @@ M3-WP1～WP4 已完成：Underworld 第一章叙事基线、剧情事件驱动�
 - 新增 `/Users/lzm/Desktop/UW/docs/delivery/PLAYTEST_ROUND_01_TRACKER_20260806.md`，把三名真人玩家的记录、录屏、访谈和批次判定集中管理。
 - 明确 `pending-human-run` 不得被自动化结果或开发者自测替换；在没有真实玩家记录前，不宣称盲测完成。
 - 盲测回填后只修最高频阻塞点，再重复质量门和推送流程。
+
+## 2026-08-06 直接可玩性优先修复
+
+第二月审计时确认：继续堆内容前，必须先确保已有 authored 内容能被玩家发现和选择。本轮完成：
+
+- 通用数据驱动活动选择 UI；
+- 安全的 choice 后果预览；
+- Day 5–17 三个可选准备活动的 NPC 主动入口；
+- 选择结果写入既有关系、记忆和后续 route flags；
+- 游戏内完整 UI 路径回归测试。
+
+验证结果：后端 `249 passed`、前端 `16 passed`、production build 通过、Playwright `14 passed`；scripted 离线模式和既有 Day 1–46 smoke 保持可用。
+
+下一轮回到第二月：优先把 Day 32 路线入口和 Day 39 路线深化从单次活动扩展成“目标 → 选择 → 资源/关系后果 → Day 46 汇流”的短循环，不先扩张大地图。

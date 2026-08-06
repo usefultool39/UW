@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased] 2026-08-06 — 数据驱动路线活动可直接游玩
+
+### Added
+
+- 新增通用场景活动选择面板：非小游戏的 authored choices 现在会在游戏内展示做法、提示、关系变化和记忆对象，玩家选择后再由 Session 结算。
+- Day 5–6 北门退路预演、Day 8–11 巡查板复核、Day 13–17 静默线复核新增 NPC 主动入口，填补第一月关键事件之间“有数据但玩家找不到”的内容断层。
+- 场景活动公开 API 增加安全 choice preview，只公开关系数值和记忆对象，不暴露 flags、永久记忆正文或控制效果。
+- Playwright 新增“巡查板选择可从游戏界面直接完成”的真实 UI 路径。
+
+### Changed
+
+- 北门月末守夜等既有通用选择活动不再跳过 choice 直接应用基础效果，而是要求玩家明确选择路线。
+- 剧情事件与场景活动面板只在打开时渲染，避免隐藏面板造成重复可访问节点和自动化 strict-mode 冲突。
+
+### Verification
+
+- 后端：`249 passed`；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：`16 passed`；production build 通过；Phaser chunk 约 1.48 MB 的既有体积警告保持不变。
+- Playwright E2E：`14 passed`，新增覆盖通用场景活动从 UI 选择并写入路线 flag。
+- `git diff --check`：通过。
+
 ## [Unreleased] 2026-08-06 — 第一月路线连续性与盲测证据
 
 ### Added

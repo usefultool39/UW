@@ -66,6 +66,7 @@ const isMonthFinal = computed(() => props.event?.kind === 'month_final')
 const eventKicker = computed(() => {
   if (isMonthFinal.value) return '第一月路线抉择'
   if (props.event?.kind === 'final_choice') return '章节收束'
+  if (props.event?.kind === 'scene_activity') return '场景选择'
   return '章节事件'
 })
 const participantLabel = computed(() => {

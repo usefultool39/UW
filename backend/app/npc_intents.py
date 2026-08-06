@@ -492,6 +492,35 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
         )
 
     if (
+        5 <= day <= 6
+        and band in {"morning", "afternoon"}
+        and _flag(state, "month01_debrief_done") >= 1
+        and _flag(state, "month01_drill_done") < 1
+        and _flag(state, "activity_done.north_gate_drill_walkthrough") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_offers_route_walkthrough",
+                kind="npc_invite",
+                title="尤里想先走一遍北门退路",
+                description="正式演练前还有时间。尤里提议先把撤退点、听风位置和轮换手势走熟，让第七天不是第一次面对这条路线。",
+                priority=76,
+                reason="Day 5-6 需要一个可选准备活动，把书库复盘连接到第七天北门演练。",
+                action={"type": "scene_activity", "activity_id": "north_gate_drill_walkthrough"},
+                stakes=[
+                    "标撤退点更稳妥，轮换听风更强调三人协作。",
+                    "这次选择会写入同伴记忆，并在正式演练前留下准备路线。",
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
+            )
+        )
+
+    if (
         7 <= day <= 10
         and band in {"morning", "afternoon"}
         and _flag(state, "month01_debrief_done") >= 1
@@ -543,6 +572,35 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
         )
 
     if (
+        8 <= day <= 11
+        and band in {"morning", "afternoon", "evening"}
+        and _flag(state, "month01_drill_done") >= 1
+        and _flag(state, "month01_village_trust") < 1
+        and _flag(state, "activity_done.village_patrol_board_review") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="alice",
+                intent_id="alice_opens_patrol_board_review",
+                kind="npc_invite",
+                title="艾琳把空白巡查板放到了广场",
+                description="第十二天作出村务决定前，你可以先公开安全流程，或邀请村民补充他们见过的异常。",
+                priority=78,
+                reason="Day 8-11 需要一个可选村务准备，让日常活动真实进入 Day 12 与 Day 18 的回响。",
+                action={"type": "scene_activity", "activity_id": "village_patrol_board_review"},
+                stakes=[
+                    "公开安全流程会降低艾琳压力。",
+                    "邀请村民记录会扩大线索来源，也会提高信息公开带来的紧张。",
+                ],
+                fallback=(28, 25, "village_square"),
+                scene_id="village_square",
+                tile_x=28,
+                tile_y=25,
+            )
+        )
+
+    if (
         12 <= day <= 16
         and band in {"morning", "afternoon", "evening"}
         and _flag(state, "month01_drill_done") >= 1
@@ -587,6 +645,35 @@ def build_npc_intents(project_root: Path, state: WorldState) -> list[NpcIntent]:
                 scene_id="village_square",
                 tile_x=28,
                 tile_y=25,
+            )
+        )
+
+    if (
+        13 <= day <= 17
+        and band in {"morning", "afternoon"}
+        and _flag(state, "month01_village_trust") >= 1
+        and _flag(state, "month01_silent_line_rehearsed") < 1
+        and _flag(state, "activity_done.north_gate_silent_line_recheck") < 1
+    ):
+        intents.append(
+            _intent(
+                state=state,
+                npc_id="eugeo",
+                intent_id="eugeo_requests_silent_line_recheck",
+                kind="npc_concern",
+                title="尤里听见静默线又靠近了一次",
+                description="正式演练前，尤里想用巡查记录或三人判定先复核一次靠近距离。",
+                priority=79,
+                reason="Day 13-17 需要一个可选复核活动，把村务信任连接到第十八天静默线演练。",
+                action={"type": "scene_activity", "activity_id": "north_gate_silent_line_recheck"},
+                stakes=[
+                    "按记录校准会让流程更可靠。",
+                    "三人共同判定会强化羁绊，并把最终判断交给队伍。",
+                ],
+                fallback=(67, 24, "north_gate"),
+                scene_id="north_gate",
+                tile_x=67,
+                tile_y=24,
             )
         )
 

@@ -145,10 +145,19 @@
     />
 
     <StoryEventPanel
+      v-if="storyEventOpen && selectedStoryEvent"
       v-model="storyEventOpen"
       :event="selectedStoryEvent"
       :busy="busy"
       @choose="onStoryEventChoose"
+    />
+
+    <StoryEventPanel
+      v-if="activityChoiceOpen && selectedActivityChoiceEvent"
+      v-model="activityChoiceOpen"
+      :event="selectedActivityChoiceEvent"
+      :busy="busy"
+      @choose="onActivityChoiceChoose"
     />
 
     <TrainingMiniGamePanel
@@ -240,7 +249,7 @@ import { getAgentLabel, getQuestGuide, getSceneLabel, getTimeBandLabel } from '.
 import { findNearbyInteractPoi } from '../field/interactPoi.js'
 import { DEFAULT_MAP_ID } from '../field/sceneRegistry.js'
 import { dedupeActivityActions } from '../field/interactActionMerge.js'
-import { activityCompletionMessage, activityIdForAction, activityOpenMessage, activityPanelKind, activityResultExtras, shouldOpenActivityPanel } from '../field/activityRegistry.js'
+import { activityCompletionMessage, activityIdForAction, activityOpenMessage, activityPanelKind, activityResultExtras, shouldOpenActivityChoicePanel, shouldOpenActivityPanel } from '../field/activityRegistry.js'
 import { useAudio } from '../composables/useAudio.js'
 import { useFieldToast } from '../composables/useFieldToast.js'
 import { compactPlayerText, uwCanonText } from '../utils/uwCanonText.js'
@@ -297,6 +306,7 @@ const interactOpen = ref(false)
 const npcPanelOpen = ref(false)
 const dialogueOpen = ref(false)
 const storyEventOpen = ref(false)
+const activityChoiceOpen = ref(false)
 const storyResultOpen = ref(false)
 const npcProfileOpen = ref(false)
 const trainingGameOpen = ref(false)
@@ -457,6 +467,20 @@ const selectedStoryEvent = computed(() =>
   storyEvents.value.find((e) => e.id === selectedStoryEventId.value) || storyEvents.value[0] || null
 )
 
+const selectedActivityChoiceEvent = computed(() => {
+  const activity = pendingActivityAction.value?.activity
+  if (!activity) return null
+  return {
+    id: activity.id,
+    kind: 'scene_activity',
+    title: activity.title || activity.label || '选择行动方式',
+    description: activity.description || '',
+    location: { scene_id: activity.scene_id || props.simState?.player?.scene_id || '' },
+    participants: activity.participants || [],
+    choices: activity.choices || []
+  }
+})
+
 const nearbyNpcs = computed(() => {
   const p = props.simState?.player
   if (!p) return []
@@ -565,6 +589,7 @@ const anyModalOpen = computed(() =>
   npcPanelOpen.value ||
   dialogueOpen.value ||
   storyEventOpen.value ||
+  activityChoiceOpen.value ||
   storyResultOpen.value ||
   npcProfileOpen.value ||
   trainingGameOpen.value ||
@@ -918,6 +943,7 @@ function openInteractPanel() {
   const modalOpen =
     storyResultOpen.value ||
     storyEventOpen.value ||
+    activityChoiceOpen.value ||
     trainingGameOpen.value ||
     boundaryProbeOpen.value ||
     boundaryVerdictOpen.value ||
@@ -1105,6 +1131,13 @@ async function onInteractAction(act) {
     interactOpen.value = false
     setActivityPanelOpen(act, true)
     showToast(activityOpenMessage(act))
+    return
+  }
+  if (shouldOpenActivityChoicePanel(act)) {
+    pendingActivityAction.value = act
+    interactOpen.value = false
+    activityChoiceOpen.value = true
+    showToast('选择一种做法；同伴会记住你的决定。')
     return
   }
   await doWithBusy(async () => {
@@ -1358,6 +1391,19 @@ async function onBoundaryVerdictComplete(payload) {
   })
 }
 
+async function onActivityChoiceChoose(choice) {
+  const act = pendingActivityAction.value
+  if (!act || !choice?.id || busy.value) return
+  await doWithBusy(async () => {
+    await runSceneActivity(act, { activity_choice: choice.id })
+    activityChoiceOpen.value = false
+    pendingActivityAction.value = null
+    showToast('这次选择已经写入关系、记忆和后续路线。', 'success')
+    await refreshStoryEvents()
+    sceneInstance?.syncPlayerFromState?.()
+  })
+}
+
 async function onActivityComplete(payload) {
   const act = pendingActivityAction.value
   if (!act || busy.value) return
@@ -1378,7 +1424,7 @@ async function onActivityComplete(payload) {
 function handleHotkey(e) {
   const tag = e.target?.tagName?.toLowerCase?.()
   if (tag === 'input' || tag === 'textarea' || tag === 'select') return
-  if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value || storyEventOpen.value || storyResultOpen.value || npcProfileOpen.value || journalOpen.value || trainingGameOpen.value || boundaryProbeOpen.value || boundaryVerdictOpen.value || readingGameOpen.value || mealChoiceOpen.value || boundaryPatrolOpen.value) return
+  if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value || storyEventOpen.value || activityChoiceOpen.value || storyResultOpen.value || npcProfileOpen.value || journalOpen.value || trainingGameOpen.value || boundaryProbeOpen.value || boundaryVerdictOpen.value || readingGameOpen.value || mealChoiceOpen.value || boundaryPatrolOpen.value) return
   const key = String(e.key || '').toLowerCase()
   if (props.devMode && key === 'v' && (e.ctrlKey || e.metaKey || e.shiftKey)) {
     e.preventDefault()

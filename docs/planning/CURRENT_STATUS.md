@@ -148,3 +148,11 @@
 - 首轮真人盲测的执行跟踪表已建立：`docs/delivery/PLAYTEST_ROUND_01_TRACKER_20260806.md`。
 - 当前状态仍为 `pending-human-run`；现有 Playwright 结果不能替代真实玩家证据，未伪造任何玩家记录。
 - 本轮质量门：后端 `247 passed`、前端 `15 passed`、build 通过、Playwright `13 passed`、`git diff --check` 通过。
+
+## 2026-08-06 数据驱动活动可直接游玩
+
+- 修复“活动 JSON 有 choices，但玩家从 UI 无法选择”的可玩性断层；`route_drill`、`public_record`、`silent_line_check`、`expedition_pack`、`month_gate_vigil` 现在统一进入场景选择面板。
+- 选择面板会显示做法、提示、同伴关系变化和谁会记住，不向前端暴露 flags 或记忆正文；最终效果仍由 FastAPI Session 权威结算。
+- Day 5–6、Day 8–11、Day 13–17 新增 authored NPC 主动入口，让北门退路预演、巡查板复核和静默线复核能在第一月关键剧情之间被真实发现和完成。
+- 月末守夜现在也必须明确选择“复核记录与承诺”或“复走撤退线”，不再静默跳过选择。
+- 本轮质量门：后端 `249 passed`、前端 `16 passed`、build 通过、Playwright `14 passed`、`git diff --check` 通过。

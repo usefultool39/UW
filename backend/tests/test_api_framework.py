@@ -27,6 +27,15 @@ def test_world_scene_activities_json():
     assert reading["preview"]["variable_resource_cost"] is False
     village_listen = next(item for item in body["activities"] if item["id"] == "village_square_listen")
     assert "后续村道事件" in village_listen["preview"]["benefit_text"]
+    patrol_board = next(item for item in body["activities"] if item["id"] == "village_patrol_board_review")
+    invite_choice = next(item for item in patrol_board["choices"] if item["id"] == "invite_village_notes")
+    assert invite_choice["preview"]["relationship"] == {
+        "alice.trust": 1,
+        "eugeo.trust": 2,
+        "alice.tension": 1,
+    }
+    assert invite_choice["preview"]["remembered_by"] == ["eugeo"]
+    assert "effects" not in invite_choice
     silent_recheck = next(item for item in body["activities"] if item["id"] == "north_gate_silent_line_recheck")
     assert "后续静默线演练" in silent_recheck["preview"]["benefit_text"]
     assert "effects" not in village_listen

@@ -370,6 +370,32 @@ test.describe('开放世界质量 smoke', () => {
     expect(day13.state.day).toBe(13)
   })
 
+  test('数据驱动活动选择可在游戏内直接完成并写入路线回响', async ({ page, request }) => {
+    await setFlags(request, ['month01_drill_done'])
+    await playerAction(request, { kind: 'set_day', day: 8 })
+    await playerAction(request, { kind: 'move_scene', scene_id: 'village_square' })
+
+    await page.goto('/')
+    await dismissOpeningBrief(page)
+    await page.locator('.nearby-enter-btn').click()
+    const action = page.locator('.interact-action[data-activity-id="village_patrol_board_review"]')
+    await expect(action).toBeVisible()
+    await action.click()
+
+    await expect(page.locator('.event-panel')).toBeVisible()
+    await expect(page.locator('.event-kicker')).toContainText('场景选择')
+    const choice = page.locator('.event-choice').filter({ hasText: '邀请村民补充异常记录' })
+    await expect(choice).toContainText('尤吉欧 信任 +2')
+    await expect(choice).toContainText('尤吉欧会记住')
+    await choice.click()
+
+    await expect(page.locator('.result-panel')).toBeVisible()
+    await expect(page.locator('.result-panel')).toContainText('调查开始属于整个村子')
+    const state = await (await request.get(`${API}/api/state`)).json()
+    expect(state.flags.village_patrol_board_reviewed).toBe(1)
+    expect(state.flags.village_notes_invited).toBe(1)
+  })
+
   test('北境短程巡查可判断敌意、消耗资源并获得累计标记', async ({ page, request }) => {
     await setFlags(request, ['forest_anomaly_seen'])
     await playerAction(request, { kind: 'move_scene', scene_id: 'north_gate' })
@@ -423,6 +449,8 @@ test.describe('开放世界质量 smoke', () => {
     await expect(page.locator('.quest-tracker')).toContainText('北门前复核第一月承诺')
     await page.locator('.nearby-enter-btn').click()
     await page.locator('.interact-action[data-activity-id="north_gate_month_end_vigil"]').click()
+    await expect(page.locator('.event-panel')).toBeVisible()
+    await page.locator('.event-choice').filter({ hasText: '让爱丽丝复核记录与承诺' }).click()
     await expect(page.locator('.result-panel')).toBeVisible()
     await page.getByRole('button', { name: '继续行动' }).click()
 
