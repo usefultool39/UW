@@ -1,0 +1,183 @@
+{
+  "npc_id": "alice",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "test-precapture-n10-record_silence",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:23.012024+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "2026-08-07T05:51:23.012024+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "终点时，桐人在记录本上只画下一道线；爱丽丝被整合骑士从卢利特村带走。",
+      "weight": 5,
+      "source_event": "ch1pc_n10_alice_captured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:23.004002+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "第三天告别时，玩家把最后一句话留给了爱丽丝。",
+      "weight": 5,
+      "source_event": "ch1pc_n09_alice_farewell"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.501292+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "终点时，桐人在记录本上只画下一道线；爱丽丝被整合骑士从卢利特村带走。",
+      "weight": 5,
+      "source_event": "ch1pc_n10_alice_captured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.493285+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "第三天告别时，玩家把最后一句话留给了爱丽丝。",
+      "weight": 5,
+      "source_event": "ch1pc_n09_alice_farewell"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.995961+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "第三天，整合骑士在卢利特村宣告时，玩家走到爱丽丝身边。",
+      "weight": 4,
+      "source_event": "ch1pc_n08_knights_arrive_village"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.978334+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_permanent",
+      "summary": "第二天，桐人在爱丽丝越界救人时伸手阻拦但没有把她拉回。",
+      "weight": 4,
+      "source_event": "ch1pc_n06_alice_crosses_boundary"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.487282+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "第三天，整合骑士在卢利特村宣告时，玩家走到爱丽丝身边。",
+      "weight": 4,
+      "source_event": "ch1pc_n08_knights_arrive_village"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.465319+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_permanent",
+      "summary": "第二天，桐人在爱丽丝越界救人时伸手阻拦但没有把她拉回。",
+      "weight": 4,
+      "source_event": "ch1pc_n06_alice_crosses_boundary"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.985365+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天返回村中时，玩家把何时开口的决定交给爱丽丝。",
+      "weight": 3,
+      "source_event": "ch1pc_n07_return_to_rulid"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.972283+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天，玩家先在边界外观察来自暗黑界一侧的受伤者。",
+      "weight": 3,
+      "source_event": "ch1pc_n05_encounter_dark_territory_injured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.957563+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天夜里，玩家认真讨论禁忌目录与尽头山脉，爱丽丝记住了这份坦白。",
+      "weight": 3,
+      "source_event": "ch1pc_n03_talk_index_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.472278+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天返回村中时，玩家把何时开口的决定交给爱丽丝。",
+      "weight": 3,
+      "source_event": "ch1pc_n07_return_to_rulid"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.459310+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天，玩家先在边界外观察来自暗黑界一侧的受伤者。",
+      "weight": 3,
+      "source_event": "ch1pc_n05_encounter_dark_territory_injured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.443274+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天夜里，玩家认真讨论禁忌目录与尽头山脉，爱丽丝记住了这份坦白。",
+      "weight": 3,
+      "source_event": "ch1pc_n03_talk_index_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.966255+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天出发前，玩家优先准备食物、水和记录本。",
+      "weight": 2,
+      "source_event": "ch1pc_n04_travel_to_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.945506+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家先听尤吉欧讲完伐木进度，再和爱丽丝一起安排午餐。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.452507+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天出发前，玩家优先准备食物、水和记录本。",
+      "weight": 2,
+      "source_event": "ch1pc_n04_travel_to_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.431209+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家先听尤吉欧讲完伐木进度，再和爱丽丝一起安排午餐。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    }
+  ],
+  "promises": [
+    "玩家会尊重爱丽丝选择告知家人的时机，也不会否认已发生的事实。",
+    "玩家答应记住爱丽丝，也不把未发生的事写成事实。"
+  ],
+  "tensions": []
+}

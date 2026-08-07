@@ -1,0 +1,27 @@
+{
+  "npc_id": "alice",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "memory-scope-first",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:21.972286+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "2026-08-07T05:51:21.972286+00:00",
+      "run_id": "memory-scope-first",
+      "day": 3,
+      "type": "choice",
+      "summary": "只属于第一局的边界记忆",
+      "weight": 5,
+      "source_event": null
+    }
+  ],
+  "promises": [],
+  "tensions": []
+}

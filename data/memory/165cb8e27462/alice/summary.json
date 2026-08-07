@@ -1,0 +1,27 @@
+{
+  "npc_id": "alice",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "165cb8e27462",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:19.735663+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "2026-08-07T05:51:19.695014+00:00",
+      "run_id": "11dfa3216294",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家先听尤吉欧讲完伐木进度，再和爱丽丝一起安排午餐。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    }
+  ],
+  "promises": [],
+  "tensions": []
+}

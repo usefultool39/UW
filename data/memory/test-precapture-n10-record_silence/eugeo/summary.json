@@ -1,0 +1,198 @@
+{
+  "npc_id": "eugeo",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "test-precapture-n10-record_silence",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:23.014074+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "2026-08-07T05:51:23.014074+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "终点时，尤吉欧看见桐人用一道线记录无法阻止的带走。",
+      "weight": 5,
+      "source_event": "ch1pc_n10_alice_captured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.503308+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "终点时，尤吉欧看见桐人用一道线记录无法阻止的带走。",
+      "weight": 5,
+      "source_event": "ch1pc_n10_alice_captured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:23.005972+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "第三天告别时，玩家和尤吉欧一起见证了爱丽丝的最后告别。",
+      "weight": 4,
+      "source_event": "ch1pc_n09_alice_farewell"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.998992+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "第三天，玩家在村中宣告时站到了爱丽丝身边。",
+      "weight": 4,
+      "source_event": "ch1pc_n08_knights_arrive_village"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.980381+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_permanent",
+      "summary": "第二天，尤吉欧记住桐人在爱丽丝越界瞬间仍在场。",
+      "weight": 4,
+      "source_event": "ch1pc_n06_alice_crosses_boundary"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.495284+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "第三天告别时，玩家和尤吉欧一起见证了爱丽丝的最后告别。",
+      "weight": 4,
+      "source_event": "ch1pc_n09_alice_farewell"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.489298+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 3,
+      "type": "precapture_permanent",
+      "summary": "第三天，玩家在村中宣告时站到了爱丽丝身边。",
+      "weight": 4,
+      "source_event": "ch1pc_n08_knights_arrive_village"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.468287+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_permanent",
+      "summary": "第二天，尤吉欧记住桐人在爱丽丝越界瞬间仍在场。",
+      "weight": 4,
+      "source_event": "ch1pc_n06_alice_crosses_boundary"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.987363+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天返回村中时，玩家选择让爱丽丝先决定告知时机。",
+      "weight": 3,
+      "source_event": "ch1pc_n07_return_to_rulid"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.974325+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天，玩家先确认撤回路线再面对受伤者。",
+      "weight": 3,
+      "source_event": "ch1pc_n05_encounter_dark_territory_injured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.960586+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天夜里，尤吉欧说出了自己对禁忌目录的恐惧。",
+      "weight": 3,
+      "source_event": "ch1pc_n03_talk_index_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.952592+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家按尤吉欧的节奏共同完成巨神树天职。",
+      "weight": 3,
+      "source_event": "ch1pc_n02_gigas_calling"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.477292+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天返回村中时，玩家选择让爱丽丝先决定告知时机。",
+      "weight": 3,
+      "source_event": "ch1pc_n07_return_to_rulid"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.461283+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天，玩家先确认撤回路线再面对受伤者。",
+      "weight": 3,
+      "source_event": "ch1pc_n05_encounter_dark_territory_injured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.445274+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天夜里，尤吉欧说出了自己对禁忌目录的恐惧。",
+      "weight": 3,
+      "source_event": "ch1pc_n03_talk_index_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.438280+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家按尤吉欧的节奏共同完成巨神树天职。",
+      "weight": 3,
+      "source_event": "ch1pc_n02_gigas_calling"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.968258+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天出发前，队伍先确认体力和记录都留有余量。",
+      "weight": 2,
+      "source_event": "ch1pc_n04_travel_to_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.947507+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家把尤吉欧的天职压力当作三人日常的一部分认真听完。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.455227+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天出发前，队伍先确认体力和记录都留有余量。",
+      "weight": 2,
+      "source_event": "ch1pc_n04_travel_to_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.433215+00:00",
+      "run_id": "test-precapture-n10-record_silence",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家把尤吉欧的天职压力当作三人日常的一部分认真听完。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    }
+  ],
+  "promises": [],
+  "tensions": []
+}

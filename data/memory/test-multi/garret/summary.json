@@ -1,0 +1,20 @@
+{
+  "npc_id": "garret",
+  "total_events": 5,
+  "success_count": 5,
+  "fail_count": 0,
+  "action_stats": {
+    "move": 1,
+    "chop": 4
+  },
+  "last_tick": 4,
+  "last_day": 1,
+  "last_run_id": "test-multi",
+  "last_action": "chop",
+  "last_detail": "chop dmg=10 (mot=1.00)",
+  "last_updated_at": "2026-08-07T05:51:23.800207+00:00",
+  "notable_failures": [],
+  "important_memories": [],
+  "promises": [],
+  "tensions": []
+}

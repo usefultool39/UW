@@ -1,0 +1,27 @@
+{
+  "npc_id": "alice",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "save-import-budget-test",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:24.389057+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "",
+      "run_id": "",
+      "day": null,
+      "type": "choice",
+      "summary": "导入的合法记忆",
+      "weight": 4,
+      "source_event": ""
+    }
+  ],
+  "promises": [],
+  "tensions": []
+}

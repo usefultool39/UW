@@ -1,0 +1,27 @@
+{
+  "npc_id": "alice",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "842ba2736055",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:20.032631+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "2026-08-07T05:51:20.032631+00:00",
+      "run_id": "842ba2736055",
+      "day": 1,
+      "type": "meal_choice",
+      "summary": "玩家准备午餐篮时记得尤里在古誓树清场的体力消耗。",
+      "weight": 3,
+      "source_event": "church_ask_alice_lunch:support_eugeo"
+    }
+  ],
+  "promises": [],
+  "tensions": []
+}

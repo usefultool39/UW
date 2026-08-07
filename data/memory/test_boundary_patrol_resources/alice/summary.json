@@ -1,0 +1,27 @@
+{
+  "npc_id": "alice",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "test_boundary_patrol_resources",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:20.175575+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "2026-08-07T05:51:20.175575+00:00",
+      "run_id": "test_boundary_patrol_resources",
+      "day": 1,
+      "type": "boundary_patrol",
+      "summary": "玩家带伤完成北门短程巡查，换回两处可以复查的边境标记。",
+      "weight": 4,
+      "source_event": "north_gate_boundary_patrol:scraped_clear"
+    }
+  ],
+  "promises": [],
+  "tensions": []
+}

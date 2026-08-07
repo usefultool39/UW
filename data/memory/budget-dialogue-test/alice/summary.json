@@ -1,0 +1,19 @@
+{
+  "npc_id": "alice",
+  "total_events": 1,
+  "success_count": 1,
+  "fail_count": 0,
+  "action_stats": {
+    "dialogue": 1
+  },
+  "last_tick": 0,
+  "last_day": 1,
+  "last_run_id": "budget-dialogue-test",
+  "last_action": "dialogue",
+  "last_detail": "今天的村子和平时有一点不同。你先把看到的细节说完，我再判断。",
+  "last_updated_at": "2026-08-07T05:51:24.376785+00:00",
+  "notable_failures": [],
+  "important_memories": [],
+  "promises": [],
+  "tensions": []
+}

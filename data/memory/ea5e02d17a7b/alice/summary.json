@@ -1,0 +1,19 @@
+{
+  "npc_id": "alice",
+  "total_events": 1,
+  "success_count": 1,
+  "fail_count": 0,
+  "action_stats": {
+    "dialogue": 1
+  },
+  "last_tick": 0,
+  "last_day": 1,
+  "last_run_id": "ea5e02d17a7b",
+  "last_action": "dialogue",
+  "last_detail": "先不要一个人靠近北方。那里安静得不像自然的沉默，我想先确认禁忌目录和旧记录有没有矛盾。",
+  "last_updated_at": "2026-08-07T05:51:19.528774+00:00",
+  "notable_failures": [],
+  "important_memories": [],
+  "promises": [],
+  "tensions": []
+}

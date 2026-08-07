@@ -1,0 +1,108 @@
+{
+  "npc_id": "alice",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "test-precapture-n06-2",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:22.801199+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "2026-08-07T05:51:22.801199+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 2,
+      "type": "precapture_permanent",
+      "summary": "第二天，桐人在爱丽丝越界救人前喊她停下，但她仍选择伸手。",
+      "weight": 4,
+      "source_event": "ch1pc_n06_alice_crosses_boundary"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.286657+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 2,
+      "type": "precapture_permanent",
+      "summary": "第二天，桐人在爱丽丝越界救人前喊她停下，但她仍选择伸手。",
+      "weight": 4,
+      "source_event": "ch1pc_n06_alice_crosses_boundary"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.793151+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天，玩家先在边界外观察来自暗黑界一侧的受伤者。",
+      "weight": 3,
+      "source_event": "ch1pc_n05_encounter_dark_territory_injured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.773362+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天夜里，玩家认真讨论禁忌目录与尽头山脉，爱丽丝记住了这份坦白。",
+      "weight": 3,
+      "source_event": "ch1pc_n03_talk_index_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.278578+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天，玩家先在边界外观察来自暗黑界一侧的受伤者。",
+      "weight": 3,
+      "source_event": "ch1pc_n05_encounter_dark_territory_injured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.262578+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天夜里，玩家认真讨论禁忌目录与尽头山脉，爱丽丝记住了这份坦白。",
+      "weight": 3,
+      "source_event": "ch1pc_n03_talk_index_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.783508+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天出发前，玩家优先准备食物、水和记录本。",
+      "weight": 2,
+      "source_event": "ch1pc_n04_travel_to_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.754804+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家先听尤吉欧讲完伐木进度，再和爱丽丝一起安排午餐。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.271609+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天出发前，玩家优先准备食物、水和记录本。",
+      "weight": 2,
+      "source_event": "ch1pc_n04_travel_to_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.251893+00:00",
+      "run_id": "test-precapture-n06-2",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家先听尤吉欧讲完伐木进度，再和爱丽丝一起安排午餐。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    }
+  ],
+  "promises": [],
+  "tensions": []
+}

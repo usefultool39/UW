@@ -1,0 +1,126 @@
+{
+  "npc_id": "eugeo",
+  "total_events": 0,
+  "success_count": 0,
+  "fail_count": 0,
+  "action_stats": {},
+  "last_tick": null,
+  "last_day": null,
+  "last_run_id": "test-precapture-n06-1",
+  "last_action": null,
+  "last_detail": null,
+  "last_updated_at": "2026-08-07T05:51:22.745724+00:00",
+  "notable_failures": [],
+  "important_memories": [
+    {
+      "recorded_at": "2026-08-07T05:51:22.745724+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 2,
+      "type": "precapture_permanent",
+      "summary": "第二天，尤吉欧记住桐人在爱丽丝越界瞬间仍在场。",
+      "weight": 4,
+      "source_event": "ch1pc_n06_alice_crosses_boundary"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.243892+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 2,
+      "type": "precapture_permanent",
+      "summary": "第二天，尤吉欧记住桐人在爱丽丝越界瞬间仍在场。",
+      "weight": 4,
+      "source_event": "ch1pc_n06_alice_crosses_boundary"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.739691+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天，玩家先确认撤回路线再面对受伤者。",
+      "weight": 3,
+      "source_event": "ch1pc_n05_encounter_dark_territory_injured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.725705+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天夜里，尤吉欧说出了自己对禁忌目录的恐惧。",
+      "weight": 3,
+      "source_event": "ch1pc_n03_talk_index_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.719016+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家按尤吉欧的节奏共同完成巨神树天职。",
+      "weight": 3,
+      "source_event": "ch1pc_n02_gigas_calling"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.236796+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天，玩家先确认撤回路线再面对受伤者。",
+      "weight": 3,
+      "source_event": "ch1pc_n05_encounter_dark_territory_injured"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.222783+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天夜里，尤吉欧说出了自己对禁忌目录的恐惧。",
+      "weight": 3,
+      "source_event": "ch1pc_n03_talk_index_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.216771+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家按尤吉欧的节奏共同完成巨神树天职。",
+      "weight": 3,
+      "source_event": "ch1pc_n02_gigas_calling"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.732697+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天出发前，队伍先确认体力和记录都留有余量。",
+      "weight": 2,
+      "source_event": "ch1pc_n04_travel_to_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:22.716043+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家把尤吉欧的天职压力当作三人日常的一部分认真听完。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.230759+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 2,
+      "type": "precapture_choice",
+      "summary": "第二天出发前，队伍先确认体力和记录都留有余量。",
+      "weight": 2,
+      "source_event": "ch1pc_n04_travel_to_end_mountains"
+    },
+    {
+      "recorded_at": "2026-08-07T05:51:06.208772+00:00",
+      "run_id": "test-precapture-n06-1",
+      "day": 1,
+      "type": "precapture_choice",
+      "summary": "第一天，玩家把尤吉欧的天职压力当作三人日常的一部分认真听完。",
+      "weight": 2,
+      "source_event": "ch1pc_n01_rulid_daily"
+    }
+  ],
+  "promises": [],
+  "tensions": []
+}
