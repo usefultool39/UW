@@ -1,0 +1,635 @@
+{
+  "request_id": "VIS-UI-002",
+  "batch": "UW-UPGRADE-1.0",
+  "icon_count": 32,
+  "categories": [
+    "resource",
+    "relationship",
+    "result",
+    "investigation",
+    "navigation",
+    "activity"
+  ],
+  "sizes": [
+    24,
+    48,
+    96
+  ],
+  "states": [
+    "default",
+    "hover",
+    "selected",
+    "disabled",
+    "warning"
+  ],
+  "icons": [
+    {
+      "id": "location",
+      "category": "navigation",
+      "description": "Current location indicator",
+      "accent_color": "#72B8C4",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_location.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "route",
+      "category": "navigation",
+      "description": "Path/route display",
+      "accent_color": "#46777A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_route.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "arrival",
+      "category": "navigation",
+      "description": "Destination marker",
+      "accent_color": "#D8B767",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_arrival.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "interact",
+      "category": "navigation",
+      "description": "Interaction prompt",
+      "accent_color": "#72B8C4",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_interact.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "back",
+      "category": "navigation",
+      "description": "Return/previous",
+      "accent_color": "#2B2521",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_back.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "time",
+      "category": "resource",
+      "description": "Time/clock",
+      "accent_color": "#2B2521",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_time.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "stamina",
+      "category": "resource",
+      "description": "Energy/stamina",
+      "accent_color": "#5F7D4A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_stamina.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "sacred_power",
+      "category": "resource",
+      "description": "Sacred arts power",
+      "accent_color": "#F6D36E",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_sacred_power.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "health",
+      "category": "resource",
+      "description": "Health/vitality",
+      "accent_color": "#B65F62",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_health.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "recovery",
+      "category": "resource",
+      "description": "Recovery/heal",
+      "accent_color": "#5F7D4A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_recovery.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "clue",
+      "category": "investigation",
+      "description": "Clue/discovery",
+      "accent_color": "#72B8C4",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_clue.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "record",
+      "category": "investigation",
+      "description": "Record/journal",
+      "accent_color": "#2B2521",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_record.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "observe",
+      "category": "investigation",
+      "description": "Observe/inspect",
+      "accent_color": "#72B8C4",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_observe.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "anomaly",
+      "category": "investigation",
+      "description": "Anomaly detection",
+      "accent_color": "#3C4668",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_anomaly.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "boundary",
+      "category": "investigation",
+      "description": "Boundary line",
+      "accent_color": "#3C4668",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_boundary.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "relationship",
+      "category": "relationship",
+      "description": "Relationship/bond",
+      "accent_color": "#46777A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_relationship.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "memory",
+      "category": "relationship",
+      "description": "Memory/remember",
+      "accent_color": "#D8B767",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_memory.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "promise",
+      "category": "relationship",
+      "description": "Promise/commitment",
+      "accent_color": "#F6D36E",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_promise.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "tension",
+      "category": "relationship",
+      "description": "Tension/conflict",
+      "accent_color": "#B65F62",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_tension.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "companion",
+      "category": "relationship",
+      "description": "Companion/friend",
+      "accent_color": "#46777A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_companion.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "reading",
+      "category": "activity",
+      "description": "Reading/study",
+      "accent_color": "#2B2521",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_reading.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "training",
+      "category": "activity",
+      "description": "Training/practice",
+      "accent_color": "#8A5A3B",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_training.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "meal",
+      "category": "activity",
+      "description": "Meal/dining",
+      "accent_color": "#D8B767",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_meal.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "patrol",
+      "category": "activity",
+      "description": "Patrol/border watch",
+      "accent_color": "#5F7D4A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_patrol.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "delivery",
+      "category": "activity",
+      "description": "Delivery/transport",
+      "accent_color": "#8A5A3B",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_delivery.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "capture",
+      "category": "activity",
+      "description": "Capture/silence moment",
+      "accent_color": "#3C4668",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_capture.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "success",
+      "category": "result",
+      "description": "Success/complete",
+      "accent_color": "#5F7D4A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_success.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "warning",
+      "category": "result",
+      "description": "Warning/caution",
+      "accent_color": "#D8B767",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_warning.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "locked",
+      "category": "result",
+      "description": "Locked/unavailable",
+      "accent_color": "#B65F62",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_locked.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "completed",
+      "category": "result",
+      "description": "Quest completed",
+      "accent_color": "#5F7D4A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_completed.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "retry",
+      "category": "result",
+      "description": "Retry/replay",
+      "accent_color": "#46777A",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_retry.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    },
+    {
+      "id": "day_settle",
+      "category": "result",
+      "description": "Day settlement",
+      "accent_color": "#2B2521",
+      "svg_source": "svg/VIS-UI-002_UW-UPGRADE-1.0_day_settle.svg",
+      "sizes": [
+        24,
+        48,
+        96
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected",
+        "disabled",
+        "warning"
+      ]
+    }
+  ]
+}

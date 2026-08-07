@@ -31,8 +31,8 @@ def test_provider_candidate_is_validated_before_return(monkeypatch):
         npc_intent_agent,
         "generate_text",
         lambda **kwargs: (
-            '{"intent_id":"alice_invites_reading",'
-            '"response_id":"accept_reading_note",'
+            '{"intent_id":"alice_precapture_n01",'
+            '"response_id":"warm_bond",'
             '"confidence":0.91,"reason":"当前事件与书库线索直接相关。"}'
         ),
         raising=False,

@@ -1,0 +1,158 @@
+{
+  "schema_version": "v006",
+  "request_id": "VIS-MAP-001",
+  "created_at": "2026-08-07",
+  "tile_size_px": 28,
+  "grid": {
+    "cols": 108,
+    "rows": 64
+  },
+  "runtime_size": [
+    3024,
+    1792
+  ],
+  "atlases": {
+    "terrain": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_terrain_tile_atlas_v006.png",
+      "grid": [
+        4,
+        4
+      ],
+      "tile_count": 16,
+      "tile_size_px": 28,
+      "tile_ids": [
+        "main_grass",
+        "light_grass",
+        "dark_grass",
+        "main_dirt",
+        "packed_dirt",
+        "wet_dirt",
+        "smooth_stone",
+        "rough_stone",
+        "cobble",
+        "edge_to_dirt",
+        "edge_to_grass",
+        "riverbank",
+        "mud",
+        "stepping_stone",
+        "shadow_grass",
+        "shadow_dirt"
+      ]
+    },
+    "water": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_water_tile_atlas_v006.png",
+      "grid": [
+        4,
+        2
+      ],
+      "tile_count": 8,
+      "tile_size_px": 28,
+      "tile_ids": [
+        "shallow",
+        "flow",
+        "calm",
+        "edge_to_grass",
+        "deep_water",
+        "deep_edge",
+        "wet_edge",
+        "foam"
+      ]
+    },
+    "roads": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_road_tile_atlas_v006.png",
+      "grid": [
+        4,
+        2
+      ],
+      "tile_count": 8,
+      "tile_size_px": 28,
+      "tile_ids": [
+        "main",
+        "center",
+        "edge",
+        "cross",
+        "main",
+        "worn",
+        "edge",
+        "junction"
+      ]
+    },
+    "vegetation": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_vegetation_props_atlas_v006.png",
+      "grid": [
+        4,
+        4
+      ],
+      "tile_count": 16,
+      "prop_size_px": 56,
+      "prop_ids": [
+        "tree_oak",
+        "tree_birch",
+        "tree_pine",
+        "tree_young",
+        "bush_round",
+        "bush_long",
+        "grass_tall",
+        "grass_short",
+        "flower_yellow",
+        "flower_pink",
+        "flower_white",
+        "flower_mix",
+        "grass_wheat",
+        "bush_berry",
+        "grass_wet",
+        "grass_dry"
+      ]
+    },
+    "buildings": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_buildings_props_atlas_v006.png",
+      "grid": [
+        3,
+        3
+      ],
+      "tile_count": 9,
+      "prop_size_px": 112,
+      "prop_ids": [
+        "house_a",
+        "house_b",
+        "house_c",
+        "church_main",
+        "market_stall",
+        "well",
+        "shed",
+        "house_cottage",
+        "wood_pile"
+      ]
+    }
+  },
+  "overlay_layers": {
+    "occlusion": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_occlusion_layer_v006.png",
+      "alpha": true,
+      "blend": "normal"
+    },
+    "foreground": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_foreground_layer_v006.png",
+      "alpha": true,
+      "blend": "normal"
+    },
+    "lighting": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_lighting_layer_v006.png",
+      "alpha": true,
+      "blend": "screen"
+    },
+    "weather": {
+      "source": "materials/inbox/visual/world/VIS-MAP-001_weather_layer_v006.png",
+      "alpha": true,
+      "blend": "normal"
+    }
+  },
+  "data": {
+    "collision": "materials/inbox/visual/world/VIS-MAP-001_collision_v006.png",
+    "walkable": "materials/inbox/visual/world/VIS-MAP-001_walkable_v006.png"
+  },
+  "license": "owned",
+  "source_url": "none; original project-owned procedural painterly tile generation",
+  "rights_statement": "Original generated tile material. Does not copy existing game tile art.",
+  "format": "RGBA8888 PNG; tile atlases use transparent background except terrain/roads where opacity is full"
+}

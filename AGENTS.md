@@ -16,6 +16,12 @@
 10. `docs/delivery/DEVELOPMENT_PROCESS.md`
 11. `docs/delivery/DEFINITION_OF_DONE.md`
 
+执行 UW-UPGRADE-1.0 或素材任务时还必须阅读：
+
+- `docs/planning/UW_UPGRADE_1_0_EXECUTION_INDEX.md`
+- `materials/UW_UPGRADE_1_0_ASSET_CATALOG.md`
+- `materials/UW_UPGRADE_1_0_ASSET_AGENT_PROMPT.md`
+
 ## 当前唯一方向
 
 按 `docs/product/PRODUCT_DIRECTION.md` 建设大众化、可扩展的 2D RPG。当前先完成正典兼容的 Pre-Capture 垂直切片；不要因为 `docs/archive/` 的旧 TODO 扩写无关内容，也不要把未经审核的素材直接接入运行时。

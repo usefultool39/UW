@@ -1,0 +1,959 @@
+{
+  "request_id": "VIS-VFX-001",
+  "batch": "UW-UPGRADE-1.0",
+  "vfx_count": 6,
+  "frame_size": [
+    128,
+    128
+  ],
+  "vfx": [
+    {
+      "id": "clue-pulse",
+      "name": "Clue Pulse",
+      "description": "Target/clue arrival pulse, cold cyan, radius <= 1.4 character height",
+      "sheet_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_clue-pulse_sheet.png",
+      "fallback_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_clue-pulse_fallback.png",
+      "reduced_motion_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_clue-pulse_reduced.png",
+      "frame_width": 128,
+      "frame_height": 128,
+      "frame_count": 10,
+      "fps": 15,
+      "duration_s": 0.7,
+      "blend": "screen",
+      "radius": 60,
+      "anchor": [
+        64,
+        64
+      ],
+      "trigger_id": "clue_found",
+      "sfx_id": "clue_select",
+      "frames": [
+        {
+          "frame": 0,
+          "rect": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 1,
+          "rect": [
+            128,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 2,
+          "rect": [
+            256,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 3,
+          "rect": [
+            384,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 4,
+          "rect": [
+            512,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 5,
+          "rect": [
+            640,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 6,
+          "rect": [
+            768,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 7,
+          "rect": [
+            896,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 8,
+          "rect": [
+            1024,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 9,
+          "rect": [
+            1152,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        }
+      ]
+    },
+    {
+      "id": "sacred-ink",
+      "name": "Sacred Ink",
+      "description": "Sacred arts/record lines, thin gold lines, low flicker",
+      "sheet_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_sacred-ink_sheet.png",
+      "fallback_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_sacred-ink_fallback.png",
+      "reduced_motion_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_sacred-ink_reduced.png",
+      "frame_width": 128,
+      "frame_height": 128,
+      "frame_count": 13,
+      "fps": 12,
+      "duration_s": 1.1,
+      "blend": "add",
+      "radius": 50,
+      "anchor": [
+        64,
+        64
+      ],
+      "trigger_id": "sacred_ink",
+      "sfx_id": "sacred_ink",
+      "frames": [
+        {
+          "frame": 0,
+          "rect": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 1,
+          "rect": [
+            128,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 2,
+          "rect": [
+            256,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 3,
+          "rect": [
+            384,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 4,
+          "rect": [
+            512,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 5,
+          "rect": [
+            640,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 6,
+          "rect": [
+            768,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 7,
+          "rect": [
+            896,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 8,
+          "rect": [
+            1024,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 9,
+          "rect": [
+            1152,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 10,
+          "rect": [
+            1280,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 11,
+          "rect": [
+            1408,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 12,
+          "rect": [
+            1536,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        }
+      ]
+    },
+    {
+      "id": "boundary-ripple",
+      "name": "Boundary Ripple",
+      "description": "Boundary disturbance, indigo/cyan, local refraction",
+      "sheet_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_boundary-ripple_sheet.png",
+      "fallback_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_boundary-ripple_fallback.png",
+      "reduced_motion_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_boundary-ripple_reduced.png",
+      "frame_width": 128,
+      "frame_height": 128,
+      "frame_count": 17,
+      "fps": 12,
+      "duration_s": 1.4,
+      "blend": "screen",
+      "radius": 70,
+      "anchor": [
+        64,
+        64
+      ],
+      "trigger_id": "boundary_ripple",
+      "sfx_id": "boundary_ripple",
+      "frames": [
+        {
+          "frame": 0,
+          "rect": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 1,
+          "rect": [
+            128,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 2,
+          "rect": [
+            256,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 3,
+          "rect": [
+            384,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 4,
+          "rect": [
+            512,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 5,
+          "rect": [
+            640,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 6,
+          "rect": [
+            768,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 7,
+          "rect": [
+            896,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 8,
+          "rect": [
+            1024,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 9,
+          "rect": [
+            1152,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 10,
+          "rect": [
+            1280,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 11,
+          "rect": [
+            1408,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 12,
+          "rect": [
+            1536,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 13,
+          "rect": [
+            1664,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 14,
+          "rect": [
+            1792,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 15,
+          "rect": [
+            1920,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        },
+        {
+          "frame": 16,
+          "rect": [
+            2048,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 83
+        }
+      ]
+    },
+    {
+      "id": "relationship-warmth",
+      "name": "Relationship Warmth",
+      "description": "Relationship echo, warm light/small particles, no large orbs",
+      "sheet_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_relationship-warmth_sheet.png",
+      "fallback_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_relationship-warmth_fallback.png",
+      "reduced_motion_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_relationship-warmth_reduced.png",
+      "frame_width": 128,
+      "frame_height": 128,
+      "frame_count": 12,
+      "fps": 15,
+      "duration_s": 0.8,
+      "blend": "add",
+      "radius": 45,
+      "anchor": [
+        64,
+        64
+      ],
+      "trigger_id": "relationship_up",
+      "sfx_id": "relationship_up",
+      "frames": [
+        {
+          "frame": 0,
+          "rect": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 1,
+          "rect": [
+            128,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 2,
+          "rect": [
+            256,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 3,
+          "rect": [
+            384,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 4,
+          "rect": [
+            512,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 5,
+          "rect": [
+            640,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 6,
+          "rect": [
+            768,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 7,
+          "rect": [
+            896,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 8,
+          "rect": [
+            1024,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 9,
+          "rect": [
+            1152,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 10,
+          "rect": [
+            1280,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 11,
+          "rect": [
+            1408,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        }
+      ]
+    },
+    {
+      "id": "reward-spark",
+      "name": "Reward Spark",
+      "description": "Reward confirmation, wheat gold particles",
+      "sheet_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_reward-spark_sheet.png",
+      "fallback_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_reward-spark_fallback.png",
+      "reduced_motion_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_reward-spark_reduced.png",
+      "frame_width": 128,
+      "frame_height": 128,
+      "frame_count": 9,
+      "fps": 15,
+      "duration_s": 0.6,
+      "blend": "add",
+      "radius": 40,
+      "anchor": [
+        64,
+        64
+      ],
+      "trigger_id": "reward",
+      "sfx_id": "reward",
+      "frames": [
+        {
+          "frame": 0,
+          "rect": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 1,
+          "rect": [
+            128,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 2,
+          "rect": [
+            256,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 3,
+          "rect": [
+            384,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 4,
+          "rect": [
+            512,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 5,
+          "rect": [
+            640,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 6,
+          "rect": [
+            768,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 7,
+          "rect": [
+            896,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        },
+        {
+          "frame": 8,
+          "rect": [
+            1024,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 66
+        }
+      ]
+    },
+    {
+      "id": "capture-silence",
+      "name": "Capture Silence",
+      "description": "Capture moment motion/color convergence, no white flash",
+      "sheet_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_capture-silence_sheet.png",
+      "fallback_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_capture-silence_fallback.png",
+      "reduced_motion_source": "materials/inbox/visual/vfx/VIS-VFX-001_UW-UPGRADE-1.0_capture-silence_reduced.png",
+      "frame_width": 128,
+      "frame_height": 128,
+      "frame_count": 20,
+      "fps": 10,
+      "duration_s": 2.0,
+      "blend": "screen",
+      "radius": 80,
+      "anchor": [
+        64,
+        64
+      ],
+      "trigger_id": "capture_silence",
+      "sfx_id": "capture_silence",
+      "frames": [
+        {
+          "frame": 0,
+          "rect": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 1,
+          "rect": [
+            128,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 2,
+          "rect": [
+            256,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 3,
+          "rect": [
+            384,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 4,
+          "rect": [
+            512,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 5,
+          "rect": [
+            640,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 6,
+          "rect": [
+            768,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 7,
+          "rect": [
+            896,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 8,
+          "rect": [
+            1024,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 9,
+          "rect": [
+            1152,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 10,
+          "rect": [
+            1280,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 11,
+          "rect": [
+            1408,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 12,
+          "rect": [
+            1536,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 13,
+          "rect": [
+            1664,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 14,
+          "rect": [
+            1792,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 15,
+          "rect": [
+            1920,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 16,
+          "rect": [
+            2048,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 17,
+          "rect": [
+            2176,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 18,
+          "rect": [
+            2304,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        },
+        {
+          "frame": 19,
+          "rect": [
+            2432,
+            0,
+            128,
+            128
+          ],
+          "duration_ms": 100
+        }
+      ]
+    }
+  ]
+}

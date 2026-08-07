@@ -205,16 +205,17 @@ def test_story_event_api_choose_updates_state_and_profile():
     available = client.get("/api/story/available_events")
     assert available.status_code == 200
     events = available.json()["events"]
-    assert any(event["id"] == "ch1_d1_reading_clue" for event in events)
+    assert any(event["id"] == "ch1pc_n01_rulid_daily" for event in events)
 
     chosen = client.post(
         "/api/story/choose",
-        json={"event_id": "ch1_d1_reading_clue", "choice_id": "ask_alice"},
+        json={"event_id": "ch1pc_n01_rulid_daily", "choice_id": "warm_bond"},
     )
     assert chosen.status_code == 200
     body = chosen.json()
     assert body["ok"] is True
-    assert body["state"]["flags"]["clue_boundary_record"] == 1
+    assert body["state"]["flags"]["precapture_mode"] == 1
+    assert body["state"]["flags"]["d1_bond"] == 1
 
     profile = client.get("/api/npc/alice/profile")
     assert profile.status_code == 200
@@ -228,73 +229,27 @@ def test_save_export_import_restores_world_and_memory():
     client.post("/api/reset")
     client.post(
         "/api/story/choose",
-        json={"event_id": "ch1_d1_reading_clue", "choice_id": "ask_alice"},
+        json={"event_id": "ch1pc_n01_rulid_daily", "choice_id": "warm_bond"},
     )
 
     exported = client.get("/api/save/export")
     assert exported.status_code == 200
     save = exported.json()
     assert save["kind"] == "30town_save"
-    assert save["state"]["flags"]["clue_boundary_record"] == 1
+    assert save["state"]["flags"]["precapture_mode"] == 1
     assert save["memory_summaries"]["alice"]["important_memories"]
 
     client.post("/api/reset")
-    assert "clue_boundary_record" not in client.get("/api/state").json()["flags"]
+    assert "precapture_mode" not in client.get("/api/state").json()["flags"]
 
     imported = client.post("/api/save/import", json=save)
     assert imported.status_code == 200
     restored = imported.json()["state"]
-    assert restored["flags"]["clue_boundary_record"] == 1
+    assert restored["flags"]["precapture_mode"] == 1
 
     profile = client.get("/api/npc/alice/profile").json()["profile"]
     assert profile["important_memories"]
 
-
-def test_save_import_preserves_month_two_required_any_flags_for_day_forty_six():
-    client = TestClient(app)
-    client.post("/api/reset")
-    for flag in [
-        "month02_day31_entry_done",
-        "month02_route_quiet",
-        "month02_quiet_frequency_crosscheck_done",
-    ]:
-        r = client.post(
-            "/api/player/action",
-            json={"kind": "set_flag", "flag_key": flag, "flag_value": 1},
-        )
-        assert r.status_code == 200
-        assert r.json()["ok"] is True
-    client.post("/api/player/action", json={"kind": "set_day", "day": 46})
-    client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "reading_hall"})
-
-    save = client.get("/api/save/export").json()
-
-    client.post("/api/reset")
-    locked = client.post(
-        "/api/player/action",
-        json={"kind": "scene_activity", "activity_id": "boundary_anomaly_convergence"},
-    ).json()
-    assert locked["ok"] is False
-
-    imported = client.post("/api/save/import", json=save)
-    assert imported.status_code == 200
-    restored = imported.json()["state"]
-    assert restored["day"] == 46
-    assert restored["flags"]["month02_quiet_frequency_crosscheck_done"] == 1
-    intents = {item["id"]: item for item in restored["npc_intents"]}
-    assert "alice_calls_anomaly_convergence" in intents
-
-    done = client.post(
-        "/api/player/action",
-        json={
-            "kind": "scene_activity",
-            "activity_id": "boundary_anomaly_convergence",
-            "activity_choice": "publish_shared_anomaly_map",
-        },
-    ).json()
-    assert done["ok"] is True
-    assert done["state"]["flags"]["month02_anomaly_convergence_done"] == 1
-    assert done["state"]["flags"]["month02_anomaly_source_documented"] == 1
 
 
 def test_move_world_returns_path():
@@ -485,11 +440,16 @@ def test_scene_activity_rejects_wrong_time_band():
 def test_scene_activity_sleep_resets_day_and_environment():
     client = TestClient(app)
     client.post("/api/reset")
-    client.post("/api/sim/daily_tick", json={"n": 40, "mode": "heuristic"})
+    for event_id, choice_id in [
+        ("ch1pc_n01_rulid_daily", "warm_bond"),
+        ("ch1pc_n02_gigas_calling", "steady_pace"),
+        ("ch1pc_n03_talk_index_end_mountains", "deep_talk"),
+    ]:
+        r = client.post("/api/story/choose", json={"event_id": event_id, "choice_id": choice_id})
+        assert r.json()["ok"] is True
     before = client.get("/api/state").json()
     assert before["time_band"] == "evening"
     client.post("/api/player/action", json={"kind": "move_scene", "scene_id": "home_hearth"})
-    client.post("/api/player/action", json={"kind": "set_flag", "flag_key": "clue_boundary_record", "flag_value": 1})
 
     r = client.post(
         "/api/player/action",
@@ -577,9 +537,15 @@ def test_scene_activity_sleep_is_blocked_until_day_gate_is_complete():
 
 def test_rest_until_next_day_restores_all_player_resources():
     session = Session(run_id="test_rest_all_resources")
+    for event_id, choice_id in [
+        ("ch1pc_n01_rulid_daily", "warm_bond"),
+        ("ch1pc_n02_gigas_calling", "steady_pace"),
+        ("ch1pc_n03_talk_index_end_mountains", "deep_talk"),
+    ]:
+        out = session.choose_story_event(event_id, choice_id)
+        assert out["ok"] is True
     session.state = session.state.model_copy(
         update={
-            "flags": {**session.state.flags, "clue_boundary_record": 1},
             "player": session.state.player.model_copy(update={"hp": 37, "mp": 21, "stamina": 12}),
         }
     )

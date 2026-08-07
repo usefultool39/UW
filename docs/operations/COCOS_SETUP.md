@@ -6,7 +6,7 @@
 
 ## 当前产品决策
 
-2026-05-15 调整：Cocos Creator 由于账号登录、首次启动弹窗和编辑器预览流程带来额外摩擦，暂时不再作为当前主开发路径。`cocos-client/` 保留为未来备用工程和契约样板；当前 Demo 继续以 `frontend/` 的 Vue + Phaser 客户端为主线推进。
+2026-05-15 调整：Cocos Creator 由于账号登录、首次启动弹窗和编辑器预览流程带来额外摩擦，暂时不再作为当前主开发路径。`archive/cocos-client-2026-08/` 保留为未来备用工程和契约样板；当前 Demo 继续以 `frontend/` 的 Vue + Phaser 客户端为主线推进。
 
 ## 当前结论
 
@@ -17,12 +17,12 @@ C:\Program Files (x86)\CocosDashboard\CocosDashboard.exe
 C:\ProgramData\cocos\editors\Creator\3.8.7\CocosCreator.exe
 ```
 
-当前已能用 Creator 3.8.7 打开 `cocos-client/`，窗口标题显示为 `Untitled - border-echo-cocos-client - Cocos Creator 3.8.7`。如果出现“温馨提示”或登录提示，属于 Cocos 首次启动提示，不影响本地工程。
+当前已能用 Creator 3.8.7 打开 `archive/cocos-client-2026-08/`，窗口标题显示为 `Untitled - border-echo-archive/cocos-client-2026-08 - Cocos Creator 3.8.7`。如果出现“温馨提示”或登录提示，属于 Cocos 首次启动提示，不影响本地工程。
 
 ## 已补齐的工程骨架
 
-- `cocos-client` 已加入官方 `@cocos/creator-types@3.8.7`。
-- `cocos-client` 已加入 `typescript@5.6.3`。
+- `archive/cocos-client-2026-08` 已加入官方 `@cocos/creator-types@3.8.7`。
+- `archive/cocos-client-2026-08` 已加入 `typescript@5.6.3`。
 - 新增 `npm run typecheck`，会对 `assets/scripts/**/*.ts` 做 Cocos 类型检查。
 - 新增 `npm run doctor`，会检测 Dashboard、Creator 编辑器、`project.json` 和 Cocos 类型包。
 - 新增 `npm run verify`，串联 `validate`、`typecheck`、offline smoke、cross-client smoke。
@@ -38,7 +38,7 @@ C:\ProgramData\cocos\editors\Creator\3.8.7\CocosCreator.exe
 ## 命令
 
 ```bat
-cd /d F:\usefultool39\02-UW小镇\cocos-client
+cd /d F:\usefultool39\02-UW小镇\archive/cocos-client-2026-08
 npm install
 npm run doctor
 npm run verify
@@ -53,7 +53,7 @@ npm run smoke:live
 重新打开 Cocos 项目：
 
 ```bat
-"C:\ProgramData\cocos\editors\Creator\3.8.7\CocosCreator.exe" --project "F:\usefultool39\02-UW小镇\cocos-client"
+"C:\ProgramData\cocos\editors\Creator\3.8.7\CocosCreator.exe" --project "F:\usefultool39\02-UW小镇\archive/cocos-client-2026-08"
 ```
 
 ## 本轮验证结果

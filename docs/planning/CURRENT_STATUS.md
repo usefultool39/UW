@@ -4,6 +4,14 @@
 
 > **最新素材收件快照**：[ASSET_HANDOFF_SNAPSHOT_20260807.md](../delivery/ASSET_HANDOFF_SNAPSHOT_20260807.md)。2026-08-07 后续收件的地图 v004、环境 v004、角色 v005 仍未通过 active v004 contract；不要仅因文件存在或视觉质量提升而上调状态。
 
+## 2026-08-07 UW-UPGRADE-1.0 整理 checkpoint
+
+- 界面、人物、剧情、操作、地图/贴图、VFX、音频和优化方案已收束到 `docs/planning/UW_UPGRADE_1_0_EXECUTION_INDEX.md`。
+- 全部现有/待做素材已整理到 `materials/UW_UPGRADE_1_0_ASSET_CATALOG.md`；最终素材生成智能体指令为 `materials/UW_UPGRADE_1_0_ASSET_AGENT_PROMPT.md`。
+- 7 个无 request_id 的 v003 历史中间文件已非破坏性移入 `materials/archive/2026-08-07-v003-intermediate/`，保留原路径、字节数和 SHA-256。
+- 本次复验：`check_materials.py` 通过 40 requests，manifest source 与 runtime hash 均通过；runtime asset specs 为 `ready | issues=0`。
+- 总 readiness 仍为 `materials=pending, story=ready`：核心返工包尚未批准/接入，VFX、抓捕关键图和 SFX 仍为 deferred，真人盲测仍为 `0/3`。
+
 ## 2026-08-07 Pre-Capture runtime checkpoint
 
 - Authored story remains integrated and verified: four acts, N01-N10, fixed `alice_captured` endpoint, and 46 detected cross-node echoes. `story=ready`; legacy events are isolated behind backend-authoritative route flags.

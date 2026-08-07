@@ -2,8 +2,11 @@
   "schema_version": 1,
   "map": {
     "request_id": "VIS-MAP-001",
-    "metadata_file": "materials/inbox/visual/world/VIS-MAP-001_map_v004.json",
-    "runtime_size": [3024, 1792],
+    "metadata_file": "materials/inbox/visual/world/VIS-MAP-001_map_v005.json",
+    "runtime_size": [
+      3024,
+      1792
+    ],
     "required_layers": [
       "terrain",
       "water",
@@ -15,36 +18,102 @@
       "lighting",
       "weather"
     ],
-    "alpha_layers": ["occlusion", "foreground", "lighting", "weather"],
-    "required_data": ["collision", "walkable", "interaction"]
+    "alpha_layers": [
+      "occlusion",
+      "foreground",
+      "lighting",
+      "weather"
+    ],
+    "required_data": [
+      "collision",
+      "walkable",
+      "interaction"
+    ]
   },
   "characters": [
     {
       "request_id": "VIS-CHR-001",
-      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-001_frames_v004.json",
-      "accepted_frame_sizes": [[64, 96], [96, 128]],
-      "directions": ["down", "left", "right", "up"],
-      "animations": {"idle": 2, "walk": 6, "interact": 4}
+      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-001_frames_v008.json",
+      "accepted_frame_sizes": [
+        [
+          64,
+          96
+        ],
+        [
+          96,
+          128
+        ]
+      ],
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "animations": {
+        "idle": 2,
+        "walk": 6,
+        "interact": 4
+      }
     },
     {
       "request_id": "VIS-CHR-002",
-      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-002_frames_v004.json",
-      "accepted_frame_sizes": [[64, 96], [96, 128]],
-      "directions": ["down", "left", "right", "up"],
-      "animations": {"idle": 2, "walk": 6, "interact": 4}
+      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-002_frames_v008.json",
+      "accepted_frame_sizes": [
+        [
+          64,
+          96
+        ],
+        [
+          96,
+          128
+        ]
+      ],
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "animations": {
+        "idle": 2,
+        "walk": 6,
+        "interact": 4
+      }
     },
     {
       "request_id": "VIS-CHR-003",
-      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-003_frames_v004.json",
-      "accepted_frame_sizes": [[64, 96], [96, 128]],
-      "directions": ["down", "left", "right", "up"],
-      "animations": {"idle": 2, "walk": 6, "interact": 4}
+      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-003_frames_v008.json",
+      "accepted_frame_sizes": [
+        [
+          64,
+          96
+        ],
+        [
+          96,
+          128
+        ]
+      ],
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "animations": {
+        "idle": 2,
+        "walk": 6,
+        "interact": 4
+      }
     }
   ],
   "environments": {
     "request_id": "VIS-ENV-001",
-    "metadata_file": "materials/inbox/visual/environments/VIS-ENV-001_scenes_v004.json",
-    "size": [1920, 1080],
+    "metadata_file": "materials/inbox/visual/environments/VIS-ENV-001_scenes_v005.json",
+    "size": [
+      1920,
+      1080
+    ],
     "scenes": [
       "church_library",
       "gigas_clearing",
@@ -63,8 +132,14 @@
         "AUD-BGM-002_boundary_investigation_a_v004",
         "AUD-BGM-002_boundary_investigation_b_v004"
       ],
-      "duration_seconds": [75, 110],
-      "loudness_lufs": [-20, -17],
+      "duration_seconds": [
+        75,
+        110
+      ],
+      "loudness_lufs": [
+        -20,
+        -17
+      ],
       "peak_dbfs_max": -1
     },
     {
@@ -75,8 +150,14 @@
         "AUD-BGM-003_relationship_daily_a_v004",
         "AUD-BGM-003_relationship_daily_b_v004"
       ],
-      "duration_seconds": [60, 100],
-      "loudness_lufs": [-20, -17],
+      "duration_seconds": [
+        60,
+        100
+      ],
+      "loudness_lufs": [
+        -20,
+        -17
+      ],
       "peak_dbfs_max": -1
     },
     {
@@ -87,8 +168,14 @@
         "AUD-AMB-002_forest_silence_normal_v004",
         "AUD-AMB-002_forest_silence_silent_v004"
       ],
-      "duration_seconds": [60, 90],
-      "loudness_lufs": [-26, -22],
+      "duration_seconds": [
+        60,
+        90
+      ],
+      "loudness_lufs": [
+        -26,
+        -22
+      ],
       "peak_dbfs_max": -2,
       "matched_duration_tolerance_seconds": 0.1
     }

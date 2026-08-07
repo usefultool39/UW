@@ -1,0 +1,80 @@
+[
+  {
+    "file": "AUD-BGM-002_boundary_investigation_a_v004.wav",
+    "actual_master_file": "materials/inbox/audio/bgm/AUD-BGM-002_boundary_investigation_a_v004_48k24b.wav",
+    "integrated_loudness_lufs": -18.7,
+    "peak_dbfs": -1.7,
+    "true_peak_dbtp": -1.7,
+    "duration_sec": 91.0,
+    "loop_start_sample": 0,
+    "loop_end_sample": 4368000,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 2
+  },
+  {
+    "file": "AUD-BGM-002_boundary_investigation_b_v004.wav",
+    "actual_master_file": "materials/inbox/audio/bgm/AUD-BGM-002_boundary_investigation_b_v004_48k24b.wav",
+    "integrated_loudness_lufs": -18.3,
+    "peak_dbfs": -1.6,
+    "true_peak_dbtp": -1.6,
+    "duration_sec": 84.0,
+    "loop_start_sample": 0,
+    "loop_end_sample": 4032000,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 2
+  },
+  {
+    "file": "AUD-BGM-003_relationship_daily_a_v004.wav",
+    "actual_master_file": "materials/inbox/audio/bgm/AUD-BGM-003_relationship_daily_a_v004_48k24b.wav",
+    "integrated_loudness_lufs": -18.7,
+    "peak_dbfs": -1.6,
+    "true_peak_dbtp": -1.6,
+    "duration_sec": 76.0,
+    "loop_start_sample": 0,
+    "loop_end_sample": 3648000,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 2
+  },
+  {
+    "file": "AUD-BGM-003_relationship_daily_b_v004.wav",
+    "actual_master_file": "materials/inbox/audio/bgm/AUD-BGM-003_relationship_daily_b_v004_48k24b.wav",
+    "integrated_loudness_lufs": -18.8,
+    "peak_dbfs": -1.8,
+    "true_peak_dbtp": -1.8,
+    "duration_sec": 66.0,
+    "loop_start_sample": 0,
+    "loop_end_sample": 3168000,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 2
+  },
+  {
+    "file": "AUD-AMB-002_forest_silence_normal_v004.wav",
+    "actual_master_file": "materials/inbox/audio/ambience/AUD-AMB-002_forest_silence_normal_v004_48k24b.wav",
+    "integrated_loudness_lufs": -23.0,
+    "peak_dbfs": -5.8,
+    "true_peak_dbtp": -5.8,
+    "duration_sec": 76.0,
+    "loop_start_sample": 0,
+    "loop_end_sample": 3648000,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 2
+  },
+  {
+    "file": "AUD-AMB-002_forest_silence_silent_v004.wav",
+    "actual_master_file": "materials/inbox/audio/ambience/AUD-AMB-002_forest_silence_silent_v004_48k24b.wav",
+    "integrated_loudness_lufs": -22.9,
+    "peak_dbfs": -10.9,
+    "true_peak_dbtp": -10.9,
+    "duration_sec": 76.0,
+    "loop_start_sample": 0,
+    "loop_end_sample": 3648000,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 2
+  }
+]

@@ -12,7 +12,7 @@
 项目保留两个客户端目录，但不再并行开发同等功能：
 
 - `frontend/`：Vue + Phaser，可玩基线和开发验证客户端。
-- `cocos-client/`：Cocos Creator 备用骨架；只有新 ADR 明确恢复后才继续扩展。
+- `archive/cocos-client-2026-08/`：Cocos Creator 备用骨架；只有新 ADR 明确恢复后才继续扩展。
 
 两个客户端必须共享同一套后端事实：FastAPI 后端决定世界状态、合法行动、剧情后果、关系、记忆和存档；客户端只负责输入、表现、动画、轻量本地预演和失败回滚。
 

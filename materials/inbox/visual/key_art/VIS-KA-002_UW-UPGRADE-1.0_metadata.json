@@ -1,0 +1,48 @@
+{
+  "request_id": "VIS-KA-002",
+  "batch": "UW-UPGRADE-1.0",
+  "title": "Endpoint Key Art - Boundary Capture Scene",
+  "description": "Alice at the forest boundary, the pivotal capture moment. Storybook illustration style with indigo boundary ripples, warm village light, and cold forest atmosphere.",
+  "variants": [
+    {
+      "variant": "desktop",
+      "resolution": [
+        2560,
+        1440
+      ],
+      "aspect_ratio": "16:9",
+      "files": [
+        "VIS-KA-002_UW-UPGRADE-1.0_desktop_2560x1440.png",
+        "VIS-KA-002_UW-UPGRADE-1.0_desktop_thumb_640x360.png",
+        "VIS-KA-002_UW-UPGRADE-1.0_desktop_2560x1440.jpg"
+      ],
+      "intended_use": "Desktop loading screen, store page header, promotional banner"
+    },
+    {
+      "variant": "mobile",
+      "resolution": [
+        1440,
+        1920
+      ],
+      "aspect_ratio": "3:4",
+      "files": [
+        "VIS-KA-002_UW-UPGRADE-1.0_mobile_1440x1920.png",
+        "VIS-KA-002_UW-UPGRADE-1.0_mobile_thumb_360x480.png",
+        "VIS-KA-002_UW-UPGRADE-1.0_mobile_1440x1920.jpg"
+      ],
+      "intended_use": "Mobile loading screen, app store screenshot, social media card"
+    }
+  ],
+  "source_images": [
+    {
+      "file": "Storybook_illustration_style_k_2026-08-07T10-13-29.png",
+      "tool": "ImageGen Hunyuan",
+      "prompt": "Landscape key art - Alice at forest boundary"
+    },
+    {
+      "file": "Storybook_illustration_style_v_2026-08-07T10-13-58.png",
+      "tool": "ImageGen Hunyuan",
+      "prompt": "Portrait key art - Alice at forest boundary (vertical)"
+    }
+  ]
+}

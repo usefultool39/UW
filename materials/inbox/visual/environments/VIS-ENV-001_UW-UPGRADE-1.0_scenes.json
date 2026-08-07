@@ -1,0 +1,184 @@
+{
+  "request_id": "VIS-ENV-001",
+  "batch": "UW-UPGRADE-1.0",
+  "size": [
+    1920,
+    1080
+  ],
+  "scenes": {
+    "church_library": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_UW-UPGRADE-1.0_church_library.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "format": "PNG",
+      "sha256": "a6410693e8b42989c7b6b282ff8f218c8d4c4005efc4afbed63b07bf92350ead",
+      "focus_area": {
+        "desktop_crop": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "mobile_crop_center": [
+          480,
+          270,
+          960,
+          1620
+        ],
+        "interaction_safe_zone": [
+          200,
+          600,
+          1520,
+          900
+        ]
+      }
+    },
+    "gigas_clearing": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_UW-UPGRADE-1.0_gigas_clearing.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "format": "PNG",
+      "sha256": "654aae11cefce31b15ce4366ea559b14b187877dfb4169010eb77d6f5f3422df",
+      "focus_area": {
+        "desktop_crop": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "mobile_crop_center": [
+          480,
+          270,
+          960,
+          1620
+        ],
+        "interaction_safe_zone": [
+          200,
+          600,
+          1520,
+          900
+        ]
+      }
+    },
+    "home_hearth": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_UW-UPGRADE-1.0_home_hearth.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "format": "PNG",
+      "sha256": "d6f378deb8eb3a88e2ada8e987f7b40c7a742cf37ef6420c34b0e78175cd1570",
+      "focus_area": {
+        "desktop_crop": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "mobile_crop_center": [
+          480,
+          270,
+          960,
+          1620
+        ],
+        "interaction_safe_zone": [
+          200,
+          600,
+          1520,
+          900
+        ]
+      }
+    },
+    "north_gate": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_UW-UPGRADE-1.0_north_gate.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "format": "PNG",
+      "sha256": "b11d75d4a8208ac9505b2ac6dc5feacb40b1cb0f66d18a4a060d5f1fd3ff7d36",
+      "focus_area": {
+        "desktop_crop": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "mobile_crop_center": [
+          480,
+          270,
+          960,
+          1620
+        ],
+        "interaction_safe_zone": [
+          200,
+          600,
+          1520,
+          900
+        ]
+      }
+    },
+    "forest_path": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_UW-UPGRADE-1.0_forest_path.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "format": "PNG",
+      "sha256": "a2c9589a0288a97f4ef72ec152ebc4dff52be2e4b301a68457623944abb33f3d",
+      "focus_area": {
+        "desktop_crop": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "mobile_crop_center": [
+          480,
+          270,
+          960,
+          1620
+        ],
+        "interaction_safe_zone": [
+          200,
+          600,
+          1520,
+          900
+        ]
+      }
+    },
+    "end_mountains_cave": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_UW-UPGRADE-1.0_end_mountains_cave.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "format": "PNG",
+      "sha256": "473168f29e8a4825eeb25f669067b4ada6ac62ed40ddb70e58ab5d7353951d78",
+      "focus_area": {
+        "desktop_crop": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "mobile_crop_center": [
+          480,
+          270,
+          960,
+          1620
+        ],
+        "interaction_safe_zone": [
+          200,
+          600,
+          1520,
+          900
+        ]
+      }
+    }
+  }
+}

@@ -1,134 +1,104 @@
 {
   "v": 1,
   "id": "month_01",
-  "title": "第一月：北境静默线",
-  "subtitle": "30 日可玩路线",
-  "summary": "第一个月围绕书库线索、古誓树训练、北境律令和同伴信任展开。前三天确定边界事件，之后用巡查、村务、演练和远征准备把关系暗线转成长期玩法。",
-  "day_range": [1, 31],
-  "ending_paths": {
-    "unresolved": "第三天选择还没有收束。先把边界线前的决定做完，第一月路线会根据结果切换侧重点。",
-    "order": "你选择遵守规则。第一月会偏向记录、报告、村内信任和稳妥巡查。",
-    "cross": "你选择越过边界。第一月会偏向异常源头、同伴誓约和高风险演练。",
-    "hide": "你选择隐瞒异常。第一月会偏向补救关系、暗中调查和降低裂痕。"
-  },
+  "title": "Pre-Capture 卢利特村",
+  "subtitle": "从可信任的日常到爱丽丝被带走",
+  "summary": "四幕、10 个关键节点、固定终点 alice_captured。",
+  "day_range": [
+    1,
+    3
+  ],
   "weeks": [
     {
-      "id": "week_01",
-      "week": 1,
-      "day_range": [1, 7],
-      "title": "第 1 周：线索与信任",
-      "summary": "让玩家认识村子、同伴和北境规则，并在第三天做出第一次真正的边界选择。",
-      "goals": ["完成书库调查和古誓树训练", "确认森林静默线", "把第三天选择转化为后续路线"],
-      "play_hooks": ["调查小游戏", "训练节奏小游戏", "边界判定小游戏", "NPC 记忆与承诺"],
+      "id": "precapture_act0",
+      "title": "可信任的日常",
+      "day_range": [
+        1,
+        1
+      ],
       "milestones": [
         {
-          "id": "m01_opening_incident",
-          "title": "Day 1-3：边界事件",
-          "day_range": [1, 3],
-          "scene_id": "gigas_clearing",
-          "related_event_ids": ["ch1_d1_reading_clue", "ch1_d2_forest_anomaly", "ch1_d3_boundary_choice"],
-          "completed_flag": "boundary_incident_resolved",
-          "goals": ["读到北境异常记录", "在森林确认静默线", "决定是否越过边界"],
-          "reward": "解锁第一月后续路线。"
-        },
-        {
-          "id": "m01_debrief",
-          "title": "Day 4-6：事后复盘",
-          "day_range": [4, 6],
-          "scene_id": "church_library",
-          "related_event_id": "ch1_d4_after_boundary_debrief",
-          "completed_flag": "month01_debrief_done",
-          "requirements": { "required_flags": { "boundary_incident_resolved": 1 } },
-          "goals": ["选择记录口径", "决定先稳住谁的信任", "把结局后果写进同伴记忆"],
-          "reward": "解锁第一次巡查演练。"
+          "id": "pc_n03_talk",
+          "title": "三人谈论禁忌目录",
+          "day_range": [
+            1,
+            1
+          ],
+          "related_event_id": "ch1pc_n03_talk_index_end_mountains"
         }
       ]
     },
     {
-      "id": "week_02",
-      "week": 2,
-      "day_range": [8, 14],
-      "title": "第 2 周：巡查与村内信任",
-      "summary": "把异常从秘密变成可执行的巡查流程，开始让村民和同伴对你的判断产生反馈。",
-      "goals": ["完成北门巡查演练", "建立村内信任", "选择秩序优先或调查优先"],
-      "play_hooks": ["路线标记", "守望轮换", "村务选择", "关系张力"],
+      "id": "precapture_act1",
+      "title": "规则与决定",
+      "day_range": [
+        2,
+        2
+      ],
       "milestones": [
         {
-          "id": "m01_first_drill",
-          "title": "Day 7-10：第一次巡查演练",
-          "day_range": [7, 10],
-          "scene_id": "north_gate",
-          "related_event_id": "ch1_d7_first_boundary_drill",
-          "completed_flag": "month01_drill_done",
-          "requirements": { "required_flags": { "month01_debrief_done": 1 } },
-          "goals": ["标出安全距离", "决定谁负责最终判定", "留下可复用巡查流程"],
-          "reward": "北门巡查线进入日常循环。"
+          "id": "pc_n04_travel",
+          "title": "前往尽头山脉洞窟",
+          "day_range": [
+            2,
+            2
+          ],
+          "related_event_id": "ch1pc_n04_travel_to_end_mountains"
         },
         {
-          "id": "m01_village_trust",
-          "title": "Day 12-16：村务信任",
-          "day_range": [12, 16],
-          "scene_id": "village_square",
-          "related_event_id": "ch1_d12_village_trust",
-          "completed_flag": "month01_village_trust",
-          "requirements": { "required_flags": { "month01_drill_done": 1 } },
-          "goals": ["让村里看见巡查价值", "处理艾琳和尤里的不同担心", "为后续远征争取资源"],
-          "reward": "解锁静默线演练。"
+          "id": "pc_n06_boundary",
+          "title": "爱丽丝越界",
+          "day_range": [
+            2,
+            2
+          ],
+          "related_event_id": "ch1pc_n06_alice_crosses_boundary"
+        },
+        {
+          "id": "pc_n07_return",
+          "title": "返回卢利特村",
+          "day_range": [
+            2,
+            2
+          ],
+          "related_event_id": "ch1pc_n07_return_to_rulid"
         }
       ]
     },
     {
-      "id": "week_03",
-      "week": 3,
-      "day_range": [15, 21],
-      "title": "第 3 周：同伴誓约与静默线",
-      "summary": "把关系暗线推向明确承诺：玩家需要决定依靠规则、依靠同伴，还是依靠自己看到的异常。",
-      "goals": ["完成静默线演练", "确认远征队的协作方式", "处理隐瞒或越界留下的裂痕"],
-      "play_hooks": ["判定证据", "同伴分工", "承诺与紧张点"],
+      "id": "precapture_act2",
+      "title": "宣判、告别与带走",
+      "day_range": [
+        3,
+        3
+      ],
       "milestones": [
         {
-          "id": "m01_silent_line_rehearsal",
-          "title": "Day 18-22：静默线演练",
-          "day_range": [18, 22],
-          "scene_id": "north_gate",
-          "related_event_id": "ch1_d18_silent_line_rehearsal",
-          "completed_flag": "month01_silent_line_rehearsed",
-          "requirements": { "required_flags": { "month01_village_trust": 1 } },
-          "goals": ["用刻印术复核风声断点", "让同伴参与最终判定", "把风险写成可执行预案"],
-          "reward": "远征准备开放。"
-        }
-      ]
-    },
-    {
-      "id": "week_04",
-      "week": 4,
-      "day_range": [22, 31],
-      "title": "第 4 周：第一次远征准备",
-      "summary": "第一个月最后把资源、关系和路线选择收束为一次正式边境行动。",
-      "goals": ["整理远征包", "决定队伍路线", "为第二月的边境副本埋下入口"],
-      "play_hooks": ["补给选择", "最终路线选择", "第二月入口"],
-      "milestones": [
-        {
-          "id": "m01_expedition_pack",
-          "title": "Day 24-27：远征包",
-          "day_range": [24, 27],
-          "scene_id": "home_hearth",
-          "related_event_id": "ch1_d24_expedition_pack",
-          "completed_flag": "month01_expedition_ready",
-          "requirements": { "required_flags": { "month01_silent_line_rehearsed": 1 } },
-          "goals": ["选择补给方向", "决定把记录交给谁保管", "确认三人能否一起出发"],
-          "reward": "解锁第一月终点。"
+          "id": "pc_n08_knights",
+          "title": "整合骑士进村宣判",
+          "day_range": [
+            3,
+            3
+          ],
+          "related_event_id": "ch1pc_n08_knights_arrive_village"
         },
         {
-          "id": "m01_month_gate",
-          "title": "Day 28-30：北门前夜",
-          "day_range": [28, 31],
-          "scene_id": "north_gate",
-          "related_event_id": "ch1_d30_first_month_gate",
-          "completed_flag": "month01_gate_resolved",
-          "requirements": { "required_flags": { "month01_expedition_ready": 1 } },
-          "goals": ["选择第二月路线", "确认同伴站位", "把第一月结局写成长期状态"],
-          "reward": "第二月边境远征入口。"
+          "id": "pc_n09_farewell",
+          "title": "爱丽丝告别",
+          "day_range": [
+            3,
+            3
+          ],
+          "related_event_id": "ch1pc_n09_alice_farewell"
+        },
+        {
+          "id": "pc_n10_captured",
+          "title": "爱丽丝被带走",
+          "day_range": [
+            3,
+            3
+          ],
+          "related_event_id": "ch1pc_n10_alice_captured"
         }
       ]
     }

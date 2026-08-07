@@ -1,0 +1,23 @@
+{
+  "name": "border-echo-cocos-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "doctor": "node scripts/cocos-doctor.mjs",
+    "validate": "node scripts/validate-client.mjs",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run validate && npm run typecheck && npm run smoke:offline && npm run smoke:cross-client",
+    "smoke:offline": "node scripts/offline-contract-smoke.mjs",
+    "smoke:cross-client": "node scripts/cross-client-contract-smoke.mjs",
+    "smoke:live": "node scripts/live-contract-smoke.mjs"
+  },
+  "devDependencies": {
+    "@cocos/creator-types": "^3.8.7",
+    "typescript": "5.6.3"
+  },
+  "creator": {
+    "version": "3.8.7"
+  },
+  "uuid": "3f7d5767-2ce7-4e83-89ea-57a6b7c90ee4"
+}

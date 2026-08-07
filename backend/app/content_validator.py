@@ -841,7 +841,6 @@ def _validate_story_events(
 ) -> set[str]:
     story_paths = [
         project_root / "data" / "story" / "events_chapter_01.json",
-        project_root / "data" / "story" / "events_precapture_chapter_01.json",
     ]
     source_rows: list[tuple[str, int, dict[str, Any]]] = []
     for story_path in story_paths:
@@ -1190,7 +1189,6 @@ def _collect_written_flags(project_root: Path) -> set[str]:
 
     for story_path in (
         project_root / "data" / "story" / "events_chapter_01.json",
-        project_root / "data" / "story" / "events_precapture_chapter_01.json",
     ):
         if not story_path.is_file():
             continue

@@ -1,0 +1,37 @@
+{
+  "v": 1,
+  "scene": "Field",
+  "contract": "client-contract-2026-05-15-v2",
+  "mode": "runtime-self-wiring",
+  "assets": {
+    "bootScene": "Boot.scene",
+    "fieldScene": "Field.scene"
+  },
+  "root": {
+    "name": "FieldRoot",
+    "components": ["FieldController"]
+  },
+  "optionalBindings": {
+    "FieldController.renderer": "MapRenderer",
+    "FieldController.overlay": "OverlayUI",
+    "MapRenderer.mapGraphics": "Graphics",
+    "MapRenderer.playerNode": "Node",
+    "MapRenderer.npcRoot": "Node",
+    "MapRenderer.poiRoot": "Node",
+    "OverlayUI.statusLabel": "Label",
+    "OverlayUI.objectiveLabel": "Label",
+    "OverlayUI.detailLabel": "Label"
+  },
+  "buttonMethods": [
+    "refreshAll",
+    "chooseFirstStoryChoice",
+    "runReadingDemo",
+    "runTrainingDemo",
+    "runLunchDemo",
+    "runDinnerDemo",
+    "restUntilNextDay",
+    "showNearestNpcProfile",
+    "greetNearestNpc",
+    "resetPrototype"
+  ]
+}

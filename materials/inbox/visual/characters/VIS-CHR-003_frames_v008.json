@@ -1,0 +1,797 @@
+{
+  "schema_version": "v008",
+  "request_id": "VIS-CHR-003",
+  "character": "eugeo",
+  "created_at": "2026-08-07",
+  "frame_width": 64,
+  "frame_height": 96,
+  "frame_cell_px": {
+    "w": 64,
+    "h": 96
+  },
+  "sheet_px": {
+    "w": 768,
+    "h": 384
+  },
+  "directions": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "column_order": [
+    [
+      "idle",
+      0
+    ],
+    [
+      "idle",
+      1
+    ],
+    [
+      "walk",
+      0
+    ],
+    [
+      "walk",
+      1
+    ],
+    [
+      "walk",
+      2
+    ],
+    [
+      "walk",
+      3
+    ],
+    [
+      "walk",
+      4
+    ],
+    [
+      "walk",
+      5
+    ],
+    [
+      "interact",
+      0
+    ],
+    [
+      "interact",
+      1
+    ],
+    [
+      "interact",
+      2
+    ],
+    [
+      "interact",
+      3
+    ]
+  ],
+  "anchor": [
+    32,
+    94
+  ],
+  "anchor_convention": "bottom-center, foot-pivot at y=cell_height-2",
+  "display_height_px_range": [
+    44,
+    52
+  ],
+  "animations": {
+    "down_idle": {
+      "loop": true,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            0,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 800
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            64,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 800
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "down_walk": {
+      "loop": true,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            128,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            192,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 2,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            256,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 3,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            320,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 4,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            384,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 5,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            448,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "down_interact": {
+      "loop": false,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            512,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            576,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 2,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            640,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 3,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            704,
+            0,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "left_idle": {
+      "loop": true,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            0,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 800
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            64,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 800
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "left_walk": {
+      "loop": true,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            128,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            192,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 2,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            256,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 3,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            320,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 4,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            384,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 5,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            448,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "left_interact": {
+      "loop": false,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            512,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            576,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 2,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            640,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 3,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            704,
+            96,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "right_idle": {
+      "loop": true,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            0,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 800
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            64,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 800
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "right_walk": {
+      "loop": true,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            128,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            192,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 2,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            256,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 3,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            320,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 4,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            384,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 5,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            448,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "right_interact": {
+      "loop": false,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            512,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            576,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 2,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            640,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 3,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            704,
+            192,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "up_idle": {
+      "loop": true,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            0,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 800
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            64,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 800
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "up_walk": {
+      "loop": true,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            128,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            192,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 2,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            256,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 3,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            320,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 4,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            384,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        },
+        {
+          "frame_index": 5,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            448,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 140
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    },
+    "up_interact": {
+      "loop": false,
+      "frames": [
+        {
+          "frame_index": 0,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            512,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 1,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            576,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 2,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            640,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        },
+        {
+          "frame_index": 3,
+          "source": "materials/inbox/visual/characters/VIS-CHR-003_eugeo_sprite_sheet_v008.png",
+          "rect": [
+            704,
+            288,
+            64,
+            96
+          ],
+          "duration_ms": 350
+        }
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "collision_footprint": [
+        26,
+        88,
+        12,
+        6
+      ]
+    }
+  },
+  "format": "RGBA8888 non-interlaced, transparent background, no checkerboard, no text, no UI, no baked shadow",
+  "alpha_check": "both transparent and visible character pixels present",
+  "license": "owned",
+  "source_url": "none; original project-owned procedural painterly sprite generation",
+  "rights_statement": "Original generated sprite material. Does not copy existing animation, character likeness, costume, or third-party samples.",
+  "supersedes": "v003 geometric puppets, v006 procedural painterly, v007 first pass; v008 refines silhouettes, walking gait, and interaction gestures with smoother organic shapes"
+}

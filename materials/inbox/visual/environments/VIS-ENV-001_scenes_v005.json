@@ -1,0 +1,97 @@
+{
+  "schema_version": "v005",
+  "request_id": "VIS-ENV-001",
+  "created_at": "2026-08-07",
+  "supersedes": "v004 (source preserved; v005 corrects metadata schema without overwriting v004)",
+  "scene_size_px": {
+    "w": 1920,
+    "h": 1080
+  },
+  "alpha_mode": "RGB",
+  "scenes": {
+    "church_library": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_church_library_v005.png",
+      "label_en": "village west library / reading desk",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB"
+    },
+    "gigas_clearing": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_gigas_clearing_v005.png",
+      "label_en": "ancient gigas cedar clearing",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB"
+    },
+    "home_hearth": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_home_hearth_v005.png",
+      "label_en": "village home interior with hearth",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB"
+    },
+    "north_gate": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_north_gate_v005.png",
+      "label_en": "north boundary stone gate with fog wall",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB"
+    },
+    "forest_path": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_forest_path_v005.png",
+      "label_en": "dense forest path with unnatural silence line",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB"
+    },
+    "end_mountains_cave": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_end_mountains_cave_v005.png",
+      "label_en": "end-mountains cave / boundary approach",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB"
+    }
+  },
+  "safe_areas": {
+    "desktop_center_horizontal_pct": 60,
+    "mobile_center_horizontal_pct": 80,
+    "interactive_center_vertical_pct": 50,
+    "note": "Desktop and 390x844 mobile UI safe zones are preserved by keeping focal content near the center of each 1920x1080 frame."
+  },
+  "prompts": {
+    "church_library": "warm candlelit church library with a heavy reading desk, bookshelves, paper and ink, stone arches",
+    "gigas_clearing": "wide clearing under the giant cedar, grass, fallen leaves, distant forest edge and open sky",
+    "home_hearth": "wooden home interior around a warm hearth, table, chairs, kitchen tools, evening domestic light",
+    "north_gate": "stone north gate on the boundary road, forest walls, pale fog beyond the gate",
+    "forest_path": "dense forest path with a clean walking lane and a strangely quiet boundary ahead",
+    "end_mountains_cave": "cave entrance in the End Mountains, cold mountain light, worn trail and stone approach"
+  },
+  "negative_prompt": "no characters; no text/labels/UI/watermarks; no checkerboard; no frame/border/decorative trim; no copyrighted game/anime composition; no third-party art; no AI-copied material.",
+  "qa_pass": {
+    "checked_at": "2026-08-07",
+    "checks": [
+      "1920x1080 RGB verified",
+      "no characters/text/UI/watermarks per source v004 QA and post-copy re-verification",
+      "central interactive area preserved for desktop and 390x844 mobile",
+      "scenes.<id>.source schema satisfies runtime_asset_requirements.json"
+    ]
+  }
+}

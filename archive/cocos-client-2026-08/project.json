@@ -1,0 +1,7 @@
+{
+  "name": "border-echo-cocos-client",
+  "uuid": "a78f5ce7-7b8a-48d5-9b96-1f3dc6ab4c8e",
+  "version": "0.1.0",
+  "engine": "3.8.0",
+  "contract": "client-contract-2026-05-15-v2"
+}

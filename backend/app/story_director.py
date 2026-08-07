@@ -23,22 +23,13 @@ def default_events_path(project_root: Path, chapter_id: str = "chapter_01") -> P
     return project_root / "data" / "story" / f"events_{chapter_id}.json"
 
 
-def precapture_events_path(project_root: Path, chapter_id: str = "chapter_01") -> Path:
-    if chapter_id == "chapter_01":
-        return project_root / "data" / "story" / "events_precapture_chapter_01.json"
-    return project_root / "data" / "story" / f"events_precapture_{chapter_id}.json"
-
-
 def load_story_events(project_root: Path, chapter_id: str = "chapter_01") -> list[dict[str, Any]]:
-    events: list[dict[str, Any]] = []
-    for path in (default_events_path(project_root, chapter_id), precapture_events_path(project_root, chapter_id)):
-        if not path.is_file():
-            continue
-        raw = json.loads(path.read_text(encoding="utf-8"))
-        rows = raw.get("events") if isinstance(raw, dict) else raw
-        if isinstance(rows, list):
-            events.extend(e for e in rows if isinstance(e, dict))
-    return events
+    path = default_events_path(project_root, chapter_id)
+    if not path.is_file():
+        return []
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    rows = raw.get("events") if isinstance(raw, dict) else raw
+    return [e for e in rows if isinstance(e, dict)] if isinstance(rows, list) else []
 
 
 def _flag_value(state: WorldState, key: str) -> int:
@@ -359,7 +350,7 @@ def day_gate_status(project_root: Path, state: WorldState, day: int | None = Non
     """
     current_day = int(day if day is not None else state.day)
     catalog = load_main_nodes(default_catalog_path(project_root))
-    gate_key = "precapture_day_gates" if _flag_value(state, "precapture_mode") >= 1 else "day_gates"
+    gate_key = "precapture_day_gates"
     raw_gates = catalog.get(gate_key) if isinstance(catalog, dict) else {}
     gates = raw_gates if isinstance(raw_gates, dict) else {}
     gate = gates.get(str(current_day))

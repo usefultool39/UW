@@ -27,7 +27,7 @@
 | 前端注册 | `frontend/src/field/sceneRegistry.js` | map_id、scene_id、背景、模式、未来切换方式 |
 | 地图渲染 | `frontend/src/field/createWorldFieldScene.js` | Phaser 探索地图、移动、NPC、事件点 |
 | 地图容器 | `frontend/src/components/FieldSlice.vue` | 根据玩家 `map_id` 加载地图并重建 Phaser 场景 |
-| Cocos 客户端 | `cocos-client/assets/scripts/field/` | 并行客户端读取同一地图/API，先复刻 Day 1 地图纵切片 |
+| Cocos 客户端 | `archive/cocos-client-2026-08/assets/scripts/field/` | 并行客户端读取同一地图/API，先复刻 Day 1 地图纵切片 |
 | 后端地图 API | `GET /api/world/maps/{map_id}` | 按 map_id 读取地图，默认仍兼容 `/api/world/map` |
 | NPC 日程 | `data/world/schedules.json` | NPC 按时间段进入不同 map/scene/tile |
 | 主线事件 | `data/story/events_chapter_01.json` | 事件地点、参与者、选择、后果 |

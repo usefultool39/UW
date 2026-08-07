@@ -701,13 +701,6 @@ async function refreshStoryEvents() {
 }
 
 function getActiveMonthPlanId() {
-  const flags = props.simState?.flags || {}
-  if (Number(flags.month03_departure_ready || 0) > 0 || Number(props.simState?.day || 1) >= 62) {
-    return 'month_03'
-  }
-  if (Number(flags.month02_day31_entry_done || 0) > 0) {
-    return 'month_02'
-  }
   return 'month_01'
 }
 

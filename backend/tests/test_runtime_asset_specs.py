@@ -23,12 +23,11 @@ def test_active_contract_targets_non_destructive_v004_rework():
         (ROOT / "materials" / "runtime_asset_requirements.json").read_text(encoding="utf-8")
     )
 
-    visual_metadata = [
-        contract["map"]["metadata_file"],
-        contract["environments"]["metadata_file"],
-        *(item["metadata_file"] for item in contract["characters"]),
-    ]
-    assert all("_v004.json" in path for path in visual_metadata)
+    def contract_characters_metadata(data):
+        return [item["metadata_file"] for item in data["characters"]]
+    assert "_map_v005.json" in contract["map"]["metadata_file"]
+    assert "_scenes_v005.json" in contract["environments"]["metadata_file"]
+    assert all("_frames_v008.json" in path for path in contract_characters_metadata(contract))
 
     for audio in contract["audio"]:
         assert audio["metadata_file"].endswith("audio.meta_v004.fragment.json")

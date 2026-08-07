@@ -5,6 +5,8 @@
 - **状态**：Current / 素材需求与来源的单一入口
 - **当前返工交接**：[MATERIALS_REWORK_HANDOFF_20260807.md](../docs/delivery/MATERIALS_REWORK_HANDOFF_20260807.md)
 - **原则**：原始素材只进入 `inbox`；项目负责人完成 request、sidecar、来源/权利、技术、风格、游戏内和 manifest/hash 验收后，才可复制/转换到 `frontend/public/assets/runtime`。素材智能体不得直接修改正式 runtime。
+- **UW-UPGRADE-1.0 全素材目录**：[UW_UPGRADE_1_0_ASSET_CATALOG.md](UW_UPGRADE_1_0_ASSET_CATALOG.md)
+- **最终素材智能体 Prompt**：[UW_UPGRADE_1_0_ASSET_AGENT_PROMPT.md](UW_UPGRADE_1_0_ASSET_AGENT_PROMPT.md)
 
 ## 当前长期方向
 

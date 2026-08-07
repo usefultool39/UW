@@ -1,6 +1,8 @@
 # 边境回声文档中心
 
 > 项目交接先读 [PROJECT_HANDOFF_20260807.md](delivery/PROJECT_HANDOFF_20260807.md)。日常事实仍只认下列四个入口；`archive/` 和状态页下方的旧日志仅供追溯，不是任务来源。
+> 下一个接管智能体先读 [HANDOFF_NEXT_AGENT_20260807.md](delivery/HANDOFF_NEXT_AGENT_20260807.md)。
+> UW-UPGRADE-1.0 的界面、人物、剧情、操作、贴图、音频与素材生产统一从 [执行索引](planning/UW_UPGRADE_1_0_EXECUTION_INDEX.md) 开始；素材目录和最终 Prompt 见 [全素材主目录](../materials/UW_UPGRADE_1_0_ASSET_CATALOG.md)。
 
 ## 先回答四个问题
 
