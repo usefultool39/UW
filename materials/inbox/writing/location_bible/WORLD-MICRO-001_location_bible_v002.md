@@ -16,7 +16,7 @@
   3. 卢利特村中央广场 + 北门 + Alice 父亲家 + 教会 作为 N08 / N09 / N10 的物理舞台；**B 类原作明确**整合骑士在此宣告与带走
   4. 整合骑士**不**在 §10 / §11 出现（不在山侧出现）；只在 §5 / §6（村内相关地点）作为 N08 / N09 / N10 出现
 - intended_use: 编剧 / 关卡 / UI / Agent system prompt 共用的微观地点约束；与 `data/world/scene_activities.json` 已存在的 `scene_id` 命名（`gigas_clearing` / `church_library` / `home_hearth` / `north_gate` 等）保持一致
-- notes: v001 保留在 `materials/inbox/writing/location_bible/WORLD-MICRO-001_location_bible_v001.md`，MANIFEST 状态 = `changes_requested`。本文件只写 Pre-Capture 范围；不写 Centoria 城内、整合骑士训练所、中央大教堂内部、暗黑界。每个地点都标 A / B / C 三类。
+- notes: 上一轮被退回的修订已从工作树删除，可通过 Git 历史追溯。本文件只写 Pre-Capture 范围；不写 Centoria 城内、整合骑士训练所、中央大教堂内部、暗黑界。每个地点都标 A / B / C 三类。
 
 ---
 

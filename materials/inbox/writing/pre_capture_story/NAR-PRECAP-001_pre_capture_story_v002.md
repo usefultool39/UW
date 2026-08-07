@@ -18,7 +18,7 @@
   5. 接触暗黑界一侧 + 受伤者 + 爱丽丝越界救人 = B 类（原作·动画明确但当前官方网页摘要未覆盖），v002 必须忠实还原
   6. 跨节点回响 5 条（≥3）
 - intended_use: 编剧 / 数据驱动事件作者参考；后续 `data/story/events_chapter_01.json` 的 authored 事件需按本文件的 `precapture_act` / `precapture_key_node` / `precapture_endpoint` 标记与回响 flag 写入
-- notes: v001 保留在 `materials/inbox/writing/pre_capture_story/NAR-PRECAP-001_pre_capture_story_v001.md`，MANIFEST 状态 = `changes_requested`。事件 ID 前缀 `ch1pc_` 沿用 v001 命名建议。
+- notes: 上一轮被退回的修订已从工作树删除，可通过 Git 历史追溯。事件 ID 前缀 `ch1pc_` 沿用 v001 命名建议。
 
 ---
 
@@ -340,7 +340,7 @@
 
 ## 6. 与既有 `data/story/events_chapter_01.json` 的关系
 
-- 既有 `ch1_d*_` 事件保留为"系统验证 + 候选内容库"（参见 `NEXT_PHASE.md` 与 `08_NARRATIVE_REQUIREMENTS.md` §5）。
+- 既有 `ch1_d*_` 事件保留为"系统验证 + 候选内容库"（参见 `docs/PLAN.md` 与 `docs/PROJECT.md`）。
 - 本文件 N01–N10 是 **Pre-Capture 主线收束版**，建议在 `data/story/events_chapter_01.json` 中以 `ch1pc_*` 事件 id 增量补入；旧 `ch1_d*_` 事件在主线收束后归入"候选内容库"，由后续工作决定是否合并 / 改名 / 删除。
 - **本文件不直接修改 `data/story/events_chapter_01.json`**；标记字段（`precapture_act` / `precapture_key_node` / `precapture_endpoint`）由后续 PR 在用户返还素材后接入。
 

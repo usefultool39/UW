@@ -16,7 +16,7 @@
   3. 不再把"爱丽丝在山侧被带走"作为 v001 终点；改为"在卢利特村被带走"
   4. 不再把"中央层级"在 Pre-Capture 阶段作为可玩角色；整合骑士仅在 N08 之后作为可玩投影
 - intended_use: 编剧 / 资料 / Agent system prompt 共用的宏观世界约束；`NAR-PRECAP-001`、`CHAR-DEPTH-001`、`WORLD-MICRO-001` 全部以本文件的"分类分栏"为前提
-- notes: v001 保留在 `materials/inbox/writing/world_bible/WORLD-MACRO-001_world_bible_v001.md`，MANIFEST 状态 = `changes_requested`。本文件只写到 Alice 被带走为止；中央大教堂内部政治、整合骑士训练、暗黑界大战、War of Underworld 战后状态不在本文件范围。
+- notes: 上一轮被退回的修订已从工作树删除，可通过 Git 历史追溯。本文件只写到 Alice 被带走为止；中央大教堂内部政治、整合骑士训练、暗黑界大战、War of Underworld 战后状态不在本文件范围。
 
 ---
 

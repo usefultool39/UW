@@ -17,7 +17,7 @@
   4. 静默线 / 14.5 页 / 两息风声 / 见报名册桌 等 v001 原创核心降为可选支线（"可改但仅影响个人观察"）
   5. 三栏分类与 `NAR-CANON-001` v002 §0 对齐
 - intended_use: 编剧 / AI agent / QA 校验器共用的"什么能动 / 什么不能动"硬约束；任何在 `data/story/events_chapter_01.json` 新增 authored 事件前必须先过本文件
-- notes: v001 保留在 `materials/inbox/writing/continuity_rules/NAR-ADAPT-001_continuity_rules_v001.md`，MANIFEST 状态 = `changes_requested`。本文件**不**修改 `data/story/`、`backend/`、`frontend/`；只给"分支规则"层。所有"不能改"项以 `[A]` / `[B]` 标注；"可改但有约束"项以 `[C]` 标注；"未确认"项以 `[待用户确认]` 标注。
+- notes: 上一轮被退回的修订已从工作树删除，可通过 Git 历史追溯。本文件**不**修改 `data/story/`、`backend/`、`frontend/`；只给"分支规则"层。所有"不能改"项以 `[A]` / `[B]` 标注；"可改但有约束"项以 `[C]` 标注；"未确认"项以 `[待用户确认]` 标注。
 
 ---
 
@@ -25,7 +25,7 @@
 
 - 玩家身份：**桐人**（`kirito` 内部 id；村民岗位 = 见习记录员，是职业身份，不是第 4 名角色）。
 - 核心三人：**桐人 / 尤吉欧 / 爱丽丝**（不增加第 4 名）。
-- 设计模式：**事实层固定 + 观察层可变**（参考 `materials/09_PRECAPTURE_STORY_TARGET.md` §二 + 用户 2026-08-06 锁定）。
+- 设计模式：**事实层固定 + 观察层可变**（参考 `docs/PROJECT.md` 的剧情边界）。
   - 固定：三人童年关系、Calling、禁忌目录、爱丽丝越界、返回村庄、被整合骑士带走。
   - 可变：桐人的准备、对话、关系倾向、承诺、最后表达。
   - 可回响：NPC 对桐人的信任、记忆、承诺、紧张。
@@ -161,7 +161,7 @@
 
 ### 7.1 时长与日期
 - 起点 = Day 1 上午；终点 = Day 3 下午（**约 60 小时游戏内时间**）。
-- 玩家实际游玩时长目标：15–25 分钟（参考 `NEXT_PHASE.md` §P0）。
+- 玩家实际游玩时长目标：15–25 分钟（参考 `docs/PLAN.md` 的 P0）。
 - 日期推进：只由 authored 事件与日结算闸推进，玩家**没有**独立跳日入口。
 
 ### 7.2 资源回收
@@ -184,7 +184,7 @@
 
 ## 8. 与既有 `data/story/events_chapter_01.json` 的关系
 
-- 既有 `ch1_d*_` 事件保留为"系统验证 + 候选内容库"；不直接进 Pre-Capture 主线（参考 `NEXT_PHASE.md`）。
+- 既有 `ch1_d*_` 事件保留为"系统验证 + 候选内容库"；不直接进 Pre-Capture 主线（参考 `docs/PLAN.md`）。
 - 本文件 N01–N10 的 `precapture_act` / `precapture_key_node` / `precapture_endpoint` 标记由后续 PR 在用户返还素材后接入 `data/story/events_chapter_01.json`。
 - 本文件**不直接修改** `data/story/`、`backend/`、`frontend/`。
 

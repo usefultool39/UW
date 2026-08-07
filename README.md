@@ -1,15 +1,16 @@
 # UW · 卢利特村序章
 
-一个以桐人、尤吉欧和爱丽丝为核心的 2D 叙事 RPG 原型。当前只收束 **爱丽丝被带走之前** 的连续体验：村庄日常、巨神树天职、尽头山脉越界、返村告别与抓捕终点。
+**当前统一版本：0.5.0**
 
-## 当前结论
+UW 是一个以桐人为玩家角色、围绕桐人、尤吉欧与爱丽丝童年经历展开的单人 2D 叙事 RPG 原型。当前只完成并打磨“爱丽丝被带走之前”的纵向切片，不继续扩写旧的见习记录员、月度路线或超长 Day 计划。
 
-- **可运行**：FastAPI 后端、Vue + Phaser 客户端、离线 scripted NPC、存档和十个主线节点已具备。
-- **未发布**：地图、角色动画、抓捕关键图、音效包和真人盲测尚未达到发布门槛。
-- **唯一方向**：不再扩写旧的“见习记录员”长线，也不再新增按日期编号的计划文档。
-- **版权边界**：这是含既有作品名称与设定的内部原型；公开发行前必须完成授权评估，或改写为原创世界与角色。
+## 当前状态
 
-## 开始
+- **可以开发和试玩**：FastAPI 后端、Vue + Phaser 客户端、离线 scripted NPC、存档、十个主线节点和自动化测试已经建立。
+- **尚未达到公开发布标准**：正式地图、统一角色动画、抓捕终点美术、完整音效元数据、三名陌生玩家盲测和 IP 权利评估尚未完成。
+- **唯一事实源**：产品与设计看 `docs/PROJECT.md`；状态和计划看 `docs/PLAN.md`；素材看 `docs/art/ASSET_REVIEW.md`。
+
+## 启动
 
 macOS：
 
@@ -23,13 +24,13 @@ Windows：
 .\启动全部项目.bat
 ```
 
-质量检查：
+开发质量检查：
 
 ```bash
 ./scripts/quality.sh
 ```
 
-发布门禁（包含素材、真人盲测和 E2E）：
+准备发布时才运行：
 
 ```bash
 ./scripts/release.sh
@@ -37,11 +38,11 @@ Windows：
 
 ## 文档入口
 
-- [项目总览：目标、范围、架构、设计与计划](docs/PROJECT.md)
-- [当前状态](docs/planning/CURRENT_STATUS.md)
-- [下一阶段](docs/planning/NEXT_PHASE.md)
-- [素材审查与缺口清单](docs/art/ASSET_REVIEW.md)
-- [素材收件说明](materials/README.md)
-- [系统架构](docs/architecture/SYSTEM_OVERVIEW.md)
+1. [项目总纲](docs/PROJECT.md)：背景、范围、剧情、系统、UI、美术和技术边界。
+2. [统一计划](docs/PLAN.md)：真实完成度、当前工作、优先级、验收和冻结项。
+3. [素材审查](docs/art/ASSET_REVIEW.md)：可用素材、返工项和下一批素材规格。
+4. [交付规则](docs/DELIVERY.md)：开发、测试、盲测、发布和版本规则。
+5. [架构总览](docs/architecture/SYSTEM_OVERVIEW.md)：系统所有权和模块关系。
+6. [运行手册](docs/operations/RUNBOOK.md)：环境、启动和常见验证命令。
 
-历史方案、旧交接和带日期的阶段记录已经移到 `docs/archive/` 与 `materials/archive/`，只用于追溯，不再作为任务入口。
+旧方案、旧版本说明和过期阶段文档已从工作树删除；需要追溯时使用 Git 历史，不再让历史文件与当前方案并列。

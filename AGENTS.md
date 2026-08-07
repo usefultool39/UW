@@ -1,34 +1,38 @@
-# UW 协作入口
+# UW 协作规则
 
-进入仓库后只需先读四份文件：
+进入仓库后按顺序阅读：
 
 1. `docs/PROJECT.md`
-2. `docs/planning/CURRENT_STATUS.md`
-3. `docs/planning/NEXT_PHASE.md`
-4. `docs/art/ASSET_REVIEW.md`
+2. `docs/PLAN.md`
+3. `docs/art/ASSET_REVIEW.md`
+4. `docs/DELIVERY.md`
 
-## 当前目标
+## 当前唯一目标
 
-完成爱丽丝被带走前的可玩纵切片。玩家身份统一为桐人；旧“见习记录员”、长期 Day 编号路线和历史升级代号只保留在 archive，不得重新带回主界面或新计划。
+完成版本 `0.5.0` 的卢利特村序章纵切片：玩家身份为桐人，主线从三人村庄日常推进到爱丽丝在村中被带走。旧“见习记录员”、月度路线、长期 Day 编号和历史升级代号均已停止，不得以新文档或新 UI 形式恢复。
 
 ## 不可破坏的边界
 
 - FastAPI 是位置、时间、资源、flag、关系、剧情闸和永久记忆的权威。
 - scripted NPC 是无模型 API 时的完整产品基线；hybrid/agent 必须可回退。
 - 被拒绝的行动不得部分写入状态。
-- `runs/`、`data/memory/`、`frontend/dist/` 是运行产物。
-- 不直接向 `main` 堆改动；使用短分支、清晰提交和可回滚 PR。
-- 未经来源、技术、内容和游戏内验收的素材不得复制到 runtime。
+- 未审核素材不得进入 runtime。
+- `runs/`、`data/memory/`、`frontend/dist/`、密钥和本地环境不得提交。
+- 架构所有权变化先写 ADR；产品范围变化先修改 `docs/PROJECT.md`。
 
-## 素材规则
+## 文档纪律
 
-日常协作只使用 `materials/inbox`、`materials/review`、`materials/approved`、`materials/archive` 四个位置。新沟通使用可读名称，不再在标题和说明中堆叠升级代号或连续版本号；机器追溯 ID 仅保留在 `REQUESTS.csv`、`MANIFEST.csv` 和 sidecar 中。
+- 不新增日期型 status、handoff、upgrade、phase 或版本副本。
+- 当前完成度和下一步只写入 `docs/PLAN.md`。
+- 玩家可见名称、文档标题和沟通使用自然语言，不暴露内部 ID。
+- 素材请求 ID 只保留在 `REQUESTS.csv`、`MANIFEST.csv` 和素材 sidecar 中。
+- 旧事实使用 Git 历史追溯，不在仓库内继续复制归档文档。
 
 ## 完成前
 
 ```bash
 ./scripts/quality.sh
-./scripts/release.sh   # 只有准备发布时运行
+./scripts/release.sh   # 仅在准备发布时运行
 ```
 
-用户可见变化更新 `CHANGELOG.md`；真实完成度只更新 `CURRENT_STATUS.md`；下一步只更新 `NEXT_PHASE.md`；架构所有权变化使用 ADR。
+用户可见改动更新 `CHANGELOG.md`；测试和交付证据更新 `docs/PLAN.md`；素材结论更新 `docs/art/ASSET_REVIEW.md`。

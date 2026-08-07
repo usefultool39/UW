@@ -1,24 +1,30 @@
-# UW 文档中心
+# UW 文档地图
 
-## 权威文档
+仓库只维护一套当前文档。版本、目标、状态和计划不得复制到新的日期文件中。
 
-| 问题 | 文件 |
+## 必读
+
+| 文档 | 唯一职责 |
 |---|---|
-| 项目为什么做、现在做什么、怎么做 | [PROJECT.md](PROJECT.md) |
-| 已完成与阻塞项 | [CURRENT_STATUS.md](planning/CURRENT_STATUS.md) |
-| 接下来只做哪些事 | [NEXT_PHASE.md](planning/NEXT_PHASE.md) |
-| 哪些素材能用、要改什么、还缺什么 | [ASSET_REVIEW.md](art/ASSET_REVIEW.md) |
-| 系统边界与数据流 | [SYSTEM_OVERVIEW.md](architecture/SYSTEM_OVERVIEW.md) |
-| 开发与交付规则 | [DEVELOPMENT_PROCESS.md](delivery/DEVELOPMENT_PROCESS.md) / [DEFINITION_OF_DONE.md](delivery/DEFINITION_OF_DONE.md) |
+| [PROJECT.md](PROJECT.md) | 产品背景、范围、剧情、玩法、UI、美术、技术和成功标准 |
+| [PLAN.md](PLAN.md) | 当前事实、优先级、执行顺序、验收、风险和冻结项 |
+| [art/ASSET_REVIEW.md](art/ASSET_REVIEW.md) | 素材可用性、返工意见、缺口和制作规格 |
+| [DELIVERY.md](DELIVERY.md) | Git、开发、测试、盲测、发布和版本规则 |
+
+## 按需参考
+
+- [architecture/SYSTEM_OVERVIEW.md](architecture/SYSTEM_OVERVIEW.md)：架构总览。
+- `docs/architecture/adr/`：不可逆架构决策。
+- `docs/architecture/` 其他文件：AI、客户端、场景和数据合同。
+- [operations/RUNBOOK.md](operations/RUNBOOK.md)：启动与运行。
+- [operations/TROUBLESHOOTING.md](operations/TROUBLESHOOTING.md)：故障排查。
+- [../materials/README.md](../materials/README.md)：素材工作区与台账规则。
 
 ## 更新规则
 
-- 产品原则只在 `PROJECT.md` 与 `product/PRODUCT_DIRECTION.md` 维护。
-- 完成度只在 `planning/CURRENT_STATUS.md` 维护。
-- 下一步只在 `planning/NEXT_PHASE.md` 维护。
-- 素材结论只在 `art/ASSET_REVIEW.md` 与 `materials` 台账维护。
-- 不再新建“最终版、最新交接、升级版、第二版”文档；Git 历史承担版本追溯。
-
-## 历史资料
-
-`archive/` 中的文件是旧方案和旧交接证据，不是当前任务来源。除非为审计历史，不应继续编辑它们。
+- 范围与设计变化：更新 `PROJECT.md`。
+- 完成度、优先级和验收变化：更新 `PLAN.md`。
+- 素材状态变化：更新 `ASSET_REVIEW.md` 与素材台账。
+- 工程流程变化：更新 `DELIVERY.md`。
+- 架构所有权变化：新增或替换 ADR。
+- 历史过程：交给 Git 提交和 PR，不新增仓库内历史副本。

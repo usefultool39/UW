@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue'
 
-/** 与 docs/product 中「本地存档 + 预留云同步」一致 */
+/** 与 docs/PROJECT.md 的本地权威状态与存档边界一致 */
 export const NARRATIVE_STORAGE_KEY = '30town_narrative_v1'
 
 function defaultFlags() {

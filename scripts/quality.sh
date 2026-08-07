@@ -24,25 +24,28 @@ command -v npm >/dev/null 2>&1 || {
   exit 1
 }
 
-echo "[1/6] Materials registry"
+echo "[1/7] Documentation consistency"
+"$PYTHON_BIN" "$ROOT/scripts/check_docs.py"
+
+echo "[2/7] Materials registry"
 "$PYTHON_BIN" "$ROOT/materials/tools/check_materials.py"
 
-echo "[2/6] Runtime asset specifications"
+echo "[3/7] Runtime asset specifications"
 "$PYTHON_BIN" "$ROOT/materials/tools/check_runtime_asset_specs.py" --require-complete
 
-echo "[3/6] Backend tests"
+echo "[4/7] Backend tests"
 (
   cd "$ROOT"
   "$PYTHON_BIN" -m pytest -q backend/tests
 )
 
-echo "[4/6] Frontend unit tests"
+echo "[5/7] Frontend unit tests"
 npm --prefix "$ROOT/frontend" run test:unit
 
-echo "[5/6] Frontend production build"
+echo "[6/7] Frontend production build"
 npm --prefix "$ROOT/frontend" run build
 
-echo "[6/6] Git diff hygiene"
+echo "[7/7] Git diff hygiene"
 (
   cd "$ROOT"
   git diff --check

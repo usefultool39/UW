@@ -1,22 +1,26 @@
-# 角色 Persona 与阶段叠加
+# 角色 Persona 说明
 
-- **`persona.md`**：角色核心设定（当前默认 **露茵村童年期**）。
-- **`overlay_<阶段键>.md`**：由后端 `persona_phase_key(state)` 选择并拼接到 Persona 末尾；用于主线/旗标推进后的**语气与心理微调**，不换年龄、不跳越到记录院骑士等后期人设，除非将来单独增加阶段键与 overlay。
+`characters/` 中的 Markdown 不只是设定文档，也是 AI NPC 的运行时提示来源。人物称谓必须与当前版本一致：桐人、尤吉欧、爱丽丝、卢利特村、巨神树、禁忌目录、神圣术、整合骑士。
 
-## 阶段键一览（`backend/app/persona_phase.py`）
+## 文件职责
 
-| 键 | 触发条件（摘要） |
-|----|------------------|
-| `childhood_rulid` | 默认（教程前期） |
-| `childhood_post_reading` | 旗标 `prologue_reading_done` |
-| `childhood_mq01` | 主线 `mq01_tree_arc`（优先于读书旗标） |
-| `storia_academy` | **仅当** `story_node_id` 属于后端白名单 `_STORIA_ACADEMY_STORY_IDS`（见 `persona_phase.py`）；新增节点时务必把 id 加入该集合，勿用模糊前缀匹配 |
+- `persona.md`：当前序章阶段的稳定性格、说话方式和行为边界。
+- `backstory.md`：只提供角色已知的过去，不提前泄露爱丽丝被带走后的经历。
+- `overlay_<阶段键>.md`：后端按 `persona_phase_key(state)` 追加的短期心理和语气变化。
+- `system_base.md`：所有角色共享的动作、地点、状态和 JSON 输出规则。
 
-## 昼夜
+## 当前阶段
 
-LLM 的 `user` 消息含 `昼夜氛围`，由 `app.time_bands` 与 `config` 中分界常量分段（与 `system_base.md` 一致）；可在 overlay 中提示夜晚多休息，勿改动作枚举规则。
+| 内部阶段键 | 用途 |
+|---|---|
+| `childhood_rulid` | 默认序章阶段；键名为兼容旧存档保留，玩家可见名称仍为卢利特村 |
+| `childhood_post_reading` | 读过相关记录后的轻微好奇与警觉 |
+| `childhood_mq01` | 巨神树主线推进后的紧张与离别预感 |
+| `storia_academy` | 兼容性保留，不属于当前版本范围，不得由新序章节点触发 |
 
-## 开发热读
+## 约束
 
-- 设置环境变量 **`DEV_RELOAD_PERSONA=1`**（或 `true`/`yes`/`on`）时，`system_base.md` **不缓存**，每次 LLM 调用重新读盘。
-- 未设置时，按 `system_base.md` 的 **mtime** 失效内存缓存，改文件后下一轮请求即生效（无需重启 uvicorn）。
+- 不改变年龄，不跳到学院、大教堂或战争时期。
+- 不让角色预知爱丽丝必然被带走。
+- 不把模型生成内容当成世界事实。
+- 修改后运行后端 persona/agent 相关测试。

@@ -1,69 +1,43 @@
-# 数据、内容与持久化边界
+# 数据与内容边界
 
-- **状态**：Current
+## 目标
 
-## 权威配置源
+普通内容通过稳定 schema 扩展，避免把剧情分支、显示名和资源效果散落在 Vue、Phaser 与 Session 条件中。
 
-| 路径 | 内容 |
+## 数据目录
+
+| 位置 | 职责 |
 |---|---|
-| `data/world/world_map.json` | 地图、POI、scene zone |
-| `data/world/scene_activities.json` | 活动、选择、代价、效果 |
-| `data/world/schedules.json` | NPC 日程 |
-| `data/story/*.json` | 事件、主节点、月计划 |
-| `characters/meta.json` | NPC 注册和运行模式 |
-| `characters/<id>/*` | persona、背景、固定对话 |
+| `data/story/` | 主线节点、事件、条件、选择、效果和回响 |
+| `data/world/` | 世界地图、场景、活动、日程和环境配置 |
+| `characters/` | persona、背景、阶段 overlay、固定对话和角色元数据 |
+| `frontend/src/field/gameContentConfig.js` | 客户端显示名、runtime 素材路径和视觉配置 |
+| `materials/` | 候选素材、审核台账和批准证据，不是运行时配置 |
 
-## 非配置运行产物
+## ID 与显示名
 
-`runs/`、`data/memory/`、`frontend/dist/`、`frontend/test-results/`、`playwright-report/` 不得作为剧情事实来源，也不提交个人运行数据。
+- ID 使用稳定英文短名，只服务代码和存档。
+- 玩家可见名称使用桐人、尤吉欧、爱丽丝、卢利特村、巨神树、禁忌目录和神圣术。
+- 旧 ID 因存档兼容可保留，但不得继续扩散为新文件名或玩家文本。
+- 显示名集中转换，不在多个组件重复维护别名表。
 
-## ID 规则
+## 内容效果
 
-- 稳定英文 snake_case；公开名称与内部 ID 解耦。
-- 已进入存档的 ID 不直接重命名，使用迁移映射。
-- flag 使用命名空间，例如 `activity_done.*`、`activity_day.*`、`story.*`。
-- run ID 后端清洗并限制长度。
+事件和活动可以声明：
 
-## 存档
+- 进入条件；
+- 时间与资源代价；
+- 关系、flag、记忆和线索效果；
+- 玩家可见结果；
+- 后续回响与下一目标。
 
-- 当前 `schema_version = 1`。
-- 包含世界状态、最近事件和本 run 的 NPC memory summary。
-- 新字段提供默认值；破坏性变化必须有迁移函数和旧版 fixture 回归。
-- 导入失败不得部分覆盖当前 run。
+所有 effects 由后端解析、校验和提交。前端只能展示预览与结果。
 
-## 内容改动检查
+## 变更规则
 
-- [ ] JSON 可解析、ID 唯一，引用存在。
-- [ ] 活动在正确地点/时段可达。
-- [ ] 被拒绝路径不写状态。
-- [ ] 结果解释时间、资源或关系变化。
-- [ ] 更新自动测试或试玩用例。
-- [ ] 同步 Current Status / Changelog（如适用）。
-
-## 剧情事件驱动日期（2026-08-05）
-
-日期推进是内容配置的一部分，不由前端按钮决定。建议事件或章节节点支持以下字段：
-
-```json
-{
-  "day_end_gate": true,
-  "required_for_day": true,
-  "advance_policy": "after_evening_settlement",
-  "auto_advance": true,
-  "next_day": 2,
-  "next_story_node_id": "ch1_day2_anomaly"
-}
-```
-
-### 规则
-
-- `required_for_day`：当前日期必须完成的事件。
-- `day_end_gate`：允许进入日结算的剧情闸。
-- `advance_policy`：日期推进时机，例如 `after_evening_settlement`、`after_choice`、`after_scene_exit`。
-- `auto_advance`：事件完成后是否由后端自动执行日结算；不能由客户端自行解释。
-- `next_day`：可选的目标日期；必须经过后端校验，不能任意跳跃。
-- `next_story_node_id`：跨日后进入的剧情节点。
-
-普通 `scene_activity` 只改变时间段、资源、关系和记忆；除非显式配置为剧情闸，不得改变 `day`。
-
-运行产物和存档应记录：触发事件 ID、推进原因、推进前后的日期、日结算摘要和下一目标，便于回放和排查“为什么进入了下一天”。
+- 新活动优先复用已有 schema 和 interaction kind。
+- 只有新的交互形态才新增前端组件。
+- 新永久字段必须有默认值、导入兼容和回归测试。
+- 主线内容进入 `data/story/` 前必须经过连续性与正典边界检查。
+- 候选写作材料不能直接当作运行时事实。
+- 旧月度数据仅为兼容与历史实现，不再作为当前规划入口。
