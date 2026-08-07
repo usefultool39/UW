@@ -4,25 +4,19 @@
       <p class="field-kicker">{{ GAME_CHAPTER_INFO.kicker }}</p>
       <h2>{{ GAME_CHAPTER_INFO.title }}</h2>
     </div>
+
     <div class="header-actions">
       <span class="runtime-badge" :class="`runtime-${npcRuntime}`" :title="runtimeTitle">
         <i></i>{{ runtimeLabel }}
       </span>
-      <button type="button" class="tb tb-ghost save-action" :disabled="busy" @click="$emit('export-save')">
-        <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 17h14v-2H3v2zm9-9L6 12h4v4h4v-4h4l-6-6z"/></svg>存档
-      </button>
-      <button type="button" class="tb tb-ghost save-action" :disabled="busy" @click="$emit('import-save')">
-        <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M17 17H3v-2h14v2zm-6-8L6 13h4v4h4v-4h4l-6-6z"/></svg>读档
-      </button>
-      <button type="button" class="tb tb-ghost sync-action" :disabled="busy" @click="$emit('refresh')">
-        <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3v2a5 5 0 0 1 5.12 4.87l-1.02-1.74A3 3 0 1 0 14 10h2l-2-3-2 3H9a3 3 0 0 0 0 6 5 5 0 0 1 .12 9.95L10 17v-3H7l2-3 2 3h-1z"/></svg>同步
-      </button>
+
       <div class="audio-cluster">
         <button type="button" class="tb tb-ghost audio-action" :title="audioTitle" @click="onAudioClick">
-          <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path v-if="isMuted" d="M4 7h3l4-4v14l-4-4H4V7zm10.6 2.4 1.4-1.4 1.5 1.5L19 8l1 1-1.5 1.5L20 12l-1 1-1.5-1.5L16 13l-1.4-1.4 1.5-1.6-1.5-1.6z"/>
             <path v-else d="M3 7h4l5-4v14l-5-4H3V7zm11.2 1.1 1.2-1.2A4.7 4.7 0 0 1 17 10a4.7 4.7 0 0 1-1.6 3.1l-1.2-1.2A3 3 0 0 0 15.2 10a3 3 0 0 0-1-1.9z"/>
-          </svg>{{ audioLabel }}
+          </svg>
+          {{ audioLabel }}
         </button>
         <input
           class="audio-volume"
@@ -35,8 +29,17 @@
           @input="setVolume(Number($event.target.value))"
         />
       </div>
-      <span class="story-progress-badge" title="日期由剧情事件和日结算自动推进">剧情推进</span>
+
+      <details class="system-menu">
+        <summary class="tb tb-ghost">菜单</summary>
+        <div class="system-menu-popover">
+          <button type="button" :disabled="busy" @click="$emit('export-save')">保存进度</button>
+          <button type="button" :disabled="busy" @click="$emit('import-save')">读取存档</button>
+          <button type="button" :disabled="busy" @click="$emit('refresh')">同步状态</button>
+        </div>
+      </details>
     </div>
+
     <input
       ref="saveFileEl"
       class="save-file"
@@ -57,31 +60,26 @@ const props = defineProps({
   npcRuntime: { type: String, default: 'scripted' }
 })
 
-defineEmits([
-  'export-save',
-  'import-save',
-  'import-file',
-  'refresh'
-])
+defineEmits(['export-save', 'import-save', 'import-file', 'refresh'])
 
 const { isMuted, currentVolume, bgmPlaying, toggleMute, setVolume, startFieldAudio } = useAudio()
 
 const audioLabel = computed(() => {
-  if (isMuted.value) return '恢复'
-  return bgmPlaying.value ? '声景' : '开启声景'
+  if (isMuted.value) return '恢复声音'
+  return bgmPlaying.value ? '声音' : '开启声音'
 })
 
 const audioTitle = computed(() => {
   if (isMuted.value) return '恢复音乐和环境声'
-  return bgmPlaying.value ? '静音' : '开启清晨音乐和细雨环境声'
+  return bgmPlaying.value ? '静音' : '开启音乐和环境声'
 })
 
 const npcRuntime = computed(() => ['scripted', 'hybrid', 'agent'].includes(props.npcRuntime) ? props.npcRuntime : 'scripted')
-const runtimeLabel = computed(() => ({ scripted: '固定 NPC', hybrid: '混合 NPC', agent: '智能体 NPC' })[npcRuntime.value])
+const runtimeLabel = computed(() => ({ scripted: '离线', hybrid: '混合', agent: '智能' })[npcRuntime.value])
 const runtimeTitle = computed(() => ({
-  scripted: '完全离线：规则、记忆和人工对话驱动',
-  hybrid: '关键剧情固定，普通表达可使用大模型',
-  agent: '大模型可提出意图，世界结果仍由规则校验'
+  scripted: '固定剧情与规则驱动，无需模型 API',
+  hybrid: '关键剧情固定，普通表达可使用模型',
+  agent: '模型提出意图，世界结果仍由规则校验'
 })[npcRuntime.value])
 
 async function onAudioClick() {
@@ -103,164 +101,103 @@ async function onAudioClick() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.55rem;
-  flex-wrap: wrap;
+  gap: 0.7rem;
 }
 
-.field-title {
-  flex: 0 0 auto;
-}
-
+.field-title { min-width: 0; }
 .field-kicker {
-  margin: 0 0 0.1rem;
+  margin: 0 0 0.08rem;
+  color: #f6d36e;
   font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  color: var(--sao-gold);
-  font-weight: 700;
-  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 0.1em;
 }
-
 .field-title h2 {
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  background: linear-gradient(110deg, #fff7df 0%, #ffe2a3 55%, #9bd5d7 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #fff7df;
+  font-size: 1rem;
+  line-height: 1.1;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 0.42rem;
 }
 
-.save-file {
-  display: none;
-}
-
-/* Toolbar buttons */
-.tb {
-  font-size: 0.74rem;
-  padding: 0.36rem 0.6rem;
-  border-radius: 8px;
-  border: 1px solid var(--sao-border-dim);
-  background: rgba(67, 51, 31, 0.55);
-  color: var(--ink);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
-  will-change: transform;
-}
-
-.tb:hover:not(:disabled) {
-  background: rgba(255, 239, 198, 0.12);
-  border-color: var(--sao-border);
-  box-shadow: var(--sao-glow);
-}
-
-.tb:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.tb:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.tb-ghost {
-  background: rgba(43, 38, 25, 0.54);
-}
-
-.audio-cluster {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.32rem;
-}
-
-.tb-primary {
-  background: linear-gradient(180deg, #c98242, #9f5b35);
-  border-color: rgba(255, 226, 163, 0.42);
-  color: #fff;
-  font-weight: 600;
-}
-
-.tb-primary:hover:not(:disabled) {
-  border-color: rgba(255, 226, 163, 0.78);
-  box-shadow: 0 0 18px rgba(241, 199, 107, 0.28);
-}
-
-.story-progress-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2rem;
-  padding: 0 0.65rem;
-  border: 1px solid rgba(253, 224, 71, 0.32);
-  border-radius: 999px;
-  color: #fde68a;
-  background: rgba(253, 224, 71, 0.08);
-  font-size: 0.72rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.audio-volume {
-  width: 4.6rem;
-  accent-color: var(--sao-gold);
-}
-
-.btn-icon {
-  width: 0.85rem;
-  height: 0.85rem;
-  flex: 0 0 auto;
-}
-
-@media (max-width: 900px) {
-  .field-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .header-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .save-action,
-  .sync-action,
-  .audio-volume {
-    display: none;
-  }
-
-  .tb-primary {
-    flex: 0 0 auto;
-    min-width: 7rem;
-    justify-content: center;
-  }
-}
 .runtime-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.34rem;
-  padding: 0.3rem 0.52rem;
+  gap: 0.32rem;
+  padding: 0.28rem 0.48rem;
   border-radius: 999px;
-  color: #dbeafe;
-  background: rgba(30, 64, 175, 0.16);
-  border: 1px solid rgba(125, 211, 252, 0.2);
-  font-size: 0.68rem;
+  color: #dff8ff;
+  background: rgba(8, 36, 46, 0.62);
+  border: 1px solid rgba(125, 211, 252, 0.26);
+  font-size: 0.66rem;
   font-weight: 900;
 }
-.runtime-badge i { width: 0.42rem; height: 0.42rem; border-radius: 50%; background: #7dd3fc; box-shadow: 0 0 8px rgba(125, 211, 252, 0.7); }
-.runtime-badge.runtime-hybrid { color: #fef3c7; border-color: rgba(253, 224, 71, 0.28); }
-.runtime-badge.runtime-hybrid i { background: #fde047; box-shadow: 0 0 8px rgba(253, 224, 71, 0.7); }
-.runtime-badge.runtime-agent { color: #dcfce7; border-color: rgba(74, 222, 128, 0.3); }
-.runtime-badge.runtime-agent i { background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, 0.7); }
+.runtime-badge i {
+  width: 0.38rem;
+  height: 0.38rem;
+  border-radius: 50%;
+  background: #7dd3fc;
+  box-shadow: 0 0 8px rgba(125, 211, 252, 0.7);
+}
+.runtime-hybrid i { background: #f6d36e; }
+.runtime-agent i { background: #a78bfa; }
 
+.tb {
+  min-height: 2rem;
+  padding: 0.32rem 0.58rem;
+  border-radius: 7px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.tb-ghost {
+  color: #fff7df;
+  background: rgba(23, 29, 29, 0.62);
+  border: 1px solid rgba(255, 239, 198, 0.18);
+}
+.btn-icon { width: 0.85rem; height: 0.85rem; margin-right: 0.2rem; vertical-align: -0.12rem; }
+.audio-cluster { display: flex; align-items: center; gap: 0.32rem; }
+.audio-volume { width: 4.5rem; accent-color: #f6d36e; }
+
+.system-menu { position: relative; }
+.system-menu summary { list-style: none; cursor: pointer; display: grid; place-items: center; }
+.system-menu summary::-webkit-details-marker { display: none; }
+.system-menu[open] summary { border-color: rgba(246, 211, 110, 0.54); }
+.system-menu-popover {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  z-index: 90;
+  width: 9.5rem;
+  display: grid;
+  gap: 0.32rem;
+  padding: 0.48rem;
+  border-radius: 9px;
+  color: #fff7df;
+  background: rgba(8, 13, 20, 0.96);
+  border: 1px solid rgba(255, 239, 198, 0.22);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.36);
+}
+.system-menu-popover button {
+  width: 100%;
+  min-height: 2.1rem;
+  padding: 0.38rem 0.55rem;
+  text-align: left;
+  color: #fff7df;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 239, 198, 0.14);
+}
+.save-file { display: none; }
+
+@media (max-width: 760px) {
+  .field-header { justify-content: flex-end; }
+  .field-title, .audio-volume, .runtime-badge { display: none; }
+  .header-actions { width: auto; }
+}
 </style>

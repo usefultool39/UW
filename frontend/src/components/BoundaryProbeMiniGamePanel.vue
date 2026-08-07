@@ -110,7 +110,7 @@ const stances = [
     requiresChoice: 'use_alice_marked_record',
     choiceIds: ['use_alice_marked_record'],
     label: '按爱丽丝昨天圈出的记录对照静默线',
-    hint: '把 Day 1 共同记录变成今天的现场判断，让她看到你没有忘记。'
+    hint: '把 第一天的共同记录变成今天的现场判断，让她看到你没有忘记。'
   },
   {
     id: 'hidden_note',

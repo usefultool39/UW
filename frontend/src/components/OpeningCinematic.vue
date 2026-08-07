@@ -4,26 +4,26 @@
       <div class="opening-bg" aria-hidden="true" />
       <div class="opening-rain" aria-hidden="true" />
       <div class="opening-copy">
-        <p class="opening-kicker">UNDERWORLD · 分支记录 07</p>
+        <p class="opening-kicker">UNDERWORLD · 序章</p>
         <h1>卢利特村</h1>
         <p class="opening-lead">
-          你是卢利特村的见习记录员。今天原本只有天命登记与剑术练习，教会书库里却出现了一页不该存在的北境记录。
+          你将以桐人的视角回到卢利特村。巨神树下，尤吉欧仍在完成天职，爱丽丝带着午餐走来；先和他们一起过完这段平静日常。
         </p>
         <div class="opening-objective">
           <span>当前目标</span>
-          <strong>先去教会书库，确认被修改的北境记录。</strong>
+          <strong>前往巨神树伐木场，与爱丽丝和尤吉欧会合。</strong>
         </div>
         <div class="opening-actions">
           <button type="button" class="opening-primary" @click="$emit('focus-first-event')">
-            定位第一条线索
+            前往巨神树
           </button>
-          <span class="opening-action-hint">点击后会把镜头带到书库方向，接着跟随金色指引移动。</span>
+          <span class="opening-action-hint">镜头会定位到当前主线；靠近金色标记后选择行动。</span>
         </div>
       </div>
       <div class="opening-status" aria-hidden="true">
-        <span>Day 1</span>
+        <span>清晨</span>
         <span>细雨</span>
-        <span>卢利特村广场</span>
+        <span>卢利特村</span>
       </div>
     </section>
   </Transition>
@@ -56,7 +56,7 @@ defineEmits(['focus-first-event', 'skip'])
   background:
     linear-gradient(90deg, rgba(6, 10, 18, 0.88) 0%, rgba(6, 10, 18, 0.48) 48%, rgba(6, 10, 18, 0.16) 100%),
     radial-gradient(circle at 74% 38%, rgba(246, 211, 110, 0.18), transparent 28%),
-    url('/assets/game/field-bg-tv-v3.jpg') center / cover no-repeat;
+    url('/assets/runtime/keyart/village-desktop.png') center / cover no-repeat;
   filter: saturate(1.06) contrast(1.04);
   transform: scale(1.04);
   animation: opening-drift 8s ease-out both;
@@ -212,7 +212,7 @@ defineEmits(['focus-first-event', 'skip'])
   .opening-bg {
     background:
       linear-gradient(180deg, rgba(6, 10, 18, 0.16) 0%, rgba(6, 10, 18, 0.88) 72%),
-      url('/assets/game/field-bg-tv-v3.jpg') center / cover no-repeat;
+      url('/assets/runtime/keyart/village-desktop.png') center / cover no-repeat;
   }
 
   .opening-copy h1 {

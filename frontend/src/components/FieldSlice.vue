@@ -28,13 +28,12 @@
     <div class="playfield-shell">
       <!-- Player HUD (top-left overlay) -->
       <PlayerHUD :sim-state="simState" :scene-label="sceneLabel" />
-      <LoopRibbon :sim-state="simState" :story-events="storyEvents" :npc-runtime="npcRuntime" />
 
       <Transition name="brief-fade">
         <section v-if="openingBriefVisible" class="opening-brief" role="status">
-          <div class="brief-kicker">第一天 · 清晨</div>
-          <h3>细雨停在村道边</h3>
-          <p>教会书库里出现了一页被改写的记录。先确认事实，再决定是否告诉爱丽丝和尤吉欧。</p>
+          <div class="brief-kicker">清晨 · 细雨</div>
+          <h3>巨神树下的午餐约定</h3>
+          <p>尤吉欧还在完成今天的天职，爱丽丝已经带着午餐出发。先去巨神树与他们会合。</p>
           <div class="brief-actions">
             <button type="button" @click="focusFirstStoryEvent">查看线索</button>
             <button type="button" class="brief-ghost" @click="openingBriefDismissed = true">开始行动</button>
@@ -78,12 +77,6 @@
         @open-event="openRecommendedStoryEvent"
         @open-interact="openInteractPanel"
       />
-
-      <!-- Bottom chat strip -->
-      <div class="chat-strip">
-        <span>系统</span>
-        WASD / 方向键移动。跟随金色指引，靠近目标后按互动按钮。
-      </div>
 
       <!-- Bottom hotbar -->
       <Hotbar :busy="busy" :has-events="!!storyEvents.length" :day-gate="dayGateStatus" @action="onHotbarAction" />
@@ -226,7 +219,6 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import FieldHeader from './FieldHeader.vue'
 import PlayerHUD from './PlayerHUD.vue'
-import LoopRibbon from './LoopRibbon.vue'
 import FieldMap from './FieldMap.vue'
 import QuestTracker from './QuestTracker.vue'
 import Hotbar from './Hotbar.vue'

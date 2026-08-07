@@ -71,7 +71,7 @@
           <p v-if="!monthWeeks.length" class="journal-empty">月度路线还在同步。完成当前关键事件后，这里会显示后续目标。</p>
           <template v-else>
             <div class="month-current">
-              <span>Day {{ monthCurrent.day || 1 }}</span>
+              <span>第 {{ monthCurrent.day || 1 }} 天</span>
               <strong>{{ monthCurrent.endingLabel }}</strong>
               <p>{{ monthCurrent.endingNote }}</p>
             </div>

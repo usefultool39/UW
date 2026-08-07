@@ -6,21 +6,21 @@ export const MAP_DEFINITIONS = {
     label: '卢利特村外野',
     regionId: 'novice_village',
     mode: 'field',
-    background: '/assets/game/field-bg-tv-v3.jpg'
+    background: '/assets/runtime/keyart/village-desktop.png'
   },
   north_boundary_stub: {
     id: 'north_boundary_stub',
     label: '北境边界',
     regionId: 'novice_village',
     mode: 'field',
-    background: '/assets/game/field-bg-tv-v3.jpg'
+    background: '/assets/runtime/keyart/village-desktop.png'
   }
 }
 
 export const SCENE_DEFINITIONS = {
   reading_hall: { id: 'reading_hall', mapId: 'novice_open', regionId: 'novice_village', role: 'explore', regionType: 'interact', roleLabel: '探索区', zoneColor: 0x7dd3fc, label: '教会回廊', playMode: 'field', status: 'open' },
   church_library: { id: 'church_library', mapId: 'novice_open', regionId: 'novice_village', role: 'study', regionType: 'interact', roleLabel: '书库研读', zoneColor: 0x60a5fa, label: '教会书库', playMode: 'field', status: 'open' },
-  home_hearth: { id: 'home_hearth', mapId: 'novice_open', regionId: 'novice_village', role: 'rest', regionType: 'rest', roleLabel: '休息区', zoneColor: 0xf59e0b, label: '记录员小屋', playMode: 'field', status: 'open' },
+  home_hearth: { id: 'home_hearth', mapId: 'novice_open', regionId: 'novice_village', role: 'rest', regionType: 'rest', roleLabel: '休息区', zoneColor: 0xf59e0b, label: '村中住处', playMode: 'field', status: 'open' },
   village_square: { id: 'village_square', mapId: 'novice_open', regionId: 'novice_village', role: 'social', regionType: 'interact', roleLabel: '村内交流', zoneColor: 0x34d399, label: '卢利特村广场', playMode: 'field', status: 'open' },
   teleport_plaza: { id: 'teleport_plaza', mapId: 'novice_open', regionId: 'novice_village', role: 'travel', regionType: 'travel', roleLabel: '传送阵', zoneColor: 0x8b5cf6, label: '传送阵广场', playMode: 'field', status: 'open' },
   west_fields: { id: 'west_fields', mapId: 'novice_open', regionId: 'novice_village', role: 'explore', regionType: 'explore', roleLabel: '探索区', zoneColor: 0x84cc16, label: '西侧田野', playMode: 'field', status: 'open' },

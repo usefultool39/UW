@@ -1,7 +1,7 @@
 import { DEFAULT_MAP_ID, getSceneLabel as getRegisteredSceneLabel, getWorldBackgroundAsset } from './sceneRegistry.js'
 export { MAP_DEFINITIONS, SCENE_DEFINITIONS, SCENE_TRANSITION_BLUEPRINTS } from './sceneRegistry.js'
 
-export const GAME_CHAPTER_INFO = { kicker: 'UNDERWORLD 分支篇 · 第一章', title: '卢利特村' }
+export const GAME_CHAPTER_INFO = { kicker: 'UNDERWORLD · 序章', title: '卢利特村' }
 export const WORLD_ASSETS = { background: getWorldBackgroundAsset(DEFAULT_MAP_ID) }
 
 export const AGENT_ART_MODES = {
@@ -11,7 +11,7 @@ export const AGENT_ART_MODES = {
 
 export const AGENTS = {
   player: {
-    label: '见习记录员',
+    label: '桐人',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_player_pixel',
     asset: '/assets/game/player-token-tv.png',
@@ -68,7 +68,7 @@ export const AGENTS = {
     animations: { idle: null, walk: null }
   },
   kirito: {
-    label: '见习记录员',
+    label: '桐人',
     artMode: AGENT_ART_MODES.proceduralPixel,
     textureKey: 'char_kirito_pixel',
     haloColor: 0x5ecfff,
