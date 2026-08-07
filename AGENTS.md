@@ -1,63 +1,34 @@
-# AGENTS.md — UW 项目协作入口
+# UW 协作入口
 
-本文件适用于所有进入仓库的人类开发者和智能体。
+进入仓库后只需先读四份文件：
 
-## 开始前必须阅读
+1. `docs/PROJECT.md`
+2. `docs/planning/CURRENT_STATUS.md`
+3. `docs/planning/NEXT_PHASE.md`
+4. `docs/art/ASSET_REVIEW.md`
 
-1. `docs/delivery/PROJECT_HANDOFF_20260807.md`
-2. `docs/delivery/ASSET_HANDOFF_SNAPSHOT_20260807.md`
-3. `docs/README.md`
-4. `docs/product/PRODUCT_DIRECTION.md`
-5. `docs/planning/CURRENT_STATUS.md`
-6. `docs/product/PRODUCT_BRIEF.md`
-7. `docs/planning/NEXT_PHASE.md`
-8. `docs/delivery/MATERIALS_REWORK_HANDOFF_20260807.md`
-9. `docs/architecture/SYSTEM_OVERVIEW.md`
-10. `docs/delivery/DEVELOPMENT_PROCESS.md`
-11. `docs/delivery/DEFINITION_OF_DONE.md`
+## 当前目标
 
-执行 UW-UPGRADE-1.0 或素材任务时还必须阅读：
-
-- `docs/planning/UW_UPGRADE_1_0_EXECUTION_INDEX.md`
-- `materials/UW_UPGRADE_1_0_ASSET_CATALOG.md`
-- `materials/UW_UPGRADE_1_0_ASSET_AGENT_PROMPT.md`
-
-## 当前唯一方向
-
-按 `docs/product/PRODUCT_DIRECTION.md` 建设大众化、可扩展的 2D RPG。当前先完成正典兼容的 Pre-Capture 垂直切片；不要因为 `docs/archive/` 的旧 TODO 扩写无关内容，也不要把未经审核的素材直接接入运行时。
+完成爱丽丝被带走前的可玩纵切片。玩家身份统一为桐人；旧“见习记录员”、长期 Day 编号路线和历史升级代号只保留在 archive，不得重新带回主界面或新计划。
 
 ## 不可破坏的边界
 
-- FastAPI 后端是位置、时间、资源、flag、关系、剧情闸和永久记忆的权威。
-- scripted NPC 是无 API 的完整产品基线；hybrid/agent 必须可回退。
-- 被拒绝的行动不得部分写入任何状态。
-- `runs/`、`data/memory/`、`frontend/dist/` 是运行产物，不是配置源。
-- 不 reset、覆盖或删除未提交的既有改动；先检查 `git status`、`git diff`、`git log`。
-- 优先小步兼容重构，不一次性重写 `FieldSlice.vue`、Phaser scene 或 `npc_intents.py`。
+- FastAPI 是位置、时间、资源、flag、关系、剧情闸和永久记忆的权威。
+- scripted NPC 是无模型 API 时的完整产品基线；hybrid/agent 必须可回退。
+- 被拒绝的行动不得部分写入状态。
+- `runs/`、`data/memory/`、`frontend/dist/` 是运行产物。
+- 不直接向 `main` 堆改动；使用短分支、清晰提交和可回滚 PR。
+- 未经来源、技术、内容和游戏内验收的素材不得复制到 runtime。
 
-## 常用入口
+## 素材规则
 
-Windows：
+日常协作只使用 `materials/inbox`、`materials/review`、`materials/approved`、`materials/archive` 四个位置。新沟通使用可读名称，不再在标题和说明中堆叠升级代号或连续版本号；机器追溯 ID 仅保留在 `REQUESTS.csv`、`MANIFEST.csv` 和 sidecar 中。
 
-```powershell
-.\启动全部项目.bat
-# 或
-.\start.bat
-```
-
-macOS / Git Bash 质量门：
+## 完成前
 
 ```bash
-./启动游戏.command              # macOS 启动游戏
-./启动游戏.command --setup-only # 只准备环境
-./scripts/quality.sh            # 后端 + 前端单测 + build + diff check
-cd frontend && npm run test:e2e
+./scripts/quality.sh
+./scripts/release.sh   # 只有准备发布时运行
 ```
 
-## 修改完成后
-
-- 测试通过。
-- 用户可见变化更新 `CHANGELOG.md`。
-- 状态变化更新 `CURRENT_STATUS.md`。
-- 下一阶段变化只更新 `NEXT_PHASE.md`。
-- 重要架构决策新增 ADR，不覆盖历史记录。
+用户可见变化更新 `CHANGELOG.md`；真实完成度只更新 `CURRENT_STATUS.md`；下一步只更新 `NEXT_PHASE.md`；架构所有权变化使用 ADR。

@@ -1,5 +1,35 @@
 # Changelog
 
+## [Unreleased] 2026-08-07 - 收束版
+
+### Changed
+
+- 统一产品入口为桐人视角的爱丽丝被带走前主线；首屏、HUD、任务和人物显示不再暴露旧“见习记录员”身份。
+- 收束地图 UI：移除重复的常驻循环教学，压缩任务面板，把存档、读档和同步合并到菜单。
+- 开场停用来源不清的旧背景，改用已登记的村庄 runtime 关键图。
+- 将带日期的交接、升级计划和旧素材指南移入 archive；新增单一项目总览与文件级素材审查。
+- 将开发质量门与发布门禁拆分；后端测试只发现 `backend/tests`，旧 Day 长线 E2E 移入 archive。
+- 未登记工作文件从 active inbox 清除；缺 sidecar 的 SFX、不完整支持 NPC、延期 VFX/UI 扩展和错误抓捕关键图进入隔离区。
+- 删除可由 Git 历史恢复的旧音频、旧角色、旧场景和旧地图中间版本，`materials/` 从约 1.1 GB 收束到约 435 MB。
+- 工程版本收束为 `0.5.0`，玩家界面不显示构建号或素材版本号。
+
+### Added
+
+- `docs/PROJECT.md`：产品背景、范围、架构、设计原则、GitHub 流程和收束计划。
+- `docs/art/ASSET_REVIEW.md`：当前素材可用性、修改意见和下一批详细需求。
+- `materials/README.md`：简化后的 inbox / review / approved / archive 工作流。
+- `scripts/release.sh`：发布素材、真人盲测和当前 E2E 的严格门禁。
+- `frontend/e2e/ui-smoke.spec.js`：桌面与触控尺寸的当前 UI 验证。
+
+### Verification
+
+- 素材登记：通过，40 个请求；runtime hash 可追溯。
+- Runtime 规格：通过，0 issues。
+- 后端：232 passed；保留 1 个 Starlette/httpx 第三方弃用警告。
+- 前端单测：16 passed；production build 通过；Phaser 大 chunk 警告保持不变。
+- Playwright：4 passed，覆盖 N01-N10 连续主线、触控首个互动、桌面和移动 UI。
+- 发布准备：`story=ready`、`materials=pending`；真人盲测 `0/3`。
+
 ## [Unreleased] 2026-08-07 - Pre-Capture runtime contract
 
 ### Added

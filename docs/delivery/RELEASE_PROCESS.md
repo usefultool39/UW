@@ -14,7 +14,7 @@
 7. 验证旧存档导入和新存档导出。
 8. 干净 macOS 环境运行 `启动游戏.command --setup-only` 后启动。
 9. 记录已知问题、证据和回滚 commit。
-10. 创建 annotated tag，例如 `v0.4.0-preview.1`。
+10. 创建 annotated tag，例如 `v0.5.0`。
 
 ## 回滚
 
