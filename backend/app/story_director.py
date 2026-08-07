@@ -9,6 +9,13 @@ from .relationship import apply_relationship_effects, ensure_relationships
 from .story_catalog import default_catalog_path, load_main_nodes
 
 
+TERMINAL_CHAPTER_ENDINGS = frozenset({"alice_captured", "precapture_alice_captured"})
+
+
+def chapter_is_terminal(state: WorldState) -> bool:
+    return state.chapter_ending_id in TERMINAL_CHAPTER_ENDINGS
+
+
 def default_events_path(project_root: Path, chapter_id: str = "chapter_01") -> Path:
     suffix = chapter_id.replace("chapter_", "chapter_")
     if suffix == "chapter_01":
@@ -16,17 +23,31 @@ def default_events_path(project_root: Path, chapter_id: str = "chapter_01") -> P
     return project_root / "data" / "story" / f"events_{chapter_id}.json"
 
 
+def precapture_events_path(project_root: Path, chapter_id: str = "chapter_01") -> Path:
+    if chapter_id == "chapter_01":
+        return project_root / "data" / "story" / "events_precapture_chapter_01.json"
+    return project_root / "data" / "story" / f"events_precapture_{chapter_id}.json"
+
+
 def load_story_events(project_root: Path, chapter_id: str = "chapter_01") -> list[dict[str, Any]]:
-    path = default_events_path(project_root, chapter_id)
-    if not path.is_file():
-        return []
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    events = raw.get("events") if isinstance(raw, dict) else raw
-    return [e for e in events if isinstance(e, dict)] if isinstance(events, list) else []
+    events: list[dict[str, Any]] = []
+    for path in (default_events_path(project_root, chapter_id), precapture_events_path(project_root, chapter_id)):
+        if not path.is_file():
+            continue
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        rows = raw.get("events") if isinstance(raw, dict) else raw
+        if isinstance(rows, list):
+            events.extend(e for e in rows if isinstance(e, dict))
+    return events
 
 
 def _flag_value(state: WorldState, key: str) -> int:
     return int((state.flags or {}).get(key, 0))
+
+
+def _is_precapture_event(event: dict[str, Any]) -> bool:
+    event_id = str(event.get("id") or "")
+    return bool(event.get("precapture_key_node") or event.get("precapture_act") or event_id.startswith("ch1pc_"))
 
 
 def _matches_required_flags(state: WorldState, required: dict[str, Any] | None) -> bool:
@@ -106,10 +127,17 @@ def _matches_conditions(state: WorldState, conditions: dict[str, Any] | None) ->
 
 
 def event_is_available(state: WorldState, event: dict[str, Any]) -> bool:
+    if chapter_is_terminal(state):
+        return False
     if event.get("chapter") and event.get("chapter") != state.chapter_id:
         return False
     event_id = str(event.get("id") or "")
     if not event_id:
+        return False
+    precapture_event = _is_precapture_event(event)
+    if _flag_value(state, "precapture_mode") >= 1 and not precapture_event:
+        return False
+    if _flag_value(state, "legacy_story_mode") >= 1 and precapture_event:
         return False
     if event_id in (state.completed_event_ids or []) and not event.get("repeatable"):
         return False
@@ -258,6 +286,8 @@ def choose_event(
     effects = choice.get("effects") if isinstance(choice.get("effects"), dict) else {}
     next_state = ensure_relationships(state)
     flags = _apply_flags(next_state.flags or {}, effects)
+    if not _is_precapture_event(event):
+        flags["legacy_story_mode"] = 1
     next_state = next_state.model_copy(update={"flags": flags})
 
     next_state, relationship_changes = apply_relationship_effects(
@@ -288,6 +318,10 @@ def choose_event(
             "unlocked_scenes": unlocked,
         }
     )
+
+    authored_time_band = event.get("advance_to_time_band")
+    if authored_time_band in {"morning", "afternoon", "evening", "night"}:
+        next_state = next_state.model_copy(update={"time_band": authored_time_band})
 
     memory_writes = _memory_rows(event_id=event_id, day=next_state.day, effects=effects)
     promises = effects.get("promises") or {}
@@ -324,7 +358,10 @@ def day_gate_status(project_root: Path, state: WorldState, day: int | None = Non
     tests/content. Day 1-3 are explicitly gated by the new data contract.
     """
     current_day = int(day if day is not None else state.day)
-    gates = load_day_gates(project_root)
+    catalog = load_main_nodes(default_catalog_path(project_root))
+    gate_key = "precapture_day_gates" if _flag_value(state, "precapture_mode") >= 1 else "day_gates"
+    raw_gates = catalog.get(gate_key) if isinstance(catalog, dict) else {}
+    gates = raw_gates if isinstance(raw_gates, dict) else {}
     gate = gates.get(str(current_day))
     if not isinstance(gate, dict):
         return {

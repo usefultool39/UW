@@ -35,11 +35,26 @@ if [ "$RUN_SETUP" -eq 1 ]; then
   ./启动游戏.command --setup-only
 fi
 
-PYTHON="$ROOT/backend/.venv/bin/python"
-[ -x "$PYTHON" ] || { echo "缺少后端虚拟环境，请先运行 ./启动游戏.command --setup-only" >&2; exit 1; }
+if [ -z "${PYTHON_BIN:-}" ]; then
+  for candidate in \
+    "$ROOT/backend/.venv/bin/python" \
+    "$ROOT/backend/.venv/python.exe" \
+    "$ROOT/backend/.venv/Scripts/python.exe" \
+    "$ROOT/.conda/uw-runtime/python.exe"; do
+    if [ -x "$candidate" ]; then
+      PYTHON_BIN="$candidate"
+      break
+    fi
+  done
+fi
+PYTHON="$PYTHON_BIN"
+[ -x "$PYTHON" ] || { echo "缺少后端 Python 环境，请先运行 ./启动游戏.command --setup-only，或设置 PYTHON_BIN" >&2; exit 1; }
 
 echo "[盲测预检] 素材台账、来源文件与 runtime hash"
 "$PYTHON" materials/tools/check_materials.py
+
+echo "[盲测预检] Pre-Capture readiness report"
+"$PYTHON" materials/tools/check_precapture_readiness.py
 
 echo "[盲测预检] 真人记录状态（pending 是允许状态，不等于已经完成）"
 "$PYTHON" scripts/check_playtest_round.py

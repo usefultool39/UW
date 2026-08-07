@@ -1,0 +1,91 @@
+{
+  "schema_version": "v003",
+  "request_id": "VIS-ENV-001",
+  "created_at": "2026-08-07",
+  "scene_size_px": {
+    "w": 1920,
+    "h": 1080
+  },
+  "alpha_mode": "RGB (foreground overlay may be added separately as RGBA)",
+  "scenes": [
+    {
+      "id": "church_library",
+      "label_zh": "村西书库",
+      "label_en": "village west library / reading desk",
+      "file": "VIS-ENV-001_church_library_v003.png",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB",
+      "intended_use": "activity panel / chapter transition"
+    },
+    {
+      "id": "gigas_clearing",
+      "label_zh": "古誓树清场",
+      "label_en": "ancient gigas cedar clearing",
+      "file": "VIS-ENV-001_gigas_clearing_v003.png",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB",
+      "intended_use": "activity panel / chapter transition"
+    },
+    {
+      "id": "home_hearth",
+      "label_zh": "家中炉火",
+      "label_en": "village home interior with hearth",
+      "file": "VIS-ENV-001_home_hearth_v003.png",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB",
+      "intended_use": "activity panel / chapter transition"
+    },
+    {
+      "id": "north_gate",
+      "label_zh": "北境边门",
+      "label_en": "north boundary stone gate",
+      "file": "VIS-ENV-001_north_gate_v003.png",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB",
+      "intended_use": "activity panel / chapter transition"
+    },
+    {
+      "id": "forest_path",
+      "label_zh": "森林路径",
+      "label_en": "dense forest path with unnatural silence line",
+      "file": "VIS-ENV-001_forest_path_v003.png",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB",
+      "intended_use": "activity panel / chapter transition"
+    },
+    {
+      "id": "end_mountains_cave",
+      "label_zh": "终北山洞",
+      "label_en": "end-mountains cave / boundary approach",
+      "file": "VIS-ENV-001_end_mountains_cave_v003.png",
+      "size_px": {
+        "w": 1920,
+        "h": 1080
+      },
+      "mode": "RGB",
+      "intended_use": "activity panel / chapter transition"
+    }
+  ],
+  "no_content": "characters, text, signs with words, UI, watermarks, copyrighted composition",
+  "safe_areas": {
+    "desktop_center_horizontal_pct": 60,
+    "mobile_center_horizontal_pct": 80,
+    "interactive_center_vertical_pct": 50,
+    "note": "middle/lower interaction area preserved; desktop crop 16:9, mobile 390x844 9:19.5 retains center"
+  }
+}

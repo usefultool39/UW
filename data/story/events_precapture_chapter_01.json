@@ -1,0 +1,271 @@
+{
+  "v": 1,
+  "chapter": "chapter_01",
+  "source_request_id": "NAR-PRECAP-001",
+  "source_version": "v002",
+  "events": [
+    {
+      "id": "ch1pc_n01_rulid_daily",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_0",
+      "precapture_key_node": true,
+      "authored_time_band": "morning",
+      "advance_to_time_band": "afternoon",
+      "title": "卢利特村三人日常",
+      "description": "巨神树伐木场的工作还没结束，爱丽丝带着食物来到树荫下。尤吉欧关心今天的进度，爱丽丝更关心他的心情。",
+      "trigger": {
+        "day_min": 1,
+        "day_max": 1,
+        "time_bands": ["morning"],
+        "forbidden_flags": {"d1_bond": 1}
+      },
+      "location": {"scene_id": "gigas_clearing", "tile_x": 54, "tile_y": 22, "canonical_location": "卢利特村巨神树伐木场"},
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "warm_bond",
+          "label": "先听尤吉欧说伐木进度",
+          "hint": "让尤吉欧先把今天的压力说完，再和爱丽丝一起收拾午餐。",
+          "result_text": "尤吉欧把斧柄放回肩上，爱丽丝把食物分成三份。你们没有急着赶路，但都记住了今天要一起做完的事。",
+          "effects": {
+            "flags": {"precapture_mode": 1, "d1_bond": 1},
+            "relationship": {"eugeo.trust": 3, "alice.trust": 1},
+            "memory": {
+              "alice": {"type": "precapture_choice", "summary": "第一天，玩家先听尤吉欧讲完伐木进度，再和爱丽丝一起安排午餐。", "weight": 2},
+              "eugeo": {"type": "precapture_choice", "summary": "第一天，玩家把尤吉欧的天职压力当作三人日常的一部分认真听完。", "weight": 2}
+            }
+          }
+        },
+        {
+          "id": "neutral_bond",
+          "label": "听完两人再开口",
+          "hint": "先观察两人的分歧，不替任何一方抢答。",
+          "result_text": "你让两个人把话说完。尤吉欧确认进度，爱丽丝确认他没有逞强，午餐在安静的笑声里开始。",
+          "effects": {
+            "flags": {"precapture_mode": 1, "d1_bond": 2},
+            "relationship": {"eugeo.trust": 1, "alice.trust": 1},
+            "memory": {
+              "alice": {"type": "precapture_choice", "summary": "第一天，玩家先观察尤吉欧和爱丽丝的关心，再决定如何加入谈话。", "weight": 2},
+              "eugeo": {"type": "precapture_choice", "summary": "第一天，玩家让两位童年伙伴先把话说完。", "weight": 2}
+            }
+          }
+        },
+        {
+          "id": "distant_bond",
+          "label": "先去教会书库看看旧记录",
+          "hint": "把注意力移向村子的规则与记录，也会让爱丽丝更愿意和你分享发现。",
+          "result_text": "你先去书库门口看了一眼旧记录。爱丽丝跟了上来，尤吉欧则把午餐留在树下等你们回来。",
+          "effects": {
+            "flags": {"precapture_mode": 1, "d1_bond": 3},
+            "relationship": {"eugeo.tension": 1, "alice.trust": 2},
+            "memory": {
+              "alice": {"type": "precapture_choice", "summary": "第一天，玩家先跟随爱丽丝去看教会书库的旧记录。", "weight": 2},
+              "eugeo": {"type": "precapture_choice", "summary": "第一天，玩家把对规则的好奇放在了伐木进度之前。", "weight": 2}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ch1pc_n02_gigas_calling",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_0",
+      "precapture_key_node": true,
+      "authored_time_band": "afternoon",
+      "advance_to_time_band": "evening",
+      "title": "尤吉欧的巨神树天职",
+      "description": "午后的风穿过巨神树清场。尤吉欧担心今天的进度落后，桐人需要决定如何和他一起挥斧。",
+      "trigger": {
+        "day_min": 1,
+        "day_max": 1,
+        "time_bands": ["afternoon"],
+        "required_flags": {"d1_bond": 1},
+        "forbidden_flags": {"d2_calling_pace": 1}
+      },
+      "location": {"scene_id": "gigas_clearing", "tile_x": 54, "tile_y": 22, "canonical_location": "卢利特村巨神树伐木场"},
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {
+          "id": "steady_pace",
+          "label": "按尤吉欧的节奏挥斧",
+          "hint": "稳定完成天职，把信任放在今天的节奏里。",
+          "result_text": "你们把每一轮挥斧都落在同一个节拍上。巨神树没有立刻改变，但尤吉欧不再一个人扛着进度。",
+          "effects": {"flags": {"d2_calling_pace": 1}, "relationship": {"eugeo.trust": 2, "eugeo.affinity": 2}, "memory": {"eugeo": {"type": "precapture_choice", "summary": "第一天，玩家按尤吉欧的节奏共同完成巨神树天职。", "weight": 3}}}
+        },
+        {
+          "id": "push_pace",
+          "label": "今天多挥几下",
+          "hint": "进度更快，但体力和同伴的安全余量都会变少。",
+          "result_text": "你们多完成了几轮。尤吉欧看着斧痕点头，却也提醒你别把赶进度变成受伤的理由。",
+          "effects": {"flags": {"d2_calling_pace": 2}, "relationship": {"eugeo.affinity": 1, "eugeo.tension": 1}, "memory": {"eugeo": {"type": "precapture_choice", "summary": "第一天，玩家选择提高伐木节奏换取进度。", "weight": 3}}}
+        },
+        {
+          "id": "slow_pace",
+          "label": "问尤吉欧最近在想什么",
+          "hint": "先确认同伴的状态，再决定今天能做到哪里。",
+          "result_text": "尤吉欧承认自己最近总在想北方洞窟的传闻。你们放慢了节奏，但这句话没有被风吹走。",
+          "effects": {"flags": {"d2_calling_pace": 3}, "relationship": {"eugeo.trust": 3, "eugeo.tension": -1}, "memory": {"eugeo": {"type": "precapture_choice", "summary": "第一天，玩家先问尤吉欧的心事，再继续巨神树天职。", "weight": 3}}}
+        }
+      ]
+    },
+    {
+      "id": "ch1pc_n03_talk_index_end_mountains",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_1",
+      "precapture_key_node": true,
+      "authored_time_band": "evening",
+      "title": "三人谈及禁忌目录与尽头山脉",
+      "description": "炉边的晚餐把三个人重新聚在一起。尽头山脉的洞窟传闻摆在桌面上，尤吉欧担心禁忌目录，爱丽丝想亲眼确认。",
+      "trigger": {
+        "day_min": 1,
+        "day_max": 1,
+        "time_bands": ["evening"],
+        "required_flags": {"d2_calling_pace": 1},
+        "forbidden_flags": {"d3_talk_about_index": 1}
+      },
+      "location": {"scene_id": "home_hearth", "tile_x": 11, "tile_y": 27, "canonical_location": "卢利特村住家炉边"},
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {"id": "casual_talk", "label": "随意聊聊，暂不决定", "hint": "把今晚留给日常，明天再面对尽头山脉。", "result_text": "话题没有变成结论，但尽头山脉的名字第一次在三人之间被认真记住。", "effects": {"flags": {"d3_talk_about_index": 1}, "relationship": {"alice.trust": 1, "eugeo.trust": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第一天夜里，玩家让三人先保留日常，再记住尽头山脉的传闻。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第一天夜里，玩家没有把禁忌目录讨论变成立刻的决定。", "weight": 3}}}},
+        {"id": "deep_talk", "label": "认真讨论禁忌目录到底写了什么", "hint": "理解规则的边界，也承认规则并不能回答所有问题。", "result_text": "尤吉欧说出对禁忌目录的担心，爱丽丝则指出传闻不能替代亲眼确认。你们决定明天先准备，再看洞窟。", "effects": {"flags": {"d3_talk_about_index": 2}, "relationship": {"alice.trust": 3, "eugeo.tension": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第一天夜里，玩家认真讨论禁忌目录与尽头山脉，爱丽丝记住了这份坦白。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第一天夜里，尤吉欧说出了自己对禁忌目录的恐惧。", "weight": 3}}}},
+        {"id": "avoid_talk", "label": "换个话题，明天再说", "hint": "暂时避开争执，但两个人会各自记住你的沉默。", "result_text": "你把话题带回晚餐。尤吉欧松了口气，爱丽丝却把尽头山脉的方向又看了一眼。", "effects": {"flags": {"d3_talk_about_index": 3}, "relationship": {"alice.tension": 2, "eugeo.trust": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第一天夜里，玩家避开了禁忌目录的争论，爱丽丝记住了这份回避。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第一天夜里，玩家把禁忌目录的讨论推迟到明天。", "weight": 3}}}}
+      ]
+    },
+    {
+      "id": "ch1pc_n04_travel_to_end_mountains",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_1",
+      "precapture_key_node": true,
+      "authored_time_band": "morning",
+      "advance_to_time_band": "afternoon",
+      "title": "前往尽头山脉洞窟",
+      "description": "第二天早晨，三人从住家出发，经过北门前往尽头山脉洞窟外侧。出发前只能带走有限的食物、工具和记录。",
+      "trigger": {"day_min": 2, "day_max": 2, "time_bands": ["morning"], "required_flags": {"d3_talk_about_index": 1}},
+      "location": {"scene_id": "north_gate", "tile_x": 67, "tile_y": 24, "canonical_location": "卢利特村北门至尽头山脉洞窟外侧"},
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {"id": "pack_food", "label": "带干粮和水，也带记录本", "hint": "补足体力，并保留一份能交回村里的记录。", "result_text": "爱丽丝把食物分好，尤吉欧确认水袋，桐人把记录本放在最容易取出的地方。", "effects": {"flags": {"d4_pack_food": 1, "d4_pack_record": 1}, "relationship": {"alice.trust": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天出发前，玩家优先准备食物、水和记录本。", "weight": 2}, "eugeo": {"type": "precapture_choice", "summary": "第二天出发前，队伍先确认体力和记录都留有余量。", "weight": 2}}}},
+        {"id": "pack_tool", "label": "带麻绳和备用工具", "hint": "提高撤回时的余量，但能携带的食物会少一些。", "result_text": "尤吉欧把麻绳和备用工具系紧。爱丽丝提醒大家，准备充分不等于可以越过规则。", "effects": {"flags": {"d4_pack_tool": 1, "d4_pack_food": 1}, "relationship": {"eugeo.trust": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天出发前，玩家优先准备麻绳和备用工具。", "weight": 2}, "eugeo": {"type": "precapture_choice", "summary": "第二天出发前，尤吉欧确认了撤回所需的工具。", "weight": 2}}}},
+        {"id": "pack_record", "label": "把记录本放在最上面", "hint": "让每一步都能被复核，也为最后的告别留下选择。", "result_text": "你把记录本放在背包最上层。没人知道它最后会记录什么，但三个人都同意不凭记忆改写事实。", "effects": {"flags": {"d4_pack_record": 1, "d4_pack_tool": 1}, "relationship": {"alice.trust": 2}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天出发前，玩家把记录本放在最容易取出的地方。", "weight": 2}, "eugeo": {"type": "precapture_choice", "summary": "第二天出发前，队伍决定让记录和工具一起承担责任。", "weight": 2}}}},
+        {"id": "bring_alice_extra", "label": "给爱丽丝多带一份保暖物", "hint": "照顾同伴，也承认洞窟外侧的天气比村里更难预料。", "result_text": "你把备用保暖物递给爱丽丝。她收下后又检查了尤吉欧的手套，三人终于向北门走去。", "effects": {"flags": {"d4_pack_extra": 1, "d4_pack_record": 1}, "relationship": {"alice.trust": 2, "eugeo.trust": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天出发前，玩家为爱丽丝多准备了一份保暖物。", "weight": 2}, "eugeo": {"type": "precapture_choice", "summary": "第二天出发前，玩家没有只关注洞窟，也照顾了同行者。", "weight": 2}}}}
+      ]
+    },
+    {
+      "id": "ch1pc_n05_encounter_dark_territory_injured",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_2",
+      "precapture_key_node": true,
+      "authored_time_band": "afternoon",
+      "title": "接触暗黑界一侧的受伤者",
+      "description": "三人抵达尽头山脉洞窟外侧，在边界另一侧发现受伤的陌生存在。尤吉欧想立即撤回，爱丽丝想先确认对方是否还能得到帮助。",
+      "trigger": {"day_min": 2, "day_max": 2, "time_bands": ["afternoon"], "required_flags": {"d1_bond": 1}, "required_any_flags": {"d4_pack_food": 1, "d4_pack_tool": 1, "d4_pack_record": 1, "d4_pack_extra": 1}},
+      "location": {"scene_id": "north_gate", "tile_x": 67, "tile_y": 24, "canonical_location": "尽头山脉洞窟外侧"},
+      "participants": ["alice", "eugeo"],
+      "narrative_roles": ["injured_presence", "dark_territory_side"],
+      "choices": [
+        {"id": "cautious_approach", "label": "三人先在边界外观察", "hint": "保持距离，先确认伤势和边界，再决定是否行动。", "result_text": "你们没有贸然靠近。爱丽丝看清受伤者的状态，尤吉欧把撤回路线重新指给所有人。", "effects": {"flags": {"d5_approach": 1}, "relationship": {"eugeo.trust": 2, "alice.tension": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天，玩家先在边界外观察来自暗黑界一侧的受伤者。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第二天，玩家先确认撤回路线再面对受伤者。", "weight": 3}}}},
+        {"id": "helping_approach", "label": "三人共同尝试救助", "hint": "把帮助变成共同动作，但也会更接近规则边界。", "result_text": "你们一起伸出手，却在最后一步停住。爱丽丝看见了受伤者的呼吸，三个人都明白继续等待也有代价。", "effects": {"flags": {"d5_approach": 2}, "relationship": {"alice.trust": 2, "eugeo.tension": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天，玩家和两位同伴共同尝试帮助边界另一侧的受伤者。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第二天，玩家和尤吉欧一起面对帮助受伤者的风险。", "weight": 3}}}},
+        {"id": "observing_approach", "label": "让爱丽丝主导判断，自己退后半步", "hint": "把决定权交给最先看清受伤者的人，同时保留回撤位置。", "result_text": "你退后半步，把判断交给爱丽丝。她没有把这当成许可，只把手伸向了边界另一侧。", "effects": {"flags": {"d5_approach": 3}, "relationship": {"alice.trust": 1, "eugeo.trust": 1}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天，玩家让爱丽丝主导对受伤者的判断并保留回撤位置。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第二天，玩家没有抢走爱丽丝对受伤者的判断权。", "weight": 3}}}}
+      ]
+    },
+    {
+      "id": "ch1pc_n06_alice_crosses_boundary",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_2",
+      "precapture_key_node": true,
+      "authored_time_band": "afternoon",
+      "advance_to_time_band": "evening",
+      "title": "爱丽丝为救人触碰并越过边界",
+      "description": "爱丽丝决定救助受伤者。桐人可以伸手、出声或保持沉默，但这一刻的正典结果不会被任何选项改写。",
+      "trigger": {"day_min": 2, "day_max": 2, "time_bands": ["afternoon"], "required_flags": {"d5_approach": 1}, "forbidden_flags": {"d6_alice_crossed_instant": 1}},
+      "location": {"scene_id": "north_gate", "tile_x": 67, "tile_y": 24, "canonical_location": "尽头山脉边界"},
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {"id": "grasp_alice_arm", "label": "伸手抓住爱丽丝的手臂", "hint": "动作失败，但你没有缺席。", "result_text": "你的手只碰到爱丽丝的袖口。她仍然越过了边界，尤吉欧在身后喊出她的名字。", "effects": {"flags": {"d6_alice_crossed_instant": 1}, "relationship": {"alice.trust": 3, "eugeo.trust": 2, "alice.tension": 2}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第二天，桐人在爱丽丝越界救人时伸手阻拦但没有把她拉回。", "weight": 4}, "eugeo": {"type": "precapture_permanent", "summary": "第二天，尤吉欧记住桐人在爱丽丝越界瞬间仍在场。", "weight": 4}}}},
+        {"id": "shout_stop", "label": "喊一声“停下”", "hint": "爱丽丝听见了，但仍然选择救人。", "result_text": "你的声音穿过风。爱丽丝回头看了一眼，仍然跨过那条不该跨过的线。", "effects": {"flags": {"d6_alice_crossed_instant": 2}, "relationship": {"alice.trust": 2, "alice.tension": 3}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第二天，桐人在爱丽丝越界救人前喊她停下，但她仍选择伸手。", "weight": 4}, "eugeo": {"type": "precapture_permanent", "summary": "第二天，尤吉欧记住桐人在边界前喊出了警告。", "weight": 4}}}},
+        {"id": "keep_silent", "label": "保持沉默，把这一刻记下来", "hint": "不打断爱丽丝，也不把自己的沉默伪装成许可。", "result_text": "你没有喊停，只把爱丽丝伸手的方向记进记录本。她越过边界，尤吉欧立刻追上前半步。", "effects": {"flags": {"d6_alice_crossed_instant": 3}, "relationship": {"eugeo.trust": 1, "alice.trust": 1}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第二天，桐人在爱丽丝越界救人时保持沉默并留下记录。", "weight": 4}, "eugeo": {"type": "precapture_permanent", "summary": "第二天，尤吉吉欧记住桐人在边界前保持冷静并记录了事实。", "weight": 4}}}}
+      ]
+    },
+    {
+      "id": "ch1pc_n07_return_to_rulid",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_3",
+      "precapture_key_node": true,
+      "advance_to_time_band": "night",
+      "title": "三人返回卢利特村",
+      "description": "边界事件之后，三人沿尽头山脉外侧、森林和北门返回卢利特村。爱丽丝越界的事实跟着队伍一起沉默地回到村中。",
+      "trigger": {"day_min": 2, "day_max": 2, "time_bands": ["evening"], "required_flags": {"d6_alice_crossed_instant": 1}, "required_any_flags": {"d4_pack_food": 1, "d4_pack_tool": 1, "d4_pack_record": 1, "d4_pack_extra": 1}},
+      "location": {"scene_id": "north_gate", "tile_x": 67, "tile_y": 24, "canonical_location": "尽头山脉外侧至卢利特村北门"},
+      "participants": ["alice", "eugeo"],
+      "choices": [
+        {"id": "tell_truth_now", "label": "在北门值班棚立即说实话", "hint": "立刻上报，承担村务长可能追问的后果。", "result_text": "你在北门值班棚说出爱丽丝越界的事实。尤吉欧担心她会先被单独叫走，爱丽丝却让你把话说完。", "effects": {"flags": {"d7_return_disclosure": 1, "promise_disclosure_to_knights": 1}, "relationship": {"alice.trust": 1, "eugeo.tension": 2}, "promises": {"alice": "如果骑士来问，玩家会把自己看到的事实说完整。"}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天返回村中时，玩家在北门值班棚立即说出爱丽丝越界的事实。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第二天返回村中时，玩家选择立即上报而不是等待。", "weight": 3}}}},
+        {"id": "wait_for_alice", "label": "让爱丽丝决定何时开口", "hint": "把告知时机交给爱丽丝，但不否认事实。", "result_text": "你没有替爱丽丝决定。她在北门前停了一会儿，答应回到家人面前后亲自说明。", "effects": {"flags": {"d7_return_disclosure": 2, "promise_disclosure_to_knights": 2}, "relationship": {"alice.trust": 3, "eugeo.trust": 1}, "promises": {"alice": "玩家会尊重爱丽丝选择告知家人的时机，也不会否认已发生的事实。"}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天返回村中时，玩家把何时开口的决定交给爱丽丝。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第二天返回村中时，玩家选择让爱丽丝先决定告知时机。", "weight": 3}}}},
+        {"id": "keep_secret", "label": "三人先不说，等整合骑士自己来", "hint": "暂时保留事实，之后的宣告仍然会发生。", "result_text": "你们先回到村里，没有把消息交给值班的人。爱丽丝知道这不是否认，只是把恐惧往后推了一步。", "effects": {"flags": {"d7_return_disclosure": 3, "promise_disclosure_to_knights": 3}, "relationship": {"alice.trust": 2, "eugeo.trust": 1, "alice.tension": 1}, "promises": {"alice": "即使暂时保持沉默，玩家也不会在骑士宣告时改写自己看见的事实。"}, "memory": {"alice": {"type": "precapture_choice", "summary": "第二天返回村中时，玩家暂时没有向值班者报告爱丽丝越界。", "weight": 3}, "eugeo": {"type": "precapture_choice", "summary": "第二天返回村中时，玩家选择先把消息留在三人之间。", "weight": 3}}}}
+      ]
+    },
+    {
+      "id": "ch1pc_n08_knights_arrive_village",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_3",
+      "precapture_key_node": true,
+      "authored_time_band": "morning",
+      "advance_to_time_band": "afternoon",
+      "title": "整合骑士来到村中宣告罪名",
+      "description": "第三天早晨，整合骑士来到卢利特村中央广场，宣告爱丽丝违反禁忌目录。宣告发生在村中，不在尽头山脉一侧。",
+      "trigger": {"day_min": 3, "day_max": 3, "time_bands": ["morning"], "required_flags": {"d7_return_disclosure": 1}, "forbidden_flags": {"d8_knight_arrival_posture": 1}},
+      "location": {"scene_id": "village_square", "tile_x": 24, "tile_y": 24, "canonical_location": "卢利特村中央广场"},
+      "participants": ["alice", "eugeo", "selka", "rulid_elder"],
+      "narrative_roles": ["integrity_knight", "alice_father", "village_witnesses"],
+      "choices": [
+        {"id": "step_forward", "label": "走上前站在爱丽丝身边", "hint": "表达在场立场，但不能改变骑士的宣告。", "result_text": "你走到爱丽丝身边。骑士没有改变宣告，爱丽丝却清楚地看见了你的站位。", "effects": {"flags": {"d8_knight_arrival_posture": 1}, "relationship": {"alice.trust": 3, "eugeo.trust": 1, "alice.tension": 2}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第三天，整合骑士在卢利特村宣告时，玩家走到爱丽丝身边。", "weight": 4}, "eugeo": {"type": "precapture_permanent", "summary": "第三天，玩家在村中宣告时站到了爱丽丝身边。", "weight": 4}}}},
+        {"id": "stand_with_eugeo", "label": "站在尤吉欧身边一起听", "hint": "和尤吉欧一起承受无法反驳的宣告。", "result_text": "你和尤吉欧并肩站着。尤吉欧试图开口，但宣告的标准没有为争辩留下位置。", "effects": {"flags": {"d8_knight_arrival_posture": 2}, "relationship": {"eugeo.trust": 3, "alice.trust": 1}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第三天，整合骑士在卢利特村宣告时，玩家与尤吉欧并肩站着。", "weight": 4}, "eugeo": {"type": "precapture_permanent", "summary": "第三天，玩家在无法改变的宣告前和尤吉欧并肩站着。", "weight": 4}}}},
+        {"id": "stay_back_observe", "label": "退后两步继续观察", "hint": "保留距离，把宣告内容和村民反应记清楚。", "result_text": "你退后两步，把宣告的每个关键字和村民的反应记下来。爱丽丝回头时仍然找到了你的目光。", "effects": {"flags": {"d8_knight_arrival_posture": 3}, "relationship": {"eugeo.tension": 1, "alice.trust": 1}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第三天，整合骑士在卢利特村宣告时，玩家退后观察并留下记录。", "weight": 4}, "eugeo": {"type": "precapture_permanent", "summary": "第三天，玩家在村中宣告时保持距离记录事实。", "weight": 4}}}}
+      ]
+    },
+    {
+      "id": "ch1pc_n09_alice_farewell",
+      "chapter": "chapter_01",
+      "kind": "precapture_key",
+      "precapture_act": "act_3",
+      "precapture_key_node": true,
+      "title": "爱丽丝与家人和同伴告别",
+      "description": "宣告之后，爱丽丝与家人、桐人和尤吉欧在卢利特村中央广场短暂告别。玩家拥有最后一句话、最后一个动作或最后一份记录的选择权。",
+      "trigger": {"day_min": 3, "day_max": 3, "time_bands": ["afternoon"], "required_flags": {"d8_knight_arrival_posture": 1}, "forbidden_flags": {"d9_farewell_choice": 1}},
+      "location": {"scene_id": "village_square", "tile_x": 24, "tile_y": 24, "canonical_location": "卢利特村中央广场"},
+      "participants": ["alice", "eugeo", "selka", "rulid_elder"],
+      "narrative_roles": ["integrity_knight", "alice_father"],
+      "choices": [
+        {"id": "speak_one_sentence", "label": "说一句不超过八字的话", "hint": "把最后的话留给爱丽丝。", "result_text": "你只说了一句短话。爱丽丝点头，把这句话和你的站位一起记住。", "effects": {"flags": {"d9_farewell_choice": 1, "promise_bring_alice_back": 1}, "relationship": {"alice.trust": 3, "eugeo.trust": 2, "alice.tension": 2}, "promises": {"alice": "玩家答应记住爱丽丝，也不把未发生的事写成事实。"}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第三天告别时，玩家把最后一句话留给了爱丽丝。", "weight": 5}, "eugeo": {"type": "precapture_permanent", "summary": "第三天告别时，玩家和尤吉欧一起见证了爱丽丝的最后告别。", "weight": 4}}}},
+        {"id": "pass_record_book", "label": "把记录本递给爱丽丝", "hint": "把桐人在场的可见记录交给她保管。", "result_text": "你把记录本递给爱丽丝。她没有翻开，只把它抱在胸前，像是确认你没有把这一切藏起来。", "effects": {"flags": {"d9_farewell_choice": 2, "promise_bring_alice_back": 1, "final_log": 1}, "relationship": {"alice.trust": 4, "eugeo.trust": 2, "alice.tension": 1}, "promises": {"alice": "玩家会保留可复核的记录，不用传闻替代爱丽丝的记忆。"}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第三天告别时，玩家把记录本递给爱丽丝，留下桐人在场的可见证据。", "weight": 5}, "eugeo": {"type": "precapture_permanent", "summary": "第三天告别时，玩家把记录本交给爱丽丝而不是藏起来。", "weight": 4}}}},
+        {"id": "stand_silently_with_eugeo", "label": "沉默，和尤吉欧并肩站着", "hint": "不打破告别的气氛，用在场回应爱丽丝。", "result_text": "你没有再说话，只和尤吉欧并肩站着。爱丽丝看向你们，轻轻点头。", "effects": {"flags": {"d9_farewell_choice": 3, "promise_bring_alice_back": 1}, "relationship": {"eugeo.trust": 3, "alice.trust": 2}, "promises": {"alice": "玩家会记住这次告别，不替爱丽丝编造一个更容易接受的结局。"}, "memory": {"alice": {"type": "precapture_permanent", "summary": "第三天告别时，玩家选择沉默并与尤吉欧并肩站着。", "weight": 5}, "eugeo": {"type": "precapture_permanent", "summary": "第三天告别时，玩家与尤吉欧并肩送别爱丽丝。", "weight": 4}}}}
+      ]
+    },
+    {
+      "id": "ch1pc_n10_alice_captured",
+      "chapter": "chapter_01",
+      "kind": "final_choice",
+      "precapture_act": "act_3",
+      "precapture_key_node": true,
+      "precapture_endpoint": "alice_captured",
+      "title": "爱丽丝被整合骑士带走",
+      "description": "整合骑士在卢利特村北门外带走爱丽丝。桐人只能决定最后留下什么记录，不能改变爱丽丝被带走这一正典终点。",
+      "trigger": {"day_min": 3, "day_max": 3, "time_bands": ["afternoon"], "required_flags": {"d9_farewell_choice": 1, "promise_bring_alice_back": 1}},
+      "location": {"scene_id": "north_gate", "tile_x": 67, "tile_y": 24, "canonical_location": "卢利特村北门外"},
+      "participants": ["alice", "eugeo", "selka"],
+      "narrative_roles": ["integrity_knight", "alice_father"],
+      "choices": [
+        {"id": "record_one_phrase", "label": "写下一句不超过十五字的观察", "hint": "留下事实，不把后续阶段写进今天。", "result_text": "你在记录本上写下一句短短的观察。队伍沿村道离开，爱丽丝被带往中央大教堂。", "effects": {"ending_id": "alice_captured", "flags": {"final_log": 1}, "relationship": {"eugeo.trust": 2, "eugeo.tension": 4, "alice.trust": 5}, "memory": {"alice": {"type": "precapture_permanent", "summary": "终点时，桐人留下了一句不超过十五字的现场观察；爱丽丝被整合骑士从卢利特村带走。", "weight": 5}, "eugeo": {"type": "precapture_permanent", "summary": "终点时，尤吉欧看见桐人记录现场，而不是试图与骑士发生冲突。", "weight": 5}}}},
+        {"id": "record_silence", "label": "只在记录本上画一道线", "hint": "让空白本身成为最后的记录。", "result_text": "你只画下一道线，合上记录本。队伍沿村道离开，爱丽丝被带往中央大教堂。", "effects": {"ending_id": "alice_captured", "flags": {"final_log": 2}, "relationship": {"eugeo.trust": 2, "eugeo.tension": 4, "alice.trust": 5}, "memory": {"alice": {"type": "precapture_permanent", "summary": "终点时，桐人在记录本上只画下一道线；爱丽丝被整合骑士从卢利特村带走。", "weight": 5}, "eugeo": {"type": "precapture_permanent", "summary": "终点时，尤吉欧看见桐人用一道线记录无法阻止的带走。", "weight": 5}}}},
+        {"id": "close_record_book", "label": "合上记录本，不再写", "hint": "把最后一页留白，承认这一刻已经结束。", "result_text": "你合上记录本，没有把告别之后的路写进去。队伍沿村道离开，爱丽丝被带往中央大教堂。", "effects": {"ending_id": "alice_captured", "relationship": {"eugeo.trust": 2, "eugeo.tension": 4, "alice.trust": 5}, "memory": {"alice": {"type": "precapture_permanent", "summary": "终点时，桐人合上记录本没有继续书写；爱丽丝被整合骑士从卢利特村带走。", "weight": 5}, "eugeo": {"type": "precapture_permanent", "summary": "终点时，尤吉欧看见桐人承认记录在这里结束。", "weight": 5}}}}
+      ]
+    }
+  ]
+}

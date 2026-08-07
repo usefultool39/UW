@@ -5,20 +5,20 @@ VIS-POR-001,P0,received,visual,三核心人物肖像样张,3人×2表情,materia
 VIS-UI-001,P0,received,visual,12枚核心UI图标样张,12,materials/inbox/visual/ui_icons,REF-STYLE-001,0.4.0-preview.2,user,24px可读 [v001 received 2026-08-04]
 AUD-BGM-001,P0,received,audio,村庄清晨主循环,2版,materials/inbox/audio/bgm,,0.4.0-preview.2,user,75至120秒无缝循环 [v001 received 2026-08-04]
 AUD-AMB-001,P0,received,audio,细雨村庄环境声,2版,materials/inbox/audio/ambience,,0.4.0-preview.2,user,90至180秒无缝循环 [v001 received 2026-08-04]
-QA-PLAY-001,P0,requested,research,真实首次玩家Day1证据,3人,materials/inbox/research/playtest,,0.4.0-preview.2,user,录屏观察访谈
+QA-PLAY-001,P0,requested,research,三名陌生玩家完整Pre-Capture盲测证据,3人,materials/inbox/research/playtest,,0.5.0-pre-capture,user,每人从新游戏完成N01-N10到alice_captured并验证抓捕后不可推进；Day1证据仅用于上手指标
 NAR-VOICE-001,P0,received,writing,三核心人物声音圣经,1套,materials/inbox/writing/character_voice,,0.4.0-preview.2,user,scripted与agent共用 [v001 received 2026-08-04]
-VIS-MAP-001,P1,deferred,visual,卢利特村主地图重绘,1主图加分层源,materials/inbox/visual/world,REF-STYLE-001;VIS-KA-001,0.4.0-preview.2,user,风格批准后启动
+VIS-MAP-001,P1,changes_requested,visual,卢利特村主地图重绘,1主图加分层源,materials/inbox/visual/world,REF-STYLE-001;VIS-KA-001,0.5.0-pre-capture,user,2026-08-07 v002返工；v003已收到但地图仍是调试网格/几何占位且 metadata schema 不符；缺独立 water/interaction 数据与合规登记；v004 changes_requested
 VIS-POR-002,P1,deferred,visual,全角色肖像包,6人×5表情,materials/inbox/visual/portraits,VIS-POR-001,0.4.0-preview.2,user,样张批准后
-VIS-CHR-001,P1,deferred,visual,玩家地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.4.0-preview.2,user,统一脚底锚点
-VIS-CHR-002,P1,deferred,visual,爱丽丝地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.4.0-preview.2,user,统一脚底锚点
-VIS-CHR-003,P1,deferred,visual,尤吉欧地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.4.0-preview.2,user,统一脚底锚点
+VIS-CHR-001,P1,changes_requested,visual,玩家地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.5.0-pre-capture,user,2026-08-07 v002失败；v003已收到但极简几何人偶、动作差异弱且 frames JSON schema 不符；v004 changes_requested
+VIS-CHR-002,P1,changes_requested,visual,爱丽丝地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.5.0-pre-capture,user,2026-08-07 v002失败；v003已收到但极简几何人偶、动作差异弱且 frames JSON schema 不符；v004 changes_requested
+VIS-CHR-003,P1,changes_requested,visual,尤吉欧地图sprite,4向动画,materials/inbox/visual/characters,VIS-POR-001,0.5.0-pre-capture,user,2026-08-07 v002失败；v003已收到但极简几何人偶、动作差异弱且 frames JSON schema 不符；v004 changes_requested
 VIS-CHR-004,P1,deferred,visual,支持NPC地图sprite,3人,materials/inbox/visual/characters,VIS-CHR-001;VIS-CHR-002;VIS-CHR-003,0.4.0-preview.2,user,赛尔卡加利塔加斯夫特
-VIS-ENV-001,P1,deferred,visual,六场景活动背景,6场,materials/inbox/visual/world,REF-STYLE-001;VIS-MAP-001,0.4.0-preview.2,user,无人物版优先
+VIS-ENV-001,P1,changes_requested,visual,六场景活动背景,6场,materials/inbox/visual/environments,REF-STYLE-001;VIS-MAP-001,0.5.0-pre-capture,user,2026-08-07 v002失败；v003虽为1920x1080但为几何占位且 scenes schema 不符；v004 changes_requested
 VIS-UI-002,P1,deferred,visual,完整32枚UI图标,32,materials/inbox/visual/ui_icons,VIS-UI-001,0.4.0-preview.2,user,样张批准后
 VIS-VFX-001,P1,deferred,visual,神圣术与静默线VFX,1图集,materials/inbox/visual/vfx,VIS-UI-001,0.4.0-preview.2,user,移动端alpha预算
-AUD-BGM-002,P1,deferred,audio,边界调查悬念循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.4.0-preview.2,user,负空间制造不安
-AUD-BGM-003,P1,deferred,audio,关系日程温暖循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.4.0-preview.2,user,用餐炉边记录
-AUD-AMB-002,P1,deferred,audio,森林静默线环境声,2版,materials/inbox/audio/ambience,AUD-AMB-001,0.4.0-preview.2,user,normal与silent匹配
+AUD-BGM-002,P1,changes_requested,audio,边界调查悬念循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.5.0-pre-capture,user,2026-08-07 v002失败；v003时长/测量接近目标但命名、sidecar目录、metadata/measurement schema 未过 gate且未做人耳 QA；v004 changes_requested
+AUD-BGM-003,P1,changes_requested,audio,关系日程温暖循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.5.0-pre-capture,user,2026-08-07 v002失败；v003时长/测量接近目标但命名、sidecar目录、metadata/measurement schema 未过 gate且未做人耳 QA；v004 changes_requested
+AUD-AMB-002,P1,changes_requested,audio,森林静默线环境声,2版,materials/inbox/audio/ambience,AUD-AMB-001,0.5.0-pre-capture,user,2026-08-07 v002失败；v003等长/测量接近目标但命名、sidecar目录、metadata/measurement schema 未过 gate且未做人耳 QA；v004 changes_requested
 AUD-SFX-001,P1,deferred,audio,UI与奖励反馈音包,18至24,materials/inbox/audio/sfx,AUD-BGM-001,0.4.0-preview.2,user,短促不刺耳
 AUD-SFX-002,P1,deferred,audio,移动活动边界音包,16至24,materials/inbox/audio/sfx,AUD-AMB-001,0.4.0-preview.2,user,脚步多变体
 NAR-LORE-001,P1,received,writing,书库北境记录碎片,24条,materials/inbox/writing/lore,,0.4.0-preview.2,user,可并行 [v001 received 2026-08-04]
@@ -28,10 +28,14 @@ REF-FONT-001,P1,received,research,可商用中文字体候选,3至5套,materials
 REF-MOOD-001,P1,requested,research,可追溯参考包,30至60项,materials/inbox/research/moodboards,,0.4.0-preview.2,user,"可并行; [暂停待续 2026-08-04 23:27: Wikimedia不可达(000), 已定Met OpenAccess方案, 见 RESUME_NEXT.md 第2节]"
 VIS-MARKETING-001,P2,deferred,visual,商店页封面横幅,5比例,materials/inbox/visual/keyart,QA-PLAY-001;VIS-KA-001,0.4.0-preview.3,user,玩法盲测后
 AUD-VOICE-001,P2,deferred,audio,临时角色语音小样,1套,materials/inbox/audio/sfx,NAR-VOICE-001,0.4.0-preview.3,user,当前不启动
-NAR-CANON-001,P0,requested,research,Underworld正典事实与时间线基线,1套,materials/inbox/research/canon_baseline,,0.5.0-pre-capture,user,核实露茵村、禁忌目录、尽头山脉、爱丽丝被带走前固定事实；不收集影视截图
-NAR-PRECAP-001,P0,requested,writing,爱丽丝被带走前的故事章节与事件卡,1阶段/4幕,materials/inbox/writing/pre_capture_story,NAR-CANON-001;NAR-VOICE-001,0.5.0-pre-capture,user,固定抓捕终点；允许玩家在事实层内分支
-WORLD-MACRO-001,P0,requested,writing,Underworld大世界宏观设定,1套,materials/inbox/writing/world_bible,NAR-CANON-001,0.5.0-pre-capture,user,世界规则、天命、禁忌目录、Human Empire、Dark Territory、中央大教堂、整合骑士
-WORLD-MICRO-001,P0,requested,writing,露茵村至尽头山脉微观设定,1套,materials/inbox/writing/location_bible,NAR-CANON-001;WORLD-MACRO-001,0.5.0-pre-capture,user,家庭、教会、书库、伐木场、村道、天气、食物、工具、路径和传闻
-CHAR-DEPTH-001,P0,requested,writing,核心人物宏观目标与微观行为设定,7人,materials/inbox/writing/character_depth,NAR-CANON-001;NAR-VOICE-001,0.5.0-pre-capture,user,爱丽丝、尤吉欧、桐人、赛尔卡、村长、村民代表、整合骑士；包含知道/害怕/不会说
-NAR-ADAPT-001,P0,requested,writing,正典兼容分支与玩家介入规则,1套,materials/inbox/writing/continuity_rules,NAR-CANON-001;NAR-PRECAP-001,0.5.0-pre-capture,user,定义可改变、不可改变、可延后揭示和固定终点
-QA-CANON-001,P0,requested,research,Pre-Capture正典连续性验收包,1套,materials/inbox/research/canon_qa,NAR-CANON-001;NAR-ADAPT-001,0.5.0-pre-capture,user,时间线、年龄阶段、角色语气、世界规则、事件闸门和素材来源检查
+NAR-CANON-001,P0,received,research,Underworld正典事实与时间线基线,1套,materials/inbox/research/canon_baseline,,0.5.0-pre-capture,user,核实露茵村、禁忌目录、尽头山脉、爱丽丝被带走前固定事实；不收集影视截图 [v001 changes_requested 2026-08-06; v002 delivered 2026-08-06]
+NAR-PRECAP-001,P0,received,writing,爱丽丝被带走前的故事章节与事件卡,1阶段/4幕,materials/inbox/writing/pre_capture_story,NAR-CANON-001;NAR-VOICE-001,0.5.0-pre-capture,user,固定抓捕终点；允许玩家在事实层内分支 [v001 changes_requested 2026-08-06; v002 delivered 2026-08-06 修正主线对齐 Alicization 童年 10 步]
+WORLD-MACRO-001,P0,received,writing,Underworld大世界宏观设定,1套,materials/inbox/writing/world_bible,NAR-CANON-001,0.5.0-pre-capture,user,世界规则、天命、禁忌目录、Human Empire、Dark Territory、中央大教堂、整合骑士 [v001 changes_requested 2026-08-06; v002 delivered 2026-08-06]
+WORLD-MICRO-001,P0,received,writing,露茵村至尽头山脉微观设定,1套,materials/inbox/writing/location_bible,NAR-CANON-001;WORLD-MACRO-001,0.5.0-pre-capture,user,家庭、教会、书库、伐木场、村道、天气、食物、工具、路径和传闻 [v001 changes_requested 2026-08-06; v002 delivered 2026-08-06]
+CHAR-DEPTH-001,P0,received,writing,核心人物宏观目标与微观行为设定,7人,materials/inbox/writing/character_depth,NAR-CANON-001;NAR-VOICE-001,0.5.0-pre-capture,user,爱丽丝、尤吉欧、桐人、赛尔卡、村长、村民代表、整合骑士；包含知道/害怕/不会说 [v001 changes_requested 2026-08-06; v002 delivered 2026-08-06 玩家=桐人；删 4 人框架；显示名问题已闭合]
+NAR-ADAPT-001,P0,received,writing,正典兼容分支与玩家介入规则,1套,materials/inbox/writing/continuity_rules,NAR-CANON-001;NAR-PRECAP-001,0.5.0-pre-capture,user,定义可改变、不可改变、可延后揭示和固定终点 [v001 changes_requested 2026-08-06; v002 delivered 2026-08-06]
+QA-CANON-001,P0,received,research,Pre-Capture正典连续性验收包,1套,materials/inbox/research/canon_qa,NAR-CANON-001;NAR-ADAPT-001,0.5.0-pre-capture,user,时间线、年龄阶段、角色语气、世界规则、事件闸门和素材来源检查 [v001 changes_requested 2026-08-06; v002 delivered 2026-08-06 6 项 W 待裁决已按 v002 调整]
+VIS-KA-002,P1,deferred,visual,爱丽丝被带走终点关键图,桌面与移动各1版,materials/inbox/visual/keyart,NAR-PRECAP-001;QA-CANON-001,0.5.0-pre-capture,user,2026-08-07登记；正典终点锁定后生成；整合骑士到村与告别场景；无文字无水印
+VIS-CHR-005,P1,deferred,visual,整合骑士到场角色素材,2角色加到场姿态,materials/inbox/visual/characters,VIS-CHR-001;VIS-CHR-002;VIS-CHR-003;QA-CANON-001,0.5.0-pre-capture,user,2026-08-07登记；先做叙事到场与押送姿态；当前不制作战斗动作
+VIS-ANIM-001,P1,deferred,visual,三核心人物互动动作包,6类互动动作,materials/inbox/visual/characters,VIS-CHR-001;VIS-CHR-002;VIS-CHR-003,0.6.0,user,2026-08-07登记；阅读书写递物边界查看担忧与告别；统一帧率和脚底锚点
+VIS-TILE-001,P1,deferred,visual,地图贴图道具与分层生产包,1套,materials/inbox/visual/world,VIS-MAP-001,0.6.0,user,2026-08-07登记；tile atlas道具表遮挡层碰撞与可走区清单；不以单张插画替代

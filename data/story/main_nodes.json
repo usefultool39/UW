@@ -416,5 +416,25 @@
         "description": "公开短班、样本链或情报责任规则已经留存；后续将读取这条长期后果。"
       }
     }
+  },
+  "precapture_day_gates": {
+    "1": {
+      "required_events": ["ch1pc_n03_talk_index_end_mountains"],
+      "advance_to": 2,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Pre-Capture Day 1 · 三人决定前往"
+    },
+    "2": {
+      "required_events": ["ch1pc_n07_return_to_rulid"],
+      "advance_to": 3,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Pre-Capture Day 2 · 三人返回卢利特村"
+    },
+    "3": {
+      "required_events": ["ch1pc_n10_alice_captured"],
+      "advance_to": 4,
+      "advance_policy": "after_evening_settlement",
+      "settlement_title": "Pre-Capture Day 3 · 故事终点"
+    }
   }
 }

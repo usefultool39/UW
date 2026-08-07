@@ -1,299 +1,74 @@
-# 下一阶段：Underworld 叙事基线与剧情事件驱动日期
+# 下一阶段：0.5.0 Pre-Capture 主线收束
 
-- **状态**：Current / Day 1–103 已形成连续可玩主线与第三月资源—后果循环，进入真人盲测、素材替换与 Day 104+ 扩展（2026-08-06）
-- **阶段代号**：M3 Underworld Narrative Baseline & Event-Gated Days
-- **目标版本**：`0.5.0-playable-day1`（尚未发布）
-- **前置基线**：`0.4.0-preview.1`
+> 接手整个项目先读 [PROJECT_HANDOFF_20260807.md](../delivery/PROJECT_HANDOFF_20260807.md)；交给素材智能体只使用 [MATERIALS_REWORK_HANDOFF_20260807.md](../delivery/MATERIALS_REWORK_HANDOFF_20260807.md)。
 
-## 阶段目标
+## 2026-08-07 Runtime checkpoint
 
-把当前“有很多系统和内容骨架”的项目收束成一个真正能玩下去的 Day 1 垂直切片，并将《刀剑神域 Alicization / Underworld》的露茵村、天职、禁忌目録、爱丽丝/尤吉欧关系张力转化为可玩的事件节奏。
+- Story is `ready`: the authored N01-N10 route is continuous, four acts and 10 key nodes are validated, and all choices converge on the single `alice_captured` endpoint.
+- Materials are `pending`: eight received requests are `changes_requested`, four required runtime requests remain deferred, the v003 delivery snapshot reports 7 unregistered intermediate-file errors and 76 technical/schema/visual issues, and the active v004 runtime contract currently reports 52 missing/invalid delivery items. No incoming replacement binary is approved or integrated.
+- Latest inbox delta is recorded in [ASSET_HANDOFF_SNAPSHOT_20260807.md](../delivery/ASSET_HANDOFF_SNAPSHOT_20260807.md): map v004 and environment v004 are received but schema/gameplay review is incomplete; character v005 contains only 4 effective frames per direction and cannot satisfy the required 12; audio remains v003 while the active contract requires v004. Keep all of these inbox-only.
+- Immediate external action: send [MATERIALS_REWORK_HANDOFF_20260807.md](../delivery/MATERIALS_REWORK_HANDOFF_20260807.md) to the visual/audio asset agent and receive five v004 correction packages. v002/v003 remain audit evidence and must not be overwritten. The map must become a real grid/layer/collision package; the characters must become true RGBA frame sets; scenes must stop being geometry placeholders; audio must be exported with exact metadata, rights, and manifest data.
+- Internal gates completed this round: the runtime checker validates map layer dimensions/grid metadata, Sprite alpha/frame manifests, decoded visible/transparent Sprite pixels, scene dimensions, WAV audio duration/format, OGG page framing, and audio loop/loudness metadata; the active contract version lock now targets v004. `check_materials.py` also rejects unregistered runtime files, non-approved runtime statuses, and runtime paths without reviewer/timestamp evidence.
+- Verification used the project-local `backend/.venv/python.exe`: backend `330 passed`, frontend unit `16 passed`, production build passed, and targeted Pre-Capture Playwright passed `2/2` on isolated ports `8034/4194`. The previous fresh-port full-suite `22/22` and Day 54 to Day 61 target `1/1` remain historical successful evidence; a new full-suite attempt timed out in the legacy field smoke after a map-load/unknown-location state. The full-suite compatibility risk remains open, and the system Python result is not an accepted project baseline.
+- Next actual internal action: run the new gate against corrected deliveries, then integrate the smallest approved map/character/audio vertical slice and capture runtime evidence.
+- Keep every returned binary in request-scoped `materials/inbox` until request, sidecar, source/rights, technical, in-game, and manifest/hash checks all pass. Three-player blind testing remains `0/3`.
+- Preserve the targeted Pre-Capture E2E baseline (`2/2` on `8034/4194`), then isolate the legacy Day 54-61 `field-smoke` map-load/server-lifecycle timeout before claiming the full Playwright gate again. The previous `22/22` run is historical successful evidence, not the latest rerun result.
 
-## 本阶段唯一产品承诺
+- **状态**：Current / 执行入口
+- **阶段代号**：M4 Pre-Capture Canonical Arc
+- **目标版本**：`0.5.0-pre-capture`（尚未发布）
+- **更新日期**：2026-08-07
+- **上位基线**：[PRODUCT_DIRECTION.md](../product/PRODUCT_DIRECTION.md)
+- **素材入口**：[11_PRECAPTURE_EXECUTION_BRIEF.md](../../materials/11_PRECAPTURE_EXECUTION_BRIEF.md)
 
-玩家在 15–25 分钟内完成：
+## 当前事实
 
-```text
-醒来 → 领取今日目标 → 书库调查 → 训练/观察 → 关系选择 → 炉火结算 → 自动进入下一日
-```
+代码已有 Vue 3 + Phaser 3 + FastAPI 的地图、活动、关系、记忆、日期闸、存档、内容校验和离线回退骨架。材料登记当前并未通过：v003 返工快照为 7 个中间文件登记错误与 76 项技术/结构/视觉问题，active v004 合同等待新交付；候选图/音频不等于完整生产资产。故事 readiness 已为 `ready`：31 个合并事件中有四幕标记、10 个关键节点、唯一抓捕终点和 46 个跨节点回响；21 个旧事件仅作为兼容内容。
 
-玩家不需要点击独立的“主动推荐日期/时间推进”按钮。日期只由剧情事件和日结算闸推进；NPC 日程、环境和模拟 tick 继续自动运行。
+Day 1–117 的旧 authored 内容只作为兼容和系统验证记录，不再作为本阶段叙事目标；不继续扩写 Day 118+。爱丽丝被带走之后另立章节。
 
-## P0 工作包
+## 开工顺序
 
-> 状态：WP1～WP4 已完成代码与自动化验证；剩余阻塞是陌生玩家盲测、真实 runtime 素材接入和干净环境验证。
+### 1. 文档与输入收束
 
-### M3-WP1 Underworld 设定与时间线基线
+- [x] 以 `PRODUCT_DIRECTION.md` 为唯一产品基线。
+- [x] 将冲突的旧 Brief、Roadmap、MVP、Requirements 和混合 Next Phase 归档。
+- [x] 登记四项后续完整性需求：`VIS-KA-002`、`VIS-CHR-005`、`VIS-ANIM-001`、`VIS-TILE-001`；当前均为 `P1/deferred`，不冒充已开工。
+- [x] 审核用户/素材智能体返还的正典、人物、地点和连续性资料；七项叙事输入已通过 readiness，来源材料继续保留在 `materials/inbox` 供审计。
 
-- 采用“露茵村早期生活分支线”作为第一章时间锚点。
-- 明确爱丽丝、尤吉欧、赛尔卡的角色功能和关系冲突。
-- 禁止把童年露茵村、中央大教堂和 War of Underworld 战后状态混在同一日程线中。
-- 将原作参考元素写入 `docs/research/UNDERWORLD_REFERENCE_BASELINE.md`。
+### 2. 正典主线
 
-### M3-WP2 日期推进重构
+- [x] 建立四幕事件卡：村中日常、尽头山脉越界、返村与告别、整合骑士到场与抓捕。
+- [x] 为每幕登记 2–3 个关键节点，写清进入条件、选择、代价、结果、后续回响和正典依据。
+- [x] 固定唯一终点 `alice_captured`，抓捕后拒绝剧情推进、日期推进和 authored 写入。
+- [x] 统一桐人、尤吉欧、爱丽丝、赛尔卡的玩家可见名称、关系动机和时间锚点；兼容旧 ID 但不再产生旧显示名。
+- [x] 用连续性检查阻止抓捕后身份、中央大教堂后期状态和 War of Underworld 内容提前出现。
 
-- 删除玩家主动日期推荐/时间推进入口。
-- 保留自动 tick，但自动 tick 不得无条件跨日。
-- 引入 `required_story_event`、`day_end_gate`、`advance_policy` 和 `day_transition`。
-- 日结算完成后自动生成下一日目标。
-- 旧存档兼容：旧的 `rest_until_next_day` 仍可读，但必须经过新的剧情闸校验。
+### 3. 资产与运行时
 
-### M3-WP3 Day 1 可玩闭环
+- [ ] 事件卡冻结后，按素材审计激活 `VIS-MAP-001`、`VIS-CHR-001` 至 `003`、`VIS-ENV-001`、`VIS-VFX-001` 和必要音频；视觉智能体只负责 `VIS-*`/`AUD-*` 交付。
+- [ ] 在抓捕节点规格稳定后再激活 `VIS-KA-002`、`VIS-CHR-005`、`VIS-ANIM-001`、`VIS-TILE-001`，避免提前生成后整体返工。
+- [ ] 每个场景具备可走层、碰撞/遮挡层、前景层、交互点和 manifest，不以背景图替代地图。
+- [ ] 每个核心角色具备 idle、四向 walk、interact、表情/受击所需的最小集；战斗动作留给独立原型。
+- [ ] 用代表场景做比例、锚点、文字遮挡、移动端和音画触发验收，再批量扩展。
 
-- 书库调查必须包含至少一个可操作判断。
-- 训练必须包含至少一个输入/节奏判定。
-- 关系选择必须影响后续事件，而不是只改变数值。
-- 炉火结算必须显示今天的结果、NPC 记忆和明日新目标。
-- 未完成关键事件时，休息只能恢复资源，不能直接跨日。
+### 4. 验证与交付
 
-### M3-WP4 可玩性 UI 收束
-
-- 玩家模式隐藏内部 ID、月份骨架和开发状态。
-- 同屏只保留一个最强 CTA。
-- 行动卡统一显示：操作、代价、收益、后果、下一步。
-- 日期变化只在日结算动画/结果面板中出现。
-
-## P1 工作包
-
-- [x] Day 2 静默线事件：把 Day 1 的选择转化为不同调查入口。
-- [x] Day 3 第一次越界选择：遵守规则、保护同伴、继续调查之间产生真实后果。
-- [x] Day 4 书库复盘：记录真实、保护同伴、追查源头三种路线进入长期月计划。
-- [x] Day 7 北门巡查演练：安全距离与轮换判定成为后续村务/远征的前置内容。
-- [x] Day 12 村道广场信任事件：公开巡查记录或低调筹备补给，路线结果进入后续静默线。
-- [x] Day 18 / Day 24 / Day 28：静默线演练、远征包与北门前夜加入跨日闸门，第一月关键节点不可跳过。
-- [x] Day 8–16 第一轮短循环反馈：巡查板复核 / 村道传闻会改变 Day 12 authored 事件的描述与提示，但不阻塞易上手主线。
-- [x] Day 8–16 继续补足可重复活动的资源、关系和路线反馈，并完成第三月 Day 90–103 的同类循环。
-- [ ] 组织 3 名首次玩家盲测，验证 Day 1–7 和 Day 90–103 的目标理解、第一次有效互动时间与继续意愿。
-- 首批 UI 图标、肖像、开场图、BGM 和环境声已接入；下一步用真人盲测验证是否需要继续返工。
-- 3 名首次玩家盲测，验证第一次有效互动时间、目标理解和继续意愿；Day 4 / Day 7 新闸门需要同样验证是否形成“想继续”的动力。
-- [x] 建立 `day_transition` 回放日志和内容校验；内容校验器会检查日期闸门 flag/event 是否有 authored 生产来源。
-- AI Provider 适配器已完成离线 fake HTTP 验证；当前新增意图预览推荐、候选白名单、记忆筛选和单局预算，不让 API 阻塞盲测。
+- [ ] 运行 materials、Pre-Capture readiness、后端 pytest、前端单测、build、Playwright 和 `git diff --check`。
+- [ ] 组织 3 名没有读过开发文档的玩家从新游戏完成 N01-N10，记录首次互动、目标/代价/收益、选择回响、抓捕原因、终端状态、卡点、完成率和继续意愿；Day 1 记录不能单独满足本项。
+- [ ] 只修复最高频阻塞；更新 `CURRENT_STATUS.md`、材料审计和变更记录，不复制第二份 TODO。
 
 ## 暂不做
 
-- 不先扩展 Day 8 之后的完整大地图；先把 Day 1–7 盲测和短循环打磨稳定。
-- 不先实现无边界的自由 Agent Loop；只推进“候选 → 白名单 → Session 执行”的可回放链路。
-- 不先做全地图重绘、完整战斗或 Cocos 客户端。
-- 不做无剧情目的的自动跨日。
-- 不做一键跳过当天的玩家按钮。
+- 不写爱丽丝被带走之后的剧情，不扩写 Day 118+。
+- 不做完整战斗、全地图重绘、全角色动作包、全量配音、Cocos 迁移或 3D 重写。
+- 不把候选素材直接放入正式 runtime，不让模型修改权威世界事实。
+- 不增加独立的“推进日期/跳过当天”玩家按钮；日期只能由剧情闸和日结算推进。
 
 ## 完成定义
 
-- [ ] 玩家新游戏后 60 秒内完成第一次有效互动。
-- [ ] 玩家能说出当天目标、一个行动代价和一个行动收益。
-- [x] 玩家无法在未完成必需事件时绕过剧情闸跨日。
-- [x] 完成日结算后，日期自动推进并出现下一日目标。
-- [x] 自动 tick、NPC 日程、存档导入导出和 scripted 离线模式仍可用。
-- [x] 后端测试、前端单测、build 和 E2E 通过（2026-08-05：244 / 14 / build / 13）。
-
-
-## 2026-08-05 收束结论
-
-M3-WP1～WP4 已完成：Underworld 第一章叙事基线、剧情事件驱动日期、Day 1–3 纵向闭环和 UI 日期入口收束均已落地。接下来不再扩张系统，优先完成：
-
-1. 真实首批素材的小批 runtime 接入和截图验收；
-2. 3 名陌生玩家 Day 1 盲测；
-3. 根据盲测只修复最高频阻塞点；
-4. 再设计 Underworld AI 的可插拔增强，不让外部 API 成为离线主线依赖。
-
-
-## 2026-08-05 长期目标续航切片
-
-本轮不扩张远期地图，而是把 AI 从“可调用”推进到“可审计、可回退、不可越权”：
-
-1. 对话记忆候选先过来源/内容/权重筛选；低置信度只留下审计记录。
-2. NPC 意图 Agent 只能引用当前 authored intent 与 response，新增预览 API，不直接执行效果。
-3. 每局按用途限制模型调用次数；预算、模型失败和非法输出均自动回退。
-4. 后续工作顺序：真实 Provider 本机灰度（不提交密钥）→ 3 人首次玩家盲测 → 只修最高频阻塞 → Day 4–7 内容扩展 → 可回放自主行动工具。
-
-
-## 2026-08-05 Day 4–7 持续主线切片
-
-本轮把已有 Month 1 骨架真正接到日期推进规则：
-
-- Day 3 边界选择写入 `boundary_incident_resolved` 后，才能结算进入 Day 4。
-- Day 4 的 `ch1_d4_after_boundary_debrief` 必须完成，才能进入 Day 5。
-- Day 7 的 `ch1_d7_first_boundary_drill` 必须完成，才能进入 Day 8。
-- Day 4 / Day 7 事件仍完全由 authored JSON 驱动，旧存档没有这些 flag 时会得到明确的缺失条件，而不会静默改变日期。
-- E2E 已覆盖“尝试跳过 → 显示缺失条件 → 完成事件 → 自动进入下一日”的连续路径。
-
-
-## 2026-08-05 Day 12 与调查交互稳定性
-
-- Day 12 `ch1_d12_village_trust` 已成为显式跨日条件，避免玩家把第一周巡查直接跳到静默线。
-- `BoundaryProbeMiniGamePanel.vue` 将两个来源不同的 watch 拆开，避免父级重渲染导致局部选择被 reset；E2E 改为逐项等待选中状态。
-
-
-## 2026-08-05 第一月后半段闸门
-
-在 Day 12 之后继续收束第一月主线：
-
-- Day 18 需要完成静默线演练；
-- Day 24 需要完成远征包选择；
-- Day 28 需要完成北门前夜活动；
-- 日期仍只由 authored 事件和日结算推进，玩家没有独立跳日入口。
-
-下一阶段可以安全地把精力放在 Day 8–16 的重复活动反馈、真实盲测和 Provider 灰度，而不是继续允许玩家跳过大量骨架事件。
-
-
-## 2026-08-05 Day 8–16 第一轮反馈
-
-日常活动不再只是孤立的资源消耗：
-
-- 玩家可以在 Day 7 后先复核巡查板，或者去村道听传闻；
-- Day 12 的主线事件会根据这些可选准备展示不同的描述和选择提示；
-- 这些准备不是硬门槛，玩家仍可直接进入主线，避免把新玩家卡在支线要求上；
-- 下一步再根据盲测决定哪些短循环应该变成必做、哪些只保留为关系加深。
-
-
-## 2026-08-05 内容校验增强
-
-日期闸门现在不仅检查 JSON 结构，还检查可达性：每个 `required_flags` 必须能由 authored 故事/活动效果写入，每个 `required_events` 必须引用现有事件。这样后续扩展 Day 8+ 时，错误配置会在 `/api/dev/content_validation` 和测试阶段暴露，而不是等玩家卡住。
-
-## 2026-08-05 Day 8–16 回响反馈切片（已完成）
-
-本轮继续长期目标的“逐步交付”策略，没有扩张地图或重写战斗，而是让日常活动的投入在后续剧情中变得可见：
-
-- `village_square_listen` 增加玩家可见收益说明：获得村务传闻线索，后续村道事件会回响。
-- `village_patrol_board_review` 增加玩家可见收益说明：选择公开安全流程或邀请村民补充记录，第十二天村务事件会读到路线。
-- Day 18 `ch1_d18_silent_line_rehearsal` 增加三条 authored 反馈变体：公开安全流程、邀请村民记录、只听过村道传闻；变体只改变叙述和选择提示，不改变硬闸门，避免新玩家被支线软锁。
-- 场景活动公开预览现在可携带安全的 `benefit_text`，前端行动卡会将其显示为具体收益；后端不会向客户端暴露 authored effects 或记忆正文。
-
-验证结果：活动收益可在行动前理解，Day 12 / Day 18 的路线差异可由 authored flag 到达，scripted 模式保持完整离线可玩；后端 `246 passed`、前端 `15 passed`、build 通过、Playwright `13 passed`。
-
-下一步仍按长期目标推进：补充 Day 8–16 可重复活动的资源/关系回响 → 建立盲测记录模板 → 只修复高频卡点 → 扩展 Day 31 之后的第一个可玩循环；不读取或依赖桌面外部 API 目录。
-
-## 2026-08-06 第一月路线连续性与首轮盲测证据准备
-
-- Day 12 的公开巡查 / 低调补给路线现在会继续改变 Day 24 远征包事件的描述和选择提示；路线差异保持 optional feedback，不新增软锁。
-- 北门静默线复核新增具体收益预览，玩家在行动前能理解它会影响后续演练。
-- 新增 `/Users/lzm/Desktop/UW/docs/delivery/PLAYTEST_ROUND_01_TRACKER_20260806.md`，把三名真人玩家的记录、录屏、访谈和批次判定集中管理。
-- 明确 `pending-human-run` 不得被自动化结果或开发者自测替换；在没有真实玩家记录前，不宣称盲测完成。
-- 盲测回填后只修最高频阻塞点，再重复质量门和推送流程。
-
-## 2026-08-06 直接可玩性优先修复
-
-第二月审计时确认：继续堆内容前，必须先确保已有 authored 内容能被玩家发现和选择。本轮完成：
-
-- 通用数据驱动活动选择 UI；
-- 安全的 choice 后果预览；
-- Day 5–17 三个可选准备活动的 NPC 主动入口；
-- 选择结果写入既有关系、记忆和后续 route flags；
-- 游戏内完整 UI 路径回归测试。
-
-验证结果：后端 `249 passed`、前端 `16 passed`、production build 通过、Playwright `14 passed`；scripted 离线模式和既有 Day 1–46 smoke 保持可用。
-
-下一轮回到第二月：优先把 Day 32 路线入口和 Day 39 路线深化从单次活动扩展成“目标 → 选择 → 资源/关系后果 → Day 46 汇流”的短循环，不先扩张大地图。
-
-## 2026-08-06 第二月 Day 32 → 39 → 46 短循环（已完成）
-
-当前第二月纵向循环已经具备：
-
-```text
-Day 31 路线交接
-→ Day 32 路线方法选择
-→ Day 39 读取选择并深化路线
-→ Day 46 异常信号汇流
-→ 公开共同地图 / 保留三人暗线
-```
-
-关键日期均由剧情闸门控制，活动选择写入关系、重要记忆和后续 flags，scripted 模式可完整离线运行。
-
-上述 Day 47–53 路线差异和第二月结果已经在 2026-08-06 完成，新的优先顺序见下方。
-
-## 2026-08-06 第二月 Day 47 → 53 已完成
-
-当前可玩链已经延伸为：
-
-```text
-Day 31 路线交接
-→ Day 32 路线方法选择
-→ Day 39 路线深化
-→ Day 46 异常汇流
-→ Day 47–52 公开听证准备 / 三人源头试探
-→ Day 49 后半段剧情闸门
-→ Day 53 四选二的路线结果
-→ 第三月入口 flag
-```
-
-上述 Day 54–61 尾声、四路线 NPC 反馈、月计划摘要和第三月出发准则已经完成。
-
-## 2026-08-06 第二月 Day 54 → 61 已完成
-
-当前第二月完整 authored 主链为：
-
-```text
-Day 31 路线交接
-→ Day 32 方法选择
-→ Day 39 路线深化
-→ Day 46 异常汇流
-→ Day 47–52 公开听证准备 / 三人源头试探
-→ Day 53 四种第二月结果
-→ Day 54–60 四种路线专属尾声
-→ Day 58 尾声闸门
-→ Day 61 八选二的第三月准则
-→ Day 62 第三月入口
-```
-
-上述第三月 Day 62–69 资源准备、三类玩法族、日志切换和 Day 69 路线测试已经完成；Day 76–89 后果反馈、资源恢复和阶段收束也已完成。
-
-## 2026-08-06 第三月 Day 62 → 69 已完成
-
-当前第三月第一条资源型循环为：
-
-```text
-Day 61 八种第三月准则
-→ 公开协作 / 源头追查 / 责任情报三类玩法族
-→ Day 62–68 选择体力与神圣力投入
-→ Day 65 资源准备闸门
-→ Day 69–74 第一次路线测试
-→ Day 75 阶段闸门
-→ Day 76 继续读取资源与关系后果
-```
-
-上述 Day 76–89 后果反馈、资源恢复、承诺/紧张摘要和第三月阶段收束已经完成。
-
-## 2026-08-06 第三月 Day 76 → 89 已完成
-
-当前第三月第一条完整循环为：
-
-```text
-Day 62–68 资源投入
-→ Day 69–74 第一次路线测试
-→ Day 76–82 三类路线后果反馈
-→ Day 78–82 体力 / 神圣力安全恢复选择
-→ Day 79 反馈与恢复闸门
-→ Day 83–88 三类玩法族阶段决定
-→ Day 89 第三月阶段闸门
-→ Day 90 继续读取公开范围、缓存和情报风险
-```
-
-新的优先顺序：
-
-1. 建立 Day 90–103 的第二条第三月循环，让 Day 83 阶段结果改变新的 NPC 目标、资源恢复方式和可重复路线。
-2. 增加更稳定的“资源状态解释”：玩家能在选择前知道当前体力 / 神圣力不足会带来什么，而不是只看到数值。
-3. 进行首轮真实陌生玩家盲测；记录 Day 1 首次目标发现率、第一次选择耗时、Day 32/62 资源选择理解度、Day 69/83 后果发现率。
-4. 根据真人数据修复最高频阻塞点，不用 E2E 或开发者自测替代玩家证据。
-5. Underworld AI 继续只做候选对白、意图推荐和记忆候选；不接管日期、资源、flags、奖励或存档，不读取 `ai-shop`，不调用真实 Provider。
-
-下一阶段完成定义：Day 90–103 至少形成一个读取 Day 83 结果的可重复活动、一个资源状态解释 / 恢复决策和一个新的故事推进闸门，并通过全量质量门和 GitHub 推送。
-
-
-## 2026-08-06 当前执行阶段：第三月 Day 90–103 后果与承诺循环
-
-本阶段已完成代码与自动化验证，重点不是扩张地图，而是让 Day 83 的路线决定继续“活”在现有三个场景里：
-
-- Day 90–94：公开协作、源头追查、责任情报分别提供每日一次的路线后果练习；每次都会消耗或恢复资源，并写入关系与长期记忆。
-- Day 90–94：新增 `home_third_month_resource_status`，用一次安全恢复把体力 / 神圣力限制说明清楚，避免玩家把资源代价理解成随机惩罚。
-- Day 94：必须完成至少一次路线练习与资源状态说明，才能自动推进到 Day 95。
-- Day 95–102：`ch1_d95_third_month_consequence_review` 根据当前玩法族只显示两个选择，把 Day 83 的“扩大 / 保护”“延长 / 中止”“公开 / 封存”转化为承诺和紧张。
-- Day 96–102：三项路线专属每日回访活动允许玩家用低范围行动兑现承诺；至少完成一次才能进入 Day 103。
-- Day 103：`ch1_d103_third_month_boundary_decision` 根据已经兑现的承诺完成阶段结算，Day 104 入口将读取村务参与、源头样本或情报责任链。
-- NPC 主动入口覆盖练习、资源说明、后果复盘、承诺回访和 Day 103 结算；AI 仍然只能提出候选，Session 负责状态结算。
-
-下一阶段优先级：
-
-1. 先做 3 名陌生玩家真人盲测，记录首次有效互动、目标复述、资源理解和“我想继续”的原因；当前仍为 `pending-human-run`。
-2. 只根据最高频卡点修 UI，不大规模重写 `FieldSlice.vue`、Phaser 场景或 Session。
-3. 接入替换素材需求：第三月新增村务轮值卡、固定短段取样标记、分层情报纸页、炉火资源状态面板反馈、对应短音效与环境声；先用现有 runtime 资产，满意后再替换。
-4. Day 104+ 继续复用村道、北门、书库和炉火，不先扩张大地图；优先读取 Day 103 的长期后果并建立第四月入口。
+- readiness 报告为 `materials=ready`、`story=ready`。
+- 四幕主线可以从新游戏连续运行到唯一抓捕终点，至少三次选择产生跨节点可见回响。
+- 抓捕后本章不可继续推进，存档、回放、刷新和重复请求均保持终端状态。
+- 核心素材经过来源、技术、风格、游戏内和移动端验收；不存在 P0 资产缺口。
+- 自动质量门全部通过，且 3 名真人盲测记录完整。

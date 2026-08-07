@@ -4,14 +4,25 @@
 
 当前游戏已经可运行；素材接入最大的风险不是“没有漂亮图”，而是：风格漂移、文件覆盖、授权不清、移动端不可用、压缩后变糊、生成提示词丢失、未来无法重做。因此所有素材从原始来源到游戏运行时都必须可追溯。
 
-## 2. 生命周期
+## 2. 生命周期与三层状态
+
+素材状态不能只看一个词：
+
+1. `REQUESTS.csv` 管整项需求是否已请求、收到、返工、批准或接入。
+2. `MANIFEST.csv` 管每个具体文件版本的来源、权利、hash、审核人与接入记录。
+3. `frontend/public/assets/runtime` 和游戏内证据证明某个已审核文件是否真实显示或播放。
 
 ```text
-requested → received → reviewing → approved → integrated
-                         ↘ changes_requested → received
-                         ↘ rejected / deferred
-integrated → archive（被新版替换时）
+request: requested -> received -> reviewing -> approved -> integrated
+                         |             |
+                         +-> changes_requested -> received
+                         +-> rejected / deferred
+
+file:    received/review-only -> approved-candidate -> integrated
+                              +-> changes_requested/rejected/deferred
 ```
+
+`approved-for-direction` 只表示风格方向可参考。`approved-candidate` 表示具体源文件可进入受控候选接入，但不等于最终游戏内美术完成。
 
 ### Step A：提出需求
 
@@ -21,16 +32,17 @@ integrated → archive（被新版替换时）
 
 ### Step B：收件
 
-用户把文件放入 `materials/inbox/<category>/`，并附同名 `.md` sidecar。
+素材智能体把文件放入 `materials/inbox/<category>/`，并附同名 `.md` sidecar，或同目录 request-scoped 主 sidecar。返工必须递增版本，禁止覆盖旧版。
 
 收件最低检查：
 
 - 文件名有 request ID 和版本号。
 - 文件可以正常打开。
-- sidecar 存在，来源/提示词/许可证不为空。
+- sidecar 存在，来源/提示词/许可证不为空，并明确列出包内文件。
+- manifest fragment 为每个文件提供 source path 和 SHA-256，runtime/审核字段留空。
 - 不把多个完全不同方向混在一个无说明 ZIP 里。
 
-通过后，将 `REQUESTS.csv.status` 改为 `received`。
+通过后，由项目负责人将 `REQUESTS.csv.status` 改为 `received`；素材智能体不得直接修改正式台账。
 
 ### Step C：四项评审
 
@@ -41,23 +53,26 @@ integrated → archive（被新版替换时）
 
 任何一项不通过，状态改 `changes_requested`，把问题写成可执行修改：例如“左侧安全区从 30% 增到 45%”，不要只写“感觉不对”。
 
-### Step D：批准
+### Step D：批准候选
 
 - 批准的是**具体文件版本**，不是整个 request 永久批准。
-- 文件复制到 `materials/approved/<category>/`。
-- 在 `MANIFEST.csv`（由模板复制）记录 sha256、许可证、批准日期、用途。
-- 原始生成结果、分层源、无损音频保留；不要只留压缩 runtime 文件。
+- 在正式 `MANIFEST.csv` 记录来源、SHA-256、许可证、审核人、审核时间和用途。
+- 源文件通过后可复制到 `materials/approved/<category>/`；原始 inbox 版本仍保留审计记录。
+- `approved-candidate` 只允许进入受控候选接入；技术通过不等于风格完成或游戏内验收。
+- 原始生成结果、分层源、无损音频保留，不要只留压缩 runtime 文件。
 
 ### Step E：运行时转换与接入
 
 由开发侧执行：
 
 1. 从 approved 源导出 runtime 版本。
-2. 放入 `frontend/public/assets/game/` 或明确的新目录。
+2. 放入 `frontend/public/assets/runtime/`；禁止使用其他未登记 runtime 目录绕过门禁。
 3. 通过 `gameContentConfig.js` / `sceneRegistry.js` / tileset manifest 等数据入口引用；不要在多个组件散落硬编码路径。
-4. 更新 attribution、CHANGELOG（玩家可见时）、CURRENT_STATUS 和测试。
+4. 补齐 `runtime_file`、`approved_by`、`approved_at`、`integrated_at` 和匹配 hash；更新 attribution、CHANGELOG（玩家可见时）、CURRENT_STATUS 和测试。
 5. 跑 backend tests、frontend unit/build、定向 E2E、完整 E2E。
-6. 比较桌面/移动截图和性能体积。
+6. 比较桌面/移动截图、移动/碰撞/遮挡/动画/音频实际行为和性能体积。
+
+`check_materials.py` 会拒绝未登记 runtime 文件、非允许状态的 runtime 路径、缺审核人与时间、hash 不匹配和 runtime 孤儿文件。正式状态升级必须由项目负责人完成。
 
 ### Step F：替换与回滚
 

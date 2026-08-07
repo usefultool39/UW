@@ -1,9 +1,16 @@
 // @ts-check
 import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { defineConfig, devices } from '@playwright/test'
 
+const windowsPython = [
+  resolve('../backend/.venv/python.exe'),
+  resolve('../backend/.venv/Scripts/python.exe'),
+  resolve('../.conda/uw-runtime/python.exe')
+].find(existsSync)
+
 const backendPython = process.env.PYTHON_BIN || (process.platform === 'win32'
-  ? '..\\.conda\\uw-runtime\\python.exe'
+  ? windowsPython || 'python'
   : '.venv/bin/python')
 
 const browserChannel = process.env.PLAYWRIGHT_CHANNEL || (
@@ -36,7 +43,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: `${backendPython} -m uvicorn app.main:app --host 127.0.0.1 --port ${backendPort}`,
+      command: `"${backendPython}" -m uvicorn app.main:app --host 127.0.0.1 --port ${backendPort}`,
       cwd: '../backend',
       url: `${backendUrl}/api/health`,
       env: { ...process.env, UW_RATE_LIMIT_ENABLED: '0' },

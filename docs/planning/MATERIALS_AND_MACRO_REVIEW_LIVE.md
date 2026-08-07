@@ -1,16 +1,14 @@
 # 《边境回声》素材审查与宏观优化动态工作台
 
-> **这是本项目素材与体验优化的唯一动态交流文档。**
->
-> 后续每一次新增素材、审核结论、重做意见、接入验证、试玩反馈，都先更新本文件；不要另起一份同类审查总表。
+> **Historical / Append-only（2026-08-07）**：本文保留 0.4 阶段素材审查历史，不再是当前任务或素材状态的唯一入口。当前事实看 [MATERIALS_AUDIT_20260807.md](../delivery/MATERIALS_AUDIT_20260807.md)，当前返工交接看 [MATERIALS_REWORK_HANDOFF_20260807.md](../delivery/MATERIALS_REWORK_HANDOFF_20260807.md)，状态分别由 `materials/REQUESTS.csv` 和 `materials/MANIFEST.csv` 登记。
 
-- **文档状态**：Current / Living / 单一事实来源
+- **文档状态**：Historical / Append-only review log
 - **首次建立**：2026-08-05
-- **当前快照**：2026-08-05
+- **当前快照**：2026-08-07 pointer added; detailed entries remain historical
 - **复核快照**：2026-08-05（第二次独立技术复核，已对齐实物与台账）
-- **项目目录**：`/Users/lzm/Desktop/UW`
-- **当前产品阶段**：`0.4.0-preview.1` 候选工作区；目标是稳定 Day 1–3 纵切片
-- **最高优先级**：可玩性 > 容易上手 > 即时反馈/吸引力 > 素材规模扩张
+- **项目目录**：`C:\Users\liang\Desktop\UW`
+- **当前产品阶段**：`0.4.0-preview.1` 候选工作区；长期目标已切换为 `0.5.0-pre-capture`
+- **最高优先级**：Pre-Capture 主线完整性 > 可玩性 > 容易上手 > 即时反馈/吸引力 > 素材规模扩张
 - **配套静态审查快照**：[`../delivery/MATERIALS_MACRO_AUDIT_20260805.md`](../delivery/MATERIALS_MACRO_AUDIT_20260805.md) / [`../delivery/MATERIALS_AUDIT_20260805.csv`](../delivery/MATERIALS_AUDIT_20260805.csv)
 
 ---
@@ -301,3 +299,19 @@
 - 运行时文件使用相对仓库 symlink 指向 `materials/inbox`，避免复制大文件；Vite production build 已确认会将目标文件打入 `dist/assets/runtime/`。
 - `materials/MANIFEST.csv` 已为 21 个实际 runtime 文件补齐 `runtime_file` 与 `integrated_at`。
 - 仍未完成：3 名陌生玩家 Day 1 盲测；素材是否“好看”与“愿意继续”仍不能由自动化截图代替。
+
+### 2026-08-06｜Pre-Capture 长期目标激活与官方故事页复核
+
+- 新增/变更素材：更新 `08_NARRATIVE_REQUIREMENTS.md`、`09_PRECAPTURE_STORY_TARGET.md`、`10_CANON_CONTINUITY_CHECKLIST.md`，新增 `11_PRECAPTURE_EXECUTION_BRIEF.md`。
+- 审核结果：⚠️ 现有系统和 Day 1–3 短循环可复用；Day 1–117 长线内容不等于 Pre-Capture 正式主线，尚无尽头山脉越界与抓捕可玩终点。
+- 官方核实：Alicization 第一季官方 `Episode 1: Underworld` 与 `Episode 3: The End Mountains` 支持当前童年篇解释；未确认“End of World”为独立正传电影。
+- 对项目的影响：停止继续扩写 Day 118+，先把现有能力收束为四幕、8–12 个关键节点的完整主线。
+- 是否允许进入 runtime：本次仅更新需求与计划；用户返还素材需经过来源、权利、连续性和运行时验收。
+- 必须补充的证据：用户所指“End of World”的具体链接/文件（如果不是上述官方童年篇）、七项 P0 叙事/世界观请求、3 名陌生玩家盲测。
+- 下一步：等待用户返还素材；收到后按请求 ID 入库，先完成正典事实表，再写事件和对白。
+- 负责人/来源：项目维护者；官方故事页和当前仓库静态审计。
+# 2026-08-07 current audit pointer
+
+The current visual/audio audit is `docs/delivery/MATERIALS_AUDIT_20260807.md`.
+It separates delivered candidates, technical pass status, ungenerated requests, newly registered gaps, and future production stages.
+Older entries above remain historical evidence and must not be read as proof that the full art pipeline is complete.

@@ -1,78 +1,73 @@
 # 边境回声文档中心
 
-> **单一事实来源**：过时计划只保留在 `archive/` 中用于追溯，不再作为当前任务依据。
+> 项目交接先读 [PROJECT_HANDOFF_20260807.md](delivery/PROJECT_HANDOFF_20260807.md)。日常事实仍只认下列四个入口；`archive/` 和状态页下方的旧日志仅供追溯，不是任务来源。
 
-## 先回答三个问题
+## 先回答四个问题
 
 | 问题 | 权威文档 |
 |---|---|
-| 1. 已经做了什么？ | [planning/CURRENT_STATUS.md](planning/CURRENT_STATUS.md) |
-| 2. 目标做什么？ | [product/PRODUCT_BRIEF.md](product/PRODUCT_BRIEF.md) / [product/ROADMAP.md](product/ROADMAP.md) |
-| 3. 下一阶段做什么？ | [planning/NEXT_PHASE.md](planning/NEXT_PHASE.md)；候选工作在 [BACKLOG.md](planning/BACKLOG.md) |
+| 最终要做成什么？ | [PRODUCT_DIRECTION.md](product/PRODUCT_DIRECTION.md) |
+| 当前版本具体承诺什么？ | [PRODUCT_BRIEF.md](product/PRODUCT_BRIEF.md) / [MVP_SCOPE.md](product/MVP_SCOPE.md) |
+| 现在真实完成到哪里？ | [CURRENT_STATUS.md](planning/CURRENT_STATUS.md) |
+| 下一步只做什么？ | [NEXT_PHASE.md](planning/NEXT_PHASE.md) |
 
-## 新成员 / 新智能体 15 分钟阅读顺序
+## 新成员阅读顺序
 
-1. 本页。
-2. [产品简述](product/PRODUCT_BRIEF.md)。
-3. [当前状态](planning/CURRENT_STATUS.md)。
-4. [下一阶段](planning/NEXT_PHASE.md)。
-5. [系统架构](architecture/SYSTEM_OVERVIEW.md)。
-6. [开发流程](delivery/DEVELOPMENT_PROCESS.md) 与 [完成定义](delivery/DEFINITION_OF_DONE.md)。
-7. 再阅读改动对应的专题文档、ADR 和测试策略。
+1. [项目交接总览](delivery/PROJECT_HANDOFF_20260807.md)
+2. [最新素材交接快照](delivery/ASSET_HANDOFF_SNAPSHOT_20260807.md)
+3. [产品方向与长期开发基线](product/PRODUCT_DIRECTION.md)
+4. [产品简述](product/PRODUCT_BRIEF.md)
+5. [当前状态](planning/CURRENT_STATUS.md)
+6. [下一阶段](planning/NEXT_PHASE.md)
+7. [当前素材返工交接](delivery/MATERIALS_REWORK_HANDOFF_20260807.md)
+8. [Pre-Capture 执行简报](../materials/11_PRECAPTURE_EXECUTION_BRIEF.md)
+9. 再阅读改动涉及的架构、素材和测试文档。
 
-## 文档地图
+## 当前文档地图
 
 ### 产品
-- [PRODUCT_BRIEF](product/PRODUCT_BRIEF.md)：愿景、体验支柱、非目标。
-- [REQUIREMENTS](product/REQUIREMENTS.md)：带编号的功能和非功能需求。
-- [MVP_SCOPE](product/MVP_SCOPE.md)：MVP 边界与退出标准。
-- [ROADMAP](product/ROADMAP.md)：Now / Next / Later。
-- [DAY1_VERTICAL_SLICE](product/DAY1_VERTICAL_SLICE.md)：Day 1 体验脚本。
 
-### 架构
+- [PRODUCT_DIRECTION](product/PRODUCT_DIRECTION.md)：唯一长期方向，包含正典、玩法、美术、动作、战斗和技术基线。
+- [PRODUCT_BRIEF](product/PRODUCT_BRIEF.md)：0.5 的简明定位。
+- [MVP_SCOPE](product/MVP_SCOPE.md)：Pre-Capture 边界和退出标准。
+- [REQUIREMENTS](product/REQUIREMENTS.md)：带编号的产品、正典、表现和工程要求。
+- [ROADMAP](product/ROADMAP.md)：Now / Next / Later / Future。
+
+### 计划与素材
+
+- [CURRENT_STATUS](planning/CURRENT_STATUS.md)：当前事实和历史验证记录。
+- [NEXT_PHASE](planning/NEXT_PHASE.md)：唯一开工队列。
+- [BACKLOG](planning/BACKLOG.md)：尚未开工的候选项。
+- [素材工作区](../materials/00_INDEX.md)：需求、收件、sidecar、manifest、权利和验收入口。
+- [当前素材审计](delivery/MATERIALS_AUDIT_20260807.md)：已生成、未生成和延后项。
+- [最新素材交接快照](delivery/ASSET_HANDOFF_SNAPSHOT_20260807.md)：按最新收件文件核定的 request 状态、版本、缺口、门禁和生成提示词入口。
+- [当前素材返工交接](delivery/MATERIALS_REWORK_HANDOFF_20260807.md)：五个 v003 返工包、状态机制、验收链和唯一整包提示词。
+- [素材与宏观审查工作台](planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md)：0.4 阶段历史审核日志，不作为当前开工入口。
+
+### 架构与交付
+
+- [PROJECT_HANDOFF](delivery/PROJECT_HANDOFF_20260807.md)：当前版本、Git、架构、素材/盲测机制、质量门和下一智能体启动提示词。
 - [SYSTEM_OVERVIEW](architecture/SYSTEM_OVERVIEW.md)：模块边界与数据流。
-- [DATA_AND_CONTENT](architecture/DATA_AND_CONTENT.md)：配置、存档和运行产物。
-- [AI_NPC_BOUNDARY](architecture/AI_NPC_BOUNDARY.md)：scripted / hybrid / agent 边界。
-- [CLIENT_CONTRACT](architecture/CLIENT_CONTRACT.md)：客户端 API 契约。
-- [SCENE_SYSTEM](architecture/SCENE_SYSTEM.md)：场景扩展。
+- [DATA_AND_CONTENT](architecture/DATA_AND_CONTENT.md)：配置、存档和运行时产物。
+- [AI_NPC_BOUNDARY](architecture/AI_NPC_BOUNDARY.md)：scripted / hybrid / agent 权限。
 - [ADR 索引](architecture/adr/README.md)：重要架构决策。
-
-### 计划与交付
-- [CURRENT_STATUS](planning/CURRENT_STATUS.md)：当前真实状态。
-- [NEXT_PHASE](planning/NEXT_PHASE.md)：当前唯一阶段计划。
-- [BACKLOG](planning/BACKLOG.md)：候选工作。
 - [DEVELOPMENT_PROCESS](delivery/DEVELOPMENT_PROCESS.md)：从需求到发布。
 - [DEFINITION_OF_DONE](delivery/DEFINITION_OF_DONE.md)：完成定义。
-- [TEST_STRATEGY](delivery/TEST_STRATEGY.md)：测试和质量门。
-- [RELEASE_PROCESS](delivery/RELEASE_PROCESS.md)：发布与回滚。
-- [VERSIONING](delivery/VERSIONING.md)：版本和兼容。
-- [PLAYTEST](delivery/PLAYTEST.md)：试玩记录。
-- [RELEASE 0.4.0-preview.1](delivery/RELEASE_0.4.0-preview.1.md)：当前候选版范围、验证和限制。
-- [智能体交接文档](delivery/HANDOFF_20260805.md)：当前项目事实、不可破坏边界、验证基线、P0/P1 接手顺序和交接完成定义。
-- [素材宏观审查快照](delivery/MATERIALS_MACRO_AUDIT_20260805.md)：2026-08-05 新增素材的静态审查结论。
-- [素材审核清单](delivery/MATERIALS_AUDIT_20260805.csv)：逐组可用/适配/重做/暂缓状态。
-- [素材返工交付状态](planning/MATERIALS_REWORK_STATUS_20260805.md)：2026-08-05 关键图/肖像/音频返工交付记录。
-- [素材工作区](../materials/00_INDEX.md)：素材需求、提示词、收件、权利和验收规范。
-- [素材与宏观审查动态工作台](planning/MATERIALS_AND_MACRO_REVIEW_LIVE.md)：新增素材审核、宏观复审、P0/P1 单一待办和后续更新日志；后续交流以此为准。
+- [TEST_STRATEGY](delivery/TEST_STRATEGY.md)：质量门与测试层级。
+- [RUNBOOK](operations/RUNBOOK.md)：安装、启动、停止和排错。
 
-### 运行
-- [RUNBOOK](operations/RUNBOOK.md)：安装、启动、停止、验证。
-- [TROUBLESHOOTING](operations/TROUBLESHOOTING.md)：常见故障。
-- [COCOS_SETUP](operations/COCOS_SETUP.md)：冻结的备用客户端。
+## 历史文档
 
-## 文档更新规则
+[archive/2026-legacy-plans](archive/2026-legacy-plans/README.md) 保存旧的 Day 1–117、原创见习记录员、月度扩展、Cocos 和成熟化计划。历史文件可能相互冲突，禁止直接从中开工。
+
+## 更新规则
 
 | 变化 | 必须更新 |
 |---|---|
-| 产品目标/用户体验 | `PRODUCT_BRIEF.md`，必要时 `REQUIREMENTS.md` |
-| MVP 范围 | `MVP_SCOPE.md`、`ROADMAP.md` |
-| 当前能力/测试/风险 | `CURRENT_STATUS.md` |
-| 下一阶段 | **只更新** `NEXT_PHASE.md`，不要再建第二份 TODO |
-| 新候选需求 | `BACKLOG.md`，写优先级和验收 |
-| 重要架构 | 新增 ADR；不覆盖历史 ADR |
-| API/数据格式 | `CLIENT_CONTRACT.md` / `DATA_AND_CONTENT.md` 与测试 |
-| 玩家可见变化 | 根目录 `CHANGELOG.md` |
-| 发布 | `VERSION`、`CHANGELOG.md`、发布证据 |
-| 素材需求/来源/批准 | `materials/REQUESTS.csv`、sidecar、manifest 与 `materials/` 规范 |
-
-历史计划见 [archive/2026-legacy-plans/README.md](archive/2026-legacy-plans/README.md)。
+| 长期目标/玩法/美术/技术边界 | `PRODUCT_DIRECTION.md`，必要时 ADR |
+| 当前版本范围 | `PRODUCT_BRIEF.md`、`MVP_SCOPE.md`、`REQUIREMENTS.md` |
+| 真实完成度/测试/风险 | `CURRENT_STATUS.md` |
+| 当前开工顺序 | 只更新 `NEXT_PHASE.md` |
+| 新候选任务 | `BACKLOG.md` |
+| 素材需求/来源/批准 | `materials/REQUESTS.csv`、sidecar、manifest 和审计 |
+| 玩家可见变化/发布 | `CHANGELOG.md`、版本和发布证据 |

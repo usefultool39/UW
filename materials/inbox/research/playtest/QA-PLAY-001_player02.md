@@ -14,9 +14,16 @@
 - named_action_cost:
 - named_action_benefit:
 - bypassed_day_gate:
+- completed_precapture_route:
+- reached_alice_captured:
+- post_capture_progress_blocked:
+- recognized_choice_echo:
+- understood_capture_reason:
 - continue_interest:
 - hint_count:
+- total_session_minutes:
 - highest_frequency_blocker:
+- endpoint_explanation:
 
 ## 观察时间线
 
@@ -24,7 +31,9 @@
 - 第一次有效互动：
 - 第一次明显停顿或误解：
 - 尝试休息 / 日期闸：
-- 到达 Day 2 或结束：
+- 到达 N01-N10 各关键节点：
+- 到达 `alice_captured`：
+- 抓捕后推进尝试与结果：
 
 ## 玩家原话
 
@@ -36,7 +45,9 @@
    - 原话：
 4. “有没有哪里不知道该点什么？”
    - 原话：
-5. “你愿不愿意继续看 Day 2？为什么？”
+5. “爱丽丝为什么被带走？你注意到哪个早期选择后来被记住了吗？”
+   - 原话：
+6. “你愿不愿意继续探索这一阶段的其他生活内容？为什么？”
    - 原话：
 
 ## 主持人事实记录

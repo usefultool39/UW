@@ -3,10 +3,96 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from app.content_validator import validate_project
+from app.content_validator import _validate_precapture_event_contract, validate_project
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_precapture_event_contract_accepts_valid_capture_marker():
+    errors = []
+    _validate_precapture_event_contract(
+        {
+            "precapture_act": "act_3",
+            "precapture_key_node": True,
+            "precapture_endpoint": "alice_captured",
+            "choices": [{"id": "capture", "effects": {"ending_id": "alice_captured"}}],
+        },
+        "event",
+        errors,
+    )
+
+    assert errors == []
+
+
+def test_precapture_event_contract_rejects_invalid_markers():
+    errors = []
+    _validate_precapture_event_contract(
+        {
+            "precapture_act": "act_4",
+            "precapture_key_node": "yes",
+            "precapture_endpoint": "escape",
+        },
+        "event",
+        errors,
+    )
+
+    assert {issue["code"] for issue in errors} == {
+        "invalid_precapture_act",
+        "invalid_precapture_key_node",
+        "invalid_precapture_endpoint",
+    }
+
+
+def test_precapture_event_contract_rejects_legacy_visible_terms_and_spoilers():
+    errors = []
+    _validate_precapture_event_contract(
+        {
+            "precapture_act": "act_1",
+            "precapture_key_node": True,
+            "title": "露茵村的金木樨记录",
+            "choices": [{"id": "observe", "label": "让桐人继续调查"}],
+        },
+        "event",
+        errors,
+    )
+
+    codes = {issue["code"] for issue in errors}
+    assert "precapture_legacy_term" in codes
+    assert "precapture_spoiler_term" in codes
+
+
+def test_precapture_endpoint_requires_matching_key_node_choice_effect():
+    errors = []
+    _validate_precapture_event_contract(
+        {
+            "precapture_act": "act_3",
+            "precapture_endpoint": "alice_captured",
+            "choices": [{"id": "capture", "effects": {"ending_id": "alice_captured"}}],
+        },
+        "event",
+        errors,
+    )
+
+    assert {issue["code"] for issue in errors} == {"precapture_endpoint_not_key_node"}
+
+
+def test_precapture_endpoint_marker_must_match_choice_ending():
+    errors = []
+    _validate_precapture_event_contract(
+        {
+            "precapture_act": "act_3",
+            "precapture_key_node": True,
+            "precapture_endpoint": "alice_captured",
+            "choices": [
+                {"id": "capture", "effects": {"ending_id": "precapture_alice_captured"}}
+            ],
+        },
+        "event",
+        errors,
+    )
+
+    assert {issue["code"] for issue in errors} == {"precapture_endpoint_effect_mismatch"}
 
 
 def test_validate_current_project_content_has_no_errors():

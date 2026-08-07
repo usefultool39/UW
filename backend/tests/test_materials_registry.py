@@ -42,6 +42,8 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path, Path, str]:
             "source_file": "inbox/test/asset.bin",
             "runtime_file": "frontend/public/assets/runtime/asset.bin",
             "sha256": digest,
+            "approved_by": "test-reviewer",
+            "approved_at": "2026-08-06T00:00:00+08:00",
             "integrated_at": "2026-08-06T00:00:00+08:00",
         })
     return materials, manifest, runtime, digest
@@ -65,3 +67,43 @@ def test_manifest_rejects_runtime_hash_drift(tmp_path, monkeypatch, capsys):
 
     assert module.validate_manifest({"TEST-001"}) == 1
     assert "runtime hash mismatch" in capsys.readouterr().out
+
+
+def test_manifest_rejects_unregistered_runtime_file(tmp_path, monkeypatch, capsys):
+    materials, manifest, runtime, _digest = _fixture(tmp_path)
+    orphan = runtime.parent / "orphan.bin"
+    orphan.write_bytes(b"unregistered")
+    monkeypatch.setattr(module, "ROOT", materials)
+    monkeypatch.setattr(module, "MANIFEST", manifest)
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+
+    assert module.validate_manifest({"TEST-001"}) == 1
+    assert "unregistered runtime file" in capsys.readouterr().out
+
+
+def test_manifest_rejects_unapproved_runtime_status(tmp_path, monkeypatch, capsys):
+    materials, manifest, _runtime, _digest = _fixture(tmp_path)
+    with manifest.open(newline="", encoding="utf-8") as fh:
+        reader = csv.DictReader(fh)
+        rows = list(reader)
+        fields = list(reader.fieldnames or [])
+    rows[0]["status"] = "changes_requested"
+    with manifest.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)
+    monkeypatch.setattr(module, "ROOT", materials)
+    monkeypatch.setattr(module, "MANIFEST", manifest)
+    monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
+
+    assert module.validate_manifest({"TEST-001"}) == 1
+    assert "cannot declare runtime_file" in capsys.readouterr().out
+
+
+def test_text_hashes_use_git_canonical_line_endings(tmp_path):
+    text = tmp_path / "sidecar.md"
+    text.write_bytes(b"first\r\nsecond\r\n")
+
+    expected = hashlib.sha256(b"first\nsecond\n").hexdigest()
+
+    assert module._sha256(text) == expected

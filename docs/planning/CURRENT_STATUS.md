@@ -1,9 +1,45 @@
 # 当前状态
 
+> **项目级交接入口**：[PROJECT_HANDOFF_20260807.md](../delivery/PROJECT_HANDOFF_20260807.md)。它汇总版本、Git、架构、素材/盲测机制、质量门和下一智能体启动提示词；本页继续作为真实完成度和测试数字的权威事实页。
+
+> **最新素材收件快照**：[ASSET_HANDOFF_SNAPSHOT_20260807.md](../delivery/ASSET_HANDOFF_SNAPSHOT_20260807.md)。2026-08-07 后续收件的地图 v004、环境 v004、角色 v005 仍未通过 active v004 contract；不要仅因文件存在或视觉质量提升而上调状态。
+
+## 2026-08-07 Pre-Capture runtime checkpoint
+
+- Authored story remains integrated and verified: four acts, N01-N10, fixed `alice_captured` endpoint, and 46 detected cross-node echoes. `story=ready`; legacy events are isolated behind backend-authoritative route flags.
+- N10 now submits its authored choices through the verdict panel. A fresh-port `CI=1` verification on 2026-08-07 passes the Day 54 to Day 61 targeted case (`1/1`), the complete field smoke (`20/20`), and the full Playwright suite (`22/22`), including the continuous N01-N10 desktop route and touch-sized first interaction.
+- Overall Pre-Capture readiness is now reported accurately as `materials=pending, story=ready`. The seven narrative input requests pass, but 16 first-phase runtime requests are part of the materials gate.
+- The incoming v003 packages for `VIS-MAP-001`, `VIS-CHR-001` to `003`, `VIS-ENV-001`, `AUD-BGM-002`, `AUD-BGM-003`, and `AUD-AMB-002` are `changes_requested`. They have delivery fragments but do not satisfy the project schema/visual review; none entered formal MANIFEST or runtime. The active correction contract is v004.
+- The v003 delivery snapshot is now in inbox but remains rejected: `check_materials.py` reports 7 unregistered intermediate-file errors, and the v003 runtime review reports 76 schema/path/visual-delivery issues. These are delivery blockers, not accepted or runtime-complete assets.
+- The active runtime asset contract has moved non-destructively to v004. It intentionally reports missing v004 files until corrected deliveries arrive; v002/v003 findings remain audit evidence. The gate is read-only and runs from `scripts/quality.sh`.
+- The runtime asset gate now decodes non-interlaced 8-bit PNG scanlines and requires both visible pixels and actual transparent pixels; an opaque RGBA sheet with a baked checkerboard is rejected. It also validates OGG page framing so arbitrary files cannot pass by existence alone. The focused runtime-spec suite is `8 passed`, including a regression lock that keeps the active replacement contract on v004.
+- `check_materials.py` now also rejects orphan files under `frontend/public/assets/runtime`, runtime paths from non-approved manifest statuses, and runtime paths without reviewer/timestamp evidence. The current runtime directory exactly matches registered manifest paths; its focused registry suite is `5 passed`.
+- Successful engineering baseline in the project Python environment: backend `330 passed` with one existing Starlette/httpx deprecation warning; frontend unit `16 passed`; production build passed; `git diff --check` passed. The latest targeted Pre-Capture E2E passed `2/2`; the previous fresh-port full-suite `22/22` remains historical successful evidence. A new full-suite attempt timed out in the legacy field smoke, so it is a monitored orchestration/runtime risk rather than a current full-gate pass. Active v004 runtime specs report `52 issues`; materials registry reports `7 errors`; readiness remains intentionally pending until corrected deliveries arrive.
+- First phase is not complete: playable production map, real Sprite animation, VFX, capture presentation, complete audio/SFX, runtime acceptance, and 3-player blind testing remain open. `QA-PLAY-001` is still `pending-human-run` (`0/3`).
+- Material handoff is now consolidated in `docs/delivery/MATERIALS_REWORK_HANDOFF_20260807.md`: five failed v002/v003 packages have a single v004 delivery contract, role boundary, three-layer status model, eight-step acceptance chain, and one copyable prompt. The 2026-08-05 handoff and live review board are explicitly historical.
+- Project handoff is consolidated in `docs/delivery/PROJECT_HANDOFF_20260807.md`. `QA-PLAY-001` now requires each of three unfamiliar players to complete N01-N10, reach `alice_captured`, and verify post-capture progression is blocked; the older Day 1 kit remains onboarding evidence only.
+- Handoff closeout rerun: backend `330 passed`, frontend unit `16 passed`, production build passed, and `git diff --check` passed. Targeted Pre-Capture Playwright on isolated ports `8034/4194` passed `2/2` (desktop N01-N10 plus 390x844 first interaction). A new full-suite attempt on `8033/4193` timed out in the legacy Day 54-61 `field-smoke` after the page reported a map-load/unknown-location state and the retry lost the frontend connection; therefore the earlier fresh-port `22/22` remains the last successful full-suite evidence, not a result from this closeout rerun.
+
+The sections below are retained as historical iteration records. When their older test counts or readiness labels conflict with this checkpoint, this checkpoint is authoritative.
+
 - **状态**：Current / 权威事实页
-- **快照日期**：2026-08-06
-- **Git 基线**：`main` / `origin/main`（第二月 Day 61 尾声闭环；具体提交以 `git log -1` 为准）
-- **版本标识**：`0.4.0-preview.1`（候选工作区；首批 runtime 素材与 AI 安全增强已接入；未创建 tag）
+- **快照日期**：2026-08-07
+- **Git 基线**：`main` / `5ca1cb6`，工作区包含尚未提交的 Pre-Capture 收束改动
+- **版本标识**：运行时仍为 `0.4.0-preview.1`；当前目标为尚未发布的 `0.5.0-pre-capture`
+
+## 0.5 当前快照（先读本节）
+
+- 当前产品目标已改为忠实覆盖 Alicization 前期从卢利特村日常到爱丽丝被整合骑士带走；旧“原创见习记录员分支”不再是当前定位。
+- Vue 3 + Phaser 3 + FastAPI 技术栈、地图/活动、关系/记忆、日期闸、存档、离线 scripted、内容校验和自动测试基础已存在，继续复用。
+- 正式 Pre-Capture 剧情已完成自动 authored contract 校验：四幕、N01-N10、唯一抓捕终点和跨节点回响均已存在；它仍未达到第一阶段完成，因为正式素材验收与真人盲测未完成。
+- 当前 readiness 为 `materials=pending, story=ready`；7 项叙事输入通过，16 项 runtime 输入中有 8 项 `changes_requested`、4 项 `deferred`，因此不能把材料登记误写成正式素材完成。
+- 已有候选/内测素材：开场关键图、部分肖像/UI、第一批 BGM/环境声。新收到的地图、核心 Sprite、六场景和第二批音频均留在 inbox 返工；仍缺互动动作、完整图标/VFX、SFX、抓捕关键图和整合骑士素材。
+- 当前框架不迁移，完整战斗延后到独立原型。视觉/音频智能体只交付素材；剧情、代码、接入、审核和 QA 由本项目流程完成。
+- `VIS-KA-002`、`VIS-CHR-005`、`VIS-ANIM-001`、`VIS-TILE-001` 已补登记为 `P1/deferred`，尚未生成或验收；0.5 的首批生产队列仍以素材审计列出的地图、核心 Sprite、场景、VFX 和音频为准。
+- 本轮 0.5 Pre-Capture 验证以本页顶部 Runtime checkpoint 为准；下方历史迭代数字只保留审计。稳定快照：v003 materials `7 errors`、v003 runtime review `76 issues`、active v004 contract pending；工程门 backend `330 passed`、frontend unit `16 passed`、build passed、Playwright `22 passed`。
+- 当前唯一执行入口是 [NEXT_PHASE.md](NEXT_PHASE.md)，素材细目见 [MATERIALS_AUDIT_20260807.md](../delivery/MATERIALS_AUDIT_20260807.md)。
+
+> 下方 Day 1–117、原创见习记录员、月度循环和旧测试数字是系统演进/兼容记录。保留它们用于审计，但不得据此判断当前正典主线已完成，也不得从中继续扩写 Day 118+。
 
 ## 版本收束（2026-08-04）
 
@@ -244,3 +280,50 @@
 - 新增 `/Users/lzm/Desktop/UW/scripts/check_playtest_round.py` 与三个空白匿名记录模板；默认只报告 `pending-human-run`，只有真实回填满足字段后才允许 `--require-complete` 通过。
 - 盲测启动记录写入被 Git 忽略的 `runs/playtest/`，只作为环境元数据，不伪造玩家证据。
 - 本轮快速预检：后端 `293 passed`；前端单测 `16 passed`；build 通过；材料与 runtime hash 校验通过；Playwright E2E `20 passed`。真人盲测仍为 `pending-human-run`。
+
+## 2026-08-06 Pre-Capture 方向审计
+
+- 长期目标已锁定为从卢利特村可信日常连续玩到爱丽丝被整合骑士带走；后续章节另立阶段。
+- Alicization 第一季官方 `Episode 1: Underworld` 与 `Episode 3: The End Mountains` 已作为当前事实锚点；“End of World”尚未确认是独立正传电影名。
+- 当前运行时已有 21 个主事件和 28 个日期闸门，覆盖到 Day 117，但尚无尽头山脉越界和抓捕终点；长线循环不能替代目标剧情完成度。
+- 运行数据仍存在旧角色名/旧术语，后续新文本必须统一正典显示名，旧 ID 仅保留兼容。
+- 当前停止扩写 Day 118+；等待用户返还 `NAR-CANON-001` 等需求素材后，按四幕、8–12 个关键节点完成 Pre-Capture 主线。
+- 执行入口：`materials/11_PRECAPTURE_EXECUTION_BRIEF.md`；素材与交流继续以 `materials/` 和 `MATERIALS_AND_MACRO_REVIEW_LIVE.md` 为单一入口。
+## 2026-08-06 Pre-Capture readiness check
+
+- Added `materials/tools/check_precapture_readiness.py` as a read-only report for the seven P0 material requests, source registration, four authored acts, 8-12 key nodes, fixed capture endpoint, and cross-node echoes.
+- Current report is `materials=pending` and `story=pending`: the existing story file has 21 events but no Pre-Capture authored markers, fixed Alice capture endpoint, or readiness-contract echoes.
+- Fixed `check_materials.py` text hashing for Windows `core.autocrlf=true`; `.md/.svg/.json/.csv` hashes are normalized to Git LF bytes while binary hashes remain byte-exact. Materials validation now passes for 36 requests.
+- Added readiness and text-hash regression tests. Focused tests pass `5 passed`. Empty P0 delivery directories only keep requested inbox paths valid; they do not mean materials were received.
+Added incremental validation for `precapture_act`, `precapture_key_node`, and `precapture_endpoint`; legacy events remain compatible, while marked capture events must write an allowed capture `ending_id` through a choice effect.
+## 2026-08-06 Backend environment recovery
+
+- Created the project-local `backend/.venv` from Python 3.11 and installed `backend/requirements.txt`; the existing start and quality scripts can now use their declared interpreter path.
+- Full backend regression: `299 passed`, with one existing Starlette/httpx deprecation warning. This verifies the current story/session/API baseline plus the Pre-Capture contract tests.
+
+## 2026-08-06 Windows E2E revalidation
+
+- Full Playwright regression passed on isolated ports: `20 passed` (`E2E_BACKEND_PORT=8011`, `E2E_FRONTEND_PORT=4174`).
+- A first run on the common `8765/3000` ports reused an unstable local service and produced cascading connection refusals; the isolated rerun confirms this was not a gameplay regression.
+- Playwright now discovers the project-local Windows Python at `backend/.venv/python.exe` (and standard `Scripts/python.exe`) before the legacy `.conda/uw-runtime` fallback, so `npm run test:e2e` no longer requires a manual `PYTHON_BIN` override.
+
+## 2026-08-06 Return packet and Windows quality gate
+
+- `scripts/quality.sh` and `scripts/playtest-preflight.sh` now discover `backend/.venv/bin/python`, Conda-style `backend/.venv/python.exe`, standard Windows `Scripts/python.exe`, and the legacy runtime in that order; an explicit `PYTHON_BIN` still wins.
+- Added return instructions to all seven Pre-Capture P0 inbox directories. These README files are ignored by readiness counting and do not change any request from `requested` to `received`.
+- Windows Git Bash quality gate passed with no manual Python override: materials `36 requests`, backend `299 passed` with one existing deprecation warning, frontend `16 passed`, production build passed, and `git diff --check` passed.
+- Quick playtest preflight passed and recorded automated readiness only; `QA-PLAY-001` remains `pending-human-run` with `0/3` human runs.
+- Full Playwright E2E also passed without `PYTHON_BIN` override on isolated ports `8013/4176`: `20 passed`.
+- Pre-Capture readiness now validates sidecar metadata (`request_id`, source, date, license, source URL, intended use) for seven narrative and 16 first-phase runtime requests, and rejects MANIFEST sources outside the request delivery directory.
+- Marked Pre-Capture events now reject deprecated player-facing terminology and explicit post-capture spoilers. The capture endpoint must be a key node, appear exactly once as the final marked node, and use a matching choice `ending_id`; focused content/readiness tests pass `16 passed`, and the latest full quality gate passes with backend `306 passed`, frontend `16 passed`, and a successful production build.
+- The capture endings `alice_captured` and `precapture_alice_captured` are now hard chapter terminals: story events, time/day progression, authored flags, NPC responses, dialogue, and story-node advancement are rejected after capture. Movement and scene/hub viewing remain available, while legacy route labels such as `cross` retain their existing non-terminal behavior.
+- Terminal-state regression coverage passes in `backend/tests/test_story_director_events.py`; no Pre-Capture authored content has been accepted yet, so readiness remains `materials=pending`, `story=pending`, and human playtest remains `pending-human-run`.
+## 2026-08-07 素材审计快照
+
+- 当前详细审计见 `docs/delivery/MATERIALS_AUDIT_20260807.md`。
+- 已生成并可继续审核：`VIS-KA-001`、`VIS-POR-001`、`VIS-UI-001`、`AUD-BGM-001`、`AUD-AMB-001`；它们是候选/内测素材，不代表完整美术和音频制作完成。
+- 已收到但返工：`VIS-MAP-001`、`VIS-CHR-001` 至 `003`、`VIS-ENV-001`、`AUD-BGM-002`、`AUD-BGM-003`、`AUD-AMB-002`；它们均为 `changes_requested`，不得接入 runtime。
+- 仍未收到：互动动作、完整图标、VFX、SFX、抓捕终点关键图、整合骑士到场素材和地图贴图/道具生产包。
+- 新登记但继续延后：`VIS-KA-002`、`VIS-CHR-005`、`VIS-ANIM-001`、`VIS-TILE-001`。
+- `check_materials.py`：最新稳定快照为 7 errors，来自 v003 工作目录中的未登记中间文件；v003 正式交付文件仍未进入 MANIFEST/runtime。
+- Pre-Capture：`materials=pending`，`story=ready`；N01-N10、四幕、唯一抓捕终点和跨节点回响已完成自动校验，但美术/音频验收和 3 人盲测仍未完成。

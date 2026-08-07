@@ -4,17 +4,21 @@
 
 ## 开始前必须阅读
 
-1. `docs/README.md`
-2. `docs/planning/CURRENT_STATUS.md`
-3. `docs/product/PRODUCT_BRIEF.md`
-4. `docs/planning/NEXT_PHASE.md`
-5. `docs/architecture/SYSTEM_OVERVIEW.md`
-6. `docs/delivery/DEVELOPMENT_PROCESS.md`
-7. `docs/delivery/DEFINITION_OF_DONE.md`
+1. `docs/delivery/PROJECT_HANDOFF_20260807.md`
+2. `docs/delivery/ASSET_HANDOFF_SNAPSHOT_20260807.md`
+3. `docs/README.md`
+4. `docs/product/PRODUCT_DIRECTION.md`
+5. `docs/planning/CURRENT_STATUS.md`
+6. `docs/product/PRODUCT_BRIEF.md`
+7. `docs/planning/NEXT_PHASE.md`
+8. `docs/delivery/MATERIALS_REWORK_HANDOFF_20260807.md`
+9. `docs/architecture/SYSTEM_OVERVIEW.md`
+10. `docs/delivery/DEVELOPMENT_PROCESS.md`
+11. `docs/delivery/DEFINITION_OF_DONE.md`
 
 ## 当前唯一方向
 
-稳定 Day 1–3 纵切片：容易上手、行动有判断、关系有回响、异常逐步升级。不要因为 `docs/archive/` 的旧 TODO 扩写无关内容。
+按 `docs/product/PRODUCT_DIRECTION.md` 建设大众化、可扩展的 2D RPG。当前先完成正典兼容的 Pre-Capture 垂直切片；不要因为 `docs/archive/` 的旧 TODO 扩写无关内容，也不要把未经审核的素材直接接入运行时。
 
 ## 不可破坏的边界
 
@@ -27,11 +31,21 @@
 
 ## 常用入口
 
+Windows：
+
+```powershell
+.\启动全部项目.bat
+# 或
+.\start.bat
+```
+
+macOS / Git Bash 质量门：
+
 ```bash
 ./启动游戏.command              # macOS 启动游戏
 ./启动游戏.command --setup-only # 只准备环境
 ./scripts/quality.sh            # 后端 + 前端单测 + build + diff check
-cd frontend && PYTHON_BIN=../backend/.venv/bin/python npm run test:e2e
+cd frontend && npm run test:e2e
 ```
 
 ## 修改完成后

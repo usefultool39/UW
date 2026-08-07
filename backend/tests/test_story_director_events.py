@@ -10,6 +10,26 @@ def test_available_events_start_with_day_one_choices():
     assert "ch1_d1_training_with_eugeo" in ids
 
 
+def test_legacy_choice_locks_precapture_route():
+    sess = Session(run_id="test-legacy-route-lock")
+    out = sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
+    assert out["ok"] is True
+    assert sess.state.flags["legacy_story_mode"] == 1
+    ids = {event["id"] for event in sess.available_story_events()["events"]}
+    assert "ch1pc_n01_rulid_daily" not in ids
+    assert sess.choose_story_event("ch1pc_n01_rulid_daily", "warm_bond")["error"] == "event_not_available"
+
+
+def test_precapture_choice_locks_legacy_route():
+    sess = Session(run_id="test-precapture-route-lock")
+    out = sess.choose_story_event("ch1pc_n01_rulid_daily", "warm_bond")
+    assert out["ok"] is True
+    assert sess.state.flags["precapture_mode"] == 1
+    ids = {event["id"] for event in sess.available_story_events()["events"]}
+    assert "ch1_d1_reading_clue" not in ids
+    assert "ch1pc_n02_gigas_calling" in ids
+
+
 def test_choose_event_updates_flags_relationship_and_memory():
     sess = Session(run_id="test-story-choice")
     out = sess.choose_story_event("ch1_d1_reading_clue", "ask_alice")
@@ -126,6 +146,21 @@ def test_day_three_cross_boundary_sets_ending_and_memory():
     assert sess.state.chapter_ending_id == "cross"
     assert sess.state.flags["boundary_rule_touched"] == 1
     assert any(item["npc_id"] == "eugeo" for item in out["memory_written"])
+
+
+def test_precapture_capture_ending_is_terminal_but_legacy_route_labels_are_not():
+    terminal = Session(run_id="test-precapture-terminal")
+    terminal.state = terminal.state.model_copy(update={"chapter_ending_id": "alice_captured"})
+
+    assert terminal.available_story_events()["events"] == []
+    assert terminal.player_action(kind="rest_until_next_day")["error"] == "chapter_ended"
+    assert terminal.player_action(kind="set_flag", flag_key="after_capture", flag_value=1)["error"] == "chapter_ended"
+    assert terminal.story_advance("mq01_tree_arc")["error"] == "chapter_ended"
+    assert terminal.dialogue(npc_id="alice", message="还在吗？")["error"] == "chapter_ended"
+
+    legacy = Session(run_id="test-legacy-route-label")
+    legacy.state = legacy.state.model_copy(update={"chapter_ending_id": "cross"})
+    assert legacy.player_action(kind="set_flag", flag_key="legacy_route", flag_value=1)["ok"] is True
 
 
 def test_day_two_library_echo_choices_are_route_specific():

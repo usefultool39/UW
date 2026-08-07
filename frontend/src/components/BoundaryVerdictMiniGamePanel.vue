@@ -96,7 +96,7 @@ const emit = defineEmits(['update:modelValue', 'complete'])
 
 const maxPicked = 3
 const selectedIds = ref([])
-const selectedEnding = ref('obey_order')
+const selectedEnding = ref('')
 
 const evidence = [
   { id: 'law_pressure', label: '禁忌目录仍在', note: '规则没有声音，但每个人都知道它在', order: 34, truth: 4, secrecy: 6 },
@@ -107,11 +107,27 @@ const evidence = [
   { id: 'wind_returns', label: '风声在边界后回流', note: '源头似乎只差一步就会承认你', order: 0, truth: 32, secrecy: 0 }
 ]
 
-const endings = [
+const defaultEndings = [
   { id: 'obey_order', label: '遵守规则，回村报告', hint: '保住安全和秩序，把异常交给村子处理。' },
   { id: 'cross_boundary', label: '越过边界，确认源头', hint: '触碰规则，但最接近静默线背后的真相。' },
   { id: 'hide_anomaly', label: '隐瞒异常，保护同伴', hint: '把风险留在自己心里，关系会留下阴影。' }
 ]
+
+const endings = computed(() => {
+  const choices = Array.isArray(props.event?.choices) ? props.event.choices : []
+  if (!choices.length) return defaultEndings
+  const defaultIds = new Set(defaultEndings.map((ending) => ending.id))
+  if (choices.length === defaultEndings.length && choices.every((choice) => defaultIds.has(String(choice?.id)))) {
+    return defaultEndings
+  }
+  return choices
+    .filter((choice) => choice?.id)
+    .map((choice) => ({
+      id: String(choice.id),
+      label: choice.label || String(choice.id),
+      hint: choice.hint || choice.preview || ''
+    }))
+})
 
 const selectedItems = computed(() =>
   selectedIds.value.map((id) => evidence.find((item) => item.id === id)).filter(Boolean)
@@ -174,7 +190,7 @@ function toggleEvidence(id) {
 
 function reset() {
   selectedIds.value = []
-  selectedEnding.value = 'obey_order'
+  selectedEnding.value = endings.value[0]?.id || ''
 }
 
 function close() {
@@ -184,7 +200,7 @@ function close() {
 
 function finish() {
   if (props.busy || !canFinish.value) return
-  const ending = endings.find((item) => item.id === selectedEnding.value)
+  const ending = endings.value.find((item) => item.id === selectedEnding.value)
   emit('complete', {
     choice_id: selectedEnding.value,
     result: {

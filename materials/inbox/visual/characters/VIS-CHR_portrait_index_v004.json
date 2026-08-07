@@ -1,0 +1,52 @@
+{
+  "schema_version": "v004",
+  "request_ids": [
+    "VIS-CHR-001",
+    "VIS-CHR-002",
+    "VIS-CHR-003"
+  ],
+  "created_at": "2026-08-07",
+  "intended_use": "美术重画 sprite 时的视觉参考, 不直接进 runtime",
+  "supersedes_sprite_sheet": "否 — 仅补充 v003 sprite sheet, 等待美术重画后产生 v005 sprite sheet",
+  "portraits": [
+    {
+      "request_id": "VIS-CHR-001",
+      "character": "kirito",
+      "file": "VIS-CHR-001_kirito_portrait_v004.png",
+      "size_px": {
+        "w": 2048,
+        "h": 2048
+      },
+      "mode": "RGB",
+      "background": "pure white",
+      "pose": "full-body front-facing, hands at sides, head slightly three-quarter",
+      "sha256": "a39a0037bf700403c93d4efe7328d9c9b28f6e80cf1515b0675ddaad44313239"
+    },
+    {
+      "request_id": "VIS-CHR-002",
+      "character": "alice",
+      "file": "VIS-CHR-002_alice_portrait_v004.png",
+      "size_px": {
+        "w": 2048,
+        "h": 2048
+      },
+      "mode": "RGB",
+      "background": "pure white",
+      "pose": "full-body front-facing, hands at sides, head slightly three-quarter",
+      "sha256": "38bed653cefe847d9a486cd45f53ecf005acdc7475598a7154dcc0cf03b70cb9"
+    },
+    {
+      "request_id": "VIS-CHR-003",
+      "character": "eugeo",
+      "file": "VIS-CHR-003_eugeo_portrait_v004.png",
+      "size_px": {
+        "w": 2048,
+        "h": 2048
+      },
+      "mode": "RGB",
+      "background": "pure white",
+      "pose": "full-body front-facing, hands at sides, head slightly three-quarter",
+      "sha256": "4571a20aa059442ad6ab3642ff440a98fa9d728f8662e839ae40c627e81941e3"
+    }
+  ]
+}

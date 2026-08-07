@@ -59,3 +59,9 @@
 ## 4. 首轮接入目标
 
 只选择：1 张开场图、3 人肖像、12 图标、1 首 BGM、1 条 ambience。接入后再用 3 名首次玩家测试是否真的提升“看懂目标、愿意继续、感到人物关系”。如果没有提升，不扩量。
+# 2026-08-07 current snapshot
+
+This file keeps the original 2026-08-04 audit for history. The current authoritative asset snapshot is `docs/delivery/MATERIALS_AUDIT_20260807.md`.
+As of 2026-08-07, the first key-art, portrait, icon, BGM, and ambience samples exist. A new map, core-character, six-scene, and second-wave audio batch was received in `materials/inbox`, but it is `changes_requested`, not approved or integrated. The map is a flattened/non-playable illustration package, character files are non-transparent single poses rather than animation sheets, and audio measurements/durations are invalid for acceptance. VFX, capture presentation, SFX, interaction animation, and tile/prop packages remain undelivered.
+
+`check_precapture_readiness.py` now reports `materials=pending, story=ready`; `check_materials.py` reports 68 missing-sidecar errors. See the request-scoped `REWORK_*_20260807.md` files and the authoritative delivery audit before asking for regeneration or runtime promotion.

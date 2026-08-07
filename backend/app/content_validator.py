@@ -15,6 +15,24 @@ Issue = dict[str, str]
 
 RELATIONSHIP_FIELDS = {"affinity", "trust", "tension"}
 TIME_BANDS = {"morning", "afternoon", "evening", "night"}
+PRECAPTURE_ACTS = {"act_0", "act_1", "act_2", "act_3"}
+PRECAPTURE_ENDPOINTS = {"alice_captured", "precapture_alice_captured"}
+PRECAPTURE_VISIBLE_FIELDS = {
+    "title", "summary", "description", "text", "result_text", "hint",
+    "label", "body", "prompt", "opening_text", "closing_text",
+}
+PRECAPTURE_TERM_REPLACEMENTS = {
+    "露茵村": "卢利特村",
+    "艾琳": "爱丽丝",
+    "悠吉欧": "尤吉欧",
+    "尤里": "尤吉欧",
+    "古誓树": "巨神树",
+    "北境律令": "禁忌目录",
+    "刻印术": "神圣术",
+    "村西书库": "教会书库",
+    "莉娜": "赛尔卡",
+}
+PRECAPTURE_SPOILER_TERMS = {"金木樨", "现实世界"}
 
 
 def _add_issue(
@@ -699,6 +717,118 @@ def _collect_maps(
     return maps_by_id, scene_ids, maps_by_scene, poi_by_id, activity_refs
 
 
+def _validate_precapture_event_contract(
+    event: dict[str, Any],
+    event_path: str,
+    errors: list[Issue],
+) -> None:
+    """Validate optional Pre-Capture authoring metadata without affecting legacy events."""
+    act = event.get("precapture_act")
+    if act is None:
+        for container_key in ("metadata", "authored"):
+            container = event.get(container_key)
+            if isinstance(container, dict) and container.get("precapture_act") is not None:
+                act = container.get("precapture_act")
+                break
+    if act is not None and str(act) not in PRECAPTURE_ACTS:
+        _add_issue(
+            errors,
+            code="invalid_precapture_act",
+            path=f"{event_path}.precapture_act",
+            message=f"Pre-Capture act must be one of {sorted(PRECAPTURE_ACTS)}.",
+        )
+
+    key_node = event.get("precapture_key_node")
+    if key_node is not None and not isinstance(key_node, bool):
+        _add_issue(
+            errors,
+            code="invalid_precapture_key_node",
+            path=f"{event_path}.precapture_key_node",
+            message="Pre-Capture key-node marker must be boolean.",
+        )
+
+    if key_node is True and act is None:
+        _add_issue(
+            errors,
+            code="precapture_key_node_act_missing",
+            path=f"{event_path}.precapture_act",
+            message="A Pre-Capture key node must declare one of the four authored acts.",
+        )
+
+    if key_node is not None or act is not None or event.get("precapture_endpoint") is not None:
+        text_fields: list[tuple[str, str]] = []
+        for field in PRECAPTURE_VISIBLE_FIELDS:
+            value = event.get(field)
+            if isinstance(value, str):
+                text_fields.append((field, value))
+        choices = event.get("choices") if isinstance(event.get("choices"), list) else []
+        for choice_idx, choice in enumerate(choices):
+            if not isinstance(choice, dict):
+                continue
+            for field in PRECAPTURE_VISIBLE_FIELDS:
+                value = choice.get(field)
+                if isinstance(value, str):
+                    text_fields.append((f"choices[{choice_idx}].{field}", value))
+        for field, value in text_fields:
+            for forbidden, replacement in PRECAPTURE_TERM_REPLACEMENTS.items():
+                if forbidden in value:
+                    _add_issue(
+                        errors,
+                        code="precapture_legacy_term",
+                        path=f"{event_path}.{field}",
+                        message=f"Visible Pre-Capture text uses '{forbidden}'; use '{replacement}'.",
+                    )
+            for spoiler in PRECAPTURE_SPOILER_TERMS:
+                if spoiler in value:
+                    _add_issue(
+                        errors,
+                        code="precapture_spoiler_term",
+                        path=f"{event_path}.{field}",
+                        message=f"Visible Pre-Capture text reveals post-capture spoiler '{spoiler}'.",
+                    )
+
+    endpoint = event.get("precapture_endpoint")
+    if endpoint is None:
+        return
+    if str(endpoint) not in PRECAPTURE_ENDPOINTS:
+        _add_issue(
+            errors,
+            code="invalid_precapture_endpoint",
+            path=f"{event_path}.precapture_endpoint",
+            message=f"Pre-Capture endpoint must be one of {sorted(PRECAPTURE_ENDPOINTS)}.",
+        )
+        return
+    if key_node is not True:
+        _add_issue(
+            errors,
+            code="precapture_endpoint_not_key_node",
+            path=f"{event_path}.precapture_key_node",
+            message="The fixed capture endpoint must be marked as a key node.",
+        )
+
+    choices = event.get("choices") if isinstance(event.get("choices"), list) else []
+    ending_ids = {
+        str(choice.get("effects", {}).get("ending_id"))
+        for choice in choices
+        if isinstance(choice, dict) and isinstance(choice.get("effects"), dict)
+        and choice.get("effects", {}).get("ending_id") is not None
+    }
+    if not ending_ids.intersection(PRECAPTURE_ENDPOINTS):
+        _add_issue(
+            errors,
+            code="precapture_endpoint_effect_missing",
+            path=f"{event_path}.choices",
+            message="A marked Pre-Capture endpoint must set an allowed ending_id in a choice effect.",
+        )
+    elif str(endpoint) not in ending_ids:
+        _add_issue(
+            errors,
+            code="precapture_endpoint_effect_mismatch",
+            path=f"{event_path}.choices",
+            message="The endpoint marker and choice ending_id must use the same capture endpoint.",
+        )
+
+
 def _validate_story_events(
     project_root: Path,
     *,
@@ -709,19 +839,39 @@ def _validate_story_events(
     errors: list[Issue],
     warnings: list[Issue],
 ) -> set[str]:
-    story_path = project_root / "data" / "story" / "events_chapter_01.json"
-    raw = _load_json_file(story_path, errors)
-    rows = _dict_rows(raw, "events", "data/story/events_chapter_01.json", errors) if isinstance(raw, dict) else []
-    event_ids = {str(event.get("id") or "") for _, event in rows if event.get("id")}
+    story_paths = [
+        project_root / "data" / "story" / "events_chapter_01.json",
+        project_root / "data" / "story" / "events_precapture_chapter_01.json",
+    ]
+    source_rows: list[tuple[str, int, dict[str, Any]]] = []
+    for story_path in story_paths:
+        if not story_path.is_file() and story_path.name.startswith("events_precapture_"):
+            continue
+        raw = _load_json_file(story_path, errors)
+        source_path = story_path.relative_to(project_root).as_posix()
+        rows = _dict_rows(raw, "events", source_path, errors) if isinstance(raw, dict) else []
+        source_rows.extend((source_path, idx, event) for idx, event in rows)
+    event_ids = {str(event.get("id") or "") for _, _, event in source_rows if event.get("id")}
     seen: set[str] = set()
-    for idx, event in rows:
-        event_path = f"data/story/events_chapter_01.json.events[{idx}]"
+    for source_path, idx, event in source_rows:
+        event_path = f"{source_path}.events[{idx}]"
         event_id = str(event.get("id") or "")
         if not event_id:
             _add_issue(errors, code="missing_event_id", path=event_path, message="Event id is required.")
         elif event_id in seen:
             _add_issue(errors, code="duplicate_event_id", path=event_path, message=f"Duplicate event id '{event_id}'.")
         seen.add(event_id)
+
+        _validate_precapture_event_contract(event, event_path, errors)
+
+        advance_band = event.get("advance_to_time_band")
+        if advance_band is not None and str(advance_band) not in TIME_BANDS:
+            _add_issue(
+                errors,
+                code="unknown_time_band",
+                path=f"{event_path}.advance_to_time_band",
+                message=f"Unknown authored time band '{advance_band}'.",
+            )
 
         _validate_conditions(
             event.get("trigger"),
@@ -1038,15 +1188,20 @@ def _collect_written_flags(project_root: Path) -> set[str]:
             if isinstance(values, dict):
                 written.update(str(item) for item in values)
 
-    story_path = project_root / "data" / "story" / "events_chapter_01.json"
-    story = _load_json_file(story_path, [])
-    if isinstance(story, dict):
-        for event in story.get("events") or []:
-            if not isinstance(event, dict):
-                continue
-            for choice in event.get("choices") or []:
-                if isinstance(choice, dict):
-                    collect_effects(choice.get("effects"))
+    for story_path in (
+        project_root / "data" / "story" / "events_chapter_01.json",
+        project_root / "data" / "story" / "events_precapture_chapter_01.json",
+    ):
+        if not story_path.is_file():
+            continue
+        story = _load_json_file(story_path, [])
+        if isinstance(story, dict):
+            for event in story.get("events") or []:
+                if not isinstance(event, dict):
+                    continue
+                for choice in event.get("choices") or []:
+                    if isinstance(choice, dict):
+                        collect_effects(choice.get("effects"))
 
     activity_path = project_root / "data" / "world" / "scene_activities.json"
     activities = _load_json_file(activity_path, [])

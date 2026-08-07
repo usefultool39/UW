@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "map": {
+    "request_id": "VIS-MAP-001",
+    "metadata_file": "materials/inbox/visual/world/VIS-MAP-001_map_v004.json",
+    "runtime_size": [3024, 1792],
+    "required_layers": [
+      "terrain",
+      "water",
+      "roads",
+      "buildings",
+      "vegetation",
+      "occlusion",
+      "foreground",
+      "lighting",
+      "weather"
+    ],
+    "alpha_layers": ["occlusion", "foreground", "lighting", "weather"],
+    "required_data": ["collision", "walkable", "interaction"]
+  },
+  "characters": [
+    {
+      "request_id": "VIS-CHR-001",
+      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-001_frames_v004.json",
+      "accepted_frame_sizes": [[64, 96], [96, 128]],
+      "directions": ["down", "left", "right", "up"],
+      "animations": {"idle": 2, "walk": 6, "interact": 4}
+    },
+    {
+      "request_id": "VIS-CHR-002",
+      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-002_frames_v004.json",
+      "accepted_frame_sizes": [[64, 96], [96, 128]],
+      "directions": ["down", "left", "right", "up"],
+      "animations": {"idle": 2, "walk": 6, "interact": 4}
+    },
+    {
+      "request_id": "VIS-CHR-003",
+      "metadata_file": "materials/inbox/visual/characters/VIS-CHR-003_frames_v004.json",
+      "accepted_frame_sizes": [[64, 96], [96, 128]],
+      "directions": ["down", "left", "right", "up"],
+      "animations": {"idle": 2, "walk": 6, "interact": 4}
+    }
+  ],
+  "environments": {
+    "request_id": "VIS-ENV-001",
+    "metadata_file": "materials/inbox/visual/environments/VIS-ENV-001_scenes_v004.json",
+    "size": [1920, 1080],
+    "scenes": [
+      "church_library",
+      "gigas_clearing",
+      "home_hearth",
+      "north_gate",
+      "forest_path",
+      "end_mountains_cave"
+    ]
+  },
+  "audio": [
+    {
+      "request_id": "AUD-BGM-002",
+      "metadata_file": "materials/inbox/audio/audio.meta_v004.fragment.json",
+      "measurement_file": "materials/inbox/audio/measurements_v004.json",
+      "stems": [
+        "AUD-BGM-002_boundary_investigation_a_v004",
+        "AUD-BGM-002_boundary_investigation_b_v004"
+      ],
+      "duration_seconds": [75, 110],
+      "loudness_lufs": [-20, -17],
+      "peak_dbfs_max": -1
+    },
+    {
+      "request_id": "AUD-BGM-003",
+      "metadata_file": "materials/inbox/audio/audio.meta_v004.fragment.json",
+      "measurement_file": "materials/inbox/audio/measurements_v004.json",
+      "stems": [
+        "AUD-BGM-003_relationship_daily_a_v004",
+        "AUD-BGM-003_relationship_daily_b_v004"
+      ],
+      "duration_seconds": [60, 100],
+      "loudness_lufs": [-20, -17],
+      "peak_dbfs_max": -1
+    },
+    {
+      "request_id": "AUD-AMB-002",
+      "metadata_file": "materials/inbox/audio/audio.meta_v004.fragment.json",
+      "measurement_file": "materials/inbox/audio/measurements_v004.json",
+      "stems": [
+        "AUD-AMB-002_forest_silence_normal_v004",
+        "AUD-AMB-002_forest_silence_silent_v004"
+      ],
+      "duration_seconds": [60, 90],
+      "loudness_lufs": [-26, -22],
+      "peak_dbfs_max": -2,
+      "matched_duration_tolerance_seconds": 0.1
+    }
+  ]
+}

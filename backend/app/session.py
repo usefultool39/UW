@@ -31,7 +31,7 @@ from .player_actions import (
 )
 from .relationship import apply_relationship_effects, ensure_relationships, npc_profile
 from .scene_activities import find_scene_activity
-from .story_director import available_events, choose_event, day_gate_status
+from .story_director import available_events, chapter_is_terminal, choose_event, day_gate_status
 from .story_catalog import can_enter_node, default_catalog_path, load_main_nodes
 from .world import (
     advance_tick,
@@ -157,6 +157,8 @@ class Session:
         with self._lock:
             self.state = ensure_relationships(self.state)
             self._refresh_runtime_views()
+            if chapter_is_terminal(self.state):
+                return {"ok": False, "error": "chapter_ended", "state": self.state.model_dump(mode="json")}
             npc_ids = {agent.id for agent in self.state.agents}
             if npc_id not in npc_ids:
                 return {"ok": False, "error": "unknown_npc"}
@@ -375,6 +377,14 @@ class Session:
 
             if kind not in PLAYER_ACTIONS:
                 return fail("unknown_action_kind")
+
+            if chapter_is_terminal(self.state) and kind not in {
+                "move_world",
+                "move_map",
+                "move_scene",
+                "interact_with_hub",
+            }:
+                return fail("chapter_ended")
 
             if kind in {"move_world", "move_map"}:
                 did_map_migration = False
@@ -889,6 +899,12 @@ class Session:
 
     def story_advance(self, target_id: str) -> dict:
         with self._lock:
+            if chapter_is_terminal(self.state):
+                return {
+                    "ok": False,
+                    "error": "chapter_ended",
+                    "state": self.state.model_dump(mode="json"),
+                }
             catalog = load_main_nodes(default_catalog_path(self.root))
             raw_nodes = catalog.get("nodes") or {}
             if not isinstance(raw_nodes, dict):
@@ -926,6 +942,8 @@ class Session:
     ) -> dict:
         with self._lock:
             self.state = ensure_relationships(self.state)
+            if chapter_is_terminal(self.state):
+                return {"ok": False, "error": "chapter_ended", "state": self.state.model_dump(mode="json")}
             npc_ids = {a.id for a in self.state.agents}
             if npc_id not in npc_ids:
                 return {

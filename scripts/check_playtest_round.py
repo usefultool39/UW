@@ -21,6 +21,11 @@ ENUMS = {
     "named_action_benefit": {"yes", "partial", "no"},
     "bypassed_day_gate": {"yes", "no"},
     "continue_interest": {"yes", "uncertain", "no"},
+    "completed_precapture_route": {"yes"},
+    "reached_alice_captured": {"yes"},
+    "post_capture_progress_blocked": {"yes"},
+    "recognized_choice_echo": {"yes", "partial", "no"},
+    "understood_capture_reason": {"yes", "partial", "no"},
     "consent_recorded": {"yes"},
 }
 REQUIRED_TEXT = {
@@ -31,8 +36,9 @@ REQUIRED_TEXT = {
     "prior_experience",
     "recording_file",
     "highest_frequency_blocker",
+    "endpoint_explanation",
 }
-REQUIRED_INTS = {"first_effective_interaction_seconds", "hint_count"}
+REQUIRED_INTS = {"first_effective_interaction_seconds", "hint_count", "total_session_minutes"}
 COMPLETE_STATUS = "received-human-run"
 PENDING_STATUS = "pending-human-run"
 

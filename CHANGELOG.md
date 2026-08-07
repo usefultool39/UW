@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased] 2026-08-07 - Pre-Capture runtime contract
+
+### Added
+
+- Added the authored `data/story/events_precapture_chapter_01.json` package to the story loader: four acts, 10 nodes from Rulid daily life to Alice being taken, cross-node echoes, and the fixed `alice_captured` endpoint.
+- Added `backend/tests/test_precapture_runtime.py` for the continuous N01-N10 route, time-band transitions, day gates, convergent choices, and terminal-state write rejection.
+- Added `docs/delivery/PROJECT_HANDOFF_20260807.md` as the project-level handoff for version, Git, architecture, materials, playtest evidence, quality gates, and the next-agent startup prompt.
+- Expanded `QA-PLAY-001` from a Day 1 onboarding record into a complete N01-N10 human-playtest contract; Day 1 evidence alone cannot satisfy first-phase completion.
+
+### Changed
+
+- Corrected current documentation to distinguish the released `0.4.0-preview.1` baseline from the uncommitted `0.5.0-pre-capture` worktree.
+- Corrected Pre-Capture requirement status: the story route, fixed terminal endpoint, and cross-node echoes are implemented; production materials and human acceptance remain open.
+
+### Verification
+
+- Materials registry: stable v003 snapshot `7 errors` from unregistered intermediate files; v003 runtime review `76 issues`; active v004 contract currently reports `52 issues` while awaiting corrected deliveries.
+- Readiness: `materials=pending`, `story=ready`; human blind testing: `pending-human-run` (`0/3`).
+- Engineering gate results are revalidated at handoff and recorded in `docs/delivery/PROJECT_HANDOFF_20260807.md` and `docs/planning/CURRENT_STATUS.md`.
+- Visual/audio production and three-player full-route blind testing remain incomplete; no failed incoming asset was added to runtime.
+
 ## [Unreleased] 2026-08-06 — 第三月 Day 76–89 后果反馈与安全恢复
 
 ### Added
