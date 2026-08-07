@@ -1,19 +1,16 @@
-.PHONY: setup quality backend-test frontend-test build e2e
-
-setup:
-	./启动游戏.command --setup-only
+.PHONY: quality release backend-test frontend-test frontend-build
 
 quality:
 	./scripts/quality.sh
 
+release:
+	./scripts/release.sh
+
 backend-test:
-	backend/.venv/bin/python -m pytest -q
+	./backend/.venv/bin/python -m pytest -q backend/tests
 
 frontend-test:
 	npm --prefix frontend run test:unit
 
-build:
+frontend-build:
 	npm --prefix frontend run build
-
-e2e:
-	cd frontend && PYTHON_BIN=../backend/.venv/bin/python npm run test:e2e

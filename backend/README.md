@@ -21,7 +21,7 @@ http://127.0.0.1:8765/api/health
 
 ```bat
 cd /d F:\usefultool39\02-UW小镇\backend
-python -m pytest -q
+python -m pytest -q backend/tests
 ```
 
 当前测试使用 `backend/tests/conftest.py` 中的项目内临时目录 fixture，避免部分 Windows 环境中用户 Temp ACL 被锁导致 `tmp_path` 报权限错误。
