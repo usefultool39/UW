@@ -1,0 +1,41 @@
+{
+  "sheet": "VIS-VFX-001_holy_arts.png",
+  "size": [
+    1024,
+    256
+  ],
+  "frames": [
+    {
+      "frame": 0,
+      "src": "holy_arts_0.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "frame": 1,
+      "src": "holy_arts_1.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "frame": 2,
+      "src": "holy_arts_2.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "frame": 3,
+      "src": "holy_arts_3.png",
+      "size": [
+        1024,
+        1024
+      ]
+    }
+  ]
+}

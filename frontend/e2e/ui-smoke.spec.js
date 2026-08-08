@@ -44,6 +44,7 @@ test.describe('current UI smoke', () => {
     await expect(page.getByRole('heading', { name: '卢利特村', level: 1 })).toBeVisible()
     await expect(page.getByText('UNDERWORLD · 序章').first()).toBeVisible()
     await expect(page.getByRole('button', { name: '前往巨神树' })).toBeVisible()
+    await expect(page.getByText('点击地图上的金色标记移动，抵达后选择行动。')).toBeVisible()
     await page.getByRole('button', { name: '前往巨神树' }).click()
     await expectCoreLayout(page)
   })

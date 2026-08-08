@@ -16,6 +16,7 @@ PLAYER_ACTIONS = {
     "set_flag",
     "set_day",
     "scene_activity",
+    "use_item",
     "respond_npc_intent",
     "daily_tick",
     "compound_sleep",
@@ -81,7 +82,16 @@ def merge_activity_effects(base: dict[str, Any], override: dict[str, Any]) -> di
     out = dict(base or {})
     for key, value in (override or {}).items():
         if (
-            key in {"flags", "flag_deltas", "relationship", "memory", "promises", "tensions"}
+            key in {
+                "flags",
+                "flag_deltas",
+                "relationship",
+                "memory",
+                "promises",
+                "tensions",
+                "item_deltas",
+                "weather_item_deltas",
+            }
             and isinstance(value, dict)
         ):
             merged = dict(out.get(key) or {}) if isinstance(out.get(key), dict) else {}

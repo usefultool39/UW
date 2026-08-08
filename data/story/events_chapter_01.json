@@ -525,7 +525,7 @@
           "id": "cautious_approach",
           "label": "三人先在边界外观察",
           "hint": "保持距离，先确认伤势和边界，再决定是否行动。",
-          "result_text": "你们没有贸然靠近。爱丽丝看清受伤者的状态，尤吉欧把撤回路线重新指给所有人。",
+          "result_text": "你们没有贸然靠近。爱丽丝看清受伤者的状态，尤吉欧把撤回路线重新指给所有人——这一刻留下的是‘先确认，再行动’。",
           "effects": {
             "flags": {
               "d5_approach": 1
@@ -552,7 +552,7 @@
           "id": "helping_approach",
           "label": "三人共同尝试救助",
           "hint": "把帮助变成共同动作，但也会更接近规则边界。",
-          "result_text": "你们一起伸出手，却在最后一步停住。爱丽丝看见了受伤者的呼吸，三个人都明白继续等待也有代价。",
+          "result_text": "你们一起伸出手，却在最后一步停住。爱丽丝看见受伤者的呼吸，三个人都明白：共同尝试过，就更难把这一步当作没发生。",
           "effects": {
             "flags": {
               "d5_approach": 2
@@ -579,7 +579,7 @@
           "id": "observing_approach",
           "label": "让爱丽丝主导判断，自己退后半步",
           "hint": "把决定权交给最先看清受伤者的人，同时保留回撤位置。",
-          "result_text": "你退后半步，把判断交给爱丽丝。她没有把这当成许可，只把手伸向了边界另一侧。",
+          "result_text": "你退后半步，把判断交给爱丽丝。她没有把这当成许可，只记住你把判断权留给了她，然后把手伸向边界另一侧。",
           "effects": {
             "flags": {
               "d5_approach": 3
@@ -614,6 +614,35 @@
       "advance_to_time_band": "evening",
       "title": "爱丽丝为救人触碰并越过边界",
       "description": "爱丽丝决定救助受伤者。桐人可以伸手、出声或保持沉默，但这一刻的正典结果不会被任何选项改写。",
+      "variants": [
+        {
+          "id": "after_alice_leads",
+          "when": {
+            "required_flags": {
+              "d5_approach": 3
+            }
+          },
+          "append_description": "刚才你把判断交给了爱丽丝；她现在没有把这份信任当成许可，而是自己走向了边界。"
+        },
+        {
+          "id": "after_shared_help",
+          "when": {
+            "required_flags": {
+              "d5_approach": 2
+            }
+          },
+          "append_description": "刚才你们一起尝试帮助受伤者；此刻，爱丽丝把那一步真正走完了。"
+        },
+        {
+          "id": "after_cautious_observation",
+          "when": {
+            "required_flags": {
+              "d5_approach": 1
+            }
+          },
+          "append_description": "刚才你先确认了撤回路线；现在爱丽丝越过边界，所有人都知道再退一步也来不及了。"
+        }
+      ],
       "trigger": {
         "day_min": 2,
         "day_max": 2,

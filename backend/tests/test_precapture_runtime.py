@@ -45,6 +45,40 @@ def reach_n10(sess: Session) -> None:
     choose(sess, "n09")
 
 
+@pytest.mark.parametrize(
+    "n05_choice, expected_echo",
+    [
+        ("cautious_approach", "先确认了撤回路线"),
+        ("helping_approach", "一起尝试帮助受伤者"),
+        ("observing_approach", "把判断交给了爱丽丝"),
+    ],
+)
+def test_n06_description_recalls_n05_approach(n05_choice: str, expected_echo: str):
+    sess = Session(run_id=f"test-precapture-n05-echo-{n05_choice}")
+    choose(sess, "n01")
+    choose(sess, "n02")
+    choose(sess, "n03")
+    assert sess.player_action(kind="rest_until_next_day")["ok"] is True
+    choose(sess, "n04")
+    choose(sess, "n05", n05_choice)
+
+    event = next(
+        item
+        for item in sess.available_story_events()["events"]
+        if item["id"] == NODES["n06"][0]
+    )
+    assert expected_echo in event["description"]
+
+
+def test_available_events_exposes_authoritative_day_gate_status():
+    sess = Session(run_id="test-precapture-day-gate-view")
+    out = sess.available_story_events()
+
+    assert out["day_gate"]["ready"] is False
+    assert out["day_gate"]["day"] == 1
+    assert out["day_gate"]["missing"][0]["id"] == "ch1pc_n03_talk_index_end_mountains"
+
+
 def test_precapture_route_runs_n01_to_n10_with_authored_time_bands():
     sess = Session(seed=7, run_id="test-precapture-full-route")
 

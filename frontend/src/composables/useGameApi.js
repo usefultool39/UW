@@ -35,6 +35,7 @@ function stepTimeoutMs(mode, n) {
 export function useGameApi() {
   const state = ref({ tick: 0, day: 1, tree: { hp: 800, hp_max: 800 }, agents: [] })
   const events = ref([])
+  const codex = ref(null)
   const running = ref(false)
   const runInterval = ref(null)
   const llmConfigured = ref(false)
@@ -125,9 +126,18 @@ export function useGameApi() {
     events.value = await requestJson(`${API_ROUTES.events}?limit=${limit}`)
   }
 
+  async function fetchCodex() {
+    codex.value = await requestJson('/api/codex')
+    return codex.value
+  }
+
   async function refresh() {
     try {
-      await Promise.all([fetchState(), fetchEvents()])
+      await Promise.all([fetchState(), fetchEvents(), fetchCodex()])
+      // FieldSlice is intentionally kept compatible with the existing App.vue
+      // prop contract. The server-authoritative codex travels with the live
+      // state object; it is not persisted in browser storage or inferred here.
+      if (codex.value) state.value = { ...state.value, codex: codex.value }
       lastError.value = ''
     } catch (e) {
       lastError.value = e.message || '刷新失败'
@@ -343,6 +353,7 @@ export function useGameApi() {
   return {
     state,
     events,
+    codex,
     running,
     llmConfigured,
     llmProvider,
@@ -354,6 +365,7 @@ export function useGameApi() {
     pendingCount,
     fetchState,
     fetchEvents,
+    fetchCodex,
     refresh,
     step,
     reset,

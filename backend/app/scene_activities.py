@@ -95,6 +95,12 @@ def _public_activity_preview(item: dict[str, Any]) -> dict[str, Any]:
         reward_kinds.append("progress")
     if isinstance(effects.get("resource_changes"), dict) and effects["resource_changes"]:
         reward_kinds.append("resources")
+    if (
+        isinstance(effects.get("item_deltas"), dict) and effects["item_deltas"]
+    ) or (
+        isinstance(effects.get("weather_item_deltas"), dict) and effects["weather_item_deltas"]
+    ):
+        reward_kinds.append("items")
 
     preview = {
         "resource_costs": resource_costs,
@@ -105,6 +111,39 @@ def _public_activity_preview(item: dict[str, Any]) -> dict[str, Any]:
     if isinstance(player_facing_benefit, str) and player_facing_benefit.strip():
         preview["benefit_text"] = player_facing_benefit.strip()
     return preview
+
+
+def _public_loadout(item: dict[str, Any]) -> dict[str, Any] | None:
+    """Expose only loadout choices; never expose authoritative effects."""
+    config = item.get("loadout")
+    if not isinstance(config, dict):
+        return None
+    rows = []
+    for option in config.get("allowed_items") or []:
+        if not isinstance(option, dict):
+            continue
+        item_id = str(option.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        rows.append({
+            "item_id": item_id,
+            "label": str(option.get("label") or item_id),
+            "hint": str(option.get("hint") or ""),
+            "consume": bool(option.get("consume", False)),
+        })
+    return {
+        "max_items": max(0, int(config.get("max_items") or 0)),
+        "allowed_items": rows,
+        "combination_labels": [
+            {
+                "id": str(row.get("id") or ""),
+                "label": str(row.get("label") or ""),
+                "item_ids": [str(value) for value in row.get("item_ids") or []],
+            }
+            for row in config.get("combination_bonuses") or []
+            if isinstance(row, dict) and row.get("id")
+        ],
+    }
 
 
 def public_scene_activities(project_root: Path) -> dict[str, Any]:
@@ -130,10 +169,50 @@ def public_scene_activities(project_root: Path) -> dict[str, Any]:
                 "participants",
                 "tags",
                 "interaction_kind",
+                "hidden",
             )
             if key in item
         }
         row["preview"] = _public_activity_preview(item)
+        loadout = _public_loadout(item)
+        if loadout is not None:
+            row["loadout"] = loadout
+        reading_chain = item.get("reading_chain")
+        if isinstance(reading_chain, dict):
+            public_steps = []
+            for step in reading_chain.get("steps") or []:
+                if not isinstance(step, dict):
+                    continue
+                public_options = []
+                for option in step.get("options") or []:
+                    if not isinstance(option, dict):
+                        continue
+                    public_options.append({
+                        key: option.get(key)
+                        for key in ("id", "label", "note", "feedback")
+                        if key in option
+                    })
+                public_steps.append({
+                    key: step.get(key)
+                    for key in ("id", "label", "prompt", "helper")
+                    if key in step
+                } | {"options": public_options})
+            public_paths = []
+            for path in reading_chain.get("paths") or []:
+                if not isinstance(path, dict):
+                    continue
+                public_paths.append({
+                    key: path.get(key)
+                    for key in ("choice_id", "steps", "label", "success_text")
+                    if key in path
+                })
+            if len(public_steps) == 3 and public_paths:
+                row["reading_chain"] = {
+                    "intro": str(reading_chain.get("intro") or ""),
+                    "steps": public_steps,
+                    "paths": public_paths,
+                }
+
         choices = item.get("choices")
         if isinstance(choices, list):
             row["choices"] = [

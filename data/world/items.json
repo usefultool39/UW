@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "field_mint",
+      "name": "野薄荷",
+      "type": "material",
+      "description": "西侧田野采来的清凉草叶。可以作为烹饪和制药材料。",
+      "usable": false
+    },
+    {
+      "id": "dewgrass",
+      "name": "露草",
+      "type": "material",
+      "description": "薄雾清晨才容易找到的细叶草。",
+      "usable": false
+    },
+    {
+      "id": "silverleaf",
+      "name": "银叶草",
+      "type": "material",
+      "description": "叶面泛着冷光的野草，是草药汤的材料。",
+      "usable": false
+    },
+    {
+      "id": "rain_bell",
+      "name": "雨铃花",
+      "type": "material",
+      "description": "细雨后会留下淡淡铃声的花。",
+      "usable": false
+    },
+    {
+      "id": "moon_blossom",
+      "name": "月见花",
+      "type": "material",
+      "description": "夜色中才会舒展花瓣的稀有材料。",
+      "usable": false
+    },
+    {
+      "id": "stone_tablet_fragment",
+      "name": "石碑碎片",
+      "type": "key_item",
+      "description": "刻着禁忌目录残文的石片。不能在野外直接消耗。",
+      "usable": false
+    },
+    {
+      "id": "record_notebook",
+      "name": "记录本",
+      "type": "key_item",
+      "description": "桐人用来整理村中见闻的记录本。",
+      "usable": true,
+      "use": {
+        "conditions": {
+          "scenes": [
+            "reading_hall",
+            "church_library"
+          ],
+          "time_bands": [
+            "morning",
+            "afternoon",
+            "evening"
+          ]
+        },
+        "effects": {
+          "flags": {
+            "record_notebook_opened": 1
+          },
+          "result_text": "你摊开记录本，把今天的线索按时间重新排好。"
+        }
+      }
+    },
+    {
+      "id": "dried_rations",
+      "name": "干粮",
+      "type": "consumable",
+      "description": "适合巡查途中补充体力的简单干粮。",
+      "use": {
+        "effects": {
+          "resource_restore": {
+            "stamina": 24
+          },
+          "result_text": "干粮的咸香让手脚重新有了力气。"
+        }
+      }
+    },
+    {
+      "id": "herb_soup",
+      "name": "草药汤",
+      "type": "consumable",
+      "description": "用田野草药熬成的温热汤剂，能恢复神圣力。",
+      "use": {
+        "conditions": {
+          "scenes": [
+            "home_hearth",
+            "reading_hall",
+            "church_library"
+          ],
+          "time_bands": [
+            "morning",
+            "afternoon",
+            "evening",
+            "night"
+          ]
+        },
+        "effects": {
+          "resource_restore": {
+            "mp": 20
+          },
+          "result_text": "温热的草药汤顺着喉咙落下，神圣力慢慢回流。"
+        }
+      }
+    },
+    {
+      "id": "south_lake_common_fish",
+      "name": "湖鳞鱼",
+      "type": "material",
+      "description": "南湖旧渡靠岸浅水里的普通鱼，适合做成家常料理。",
+      "usable": false
+    },
+    {
+      "id": "south_lake_rare_fish",
+      "name": "雾银鱼",
+      "type": "material",
+      "description": "只在雾中短暂咬钩的稀有鱼，鳞片像被月光擦亮。",
+      "usable": false
+    }
+  ]
+}

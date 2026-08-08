@@ -37,6 +37,24 @@ chore: ...
 
 “代码已写”“素材已生成”“本机看起来没问题”都不等于完成。
 
+### 素材样张的额外交付规则
+
+- 新图片或音频先登记为 `sample_candidate`；该状态只表示已收到候选，不代表批准、可发布或可接入 runtime。
+- 样张必须同时提供 source 文件、SHA-256、生成/后处理说明、license/rights 声明、sidecar 或 delivery 说明、机器检查结果，以及 1440×900 和 390×844 预览（音频则提供测量和试听记录）。
+- `MANIFEST.csv` 中的样张必须留空 `runtime_file`、`approved_at` 和 `integrated_at`，并把已知问题和下一步写入 `notes`。
+- 只有人工内容/正典审查、透明度或音频试听、桌面/移动真实界面验证、权利确认全部通过，才可改为 `approved-candidate` 或 `integrated`。
+- 任何水印、文字、棋盘格、透明边缘、锚点漂移、错误人物识别色或不符合正典的内容，都必须保持候选或改为 `changes_requested`；不能靠测试通过来绕过。
+
+新的生图智能体必须先读 `docs/art/GENERATION_AGENT_PROMPT.md`，再按 `docs/art/ASSET_TASKS.md` 的 T01-T04 顺序执行。它不负责替工程接入、音频人耳 QA 或真人盲测签字。
+
+### 稳定命名与晋级
+
+- 产品版本只使用 `0.5.0`；素材文件名不附加 `v001`、`v008`、`final2` 等修订链。
+- 已验收前的最新基线放在各分类的 `current/`，下一轮输出放在同级 `candidate/`，两边使用相同的稳定文件名。
+- candidate 通过人工验收后，先把旧 current 移入 `materials/archive/superseded/`，再把 candidate 晋级为 current，并同步更新 `MANIFEST.csv`。
+- `VIS-MAP-001` 等 request ID 是稳定机器键，不是版本号，保留用于请求、台账和 sidecar 关联。
+- 历史生成脚本、原图、manifest fragments 和失败样张只留在 archive 或 Git，不放回 active inbox。
+
 ## 3. 开发质量门
 
 日常开发运行：
@@ -100,6 +118,10 @@ chore: ...
 4. 单一审美偏好。
 
 盲测完成后更新 `docs/PLAN.md`，不要另建一份带日期的报告；原始记录按工具要求保存在既有 playtest 数据位置。
+
+## 发布门禁的 fail-closed 约束
+
+`release.sh` 必须以 `--require-complete` 运行素材准备和真人盲测检查：只要正式素材仍为 pending，或 QA-PLAY-001 未达到 3/3 `received-human-run`，发布脚本必须非零退出，不能仅打印报告后继续显示 `Release gate passed.`。质量门和 Playwright 通过不能替代素材人工验收、音频试听、真人盲测或权利结论。
 
 ## 6. 版本规则
 

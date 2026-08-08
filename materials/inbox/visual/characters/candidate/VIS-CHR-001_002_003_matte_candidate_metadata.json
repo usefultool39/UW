@@ -1,0 +1,302 @@
+{
+  "VIS-CHR-001": {
+    "sheet_path": "VIS-CHR-001_sprite_sheet_down_matte_candidate.png",
+    "cell_size": [
+      64,
+      96
+    ],
+    "anchor": [
+      32,
+      94
+    ],
+    "frames": [
+      {
+        "index": 0,
+        "anchor_alpha": 0,
+        "non_transparent_px": 938,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 1,
+        "anchor_alpha": 0,
+        "non_transparent_px": 945,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 2,
+        "anchor_alpha": 0,
+        "non_transparent_px": 918,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 3,
+        "anchor_alpha": 0,
+        "non_transparent_px": 887,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 4,
+        "anchor_alpha": 0,
+        "non_transparent_px": 913,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 5,
+        "anchor_alpha": 0,
+        "non_transparent_px": 936,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 6,
+        "anchor_alpha": 0,
+        "non_transparent_px": 928,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 7,
+        "anchor_alpha": 0,
+        "non_transparent_px": 918,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 8,
+        "anchor_alpha": 0,
+        "non_transparent_px": 954,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 9,
+        "anchor_alpha": 0,
+        "non_transparent_px": 1093,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 10,
+        "anchor_alpha": 0,
+        "non_transparent_px": 897,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 11,
+        "anchor_alpha": 0,
+        "non_transparent_px": 934,
+        "min_alpha": 0,
+        "max_alpha": 255
+      }
+    ],
+    "anchor_alpha_pass_count": 12,
+    "anchor_alpha_total": 12,
+    "known_issue": "candidate-only matte cleanup; action continuity and visual review still required"
+  },
+  "VIS-CHR-002": {
+    "sheet_path": "VIS-CHR-002_sprite_sheet_down_matte_candidate.png",
+    "cell_size": [
+      64,
+      96
+    ],
+    "anchor": [
+      32,
+      94
+    ],
+    "frames": [
+      {
+        "index": 0,
+        "anchor_alpha": 0,
+        "non_transparent_px": 991,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 1,
+        "anchor_alpha": 0,
+        "non_transparent_px": 975,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 2,
+        "anchor_alpha": 0,
+        "non_transparent_px": 928,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 3,
+        "anchor_alpha": 0,
+        "non_transparent_px": 948,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 4,
+        "anchor_alpha": 0,
+        "non_transparent_px": 992,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 5,
+        "anchor_alpha": 0,
+        "non_transparent_px": 930,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 6,
+        "anchor_alpha": 0,
+        "non_transparent_px": 883,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 7,
+        "anchor_alpha": 0,
+        "non_transparent_px": 935,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 8,
+        "anchor_alpha": 0,
+        "non_transparent_px": 940,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 9,
+        "anchor_alpha": 0,
+        "non_transparent_px": 1033,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 10,
+        "anchor_alpha": 0,
+        "non_transparent_px": 933,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 11,
+        "anchor_alpha": 0,
+        "non_transparent_px": 942,
+        "min_alpha": 0,
+        "max_alpha": 255
+      }
+    ],
+    "anchor_alpha_pass_count": 12,
+    "anchor_alpha_total": 12,
+    "known_issue": "candidate-only matte cleanup; action continuity and visual review still required"
+  },
+  "VIS-CHR-003": {
+    "sheet_path": "VIS-CHR-003_sprite_sheet_down_matte_candidate.png",
+    "cell_size": [
+      64,
+      96
+    ],
+    "anchor": [
+      32,
+      94
+    ],
+    "frames": [
+      {
+        "index": 0,
+        "anchor_alpha": 0,
+        "non_transparent_px": 672,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 1,
+        "anchor_alpha": 0,
+        "non_transparent_px": 661,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 2,
+        "anchor_alpha": 0,
+        "non_transparent_px": 674,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 3,
+        "anchor_alpha": 0,
+        "non_transparent_px": 648,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 4,
+        "anchor_alpha": 0,
+        "non_transparent_px": 657,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 5,
+        "anchor_alpha": 0,
+        "non_transparent_px": 647,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 6,
+        "anchor_alpha": 0,
+        "non_transparent_px": 682,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 7,
+        "anchor_alpha": 0,
+        "non_transparent_px": 791,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 8,
+        "anchor_alpha": 0,
+        "non_transparent_px": 862,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 9,
+        "anchor_alpha": 0,
+        "non_transparent_px": 627,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 10,
+        "anchor_alpha": 0,
+        "non_transparent_px": 663,
+        "min_alpha": 0,
+        "max_alpha": 255
+      },
+      {
+        "index": 11,
+        "anchor_alpha": 0,
+        "non_transparent_px": 735,
+        "min_alpha": 0,
+        "max_alpha": 255
+      }
+    ],
+    "anchor_alpha_pass_count": 12,
+    "anchor_alpha_total": 12,
+    "known_issue": "candidate-only matte cleanup; action continuity and visual review still required"
+  }
+}

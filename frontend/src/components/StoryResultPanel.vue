@@ -28,6 +28,33 @@
         {{ emotionalSummary }}
       </section>
 
+      <section v-if="relationshipChanges.length" class="relationship-feedback" aria-live="polite">
+        <div class="feedback-heading">
+          <div>
+            <h4>关系有了回应</h4>
+            <p>这次行动留下的变化，会带到之后的对话里。</p>
+          </div>
+          <span>即时反馈</span>
+        </div>
+        <div class="relationship-change-list">
+          <article v-for="change in relationshipChangeCards" :key="change.key" class="relationship-change-card">
+            <div class="change-name" :style="{ color: change.color }">{{ change.name }}</div>
+            <div class="change-detail">
+              <div class="change-line">
+                <strong>{{ change.fieldLabel }}</strong>
+                <span :class="change.delta > 0 ? 'positive' : 'negative'">{{ change.delta > 0 ? '+' : '' }}{{ change.delta }}</span>
+                <span v-if="change.after !== null" class="change-after">现在 {{ change.after }}</span>
+              </div>
+              <div class="change-track" aria-hidden="true">
+                <div class="change-before" :style="{ width: `${change.beforePercent}%` }" />
+                <div class="change-after-fill" :style="{ width: `${change.afterPercent}%` }" />
+              </div>
+              <div class="change-scale"><span>行动前</span><span>行动后</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section v-if="impactLines.length" class="impact-grid">
         <div v-for="line in impactLines" :key="line.label" class="impact-chip">
           <span class="impact-label">
@@ -110,6 +137,7 @@
 import { computed } from 'vue'
 import { getAgentLabel, getSceneLabel, getTimeBandLabel } from '../field/gameContentConfig.js'
 import { getPortraitAsset, getRuntimeIcon } from '../field/runtimeAssetPaths.js'
+import { normalizeRelationshipChanges, relationshipFieldLabel, relationshipPercent } from '../utils/relationshipFeedback.js'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -223,20 +251,15 @@ const impactLines = computed(() => {
   return lines
 })
 
-const relationshipLines = computed(() => {
-  const changes = Array.isArray(props.result?.relationship_changes)
-    ? props.result.relationship_changes
-    : []
-  return changes
-    .filter((item) => Number(item?.delta || 0) !== 0)
-    .map((item) => {
-      const name = getAgentLabel(item.npc_id)
-      const field = FIELD_LABELS[item.field] || item.field
-      const delta = Number(item.delta || 0)
-      const sign = delta > 0 ? '+' : ''
-      return `${name}的${field} ${sign}${delta}，现在是 ${item.after}`
-    })
-})
+const relationshipChanges = computed(() => normalizeRelationshipChanges(props.result?.relationship_changes))
+
+const relationshipLines = computed(() => relationshipChanges.value.map((item) => {
+  const name = getAgentLabel(item.npc_id)
+  const field = relationshipFieldLabel(item.field)
+  const sign = item.delta > 0 ? '+' : ''
+  const after = item.after === null ? '' : `，现在是 ${item.after}`
+  return `${name}的${field} ${sign}${item.delta}${after}`
+}))
 
 const memoryLines = computed(() => {
   const memories = Array.isArray(props.result?.memory_written) ? props.result.memory_written : []
@@ -336,13 +359,13 @@ const agentImpactCards = computed(() => {
     return cards.get(id)
   }
 
-  for (const item of Array.isArray(props.result?.relationship_changes) ? props.result.relationship_changes : []) {
-    const card = ensure(item?.npc_id)
-    if (!card || Number(item?.delta || 0) === 0) continue
-    const field = FIELD_LABELS[item.field] || item.field
-    const delta = Number(item.delta || 0)
-    const sign = delta > 0 ? '+' : ''
-    card.relationship = `${field} ${sign}${delta}，现在 ${item.after}`
+  for (const item of relationshipChanges.value) {
+    const card = ensure(item.npc_id)
+    if (!card) continue
+    const field = relationshipFieldLabel(item.field)
+    const sign = item.delta > 0 ? '+' : ''
+    const after = item.after === null ? '' : `，现在 ${item.after}`
+    card.relationship = `${field} ${sign}${item.delta}${after}`
   }
 
   for (const item of Array.isArray(props.result?.memory_written) ? props.result.memory_written : []) {
@@ -353,6 +376,19 @@ const agentImpactCards = computed(() => {
 
   return [...cards.values()].filter((card) => card.relationship || card.memory)
 })
+
+const relationshipChangeCards = computed(() => relationshipChanges.value.map((item) => {
+  const delta = Number(item.delta || 0)
+  return {
+    ...item,
+    key: `${item.npc_id}:${item.field}`,
+    name: getAgentLabel(item.npc_id),
+    color: '#8be9fd',
+    fieldLabel: relationshipFieldLabel(item.field),
+    beforePercent: relationshipPercent(item.before ?? 0, item.field),
+    afterPercent: relationshipPercent(item.after ?? ((item.before ?? 0) + delta), item.field)
+  }
+}))
 </script>
 
 <style scoped>
@@ -440,6 +476,42 @@ const agentImpactCards = computed(() => {
   background: rgba(120, 83, 35, 0.22);
   border: 1px solid rgba(246, 211, 110, 0.24);
 }
+
+.relationship-feedback {
+  margin: 0.82rem 0 0;
+  padding: 0.78rem;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(8, 24, 38, 0.9), rgba(20, 34, 48, 0.72));
+  border: 1px solid rgba(103, 232, 249, 0.28);
+  box-shadow: inset 0 0 24px rgba(103, 232, 249, 0.04);
+}
+
+.feedback-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.58rem;
+}
+
+.feedback-heading h4 { margin: 0; color: #e0fbff; font-size: 0.98rem; }
+.feedback-heading p { margin: 0.18rem 0 0; color: #a5c7d2; font-size: 0.76rem; line-height: 1.45; }
+.feedback-heading > span { flex: 0 0 auto; padding: 0.2rem 0.42rem; border: 1px solid rgba(103, 232, 249, 0.28); border-radius: 999px; color: #67e8f9; font-size: 0.62rem; }
+.relationship-change-list { display: grid; gap: 0.48rem; }
+.relationship-change-card { display: grid; grid-template-columns: minmax(4rem, 5.2rem) 1fr; gap: 0.58rem; align-items: center; padding: 0.52rem 0.58rem; border-radius: 9px; background: rgba(3, 10, 20, 0.56); border: 1px solid rgba(148, 163, 184, 0.15); animation: change-in 0.42s ease both; }
+.change-name { font-size: 0.82rem; font-weight: 800; }
+.change-line { display: flex; align-items: baseline; gap: 0.36rem; min-width: 0; font-size: 0.78rem; }
+.change-line strong { color: #dbeafe; }
+.change-line .positive { color: #86efac; font-weight: 900; }
+.change-line .negative { color: #fca5a5; font-weight: 900; }
+.change-after { margin-left: auto; color: #a5c7d2; font-size: 0.7rem; white-space: nowrap; }
+.change-track { position: relative; height: 0.42rem; margin-top: 0.38rem; overflow: hidden; border-radius: 99px; background: rgba(148, 163, 184, 0.2); }
+.change-before, .change-after-fill { position: absolute; inset: 0 auto 0 0; border-radius: inherit; }
+.change-before { background: rgba(148, 163, 184, 0.46); }
+.change-after-fill { background: linear-gradient(90deg, #67e8f9, #86efac); transform-origin: left center; animation: change-bar-in 0.7s 0.12s ease both; }
+.change-scale { display: flex; justify-content: space-between; margin-top: 0.18rem; color: #6f8a95; font-size: 0.58rem; }
+@keyframes change-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes change-bar-in { from { transform: scaleX(0.72); opacity: 0.45; } to { transform: scaleX(1); opacity: 1; } }
 
 .impact-grid {
   display: grid;
@@ -648,6 +720,12 @@ const agentImpactCards = computed(() => {
 }
 
 @media (max-width: 640px) {
+  .result-backdrop { align-items: flex-end; padding: 0; }
+  .result-panel { width: 100%; max-height: min(82vh, 740px); padding: 1rem 0.85rem calc(0.85rem + env(safe-area-inset-bottom)); border-radius: 18px 18px 0 0; }
+  .result-header h3 { font-size: 1.18rem; }
+  .result-text { font-size: 0.96rem; }
+  .relationship-change-card { grid-template-columns: 1fr; gap: 0.25rem; }
+  .change-after { margin-left: auto; }
   .next-target-card {
     align-items: stretch;
     flex-direction: column;

@@ -18,10 +18,10 @@ if [ -z "${PYTHON_BIN:-}" ]; then
 fi
 
 echo "[release 1/3] Pre-Capture readiness"
-"$PYTHON_BIN" "$ROOT/materials/tools/check_precapture_readiness.py"
+"$PYTHON_BIN" "$ROOT/materials/tools/check_precapture_readiness.py" --require-complete
 
 echo "[release 2/3] Human playtest records"
-"$PYTHON_BIN" "$ROOT/scripts/check_playtest_round.py"
+"$PYTHON_BIN" "$ROOT/scripts/check_playtest_round.py" --require-complete
 
 echo "[release 3/3] Playwright E2E"
 (

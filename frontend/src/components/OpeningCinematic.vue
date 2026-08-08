@@ -17,7 +17,7 @@
           <button type="button" class="opening-primary" @click="$emit('focus-first-event')">
             前往巨神树
           </button>
-          <span class="opening-action-hint">镜头会定位到当前主线；靠近金色标记后选择行动。</span>
+          <span class="opening-action-hint">镜头会定位到当前主线；点击地图上的金色标记移动，抵达后选择行动。</span>
         </div>
       </div>
       <div class="opening-status" aria-hidden="true">

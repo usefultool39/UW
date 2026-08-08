@@ -125,6 +125,11 @@
           "label": "去古誓树清场"
         },
         {
+          "to_scene_id": "west_fields",
+          "kind": "same_map",
+          "label": "去西侧田野"
+        },
+        {
           "to_scene_id": "teleport_plaza",
           "kind": "same_map",
           "label": "去传送阵广场"
@@ -343,6 +348,82 @@
   ],
   "pois": [
     {
+      "id": "west_herb_patch",
+      "kind": "interact",
+      "scene_id": "west_fields",
+      "tile_x": 8,
+      "tile_y": 40,
+      "radius": 2,
+      "label": "草药丛",
+      "title": "西侧田野·草药丛",
+      "body": "田野里的草药随天气变化。每天来一次，看看今天有什么成熟。",
+      "actions": [
+        {
+          "id": "west_fields_herb_gather",
+          "label": "采集草药",
+          "type": "scene_activity",
+          "activity_id": "west_fields_herb_gather"
+        }
+      ]
+    },
+    {
+      "id": "west_tablet_fragment_1",
+      "kind": "hidden_collectible",
+      "scene_id": "west_fields",
+      "tile_x": 14,
+      "tile_y": 43,
+      "radius": 1,
+      "label": "旧石碑裂缝",
+      "title": "石碑后的裂缝",
+      "body": "石碑背后有一道几乎被泥土遮住的裂缝。",
+      "actions": [
+        {
+          "id": "west_fields_tablet_fragment_1",
+          "label": "寻找石碑碎片",
+          "type": "scene_activity",
+          "activity_id": "west_fields_tablet_fragment_1"
+        }
+      ]
+    },
+    {
+      "id": "west_tablet_fragment_2",
+      "kind": "hidden_collectible",
+      "scene_id": "west_fields",
+      "tile_x": 17,
+      "tile_y": 47,
+      "radius": 1,
+      "label": "倒伏石碑",
+      "title": "倒伏石碑的背面",
+      "body": "倒伏的石碑背面压着一小片与碑文相连的旧石。",
+      "actions": [
+        {
+          "id": "west_fields_tablet_fragment_2",
+          "label": "寻找石碑碎片",
+          "type": "scene_activity",
+          "activity_id": "west_fields_tablet_fragment_2"
+        }
+      ]
+    },
+    {
+      "id": "west_tablet_fragment_3",
+      "kind": "hidden_collectible",
+      "scene_id": "west_fields",
+      "tile_x": 10,
+      "tile_y": 47,
+      "radius": 1,
+      "label": "田埂下的刻痕",
+      "title": "田埂下的刻痕",
+      "body": "田埂下露出最后一处与石碑相同的刻痕。",
+      "actions": [
+        {
+          "id": "west_fields_tablet_fragment_3",
+          "label": "寻找石碑碎片",
+          "type": "scene_activity",
+          "activity_id": "west_fields_tablet_fragment_3"
+        }
+      ]
+    },
+    {
       "id": "poi_reading_quest",
       "kind": "quest",
       "scene_id": "church_library",
@@ -444,6 +525,12 @@
           "activity_id": "home_evening_meal"
         },
         {
+          "id": "home_hearth_cooking",
+          "label": "在炉火边备餐：切菜与控火",
+          "type": "scene_activity",
+          "activity_id": "home_hearth_cooking"
+        },
+        {
           "id": "home_sleep_until_morning",
           "label": "睡到第二天清晨",
           "type": "scene_activity",
@@ -467,6 +554,12 @@
           "label": "听村民谈北方山脉",
           "type": "scene_activity",
           "activity_id": "village_square_listen"
+        },
+        {
+          "id": "village_square_bulletin_board",
+          "label": "查看公告柱：领取今日小任务",
+          "type": "scene_activity",
+          "activity_id": "village_square_bulletin_board"
         }
       ]
     },
@@ -563,6 +656,12 @@
           "flag_key": "south_lake_seen",
           "flag_value": 1,
           "toast": "南湖旧渡被记在地图上。等渡口修复后，这里可能会成为离村路线。"
+        },
+        {
+          "id": "south_lake_fishing",
+          "label": "试着在岸边钓一竿",
+          "type": "scene_activity",
+          "activity_id": "south_lake_fishing"
         }
       ]
     }

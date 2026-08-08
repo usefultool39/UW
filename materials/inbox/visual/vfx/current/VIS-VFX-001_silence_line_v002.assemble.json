@@ -1,0 +1,42 @@
+{
+  "sheet": "VIS-VFX-001_silence_line_v002.png",
+  "size": [1024, 256],
+  "frame_size": [256, 256],
+  "frame_count": 4,
+  "format": "RGBA",
+  "created_at": "2026-08-08",
+  "creator": "Mavis image synthesis + Pillow assembly",
+  "license": "project-original",
+  "style_direction": "C (void-950 + violet-500 + gold-400)",
+  "semantic": "silence line expressed as environmental fracture: fog dissipation, bird retreating, no light, no energy beam",
+  "negative_prompts_applied": ["text", "watermark", "people", "logo", "signature", "glow", "energy beam", "laser", "sci-fi"],
+  "edge_feather_px": 24,
+  "frames": [
+    {
+      "frame": 0,
+      "label": "normal forest dusk",
+      "src": "VIS-VFX-001_silence_line_frame_0_v002.png",
+      "sha256": "4bba4f5ef59b48ce06231c88060f93c17d332af81a28418a6e5a69083a4c4c81"
+    },
+    {
+      "frame": 1,
+      "label": "violet mist approaching",
+      "src": "VIS-VFX-001_silence_line_frame_1_v002.png",
+      "sha256": "2eb226dd96315b69510d23b9f6651430689032e9d219645feb5830d7da5ddd87"
+    },
+    {
+      "frame": 2,
+      "label": "silence band crossing, bird retreating",
+      "src": "VIS-VFX-001_silence_line_frame_2_v002.png",
+      "sha256": "74b0fbf057a36ada10f0e0364b84810b4a12f6e4332cc244b07b43a1a8cb308b"
+    },
+    {
+      "frame": 3,
+      "label": "post-silence void with violet wall",
+      "src": "VIS-VFX-001_silence_line_frame_3_v002.png",
+      "sha256": "ff0f848ea1065cdb333170598d95f420d165793356050d7dd49c637718186bc4"
+    }
+  ],
+  "sheet_sha256": "563d410945c0e36f6cb36f8c5f11779660ebe3aef1f8595e4a9371eb5ad1927c",
+  "replaces": "VIS-VFX-001_silence_line_v001.png (rejected, see archive/rejected/vfx/)"
+}

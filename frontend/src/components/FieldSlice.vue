@@ -84,6 +84,7 @@
       <ClueJournalPanel
         v-model="journalOpen"
         :sim-state="simState"
+        :codex="simState?.codex"
         :story-events="storyEvents"
         :month-plan="monthPlan"
         :recent-memories="recentJournalMemories"
@@ -176,9 +177,9 @@
 
     <ReadingMiniGamePanel
       v-model="readingGameOpen"
-      :activity="pendingActivityAction?.activity"
+      :activity="readingPanelActivity"
       :busy="busy"
-      @complete="onActivityComplete"
+      @complete="onReadingComplete"
     />
 
     <MealChoicePanel
@@ -192,6 +193,22 @@
       v-model="boundaryPatrolOpen"
       :activity="pendingActivityAction?.activity"
       :player="simState?.player"
+      :inventory="simState?.inventory"
+      :busy="busy"
+      @complete="onActivityComplete"
+    />
+
+    <FishingMiniGamePanel
+      v-model="fishingGameOpen"
+      :activity="pendingActivityAction?.activity"
+      :busy="busy"
+      @complete="onActivityComplete"
+    />
+
+    <CookingMiniGamePanel
+      v-model="cookingGameOpen"
+      :activity="pendingActivityAction?.activity"
+      :inventory="simState?.inventory"
       :busy="busy"
       @complete="onActivityComplete"
     />
@@ -236,12 +253,14 @@ import BoundaryVerdictMiniGamePanel from './BoundaryVerdictMiniGamePanel.vue'
 import ReadingMiniGamePanel from './ReadingMiniGamePanel.vue'
 import MealChoicePanel from './MealChoicePanel.vue'
 import BoundaryPatrolMiniGamePanel from './BoundaryPatrolMiniGamePanel.vue'
+import FishingMiniGamePanel from './FishingMiniGamePanel.vue'
+import CookingMiniGamePanel from './CookingMiniGamePanel.vue'
 import Toast from './Toast.vue'
 import { getAgentLabel, getQuestGuide, getSceneLabel, getTimeBandLabel } from '../field/gameContentConfig.js'
 import { findNearbyInteractPoi } from '../field/interactPoi.js'
 import { DEFAULT_MAP_ID } from '../field/sceneRegistry.js'
 import { dedupeActivityActions } from '../field/interactActionMerge.js'
-import { activityCompletionMessage, activityIdForAction, activityOpenMessage, activityPanelKind, activityResultExtras, shouldOpenActivityChoicePanel, shouldOpenActivityPanel } from '../field/activityRegistry.js'
+import { activityCompletionMessage, activityIdForAction, activityOpenMessage, activityPanelKind, activityResultExtras, readingChainForAction, shouldOpenActivityChoicePanel, shouldOpenActivityPanel } from '../field/activityRegistry.js'
 import { useAudio } from '../composables/useAudio.js'
 import { useFieldToast } from '../composables/useFieldToast.js'
 import { compactPlayerText, uwCanonText } from '../utils/uwCanonText.js'
@@ -287,11 +306,12 @@ const openingBriefDismissed = ref(false)
 const journalOpen = ref(false)
 const journalProfiles = ref({})
 const recentJournalMemories = ref([])
-const dayGateStatus = computed(() => ({
+const dayGateStatus = ref({
   day: Number(props.simState?.day || 1),
   ready: true,
   label: '剧情结算',
-}))
+  missing: [],
+})
 
 // Modal states
 const interactOpen = ref(false)
@@ -307,13 +327,24 @@ const boundaryVerdictOpen = ref(false)
 const readingGameOpen = ref(false)
 const mealChoiceOpen = ref(false)
 const boundaryPatrolOpen = ref(false)
+const fishingGameOpen = ref(false)
+const cookingGameOpen = ref(false)
 const pendingActivityAction = ref(null)
 const storyResult = ref(null)
+
+const readingPanelActivity = computed(() => {
+  const activity = pendingActivityAction.value?.activity
+  if (!activity) return null
+  const readingChain = readingChainForAction(pendingActivityAction.value)
+  return readingChain ? { ...activity, reading_chain: readingChain } : activity
+})
 
 const activityPanelRefs = Object.freeze({
   reading: readingGameOpen,
   meal: mealChoiceOpen,
-  patrol: boundaryPatrolOpen
+  patrol: boundaryPatrolOpen,
+  fishing: fishingGameOpen,
+  cooking: cookingGameOpen
 })
 const npcProfile = ref(null)
 
@@ -381,8 +412,11 @@ const nearbyNpcIntents = computed(() => {
 })
 
 const effectiveNearbyInteract = computed(() => {
-  if (nearbyInteract.value) return nearbyInteract.value
-  const event = nearbyStoryEvents.value[0]
+  const event = nearbyStoryEvents.value.find((item) =>
+    item?.kind === 'precapture_key' || String(item?.id || '').startsWith('ch1pc_')
+  ) || nearbyStoryEvents.value[0]
+  // 主线事件在同一地点时覆盖 POI 标题和说明，给玩家一个单一、明确的下一步。
+  if (!event && nearbyInteract.value) return nearbyInteract.value
   if (!event) {
     const intent = nearbyNpcIntents.value[0]
     if (!intent) return null
@@ -444,10 +478,16 @@ const visibleInteractActions = computed(() => {
       .filter((a) => !a.requires_story || a.requires_story === nid)
       .map(enrichInteractAction)
     : []
+  const nearbyPrecaptureEvent = nearbyStoryEvents.value.find((event) =>
+    event?.kind === 'precapture_key' || String(event?.id || '').startsWith('ch1pc_')
+  )
+  // 主线节点在当前地点时优先占用交互入口，避免玩家先做日常活动而错过
+  // N01-N10 的时间窗口；离开主线地点后，日常活动仍然完整可见。
+  const visibleBase = nearbyPrecaptureEvent ? [] : base
   return dedupeActivityActions([
     ...npcIntentActions.value,
     ...naturalStoryEventActions.value,
-    ...base
+    ...visibleBase
   ])
 })
 
@@ -552,7 +592,7 @@ function focusStoryEventLocation(event) {
 function guideToStoryEvent(event) {
   focusStoryEventLocation(event)
   const scene = event?.location?.scene_id ? getSceneLabel(event.location.scene_id) : '线索地点'
-  showToast(`先去${scene}附近，再打开互动回应。`, 'info')
+  showToast(`已定位到${scene}：点击地图上的金色标记移动，抵达后打开互动回应。`, 'info')
 }
 
 const primaryStoryEvent = computed(() => storyEvents.value[0] || null)
@@ -590,6 +630,8 @@ const anyModalOpen = computed(() =>
   readingGameOpen.value ||
   mealChoiceOpen.value ||
   boundaryPatrolOpen.value ||
+  fishingGameOpen.value ||
+  cookingGameOpen.value ||
   journalOpen.value
 )
 
@@ -686,8 +728,20 @@ async function refreshStoryEvents() {
   try {
     const res = await props.fetchAvailableStoryEvents()
     storyEvents.value = Array.isArray(res?.events) ? res.events : []
+    dayGateStatus.value = res?.day_gate || {
+      day: Number(props.simState?.day || 1),
+      ready: true,
+      label: '剧情结算',
+      missing: [],
+    }
   } catch {
     storyEvents.value = []
+    dayGateStatus.value = {
+      day: Number(props.simState?.day || 1),
+      ready: false,
+      label: '正在同步剧情闸',
+      missing: [],
+    }
   }
   await refreshMonthPlan()
 }
@@ -948,6 +1002,7 @@ function openInteractPanel() {
     readingGameOpen.value ||
     mealChoiceOpen.value ||
     boundaryPatrolOpen.value ||
+    fishingGameOpen.value ||
     dialogueOpen.value ||
     npcPanelOpen.value ||
     npcProfileOpen.value ||
@@ -1075,6 +1130,12 @@ async function onHotbarAction(actionId) {
     }
     showToast('先走到巨神树伐木场，靠近尤吉欧后再开始训练。')
   } else if (actionId === 'rest') {
+    if (!dayGateStatus.value.ready) {
+      const missing = Array.isArray(dayGateStatus.value.missing) ? dayGateStatus.value.missing : []
+      const next = missing[0]
+      showToast(next?.title ? `还需要完成：${next.title}` : '先完成当前剧情线索，再进入下一天。', 'info')
+      return
+    }
     await doWithBusy(async () => {
       const beforeDay = Number(props.simState?.day || 1)
       const res = await props.playerAction({ kind: 'rest_until_next_day' })
@@ -1170,7 +1231,16 @@ async function runSceneActivity(act, extra = {}) {
     kind: 'interact_with_hub',
     poi_id: nearbyInteract.value?.id || effectiveNearbyInteract.value?.id || act?.activity?.poi_id,
     activity_id: activityId,
-    activity_choice: extra.activity_choice || undefined
+    activity_choice: extra.activity_choice || undefined,
+    loadout: Array.isArray(extra.loadout) ? extra.loadout : undefined,
+    mini_game_result: extra.mini_game_result
+      ? {
+          ...extra.mini_game_result,
+          choice_id: extra.mini_game_result.choice_id
+            || extra.mini_game_result.choiceId
+            || extra.activity_choice
+        }
+      : undefined
   })
   storyResult.value = {
     ...(res.activity_result || {}),
@@ -1187,6 +1257,11 @@ async function runSceneActivity(act, extra = {}) {
 
 async function openJournal() {
   journalOpen.value = true
+  try {
+    await props.refresh()
+  } catch {
+    // Keep the already-synced codex visible if a background refresh is unavailable.
+  }
   await refreshMonthPlan()
   const agents = Array.isArray(props.simState?.agents) ? props.simState.agents : []
   if (!agents.length) return
@@ -1402,13 +1477,23 @@ async function onActivityChoiceChoose(choice) {
   })
 }
 
+async function onReadingComplete(payload) {
+  const chain = payload?.result?.inference_chain
+  if (!payload?.choice_id || !Array.isArray(chain) || chain.length !== 3) {
+    showToast('推理链还没有闭合，先完成现象、规则和结论三步。')
+    return
+  }
+  await onActivityComplete(payload)
+}
+
 async function onActivityComplete(payload) {
   const act = pendingActivityAction.value
   if (!act || busy.value) return
   await doWithBusy(async () => {
     await runSceneActivity(act, {
       activity_choice: payload?.choice_id,
-      mini_game_result: payload?.result || null
+      mini_game_result: payload?.result || null,
+      loadout: payload?.loadout || payload?.result?.loadout || []
     })
     setActivityPanelOpen(act, false)
     pendingActivityAction.value = null
@@ -1422,7 +1507,7 @@ async function onActivityComplete(payload) {
 function handleHotkey(e) {
   const tag = e.target?.tagName?.toLowerCase?.()
   if (tag === 'input' || tag === 'textarea' || tag === 'select') return
-  if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value || storyEventOpen.value || activityChoiceOpen.value || storyResultOpen.value || npcProfileOpen.value || journalOpen.value || trainingGameOpen.value || boundaryProbeOpen.value || boundaryVerdictOpen.value || readingGameOpen.value || mealChoiceOpen.value || boundaryPatrolOpen.value) return
+  if (dialogueOpen.value || npcPanelOpen.value || interactOpen.value || storyEventOpen.value || activityChoiceOpen.value || storyResultOpen.value || npcProfileOpen.value || journalOpen.value || trainingGameOpen.value || boundaryProbeOpen.value || boundaryVerdictOpen.value || readingGameOpen.value || mealChoiceOpen.value || boundaryPatrolOpen.value || fishingGameOpen.value || cookingGameOpen.value) return
   const key = String(e.key || '').toLowerCase()
   if (props.devMode && key === 'v' && (e.ctrlKey || e.metaKey || e.shiftKey)) {
     e.preventDefault()
@@ -1473,6 +1558,10 @@ async function doWithBusy(fn) {
       localError.value = '这个行动还有前置条件。先完成当前线索，或与对应 NPC 互动。'
     } else if (msg.includes('day_end_gate_incomplete')) {
       localError.value = '今天还有关键剧情没有完成。先完成目标，再回到炉火处结算。'
+    } else if (msg.includes('mini_game_result_required')) {
+      localError.value = '小游戏结算证据缺失；这次行动没有消耗材料或时间，请重新完成小游戏。'
+    } else if (msg.includes('mini_game_result_mismatch') || msg.includes('mini_game_result_invalid')) {
+      localError.value = '小游戏表现与结果选项不一致；这次行动没有消耗材料或时间，请按当前节奏重新完成。'
     } else if (msg.includes('already_done_today')) {
       localError.value = '这个行动今天已经完成。可以继续完成当天剧情。'
     } else if (msg.includes('already_done')) {

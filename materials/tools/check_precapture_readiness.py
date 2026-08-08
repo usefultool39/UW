@@ -49,7 +49,7 @@ RUNTIME_REQUESTS = (
 READY_STATUSES = {"received", "reviewing", "approved", "integrated"}
 ACTS = ("act_0", "act_1", "act_2", "act_3")
 CAPTURE_ENDING_IDS = {"precapture_alice_captured", "alice_captured"}
-SIDECAR_RE = re.compile(r"_v\d+\.md$", re.IGNORECASE)
+SIDECAR_RE = re.compile(r"(?:_v\d+|_delivery)\.md$", re.IGNORECASE)
 SIDECAR_FIELD_RE = re.compile(r"^\s*(?:[-*]\s*)?(request_id|creator/source|created_at|license|source_url|intended_use)\s*:\s*(.*?)\s*$", re.IGNORECASE | re.MULTILINE)
 IGNORED_NAMES = {".gitkeep", "README.md"}
 REQUIRED_SIDECAR_FIELDS = {"request_id", "creator/source", "created_at", "license", "source_url", "intended_use"}
@@ -115,7 +115,12 @@ def _sidecar_issues(path: Path, request_id: str) -> list[str]:
         if not values.get(field)
     ]
     declared_request = values.get("request_id")
-    if declared_request and declared_request != request_id:
+    declared_requests = {
+        value.strip()
+        for value in (declared_request or "").split(",")
+        if value.strip()
+    }
+    if declared_requests and request_id not in declared_requests:
         issues.append(
             f"sidecar {path.name} request_id={declared_request} does not match {request_id}"
         )
@@ -141,7 +146,16 @@ def _request_report(
     raw_dir = (row.get("deliverable_dir") or "").strip()
     deliverable = project_root / raw_dir
     files = _content_files(deliverable, request_id)
-    sidecars = [path for path in files if SIDECAR_RE.search(path.name)]
+    sidecars = []
+    for path in _content_files(deliverable):
+        if not SIDECAR_RE.search(path.name):
+            continue
+        try:
+            sidecar_text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        if request_id in path.name or request_id in sidecar_text:
+            sidecars.append(path)
     entries = [
         item
         for item in manifest_rows
@@ -174,7 +188,7 @@ def _request_report(
     if not files:
         issues.append("no files in deliverable directory")
     if not sidecars:
-        issues.append("no versioned sidecar")
+        issues.append("no delivery sidecar")
     else:
         for sidecar in sidecars:
             issues.extend(_sidecar_issues(sidecar, request_id))

@@ -118,6 +118,10 @@ class WorldState(BaseModel):
     story_node_id: str = "mq00_tutorial"
     story_sub_id: str | None = None
     flags: dict[str, int] = Field(default_factory=dict)
+    # Item counts are intentionally a flat map for save/API compatibility.
+    # Unknown item ids remain valid so authored content can add materials
+    # without requiring a model migration.
+    inventory: dict[str, int] = Field(default_factory=dict)
     relationships: dict[str, RelationshipState] = Field(default_factory=dict)
     active_event_ids: list[str] = Field(default_factory=list)
     completed_event_ids: list[str] = Field(default_factory=list)
@@ -132,6 +136,7 @@ class WorldState(BaseModel):
             "village_square",
             "gigas_clearing",
             "north_gate",
+            "west_fields",
         ]
     )
 

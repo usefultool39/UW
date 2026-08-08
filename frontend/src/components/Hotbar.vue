@@ -39,6 +39,11 @@ const actions = [
 
 function getDisabledReason(action) {
   if (props.busy) return '系统正忙，请稍候'
+  if (action.id === 'rest' && !props.dayGate?.ready) {
+    const missing = Array.isArray(props.dayGate?.missing) ? props.dayGate.missing : []
+    const next = missing[0]
+    return next?.title ? `先完成：${next.title}` : '先完成当前剧情线索'
+  }
   if (action.requiresEvents && !props.hasEvents) return '附近暂无可处理线索'
   return ''
 }

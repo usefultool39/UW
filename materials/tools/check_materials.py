@@ -18,7 +18,7 @@ VALID_STATUSES = {
 }
 VALID_MANIFEST_STATUSES = {
     "approved-candidate", "approved-for-direction", "changes_requested",
-    "received", "review-only", "integrated", "deferred", "rejected",
+    "received", "review-only", "sample_candidate", "integrated", "deferred", "rejected",
 }
 RUNTIME_ALLOWED_STATUSES = {"approved-candidate", "integrated"}
 MANIFEST_COLUMNS = {
@@ -75,18 +75,28 @@ def validate_requests() -> tuple[set[str], int]:
 def validate_inbox(request_ids: set[str]) -> int:
     errors = 0
     inbox = ROOT / "inbox"
-    # 找所有 master sidecar：<request_id>_<任意>_v001.md
+
+    def is_work_file(path: Path) -> bool:
+        relative = path.relative_to(inbox)
+        return any(part.startswith("_") for part in relative.parts) or path.name.startswith("Original_hand_painted_")
+
+    # A delivery sidecar may cover several request IDs in the same directory.
+    # Stable current filenames intentionally do not carry revision suffixes.
     master_by_dir: dict[tuple[Path, str], Path] = {}
     for path in inbox.rglob("*"):
         if not path.is_file() or path.name in {".gitkeep", "README.md"}:
             continue
+        if is_work_file(path):
+            continue
         if path.suffix.lower() != ".md":
             continue
-        if not re.search(r"_v\d+", path.name):
+        try:
+            sidecar_text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
             continue
-        request_id = path.name.split("_", 1)[0]
-        if request_id in request_ids:
-            master_by_dir[(path.parent, request_id)] = path
+        for request_id in request_ids:
+            if request_id in path.name or request_id in sidecar_text:
+                master_by_dir[(path.parent, request_id)] = path
     def find_master(p: Path, rid: str) -> Path | None:
         # 从自身向上逐级找 master sidecar
         cur = p.parent
@@ -99,6 +109,8 @@ def validate_inbox(request_ids: set[str]) -> int:
             cur = cur.parent
     for path in inbox.rglob("*"):
         if not path.is_file() or path.name in {".gitkeep", "README.md"}:
+            continue
+        if is_work_file(path):
             continue
         if path.suffix.lower() not in BINARY_SUFFIXES:
             continue
