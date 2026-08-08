@@ -14,12 +14,12 @@
     </div>
     <div class="player-vitals">
       <div class="vital-name">{{ playerName }}</div>
-      <div class="bar hp" :aria-label="`生命 ${hpValue}/${maxHpValue}`"><span :style="{ width: hpPercent + '%' }"></span><b>HP {{ hpValue }}</b></div>
-      <div class="bar mp" :aria-label="`神圣力 ${mpValue}/${maxMpValue}`"><span :style="{ width: mpPercent + '%' }"></span><b>MP {{ mpValue }}</b></div>
-      <div class="bar stamina" :aria-label="`体力 ${staminaValue}/${maxStaminaValue}`"><span :style="{ width: staminaPercent + '%' }"></span><b>ST {{ staminaValue }}</b></div>
+      <div class="bar hp" :aria-label="`生命 ${hpValue}/${maxHpValue}`"><span :style="{ width: hpPercent + '%' }"></span><b>生命 {{ hpValue }}</b></div>
+      <div class="bar mp" :aria-label="`神圣力 ${mpValue}/${maxMpValue}`"><span :style="{ width: mpPercent + '%' }"></span><b>神圣力 {{ mpValue }}</b></div>
+      <div class="bar stamina" :aria-label="`体力 ${staminaValue}/${maxStaminaValue}`"><span :style="{ width: staminaPercent + '%' }"></span><b>体力 {{ staminaValue }}</b></div>
     </div>
     <div class="player-meta">
-      <span class="meta-tag day">Day {{ day }}</span>
+      <span class="meta-tag day">第 {{ day }} 天</span>
       <span class="meta-tag scene">{{ sceneLabel }}</span>
       <span class="meta-tag weather">{{ weatherLabel }}</span>
     </div>
@@ -51,9 +51,11 @@ const avatarStyle = {
   '--pixel-boots': toCssColor(playerPalette.boots, '#2b2018')
 }
 
-const playerName = computed(() =>
-  props.simState?.player?.name || `${AGENTS.player?.label || '凛斗'} · Lv.1`
-)
+const playerName = computed(() => {
+  const rawName = String(props.simState?.player?.name || '').trim()
+  if (!rawName || rawName.includes('见习记录员')) return AGENTS.player?.label || '桐人'
+  return rawName.replace(/\s*·\s*Lv\.\d+$/i, '')
+})
 
 const day = computed(() => props.simState?.day ?? 1)
 const weatherLabel = computed(() => props.simState?.weather_label || '晴朗')

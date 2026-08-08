@@ -21,6 +21,10 @@ class PlayerActionBody(BaseModel):
     flag_value: int | None = None
     activity_id: str | None = None
     activity_choice: str | None = None
+    loadout: list[str] | None = None
+    mini_game_result: dict[str, Any] | None = None
+    item_id: str | None = None
+    quantity: int | None = None
     intent_id: str | None = None
     response_id: str | None = None
     tile_x: int | None = None
@@ -68,6 +72,10 @@ class PlayerActionResult(BaseModel):
     scene_update: SceneUpdateEnvelope
     path: list[dict[str, int]] | None = None
     activity_result: dict[str, Any] | None = None
+    item_result: dict[str, Any] | None = None
+    item_changes: dict[str, Any] | None = None
+    inventory: dict[str, int] | None = None
+    resource_changes: dict[str, Any] | None = None
     intent_result: dict[str, Any] | None = None
     relationship_changes: list[dict[str, Any]] | None = None
     memory_written: list[dict[str, Any]] | None = None

@@ -1,55 +1,53 @@
-# 后端说明
+# 后端
 
-FastAPI 后端负责权威世界状态、玩家行动校验、NPC 日程、剧情事件、关系/记忆、对话和存档。
+FastAPI 后端负责权威世界状态、行动校验、NPC 日程、剧情事件、关系与记忆、对话和存档。
 
-完整架构见 [../docs/PROJECT.md](../docs/PROJECT.md)。
+- 产品与边界：`../docs/PROJECT.md`
+- 架构：`../docs/architecture/SYSTEM_OVERVIEW.md`
+- 运行：`../docs/operations/RUNBOOK.md`
 
-## 运行
+## 启动
 
-```bat
-cd /d F:\usefultool39\02-UW小镇\backend
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8765
+```bash
+cd backend
+.venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8765
 ```
 
-健康检查：
+Windows 可使用 `.venv\Scripts\python.exe`。
 
-```text
-http://127.0.0.1:8765/api/health
-```
+健康检查：`http://127.0.0.1:8765/api/health`
 
 ## 测试
 
-```bat
-cd /d F:\usefultool39\02-UW小镇\backend
-python -m pytest -q
-```
+从仓库根目录运行：
 
-当前测试使用 `backend/tests/conftest.py` 中的项目内临时目录 fixture，避免部分 Windows 环境中用户 Temp ACL 被锁导致 `tmp_path` 报权限错误。
+```bash
+backend/.venv/bin/python -m pytest -q backend/tests
+```
 
 ## 主要模块
 
 | 文件 | 作用 |
-|------|------|
+|---|---|
 | `app/main.py` | API 路由 |
-| `app/models.py` | 世界、玩家、NPC、关系模型 |
-| `app/session.py` | 会话、行动、剧情选择、对话、存档 |
-| `app/world.py` | 世界规则和 NPC 日程 |
-| `app/story_director.py` | 章节事件触发和效果 |
-| `app/dialogue_agent.py` | LLM/fallback 对话 |
-| `app/memory_store.py` | NPC 记忆 summary 与 JSONL |
-| `app/relationship.py` | 关系数值和档案 |
+| `app/models.py` | 世界、玩家、NPC 和关系模型 |
+| `app/session.py` | 行动、剧情、对话、存档和权威提交 |
+| `app/activity_engine.py` | 活动规划与校验 |
+| `app/world.py` | 世界规则、时间和 NPC 日程 |
+| `app/story_director.py` | 剧情触发和效果 |
+| `app/npc_runtime.py` | scripted/hybrid/agent 路由 |
+| `app/memory_store.py` | 按 run 隔离的记忆和 JSONL |
 
 ## 常用 API
 
 | 方法 | 路径 |
-|------|------|
+|---|---|
 | `GET` | `/api/state` |
 | `POST` | `/api/player/action` |
 | `GET` | `/api/story/available_events` |
 | `POST` | `/api/story/choose` |
 | `POST` | `/api/dialogue` |
-| `GET` | `/api/npc/{npc_id}/profile` |
 | `GET` | `/api/save/export` |
 | `POST` | `/api/save/import` |
 
-不要把 `runs/`、`data/memory/`、`_test_tmp/` 当作剧情配置源。
+`runs/`、`data/memory/` 和 `_test_tmp/` 是运行或测试产物，不是剧情配置源。

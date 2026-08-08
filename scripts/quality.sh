@@ -15,7 +15,7 @@ if [ -z "${PYTHON_BIN:-}" ]; then
   done
 fi
 
-[ -x "$PYTHON_BIN" ] || {
+[ -x "${PYTHON_BIN:-}" ] || {
   echo "缺少后端 Python 环境：先运行 ./启动游戏.command --setup-only，或设置 PYTHON_BIN" >&2
   exit 1
 }
@@ -24,34 +24,31 @@ command -v npm >/dev/null 2>&1 || {
   exit 1
 }
 
-echo "[1/8] Materials registry and runtime assets"
+echo "[1/7] Documentation consistency"
+"$PYTHON_BIN" "$ROOT/scripts/check_docs.py"
+
+echo "[2/7] Materials registry"
 "$PYTHON_BIN" "$ROOT/materials/tools/check_materials.py"
 
-echo "[2/8] Runtime visual/audio specifications"
+echo "[3/7] Runtime asset specifications"
 "$PYTHON_BIN" "$ROOT/materials/tools/check_runtime_asset_specs.py" --require-complete
 
-echo "[3/8] Pre-Capture readiness report"
-"$PYTHON_BIN" "$ROOT/materials/tools/check_precapture_readiness.py"
-
-echo "[4/8] Human playtest record status"
-"$PYTHON_BIN" "$ROOT/scripts/check_playtest_round.py"
-
-echo "[5/8] Backend pytest"
+echo "[4/7] Backend tests"
 (
   cd "$ROOT"
-  "$PYTHON_BIN" -m pytest -q
+  "$PYTHON_BIN" -m pytest -q backend/tests
 )
 
-echo "[6/8] Frontend unit tests"
+echo "[5/7] Frontend unit tests"
 npm --prefix "$ROOT/frontend" run test:unit
 
-echo "[7/8] Frontend production build"
+echo "[6/7] Frontend production build"
 npm --prefix "$ROOT/frontend" run build
 
-echo "[8/8] Git diff hygiene"
+echo "[7/7] Git diff hygiene"
 (
   cd "$ROOT"
   git diff --check
 )
 
-echo "Quality gate passed. Run Playwright E2E before release or UI delivery."
+echo "Quality gate passed. Release readiness, human playtest and E2E are checked by scripts/release.sh."

@@ -1,12 +1,12 @@
 # Underworld NPC 意图 Agent Loop
 
-- **状态**：Current / 预览推荐已落地，自动执行仍需显式 Session 工具调用
+- **状态**：预览推荐已实现；所有效果仍由 Session 显式提交
 - **实现**：`backend/app/npc_intent_agent.py`、`backend/app/intent_policy.py`
 - **入口**：`POST /api/npc/{npc_id}/intent/propose`
 
 ## 目标
 
-让 NPC 可以用模型理解当前关系、记忆和 authored 事件，并推荐“此刻最值得回应的 NPC 主动事件”，但不允许模型创造剧情事实。第一阶段只做**预览推荐**：玩家或 UI 仍通过 `player_action(kind=respond_npc_intent)` 执行回应。
+让 NPC 可以用模型理解当前关系、记忆和 authored 事件，并推荐“此刻最值得回应的 NPC 主动事件”，但不允许模型创造剧情事实。当前只做**预览推荐**：玩家或 UI 仍通过 `player_action(kind=respond_npc_intent)` 执行回应。
 
 ## 安全链路
 
@@ -40,8 +40,8 @@ Session 再次查当前 intent 和 response，才提交 flags / relationship / m
 ## 手工验证
 
 ```bash
-cd /Users/lzm/Desktop/UW/backend
-../backend/.venv/bin/python -m pytest -q \
+cd backend
+.venv/bin/python -m pytest -q \
   tests/test_intent_policy.py tests/test_npc_intent_agent.py tests/test_agent_budget.py
 ```
 

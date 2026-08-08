@@ -4,7 +4,7 @@
       <div class="quest-heading-row">
         <div>
           <div class="quest-rail-title">主线目标</div>
-          <div class="quest-day">Day {{ simState?.day || 1 }} · {{ primaryKindLabel }}</div>
+          <div class="quest-day">第 {{ simState?.day || 1 }} 天 · {{ primaryKindLabel }}</div>
         </div>
         <span class="quest-state">进行中</span>
       </div>
@@ -13,22 +13,6 @@
         <span class="route-pulse"></span>
         <span>{{ uwCanonText(routeHint) }}</span>
       </div>
-      <div class="reward-preview" aria-label="完成奖励预览">
-        <span>完成后</span>
-        <strong>{{ rewardPreview }}</strong>
-      </div>
-      <div class="daily-loop" aria-label="今日进度">
-        <div class="daily-loop-head">
-          <span>今日节奏</span>
-          <strong>{{ dayPlanDone }}/{{ dayPlan.length }}</strong>
-        </div>
-        <div class="daily-loop-bar"><span :style="{ width: `${dayPlanPercent}%` }"></span></div>
-        <div class="daily-loop-items">
-          <span v-for="item in dayPlan" :key="item.id" :class="{ done: item.done }">
-            <b>{{ item.done ? '✓' : '·' }}</b>{{ item.label }}
-          </span>
-        </div>
-      </div>
       <button
         v-if="primaryEvent"
         type="button"
@@ -36,7 +20,7 @@
         :disabled="busy"
         @click="$emit('open-event', primaryEvent.id)"
       >
-        追踪：{{ uwCanonText(primaryEvent.title || '当前线索') }}
+        前往：{{ uwCanonText(primaryEvent.title || '当前线索') }}
       </button>
       <button
         v-else-if="actionPreview.length"
@@ -49,11 +33,6 @@
       </button>
     </section>
 
-    <div v-if="highlightPrimary" class="guide-steps" aria-label="新手行动步骤">
-      <span>1 看金色指引</span>
-      <span>2 走近目标</span>
-      <span>3 选择行动</span>
-    </div>
 
     <div v-if="actionPreview.length" class="nearby-actions">
       <div class="nearby-actions-head">
@@ -185,44 +164,6 @@ const primaryKindLabel = computed(() => {
   return ({ clue: '调查', training: '训练', anomaly: '异常', conflict: '抉择', final_choice: '关键选择' })[kind] || '村庄生活'
 })
 
-const rewardPreview = computed(() => {
-  const kind = String(primaryEvent.value?.kind || '')
-  return ({
-    clue: '获得线索，解锁新的关系回应',
-    training: '提升行动熟练度，推进尤吉欧关系',
-    anomaly: '确认世界异常，开启剧情分支',
-    conflict: '改变同伴立场与后续事件',
-    final_choice: '决定本章路线与结局'
-  })[kind] || (actionPreview.value.length ? '时间消耗，NPC 会记住你的选择' : '推进今天的故事')
-})
-
-const completedIds = computed(() => new Set(Array.isArray(props.simState?.completed_event_ids) ? props.simState.completed_event_ids : []))
-const flags = computed(() => props.simState?.flags || {})
-const dayPlan = computed(() => {
-  const day = Number(props.simState?.day || 1)
-  if (day <= 1) return [
-    { id: 'record', label: '确认异常记录', done: Number(flags.value.clue_boundary_record || 0) > 0 },
-    { id: 'training', label: '完成同伴训练', done: Number(flags.value.trained_with_eugeo || 0) > 0 },
-    { id: 'rest', label: '回到小屋结算', done: day > 1 }
-  ]
-  if (day === 2) return [
-    { id: 'anomaly', label: '调查森林静默', done: completedIds.value.has('ch1_d2_forest_anomaly') },
-    { id: 'dinner', label: '处理同伴分歧', done: completedIds.value.has('ch1_d2_npc_disagreement') },
-    { id: 'rest', label: '准备边界行动', done: day > 2 }
-  ]
-  if (day === 3) return [
-    { id: 'boundary', label: '抵达静默线', done: completedIds.value.has('ch1_d3_boundary_choice') },
-    { id: 'choice', label: '作出关键选择', done: Boolean(props.simState?.chapter_ending_id) },
-    { id: 'record', label: '留下你的记录', done: Boolean(props.simState?.chapter_ending_id) }
-  ]
-  return [
-    { id: 'main', label: '处理当前主线', done: !primaryEvent.value },
-    { id: 'bond', label: '回应一名同伴', done: activeNpcIntents.value.length === 0 },
-    { id: 'close', label: '完成今日结算', done: false }
-  ]
-})
-const dayPlanDone = computed(() => dayPlan.value.filter((item) => item.done).length)
-const dayPlanPercent = computed(() => dayPlan.value.length ? Math.round(dayPlanDone.value / dayPlan.value.length * 100) : 0)
 
 function intentTitle(intent) {
   return compactPlayerText(intent?.title || '同伴正在等你回应', 38)

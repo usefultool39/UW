@@ -1,0 +1,57 @@
+[
+  {
+    "file": "AUD-SFX-001_confirm.wav",
+    "actual_master_file": "materials/inbox/audio/sfx/current/AUD-SFX-001_confirm.wav",
+    "integrated_loudness_lufs": -23.0,
+    "peak_dbfs": -1.0,
+    "true_peak_dbtp": -1.0,
+    "duration_sec": 0.666667,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 1
+  },
+  {
+    "file": "AUD-SFX-001_cancel.wav",
+    "actual_master_file": "materials/inbox/audio/sfx/current/AUD-SFX-001_cancel.wav",
+    "integrated_loudness_lufs": -23.0,
+    "peak_dbfs": -1.0,
+    "true_peak_dbtp": -1.0,
+    "duration_sec": 0.666667,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 1
+  },
+  {
+    "file": "AUD-SFX-001_fail.wav",
+    "actual_master_file": "materials/inbox/audio/sfx/current/AUD-SFX-001_fail.wav",
+    "integrated_loudness_lufs": -23.0,
+    "peak_dbfs": -1.0,
+    "true_peak_dbtp": -1.0,
+    "duration_sec": 0.666667,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 1
+  },
+  {
+    "file": "AUD-SFX-001_clue.wav",
+    "actual_master_file": "materials/inbox/audio/sfx/current/AUD-SFX-001_clue.wav",
+    "integrated_loudness_lufs": -23.0,
+    "peak_dbfs": -1.0,
+    "true_peak_dbtp": -1.0,
+    "duration_sec": 0.666667,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 1
+  },
+  {
+    "file": "AUD-SFX-001_relation.wav",
+    "actual_master_file": "materials/inbox/audio/sfx/current/AUD-SFX-001_relation.wav",
+    "integrated_loudness_lufs": -23.0,
+    "peak_dbfs": -1.0,
+    "true_peak_dbtp": -1.0,
+    "duration_sec": 0.666667,
+    "sample_rate_hz": 48000,
+    "bit_depth": 24,
+    "channels": 1
+  }
+]

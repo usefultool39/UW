@@ -11,7 +11,8 @@ const TERM_REPLACEMENTS = [
   ['爱丽丝', '爱丽丝'],
   ['尤里', '尤吉欧'],
   ['悠吉欧', '尤吉欧'],
-  ['凛斗', '见习记录员'],
+  ['凛斗', '桐人'],
+  ['见习记录员', '桐人'],
   ['巨神树清场', '巨神树伐木场'],
   ['古誓树清场', '巨神树伐木场'],
   ['古誓树', '巨神树'],
@@ -26,7 +27,7 @@ export function uwCanonText(value) {
   for (const [from, to] of TERM_REPLACEMENTS) {
     text = text.replaceAll(from, to)
   }
-  return text
+  return text.replace(/Day\s*(\d+)(?:-(\d+))?/g, (_, start, end) => end ? `第 ${start}–${end} 天` : `第 ${start} 天`)
 }
 
 export function compactPlayerText(value, maxLength = 52) {

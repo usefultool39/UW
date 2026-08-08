@@ -8,7 +8,7 @@
 - negative_prompt: none
 - seed/settings: none
 - license: owned
-- source_url: 引用项目内文件：`frontend/src/utils/uwCanonText.js`、`frontend/src/components/OpeningCinematic.vue`、`characters/meta.json`、`characters/{kirito,alice,eugeo,selka}/persona.md`、`characters/{kirito,alice,eugeo}/backstory.md`、`characters/{alice,eugeo}/dialogue.json`、`characters/system_base.md`、`data/story/events_chapter_01.json`、`data/story/month_01_plan.json`、`data/world/scene_activities.json`、`docs/product/DAY1_VERTICAL_SLICE.md`、`materials/01_REQUEST_CATALOG.md`、`materials/02_VISUAL_STYLE_BIBLE.md`、`materials/04_AI_PROMPT_KITS.md`
+- source_url: 引用项目内文件：`frontend/src/utils/uwCanonText.js`、`frontend/src/components/OpeningCinematic.vue`、`characters/meta.json`、`characters/{kirito,alice,eugeo,selka}/persona.md`、`characters/{kirito,alice,eugeo}/backstory.md`、`characters/{alice,eugeo}/dialogue.json`、`characters/system_base.md`、`data/story/events_chapter_01.json`、`data/story/month_01_plan.json`、`data/world/scene_activities.json`、`docs/PROJECT.md`、`docs/PLAN.md`、`docs/art/ASSET_REVIEW.md`、`materials/README.md`
 - edits: none
 - intended_use: writing
 - notes: 本文件为写作指导，非游戏内直接文本；角色名与术语以 uwCanonText.js 为准。文中所有引号示例台词为**风格样本**，可直接改写复用，但入库前须过 `uwCanonText()` 与本文件第 0 节术语表复核。
@@ -470,7 +470,7 @@ Day 1–3 锚定在卢利特村童年/少年期。以下内容**任何人不得�
 - **A. 赛尔卡 / 塞鲁卡拼写。** 本文件按 `characters/meta.json` 的 display 值采用**赛尔卡**。若确认应为「塞鲁卡」，需在 `uwCanonText.js` 增加映射并全库替换，本文件同步改。
 - **B. 「莉娜」遗留别名。** `characters/alice/persona.md` 仍把爱丽丝的妹妹写作「莉娜」，与 `meta.json`、`selka/persona.md` 冲突。建议清理该 persona 文件，或在 `uwCanonText.js` 增加 `['莉娜','赛尔卡']`。
 - **C. 「基加斯西达」「伐木手」「元老院」「整合骑士」四词目前只存在于需求单，代码与数据里尚无一处使用。** 本文件已按需求单采用，但建议一并写进 `uwCanonText.js` 的白名单注释或单独的术语表文件，避免后续撰稿人各写各的。
-- **D. `docs/product/DAY1_VERTICAL_SLICE.md` 与 `data/world/scene_activities.json`、`data/story/events_chapter_01.json` 内仍大量使用废弃译名**（艾琳/尤里/露茵村/古誓树清场/刻印术/北境律令）。运行时靠 `uwCanonText()` 兜底，但这些文本会被撰稿人当作参考源二次传播。建议做一次源文件级清理。
+- **D. `docs/PROJECT.md` 与 `data/world/scene_activities.json`、`data/story/events_chapter_01.json` 内仍大量使用废弃译名**（艾琳/尤里/露茵村/古誓树清场/刻印术/北境律令）。运行时靠 `uwCanonText()` 兜底，但这些文本会被撰稿人当作参考源二次传播。建议做一次源文件级清理。
 
 ### 6.4 下游依赖
 

@@ -17,7 +17,7 @@
   4. 把"静默线 / 第 14.5 页 / 两息风声 / 见报名册桌"等 v001 原创核心从事实表中移除，改为可标注在 `WORLD-MICRO-001` / `NAR-PRECAP-001` 的"项目原创补充（可选支线）"
   5. "End of World" 维持"未确认"判定
 - intended_use: 写作者与内容校验器共用的正典事实基线；任何新增事件、NPC 意图、Agent 输出在引用本文件的命名/年龄/时间阶段前必须先核对
-- notes: v001 保留在 `materials/inbox/research/canon_baseline/NAR-CANON-001_canon_baseline_v001.md`，MANIFEST 状态 = `changes_requested`。本文件不复制动画截图、官方台词、镜头或拆包素材；项目内显示名以 `frontend/src/utils/uwCanonText.js` 为最终裁决。
+- notes: 上一轮被退回的修订已从工作树删除，可通过 Git 历史追溯。本文件不复制动画截图、官方台词、镜头或拆包素材；项目内显示名以 `frontend/src/utils/uwCanonText.js` 为最终裁决。
 
 ---
 
@@ -123,7 +123,7 @@
 ## 5. 关于"End of World"的处置
 
 - 2026-08-06 复核官方动画故事页，**未发现以"End of World"为标题的《刀剑神域》正传电影条目**。A 类官方页面标题为 `Underworld`、`The Demon Tree`、`The End Mountains` 等。
-- "End of World"在本项目历史记录中曾作为 `Underworld` 与 `The End Mountains` 的混称使用（参考 `materials/08_NARRATIVE_REQUIREMENTS.md` §0）。
+- "End of World"在本项目历史记录中曾作为 `Underworld` 与 `The End Mountains` 的混称使用（参考 `docs/PROJECT.md` 的术语与叙事边界）。
 - 处置原则：在本项目玩家可见文本与本系列素材中**不出现"End of World"**。若用户后续提供明确指向"End of World"为另一部作品的链接/片名/截图，先建立带来源的新参考对象版本，**不覆盖本次官方核实**。
 
 ## 6. 角色显示名最终裁决

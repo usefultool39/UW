@@ -70,7 +70,7 @@ const emit = defineEmits(['update:modelValue'])
 const NAMES = {
   alice: '爱丽丝',
   eugeo: '尤吉欧',
-  kirito: '凛斗'
+  kirito: '桐人'
 }
 
 const draft = ref('')

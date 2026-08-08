@@ -19,6 +19,13 @@
       </button>
     </nav>
 
+    <InventoryPanel
+      v-if="appTab === 'field'"
+      :sim-state="state"
+      :player-action="playerAction"
+      field-mode
+    />
+
     <FieldSlice
       v-if="appTab === 'field'"
       :sim-state="state"
@@ -47,7 +54,7 @@
       <ChapterGoals :state="state" :flags="narrative.flags || {}" />
       <TreeStatus :tree="state.tree" />
       <AgentPanel :agents="state.agents" />
-      <BondPanel :narrative="narrative" :reset-narrative="resetNarrative" />
+      <BondPanel :narrative="narrative" :sim-state="state" :reset-narrative="resetNarrative" />
     </aside>
 
     <main class="main-area">
@@ -77,6 +84,11 @@
 
     <aside class="side-panel">
       <CharacterGallery />
+      <InventoryPanel
+        v-if="appTab === 'overview'"
+        :sim-state="state"
+        :player-action="playerAction"
+      />
       <div class="card help-card">
         <div class="card-title">操作说明</div>
         <div class="help-lines">
@@ -119,6 +131,7 @@ import ControlPanel from './components/ControlPanel.vue'
 import TimelineCard from './components/TimelineCard.vue'
 import CharacterGallery from './components/CharacterGallery.vue'
 import BondPanel from './components/BondPanel.vue'
+import InventoryPanel from './components/InventoryPanel.vue'
 import DialogueBanner from './components/DialogueBanner.vue'
 import StoryChoiceModal from './components/StoryChoiceModal.vue'
 import StoryEndingModal from './components/StoryEndingModal.vue'

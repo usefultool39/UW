@@ -116,6 +116,121 @@
         "daily"
       ],
       "interaction_kind": "reading_keywords",
+      "reading_chain": {
+        "intro": "把每一页先放在它能证明的层级：现象、规则、结论。",
+        "steps": [
+          {
+            "id": "phenomenon",
+            "label": "现象",
+            "prompt": "先找出纸页直接记录的异常，不要急着解释。",
+            "helper": "现象应该是能被听见、看见，或在记录中复述的事实。",
+            "options": [
+              {
+                "id": "bird_silence",
+                "label": "鸟声消失",
+                "note": "北侧边界附近突然听不到鸟声。",
+                "feedback": "这是可以直接观察的异常。把它带到下一步，寻找能解释它的规则。"
+              },
+              {
+                "id": "ancient_tree",
+                "label": "巨神树",
+                "note": "村里每天都要清理、伐木的共同地标。",
+                "feedback": "巨神树是地点，不是正在发生的现象。先找记录里发生了什么变化。"
+              },
+              {
+                "id": "blank_margin",
+                "label": "空白注记",
+                "note": "纸页边缘留下了像被擦掉的空处。",
+                "feedback": "空白是记录痕迹，还不足以说明发生了什么。先找一个能被直接观察的异常。"
+              }
+            ]
+          },
+          {
+            "id": "rule",
+            "label": "规则",
+            "prompt": "再找出会约束或解释这个现象的旧记录规则。",
+            "helper": "规则不是地点或情绪，而是反复出现、会要求人们照做的文字。",
+            "options": [
+              {
+                "id": "silent_line",
+                "label": "静默线",
+                "note": "多份旧记录里被反复涂改、却总在同一处出现的词。",
+                "feedback": "这条记录线能把鸟声的消失和书页空白接起来。"
+              },
+              {
+                "id": "north_law",
+                "label": "北境律令",
+                "note": "村民不愿多谈、却必须遵守的边界规则。",
+                "feedback": "这是一条真实的规则，但还需要先找到与当前现象相连的记录线。"
+              },
+              {
+                "id": "village_record",
+                "label": "村史断页",
+                "note": "年份缺了一段的旧纸。",
+                "feedback": "断页说明资料不完整，却没有说明现象为何发生。换一条能约束日常的规则。"
+              }
+            ]
+          },
+          {
+            "id": "conclusion",
+            "label": "结论",
+            "prompt": "最后选一个不超过证据范围的结论。",
+            "helper": "好的结论会回扣前两步，不替纸页说出它没有证明的事。",
+            "options": [
+              {
+                "id": "trace_silence",
+                "label": "北边静默与禁忌目录有关",
+                "note": "把异常线索留在证据能支持的范围内。",
+                "feedback": "这个结论跳得太远了。先回看你选的现象和规则有没有真正扣在一起。"
+              },
+              {
+                "id": "map_boundary",
+                "label": "边界规则先从日常失真处显形",
+                "note": "先定位变化如何落到村庄日常。",
+                "feedback": "这个结论把重点移到了另一条线索，暂时没有回应当前两步证据。"
+              },
+              {
+                "id": "quiet_observe",
+                "label": "先记录空白，不提前宣布答案",
+                "note": "保留疑问，也保留下一次交叉验证的余地。",
+                "feedback": "谨慎并不等于跳过证据。先让现象、规则和结论形成同一条链。"
+              }
+            ]
+          }
+        ],
+        "paths": [
+          {
+            "choice_id": "trace_silence",
+            "steps": [
+              "bird_silence",
+              "silent_line",
+              "trace_silence"
+            ],
+            "label": "异常线索完整",
+            "success_text": "鸟声、静默线和北境律令终于扣在同一条证据链上。"
+          },
+          {
+            "choice_id": "map_boundary",
+            "steps": [
+              "ancient_tree",
+              "north_law",
+              "map_boundary"
+            ],
+            "label": "边界规则偏重",
+            "success_text": "你先把边界规则落回村庄日常，没有把空白急着解释成答案。"
+          },
+          {
+            "choice_id": "quiet_observe",
+            "steps": [
+              "blank_margin",
+              "village_record",
+              "quiet_observe"
+            ],
+            "label": "保留疑问",
+            "success_text": "你把空白和断页记下来，给下一次交叉验证留下了位置。"
+          }
+        ]
+      },
       "choices": [
         {
           "id": "trace_silence",
@@ -820,6 +935,76 @@
           "boundary_patrol_attempted": 1
         },
         "stamina_cost": 0
+      },
+      "loadout": {
+        "max_items": 2,
+        "allowed_items": [
+          {
+            "item_id": "record_notebook",
+            "label": "记录本",
+            "hint": "把每一段风声和足迹整理成可复查的记录；降低失误风险，并在带回标记时多记一笔。",
+            "consume": false,
+            "effects": {
+              "hp_cost_delta": -3,
+              "bonus_marks": 1
+            }
+          },
+          {
+            "item_id": "dried_rations",
+            "label": "干粮",
+            "hint": "巡查前吃下干粮，立即补回 18 点体力；这件物品会在出发时消耗。",
+            "consume": true,
+            "effects": {
+              "stamina_restore": 18
+            }
+          },
+          {
+            "item_id": "herb_soup",
+            "label": "草药汤",
+            "hint": "巡查前喝下草药汤，立即补回 18 点神圣力；这件物品会在出发时消耗。",
+            "consume": true,
+            "effects": {
+              "mp_restore": 18
+            }
+          }
+        ],
+        "combination_bonuses": [
+          {
+            "id": "recorded_supply_route",
+            "label": "记录本 + 干粮：稳妥补给路线",
+            "item_ids": [
+              "record_notebook",
+              "dried_rations"
+            ],
+            "effects": {
+              "stamina_cost_delta": -2,
+              "bonus_marks": 1
+            }
+          },
+          {
+            "id": "recorded_rite_route",
+            "label": "记录本 + 草药汤：可复查术式路线",
+            "item_ids": [
+              "record_notebook",
+              "herb_soup"
+            ],
+            "effects": {
+              "mp_cost_delta": -3,
+              "bonus_marks": 1
+            }
+          },
+          {
+            "id": "field_ready_route",
+            "label": "干粮 + 草药汤：全程备战",
+            "item_ids": [
+              "dried_rations",
+              "herb_soup"
+            ],
+            "effects": {
+              "hp_cost_delta": -2
+            }
+          }
+        ]
       }
     },
     {
@@ -5803,6 +5988,402 @@
             },
             "stamina_cost": 2,
             "mp_restore": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "west_fields_herb_gather",
+      "scene_id": "west_fields",
+      "poi_id": "west_herb_patch",
+      "title": "西侧田野采药",
+      "label": "采集草药",
+      "description": "在西侧田野寻找今天成熟的草药。天气会改变草药的种类。",
+      "repeat": "daily",
+      "time_cost": 2,
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "tags": [
+        "gathering",
+        "daily",
+        "west_fields"
+      ],
+      "interaction_kind": "foraging",
+      "player_facing_benefit": "每天采集一次，按天气获得不同草药。",
+      "effects": {
+        "stamina_cost": 6,
+        "weather_item_deltas": {
+          "clear": {
+            "field_mint": 1
+          },
+          "mist": {
+            "dewgrass": 1
+          },
+          "cloudy": {
+            "silverleaf": 1
+          },
+          "drizzle": {
+            "rain_bell": 1
+          },
+          "night": {
+            "moon_blossom": 1
+          }
+        },
+        "result_text": "你在草叶间找到了一份适合今天气候的草药。"
+      }
+    },
+    {
+      "id": "west_fields_tablet_fragment_1",
+      "scene_id": "west_fields",
+      "poi_id": "west_tablet_fragment_1",
+      "title": "石碑后的裂缝",
+      "label": "寻找石碑碎片",
+      "description": "旧石碑后有一道不起眼的裂缝，像是曾经藏过什么。",
+      "repeat": "once",
+      "time_cost": 1,
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "tags": [
+        "hidden",
+        "collectible",
+        "west_fields"
+      ],
+      "hidden": true,
+      "collection": {
+        "id": "west_fields_stone_tablet",
+        "required_item": "stone_tablet_fragment",
+        "required_count": 3,
+        "complete_flag": "west_fields.stone_tablet_complete"
+      },
+      "effects": {
+        "stamina_cost": 3,
+        "item_deltas": {
+          "stone_tablet_fragment": 1
+        },
+        "result_text": "你从裂缝里取出一块刻着旧字的石碑碎片。"
+      }
+    },
+    {
+      "id": "west_fields_tablet_fragment_2",
+      "scene_id": "west_fields",
+      "poi_id": "west_tablet_fragment_2",
+      "title": "倒伏石碑的背面",
+      "label": "寻找石碑碎片",
+      "description": "倒伏石碑背面压着一小片与碑文相连的旧石。",
+      "repeat": "once",
+      "time_cost": 1,
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "tags": [
+        "hidden",
+        "collectible",
+        "west_fields"
+      ],
+      "hidden": true,
+      "collection": {
+        "id": "west_fields_stone_tablet",
+        "required_item": "stone_tablet_fragment",
+        "required_count": 3,
+        "complete_flag": "west_fields.stone_tablet_complete"
+      },
+      "effects": {
+        "stamina_cost": 3,
+        "item_deltas": {
+          "stone_tablet_fragment": 1
+        },
+        "result_text": "第二块碎片露出半行难以辨认的刻痕。"
+      }
+    },
+    {
+      "id": "west_fields_tablet_fragment_3",
+      "scene_id": "west_fields",
+      "poi_id": "west_tablet_fragment_3",
+      "title": "田埂下的刻痕",
+      "label": "寻找石碑碎片",
+      "description": "田埂下露出最后一处与石碑相同的刻痕。",
+      "repeat": "once",
+      "time_cost": 1,
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "tags": [
+        "hidden",
+        "collectible",
+        "west_fields"
+      ],
+      "hidden": true,
+      "collection": {
+        "id": "west_fields_stone_tablet",
+        "required_item": "stone_tablet_fragment",
+        "required_count": 3,
+        "complete_flag": "west_fields.stone_tablet_complete"
+      },
+      "effects": {
+        "stamina_cost": 3,
+        "item_deltas": {
+          "stone_tablet_fragment": 1
+        },
+        "result_text": "三块碎片拼在一起，禁忌目录的缺页终于有了轮廓。"
+      }
+    },
+    {
+      "id": "village_square_bulletin_board",
+      "scene_id": "village_square",
+      "scene_ids": [
+        "village_square"
+      ],
+      "poi_id": "ix_village_square",
+      "title": "村道公告柱 · 今日小事",
+      "label": "查看今日公告",
+      "description": "公告柱上的纸条被风吹得轻响。每一天，村里总有几件不值得惊动大人的小事，正好可以交给你来处理。",
+      "result_text": "公告柱上的纸条少了一张，村道又恢复了平常的声音。",
+      "time_cost": 1,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [
+        "alice",
+        "eugeo"
+      ],
+      "tags": [
+        "village",
+        "daily",
+        "bulletin_board",
+        "side_quest"
+      ],
+      "effects": {
+        "stamina_cost": 3
+      },
+      "player_facing_benefit": "每天一次；从三件村务小事中选一件，获得关系点或一份材料。",
+      "choices": [
+        {
+          "id": "pass_message",
+          "label": "替尤吉欧传话给爱丽丝",
+          "hint": "把古誓树的收工时间告诉爱丽丝，免得她在回廊多等一刻。",
+          "tone": "steady",
+          "result_text": "你把收工时间告诉爱丽丝。她点点头，又回头确认了一遍：尤吉欧今天不会一个人留在树下。",
+          "effects": {
+            "flags": {
+              "bulletin_pass_message_done": 1
+            },
+            "relationship": {
+              "alice.trust": 1,
+              "eugeo.affinity": 1
+            }
+          }
+        },
+        {
+          "id": "deliver_supplies",
+          "label": "把备用药草送到北门值班棚",
+          "hint": "顺路把村务长登记的药草包交给加利塔，换回一份整理好的田野材料。",
+          "tone": "helpful",
+          "result_text": "北门的风比村道硬一些。加利塔接过药草包，只说了一句“记得把路看清”，又把一小束晒干的薄荷塞回你手里。",
+          "effects": {
+            "flags": {
+              "bulletin_deliver_supplies_done": 1
+            },
+            "item_deltas": {
+              "field_mint": 1
+            }
+          }
+        },
+        {
+          "id": "check_records",
+          "label": "核对公告柱上的巡查记录",
+          "hint": "把日期、风向和巡查记号对一遍，看看有没有被风吹乱的旧记录。",
+          "tone": "careful",
+          "result_text": "你把巡查日期和风向重新排好。尤吉欧看着最后一行，说这样以后找记录会快很多。",
+          "effects": {
+            "flags": {
+              "bulletin_check_records_done": 1
+            },
+            "relationship": {
+              "eugeo.trust": 1,
+              "alice.affinity": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "south_lake_fishing",
+      "scene_id": "south_lake_gate",
+      "scene_ids": [
+        "south_lake_gate"
+      ],
+      "poi_id": "ix_south_lake_gate",
+      "title": "南湖旧渡 · 雾中垂钓",
+      "label": "在旧渡口抛竿",
+      "description": "旧渡仍被封锁，只有靠岸的浅水能试一竿。听见咬钩后及时提竿，好的手感会带来更少见的鱼。",
+      "result_text": "你把鱼线重新绕好，湖面的雾仍没有散去，但今天的收获已经被记在行囊里。",
+      "time_cost": 2,
+      "repeat": "daily",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "participants": [],
+      "tags": [
+        "fishing",
+        "repeatable",
+        "lake",
+        "p1_slice"
+      ],
+      "interaction_kind": "fishing_qte",
+      "player_facing_benefit": "每天一次；咬钩时机越准，越有机会钓到稀有鱼。",
+      "effects": {
+        "stamina_cost": 5
+      },
+      "choices": [
+        {
+          "id": "catch_common_fish",
+          "label": "收线：湖鳞鱼（普通）",
+          "hint": "稳定提竿，获得 1 条南湖湖鳞鱼。",
+          "tone": "steady",
+          "result_text": "鱼线轻轻一沉。你稳住手腕，把一条湖鳞鱼收入篓中——普通，但足够新鲜。",
+          "effects": {
+            "item_deltas": {
+              "south_lake_common_fish": 1
+            }
+          }
+        },
+        {
+          "id": "catch_rare_fish",
+          "label": "收线：雾银鱼（稀有）",
+          "hint": "抓住最清脆的咬钩一瞬，获得 1 条南湖雾银鱼。",
+          "tone": "precise",
+          "result_text": "你在最短的一瞬提竿。银白鱼鳞从雾里闪过，雾银鱼落进篓中，连湖面都像亮了一下。",
+          "effects": {
+            "item_deltas": {
+              "south_lake_rare_fish": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "home_hearth_cooking",
+      "scene_id": "home_hearth",
+      "scene_ids": [
+        "home_hearth"
+      ],
+      "poi_id": "ix_home_bed",
+      "title": "家中炉火 · 备餐",
+      "label": "在炉火边做一份热食",
+      "description": "把西侧田野的草叶或南湖带回来的鱼变成一份真正能用的家常食物。先切出稳定节奏，再把火候收在合适的位置。",
+      "result_text": "炉火把材料的气味慢慢推开。今天的手感被记在行囊里，下一次使用时也会继续发挥作用。",
+      "time_cost": 1,
+      "repeat": "free",
+      "time_bands": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ],
+      "participants": [],
+      "tags": [
+        "cooking",
+        "crafting",
+        "inventory",
+        "p1_slice"
+      ],
+      "interaction_kind": "cooking_qte",
+      "player_facing_benefit": "野薄荷可做草药汤；湖鳞鱼或雾银鱼可做干粮。切菜与火候都完美时，成品数量翻倍。",
+      "effects": {
+        "stamina_cost": 2
+      },
+      "choices": [
+        {
+          "id": "cook_herb_soup_normal",
+          "label": "普通草药汤 · 消耗 1 野薄荷",
+          "hint": "切菜或火候有一处不够稳定，得到 1 份草药汤。",
+          "tone": "steady",
+          "result_text": "草叶切得略厚，但汤色清亮。你把 1 份草药汤放到炉边，仍然足够温暖。",
+          "effects": {
+            "item_deltas": {
+              "field_mint": -1,
+              "herb_soup": 1
+            }
+          }
+        },
+        {
+          "id": "cook_herb_soup_perfect",
+          "label": "完美草药汤 · 消耗 1 野薄荷",
+          "hint": "切菜和火候都完美，得到 2 份草药汤。",
+          "tone": "precise",
+          "result_text": "刀声和沸声在同一个节拍上停下。两份草药汤的香气同时升起，炉火像也安静了一瞬。",
+          "effects": {
+            "item_deltas": {
+              "field_mint": -1,
+              "herb_soup": 2
+            }
+          }
+        },
+        {
+          "id": "cook_dried_rations_common_normal",
+          "label": "普通鱼干粮 · 消耗 1 湖鳞鱼",
+          "hint": "火候收得住，得到 1 份适合巡查途中使用的干粮。",
+          "tone": "steady",
+          "result_text": "湖鳞鱼被烘成朴素的咸香。你把 1 份干粮包好，留给下一次出门。",
+          "effects": {
+            "item_deltas": {
+              "south_lake_common_fish": -1,
+              "dried_rations": 1
+            }
+          }
+        },
+        {
+          "id": "cook_dried_rations_common_perfect",
+          "label": "完美鱼干粮 · 消耗 1 湖鳞鱼",
+          "hint": "切配和火候都完美，得到 2 份干粮。",
+          "tone": "precise",
+          "result_text": "鱼肉在最合适的火候里收紧，盐香干净利落。两份干粮被整齐包好。",
+          "effects": {
+            "item_deltas": {
+              "south_lake_common_fish": -1,
+              "dried_rations": 2
+            }
+          }
+        },
+        {
+          "id": "cook_dried_rations_rare_normal",
+          "label": "普通雾银鱼干粮 · 消耗 1 雾银鱼",
+          "hint": "不浪费稀有鱼的鲜味，得到 1 份干粮。",
+          "tone": "steady",
+          "result_text": "雾银鱼的鳞光褪成淡淡的盐色。成品不算华丽，却足够让远行的人安心。",
+          "effects": {
+            "item_deltas": {
+              "south_lake_rare_fish": -1,
+              "dried_rations": 1
+            }
+          }
+        },
+        {
+          "id": "cook_dried_rations_rare_perfect",
+          "label": "完美雾银鱼干粮 · 消耗 1 雾银鱼",
+          "hint": "精准切配与火候让稀有鱼变成 2 份高质量干粮。",
+          "tone": "precise",
+          "result_text": "你没有让雾银鱼的鲜味被火舌带走。两份干粮都保留着细微的湖雾香气。",
+          "effects": {
+            "item_deltas": {
+              "south_lake_rare_fish": -1,
+              "dried_rations": 2
+            }
           }
         }
       ]

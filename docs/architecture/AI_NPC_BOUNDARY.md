@@ -1,6 +1,6 @@
 # AI NPC 边界与双模式设计
 
-- **状态**：Current
+- **状态**：已实现，scripted 为默认基线
 - **目标**：固定 NPC 现在完整可玩，Provider 适配器已落地，未来接 API 不重写世界规则。
 - **适配器**：`docs/architecture/AI_PROVIDER_ADAPTER.md` / `backend/app/ai_provider.py`
 
@@ -45,7 +45,7 @@ Perceive（只读允许状态） → Plan（结构化候选）
 - StepFun / SenseTime / OpenAI-compatible 通过统一 `LLM_PROVIDER` 配置接入，不提交真实密钥。
 - 适配器必须先通过 fake HTTP 的离线测试，再允许本机 API 灰度。
 - 超时、限额、解析失败和违规输出自动回退。
-- 记录模型、提示词版本、延迟、成本、候选与最终执行。
+- 记录模型、提示词修订、延迟、成本、候选与最终执行。
 - 同一存档可切回 scripted，不影响权威状态。
 
 ## 当前 Agent Loop 落地状态（2026-08-05）

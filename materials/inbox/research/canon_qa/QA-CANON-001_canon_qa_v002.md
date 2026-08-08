@@ -16,7 +16,7 @@
   3. 10 节点表按用户 2026-08-06 锁定的 10 步顺序重新设计
   4. 6 项 W 待裁决按 v002 状态重新列出（W1 闭合 / W2 未确认 / W3–W6 调整）
 - intended_use: QA 校验器 / 内容校验器 / 真人盲测评审 共用的连续性验收；任何在 `data/story/events_chapter_01.json` 新增 authored 事件前必须先过本文件
-- notes: v001 保留在 `materials/inbox/research/canon_qa/QA-CANON-001_canon_qa_v001.md`，MANIFEST 状态 = `changes_requested`。本文件**不**修改 `data/story/`、`backend/`、`frontend/`；只给"检查表 + 验收标准"层。
+- notes: 上一轮被退回的修订已从工作树删除，可通过 Git 历史追溯。本文件**不**修改 `data/story/`、`backend/`、`frontend/`；只给"检查表 + 验收标准"层。
 
 ---
 
@@ -65,8 +65,8 @@
 | Pre-Capture 起点日期 | Day 1 上午 | `NAR-PRECAP-001` v002 N01 |
 | Pre-Capture 终点日期 | Day 3 下午 | `NAR-PRECAP-001` v002 N10 |
 | 事件总时长 | 约 60 小时游戏内时间 | `NAR-ADAPT-001` v002 §7.1 |
-| 实际游玩时长目标 | 15–25 分钟 | `NEXT_PHASE.md` P0 |
-| 玩家是否可独立跳日 | 否 | `CURRENT_STATUS.md` 2026-08-05 日期推进调整 |
+| 实际游玩时长目标 | 15–25 分钟 | `docs/PLAN.md` P0 |
+| 玩家是否可独立跳日 | 否 | `docs/PLAN.md` 的当前剧情推进规则 |
 | 是否在 N10 之后继续推进日期 | 否（终点收束） | `NAR-PRECAP-001` v002 §0 |
 
 > **检查项**：N01 触发的 `d1_bond` flag 必须在 Day 1 上午内可写；N05 必须在 Day 2 下午可触发；N07 必须在 Day 2 傍晚可触发；N08 必须在 Day 3 上午可触发；N10 必须在 Day 3 下午可触发。
@@ -206,7 +206,7 @@
 | **W5** | Alice 父亲在 N08 / N09 的具体出场形式 | 🆕 **新增** | 接受 C 类的"父亲近期叮嘱 Alice"对话 / 改为沉默出场 / 让加斯夫特完全代行 |
 | **W6** | 北方洞窟的"前人划痕"细节是否在 N10 之后出现 | 🆕 **新增** | 接受 v002 降级为 N10 之后 / 改为完全无痕迹 / 改为不同形态 |
 
-> 上述 5 项在 `materials/05_WORKFLOW_AND_REVIEW.md` 的"评审 → 返工"流程中处理；在用户返还素材前，本项目主线收束不强行写死。
+> 上述 5 项在 `materials/README.md` 与 `docs/art/ASSET_REVIEW.md` 的评审流程中处理；在用户返还素材前，本项目主线收束不强行写死。
 
 > **W1 在 v002 闭合**：玩家显示名 = 桐人。`uwCanonText.js` 仍可保留"见习记录员"作为职业岗位渲染（不删除），但玩家面向文本优先用"桐人"。`characters/kirito/README.md` 与 `characters/kirito/persona.md` 仍存在"凛斗"旧译名（属 v001 之后仍需清理的遗留项 D，与 v001 一致）。
 
@@ -232,7 +232,7 @@
 - [ ] 玩家能说出至少一次"自己改变了准备 / 对话 / 关系 / 承诺 / 最后表达"的体验。
 - [ ] 玩家在 N10 后不感到"被骗"或"突然"，而感到"它确实要发生，只是我多说了什么 / 多做了什么"。
 
-> 上述 6 项是 `materials/11_PRECAPTURE_EXECUTION_BRIEF.md` §6 完成定义的精简版；详细测试方法见 `docs/delivery/PLAYTEST.md` 与 `docs/delivery/PLAYTEST_ROUND_01_TRACKER_20260806.md`。
+> 上述 6 项是 `docs/PLAN.md` 的发布阻塞与验收 完成定义的精简版；详细测试方法见 `docs/DELIVERY.md` 与 `docs/PLAN.md`。
 
 ## 11. 完成定义
 

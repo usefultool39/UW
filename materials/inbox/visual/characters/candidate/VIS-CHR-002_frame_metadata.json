@@ -1,0 +1,163 @@
+{
+  "character": "alice",
+  "cell_size": [
+    64,
+    96
+  ],
+  "anchor": [
+    32,
+    94
+  ],
+  "sheet_size": [
+    768,
+    96
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "label": "idle_0",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4156,
+      "bbox": [
+        4,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 1,
+      "label": "idle_1",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4984,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 2,
+      "label": "walk_0",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4983,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 3,
+      "label": "walk_1",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4170,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 4,
+      "label": "walk_2",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4984,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 5,
+      "label": "walk_3",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4204,
+      "bbox": [
+        4,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 6,
+      "label": "walk_4",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4984,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 7,
+      "label": "walk_5",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4983,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 8,
+      "label": "interact_0",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4192,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 9,
+      "label": "interact_1",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4984,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 10,
+      "label": "interact_2",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4981,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    },
+    {
+      "index": 11,
+      "label": "interact_3",
+      "anchor_alpha": 0,
+      "non_transparent_px": 4984,
+      "bbox": [
+        3,
+        8,
+        61,
+        94
+      ]
+    }
+  ],
+  "anchor_alpha_pass_count": 12,
+  "anchor_alpha_total": 12
+}

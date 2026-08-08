@@ -1,6 +1,6 @@
 ## 问题与目标
 
-<!-- 玩家/工程问题是什么？本 PR 达成什么可观察结果？ -->
+<!-- 玩家或工程问题是什么？本 PR 达成什么可观察结果？ -->
 
 ## 范围
 
@@ -18,18 +18,17 @@
 
 ## 验证
 
-- [ ] 后端 pytest
-- [ ] 前端 build
-- [ ] 相关 Playwright E2E
-- [ ] `git diff --check`
-- [ ] 手动试玩（如适用）
+- [ ] `./scripts/quality.sh`
+- [ ] 相关 Playwright / 手动试玩（如适用）
+- [ ] 新旧存档与 scripted 回退（如适用）
+- [ ] 玩家可见截图或日志证据（如适用）
 
 证据：
 
-## 兼容与文档
+## 文档与素材
 
-- [ ] 无存档/API 破坏；或已有迁移与 ADR
-- [ ] scripted 模式仍可运行
-- [ ] Changelog 已更新
-- [ ] Current Status / Next Phase / 架构文档已按需更新
-- [ ] 无密钥、运行记忆、构建产物
+- [ ] `CHANGELOG.md` 已更新
+- [ ] `docs/PROJECT.md` 或 `docs/PLAN.md` 已按职责更新
+- [ ] 架构变化已有 ADR
+- [ ] 素材变化已更新台账与 `docs/art/ASSET_REVIEW.md`
+- [ ] 无密钥、运行记忆、虚拟环境和构建产物

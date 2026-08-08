@@ -38,7 +38,36 @@
         </div>
       </section>
 
-      <section v-if="!finished" class="encounter-board">
+      <section v-if="!started" class="loadout-board" data-testid="patrol-loadout">
+        <div class="loadout-heading">
+          <div>
+            <p class="loadout-kicker">出发前准备</p>
+            <h4>选择最多两件随身道具</h4>
+          </div>
+          <strong>{{ selectedLoadout.length }}/{{ loadoutMax }}</strong>
+        </div>
+        <p class="loadout-copy">服务端会在结算时重新检查目录和库存。道具只在确认出发后生效；材料不能作为巡查装备。</p>
+        <div class="loadout-grid">
+          <button
+            v-for="option in loadoutOptions"
+            :key="option.item_id"
+            type="button"
+            class="loadout-card"
+            :class="{ selected: selectedLoadout.includes(option.item_id) }"
+            :disabled="busy || (!hasInventory(option.item_id) && !selectedLoadout.includes(option.item_id))"
+            @click="toggleLoadout(option.item_id)"
+          >
+            <span class="loadout-check">{{ selectedLoadout.includes(option.item_id) ? '✓' : '＋' }}</span>
+            <strong>{{ option.label }}</strong>
+            <small>{{ hasInventory(option.item_id) ? `持有 ${inventoryCount(option.item_id)}` : '当前没有' }} · {{ option.consume ? '出发时消耗' : '不会消耗' }}</small>
+            <p>{{ option.hint }}</p>
+          </button>
+        </div>
+        <p v-if="selectedLoadout.length" class="loadout-selected">已选：{{ selectedLoadout.map(loadoutLabel).join(' + ') }}</p>
+        <p v-else class="loadout-selected muted">不带道具也可以出发，按基础巡查规则结算。</p>
+      </section>
+
+      <section v-else-if="started && !finished" class="encounter-board">
         <div class="route-progress">
           <span v-for="(_, index) in encounters" :key="index" :class="{ done: index < roundIndex, active: index === roundIndex }">
             {{ index < roundIndex ? '✓' : index + 1 }}
@@ -104,11 +133,17 @@
       </section>
 
       <footer class="patrol-actions">
-        <button v-if="!finished" type="button" class="ghost" :disabled="busy || roundIndex === 0" @click="reset">
+        <button v-if="!started" type="button" class="ghost" :disabled="busy" @click="close">
+          暂不出发
+        </button>
+        <button v-else-if="!finished" type="button" class="ghost" :disabled="busy" @click="reset">
           重新巡查
         </button>
-        <button v-else type="button" class="ghost" :disabled="busy" @click="reset">重新判断</button>
-        <button v-if="finished" type="button" class="primary" :disabled="busy" @click="completePatrol">
+        <button v-else-if="finished" type="button" class="ghost" :disabled="busy" @click="reset">重新判断</button>
+        <button v-if="!started" type="button" class="primary" :disabled="busy" @click="startPatrol">
+          确认出发
+        </button>
+        <button v-else-if="finished" type="button" class="primary" :disabled="busy" @click="completePatrol">
           带着记录返回
         </button>
       </footer>
@@ -123,6 +158,7 @@ const props = defineProps({
   modelValue: { type: Boolean, default: false },
   activity: { type: Object, default: null },
   player: { type: Object, default: null },
+  inventory: { type: Object, default: () => ({}) },
   busy: { type: Boolean, default: false }
 })
 
@@ -156,6 +192,8 @@ const roundIndex = ref(0)
 const score = ref(0)
 const marks = ref(0)
 const perfectCount = ref(0)
+const selectedLoadout = ref([])
+const started = ref(false)
 const localHp = ref(100)
 const localMp = ref(100)
 const localStamina = ref(100)
@@ -167,6 +205,9 @@ const maxHp = computed(() => Number(props.player?.max_hp || 100))
 const maxMp = computed(() => Number(props.player?.max_mp || 100))
 const maxStamina = computed(() => Number(props.player?.max_stamina || 100))
 const currentEncounter = computed(() => encounters[Math.min(roundIndex.value, encounters.length - 1)])
+const loadoutConfig = computed(() => props.activity?.loadout || {})
+const loadoutMax = computed(() => Math.max(0, Number(loadoutConfig.value.max_items || 2)))
+const loadoutOptions = computed(() => Array.isArray(loadoutConfig.value.allowed_items) ? loadoutConfig.value.allowed_items : [])
 const hpPercent = computed(() => Math.max(0, Math.round((localHp.value / maxHp.value) * 100)))
 const mpPercent = computed(() => Math.max(0, Math.round((localMp.value / maxMp.value) * 100)))
 const staminaPercent = computed(() => Math.max(0, Math.round((localStamina.value / maxStamina.value) * 100)))
@@ -183,6 +224,33 @@ const grade = computed(() => {
 
 function canUse(tactic) {
   return localStamina.value >= tactic.stamina && localMp.value >= tactic.mp && localHp.value > 1
+}
+
+function inventoryCount(itemId) {
+  return Math.max(0, Number(props.inventory?.[itemId] || 0))
+}
+
+function hasInventory(itemId) {
+  return inventoryCount(itemId) > 0
+}
+
+function loadoutLabel(itemId) {
+  return loadoutOptions.value.find((item) => item.item_id === itemId)?.label || itemId
+}
+
+function toggleLoadout(itemId) {
+  if (props.busy || started.value) return
+  if (selectedLoadout.value.includes(itemId)) {
+    selectedLoadout.value = selectedLoadout.value.filter((id) => id !== itemId)
+    return
+  }
+  if (selectedLoadout.value.length >= loadoutMax.value || !hasInventory(itemId)) return
+  selectedLoadout.value = [...selectedLoadout.value, itemId]
+}
+
+function startPatrol() {
+  if (props.busy || started.value) return
+  started.value = true
 }
 
 function matchup(encounter, tactic) {
@@ -238,6 +306,8 @@ function reset() {
   finished.value = false
   lastOutcome.value = null
   combatLog.value = []
+  started.value = false
+  selectedLoadout.value = []
 }
 
 function completePatrol() {
@@ -253,8 +323,10 @@ function completePatrol() {
       hp_cost: grade.value.hpCost,
       stamina_cost: grade.value.staminaCost,
       mp_cost: grade.value.mpCost,
-      combat_log: combatLog.value
-    }
+      combat_log: combatLog.value,
+      loadout: [...selectedLoadout.value]
+    },
+    loadout: [...selectedLoadout.value]
   })
 }
 
@@ -276,6 +348,9 @@ watch(() => props.modelValue, (open) => {
 .patrol-header h3 { margin: 0; color: #ecfeff; font-size: 1.42rem; }
 .patrol-close { width: 2.4rem; height: 2.4rem; border-radius: 9px; border: 1px solid rgba(148,163,184,.24); background: rgba(30,41,59,.72); color: #e2e8f0; font-size: 1.3rem; cursor: pointer; }
 .patrol-desc { margin: .8rem 0; color: #cbd5e1; line-height: 1.6; }
+.loadout-board { margin: .9rem 0; padding: .95rem; border-radius: 14px; background: linear-gradient(145deg, rgba(8,47,73,.45), rgba(15,23,42,.86)); border: 1px solid rgba(103,232,249,.28); }
+.loadout-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; }.loadout-kicker { margin: 0 0 .18rem; color: #67e8f9; font-size: .66rem; font-weight: 900; letter-spacing: .12em; }.loadout-heading h4 { margin: 0; font-size: 1.1rem; }.loadout-heading > strong { color: #a5f3fc; font-size: 1.05rem; }
+.loadout-copy { margin: .55rem 0 .75rem; color: #94a3b8; font-size: .78rem; line-height: 1.5; }.loadout-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; }.loadout-card { position: relative; min-height: 8.4rem; padding: .75rem; text-align: left; border-radius: 12px; color: #e2e8f0; background: rgba(15,23,42,.78); border: 1px solid rgba(148,163,184,.18); cursor: pointer; }.loadout-card:hover:not(:disabled), .loadout-card.selected { border-color: rgba(103,232,249,.72); background: rgba(8,47,73,.58); }.loadout-card:disabled { opacity: .42; cursor: not-allowed; }.loadout-check { position: absolute; top: .5rem; right: .55rem; color: #67e8f9; font-weight: 950; }.loadout-card strong, .loadout-card small, .loadout-card p { display: block; }.loadout-card strong { padding-right: 1.2rem; color: #f8fafc; }.loadout-card small { margin-top: .28rem; color: #fbbf24; font-size: .68rem; }.loadout-card p { margin: .48rem 0 0; color: #a5b4fc; font-size: .74rem; line-height: 1.45; }.loadout-selected { margin: .7rem 0 0; color: #bae6fd; font-size: .78rem; font-weight: 800; }.loadout-selected.muted { color: #64748b; font-weight: 500; }
 .patrol-vitals { display: grid; grid-template-columns: repeat(4, 1fr); gap: .55rem; }
 .vital-card { display: grid; grid-template-columns: 1fr auto; gap: .28rem .5rem; padding: .62rem .7rem; border-radius: 11px; background: rgba(15,23,42,.72); border: 1px solid rgba(148,163,184,.15); }
 .vital-card span { color: #94a3b8; font-size: .72rem; font-weight: 800; }
@@ -294,5 +369,5 @@ watch(() => props.modelValue, (open) => {
 .combat-feedback { display: flex; gap: .6rem; margin-top: .6rem; padding: .58rem .7rem; border-radius: 10px; background: rgba(15,23,42,.72); color: #94a3b8; }.combat-feedback strong { flex: 0 0 auto; color: #e2e8f0; }.combat-feedback.perfect strong { color: #bef264; }.combat-feedback.steady strong { color: #fde68a; }.combat-feedback.danger strong { color: #fda4af; }
 .patrol-summary { display: grid; grid-template-columns: auto 1fr; gap: .8rem 1rem; margin-top: .9rem; padding: 1rem; border-radius: 14px; background: rgba(15,23,42,.78); border: 1px solid rgba(103,232,249,.28); }.summary-seal { width: 4rem; height: 4rem; display: grid; place-items: center; border-radius: 13px; background: linear-gradient(145deg,#164e63,#0891b2); color: #ecfeff; font-size: 2rem; font-weight: 950; box-shadow: 0 0 22px rgba(34,211,238,.18); }.patrol-summary.scraped_clear .summary-seal { background: linear-gradient(145deg,#713f12,#d97706); }.patrol-summary.forced_retreat .summary-seal { background: linear-gradient(145deg,#7f1d1d,#be123c); }.patrol-summary p { margin: 0; color: #67e8f9; font-size: .7rem; font-weight: 900; }.patrol-summary h4 { margin: .15rem 0 .28rem; font-size: 1.3rem; }.patrol-summary span { color: #cbd5e1; }.patrol-summary dl { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: .45rem; margin: 0; }.patrol-summary dl div { padding: .5rem; border-radius: 9px; background: rgba(2,6,23,.42); }.patrol-summary dt { color: #64748b; font-size: .66rem; }.patrol-summary dd { margin: .18rem 0 0; color: #f8fafc; font-weight: 900; font-size: .78rem; }.summary-note { grid-column: 1 / -1; color: #94a3b8 !important; font-weight: 500 !important; line-height: 1.5; }
 .patrol-actions { display: flex; justify-content: flex-end; gap: .55rem; margin-top: .8rem; }.patrol-actions button { min-height: 2.7rem; padding: .55rem 1rem; border-radius: 9px; cursor: pointer; }.patrol-actions .ghost { color: #cbd5e1; background: rgba(30,41,59,.62); border: 1px solid rgba(148,163,184,.2); }.patrol-actions .primary { color: #06202a; font-weight: 950; background: linear-gradient(180deg,#a5f3fc,#22d3ee); border: 0; box-shadow: 0 0 18px rgba(34,211,238,.2); }
-@media (max-width: 720px) { .patrol-panel { padding: .9rem; }.patrol-vitals { grid-template-columns: repeat(2, 1fr); }.tactic-grid { grid-template-columns: 1fr; }.tactic-grid button { min-height: auto; }.patrol-summary dl { grid-template-columns: repeat(2, 1fr); }.patrol-header h3 { font-size: 1.15rem; } }
+@media (max-width: 720px) { .patrol-panel { padding: .9rem; }.patrol-vitals { grid-template-columns: repeat(2, 1fr); }.loadout-grid { grid-template-columns: 1fr; }.loadout-card { min-height: auto; }.tactic-grid { grid-template-columns: 1fr; }.tactic-grid button { min-height: auto; }.patrol-summary dl { grid-template-columns: repeat(2, 1fr); }.patrol-header h3 { font-size: 1.15rem; } }
 </style>

@@ -1,0 +1,473 @@
+{
+  "request_ids": [
+    "VIS-CHR-001",
+    "VIS-CHR-002",
+    "VIS-CHR-003"
+  ],
+  "version": "v009",
+  "direction": "down",
+  "cell_size": [
+    64,
+    96
+  ],
+  "anchor": [
+    32,
+    94
+  ],
+  "anchor_visual_foot_y": 93,
+  "sheet_size": [
+    768,
+    96
+  ],
+  "created_at": "2026-08-08",
+  "creator": "Mavis image synthesis (image_synthesize) + Pillow floodfill keying + feet alignment",
+  "license": "project-original",
+  "total_frames": 36,
+  "anchor_alpha_target": 0,
+  "anchor_alpha_pass": 36,
+  "anchor_alpha_total": 36,
+  "corner_alpha_pass": 36,
+  "post_processing": {
+    "keying": "floodfill from 4 corners with threshold=15 RGB max diff",
+    "low_alpha_cleanup": "alpha < 128 set to 0 (per-frame)",
+    "resize": "LANCZOS with center-padded aspect-preserve to 64x96",
+    "foot_alignment": "y_bottom aligned to y=93, y=94 row set to alpha=0"
+  },
+  "characters": [
+    {
+      "character": "kirito",
+      "request_id": "VIS-CHR-001",
+      "sheet_path": "VIS-CHR-001_sprite_sheet_down_candidate_v009.png",
+      "cell_size": [
+        64,
+        96
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "sheet_size": [
+        768,
+        96
+      ],
+      "color_mode": "RGBA",
+      "sha256": "8e837db05b3da9993c91fd156583a3b7fbb6debfcb9a5732583475480cccc591",
+      "file_size": 43968,
+      "anchor_alpha_pass_count": 12,
+      "anchor_alpha_total": 12,
+      "corner_alpha_pass_count": 12,
+      "frames": [
+        {
+          "index": 0,
+          "label": "idle_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1153,
+          "y_top": 19,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 1,
+          "label": "idle_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1013,
+          "y_top": 19,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 2,
+          "label": "walk_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 839,
+          "y_top": 19,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 3,
+          "label": "walk_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 759,
+          "y_top": 21,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 4,
+          "label": "walk_2",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 956,
+          "y_top": 19,
+          "y_bottom": 92,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 5,
+          "label": "walk_3",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1022,
+          "y_top": 19,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 6,
+          "label": "walk_4",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1201,
+          "y_top": 19,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 7,
+          "label": "walk_5",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1288,
+          "y_top": 20,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 8,
+          "label": "interact_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1094,
+          "y_top": 19,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 9,
+          "label": "interact_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1121,
+          "y_top": 20,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 10,
+          "label": "interact_2",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1125,
+          "y_top": 20,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 11,
+          "label": "interact_3",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1152,
+          "y_top": 19,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        }
+      ]
+    },
+    {
+      "character": "alice",
+      "request_id": "VIS-CHR-002",
+      "sheet_path": "VIS-CHR-002_sprite_sheet_down_candidate_v009.png",
+      "cell_size": [
+        64,
+        96
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "sheet_size": [
+        768,
+        96
+      ],
+      "color_mode": "RGBA",
+      "sha256": "19e624814f740f360d1e95c0d9aa013458226938fd557fef2d560a3b553d704b",
+      "file_size": 59789,
+      "anchor_alpha_pass_count": 12,
+      "anchor_alpha_total": 12,
+      "corner_alpha_pass_count": 12,
+      "frames": [
+        {
+          "index": 0,
+          "label": "idle_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1587,
+          "y_top": 15,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 1,
+          "label": "idle_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1627,
+          "y_top": 13,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 2,
+          "label": "walk_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1556,
+          "y_top": 14,
+          "y_bottom": 92,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 3,
+          "label": "walk_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1528,
+          "y_top": 14,
+          "y_bottom": 92,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 4,
+          "label": "walk_2",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1475,
+          "y_top": 14,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 5,
+          "label": "walk_3",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1423,
+          "y_top": 14,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 6,
+          "label": "walk_4",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1529,
+          "y_top": 14,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 7,
+          "label": "walk_5",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1531,
+          "y_top": 14,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 8,
+          "label": "interact_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1427,
+          "y_top": 14,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 9,
+          "label": "interact_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1439,
+          "y_top": 14,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 10,
+          "label": "interact_2",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1504,
+          "y_top": 14,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 11,
+          "label": "interact_3",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1427,
+          "y_top": 14,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        }
+      ]
+    },
+    {
+      "character": "eugeo",
+      "request_id": "VIS-CHR-003",
+      "sheet_path": "VIS-CHR-003_sprite_sheet_down_candidate_v009.png",
+      "cell_size": [
+        64,
+        96
+      ],
+      "anchor": [
+        32,
+        94
+      ],
+      "sheet_size": [
+        768,
+        96
+      ],
+      "color_mode": "RGBA",
+      "sha256": "49801bcc2b10fba984a5128925dbedd1e8f1f1f55d5e2971283fffbedaae9a7e",
+      "file_size": 57910,
+      "anchor_alpha_pass_count": 12,
+      "anchor_alpha_total": 12,
+      "corner_alpha_pass_count": 12,
+      "frames": [
+        {
+          "index": 0,
+          "label": "idle_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1326,
+          "y_top": 17,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 1,
+          "label": "idle_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1327,
+          "y_top": 17,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 2,
+          "label": "walk_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1276,
+          "y_top": 16,
+          "y_bottom": 92,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 3,
+          "label": "walk_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1246,
+          "y_top": 16,
+          "y_bottom": 92,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 4,
+          "label": "walk_2",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1329,
+          "y_top": 18,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 5,
+          "label": "walk_3",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1234,
+          "y_top": 16,
+          "y_bottom": 92,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 6,
+          "label": "walk_4",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1254,
+          "y_top": 17,
+          "y_bottom": 92,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 7,
+          "label": "walk_5",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1192,
+          "y_top": 17,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 8,
+          "label": "interact_0",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1368,
+          "y_top": 16,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 9,
+          "label": "interact_1",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1336,
+          "y_top": 17,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 10,
+          "label": "interact_2",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1468,
+          "y_top": 12,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        },
+        {
+          "index": 11,
+          "label": "interact_3",
+          "anchor_alpha": 0,
+          "corner_min_alpha": 0,
+          "non_transparent_px": 1334,
+          "y_top": 18,
+          "y_bottom": 93,
+          "min_alpha_in_cell": 255
+        }
+      ]
+    }
+  ]
+}

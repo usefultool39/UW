@@ -1,0 +1,395 @@
+{
+  "VIS-CHR-001": {
+    "request_id": "VIS-CHR-001",
+    "character": "kirito",
+    "sheet_path": "VIS-CHR-001_sprite_sheet_down.png",
+    "sheet_size": [
+      768,
+      96
+    ],
+    "cell_size": [
+      64,
+      96
+    ],
+    "anchor": [
+      32,
+      94
+    ],
+    "frames": [
+      {
+        "index": 0,
+        "source": "kirito_idle_0_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame0: anchor (32,94) alpha=23 != 0"
+        ]
+      },
+      {
+        "index": 1,
+        "source": "kirito_idle_1_raw.png",
+        "status": "ok",
+        "issues": []
+      },
+      {
+        "index": 2,
+        "source": "kirito_walk_0_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame2: anchor (32,94) alpha=3 != 0"
+        ]
+      },
+      {
+        "index": 3,
+        "source": "kirito_walk_1_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame3: anchor (32,94) alpha=96 != 0"
+        ]
+      },
+      {
+        "index": 4,
+        "source": "kirito_walk_2_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame4: anchor (32,94) alpha=226 != 0"
+        ]
+      },
+      {
+        "index": 5,
+        "source": "kirito_walk_3_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame5: anchor (32,94) alpha=255 != 0"
+        ]
+      },
+      {
+        "index": 6,
+        "source": "kirito_walk_4_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame6: anchor (32,94) alpha=15 != 0"
+        ]
+      },
+      {
+        "index": 7,
+        "source": "kirito_walk_5_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame7: anchor (32,94) alpha=248 != 0"
+        ]
+      },
+      {
+        "index": 8,
+        "source": "kirito_interact_0_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame8: anchor (32,94) alpha=244 != 0"
+        ]
+      },
+      {
+        "index": 9,
+        "source": "kirito_interact_1_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame9: anchor (32,94) alpha=6 != 0"
+        ]
+      },
+      {
+        "index": 10,
+        "source": "kirito_interact_2_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame10: anchor (32,94) alpha=1 != 0"
+        ]
+      },
+      {
+        "index": 11,
+        "source": "kirito_interact_3_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame11: anchor (32,94) alpha=169 != 0"
+        ]
+      }
+    ],
+    "issues": [
+      "frame0: anchor (32,94) alpha=23 != 0",
+      "frame2: anchor (32,94) alpha=3 != 0",
+      "frame3: anchor (32,94) alpha=96 != 0",
+      "frame4: anchor (32,94) alpha=226 != 0",
+      "frame5: anchor (32,94) alpha=255 != 0",
+      "frame6: anchor (32,94) alpha=15 != 0",
+      "frame7: anchor (32,94) alpha=248 != 0",
+      "frame8: anchor (32,94) alpha=244 != 0",
+      "frame9: anchor (32,94) alpha=6 != 0",
+      "frame10: anchor (32,94) alpha=1 != 0",
+      "frame11: anchor (32,94) alpha=169 != 0"
+    ],
+    "color_mode": "RGBA",
+    "alpha": true,
+    "frame_count": 12,
+    "preview_desktop": "VIS-CHR-001_preview_desktop.png",
+    "preview_mobile": "VIS-CHR-001_preview_mobile.png"
+  },
+  "VIS-CHR-002": {
+    "request_id": "VIS-CHR-002",
+    "character": "alice",
+    "sheet_path": "VIS-CHR-002_sprite_sheet_down.png",
+    "sheet_size": [
+      768,
+      96
+    ],
+    "cell_size": [
+      64,
+      96
+    ],
+    "anchor": [
+      32,
+      94
+    ],
+    "frames": [
+      {
+        "index": 0,
+        "source": "alice_idle_0_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame0: anchor (32,94) alpha=39 != 0"
+        ]
+      },
+      {
+        "index": 1,
+        "source": "alice_idle_1_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame1: anchor (32,94) alpha=255 != 0"
+        ]
+      },
+      {
+        "index": 2,
+        "source": "alice_walk_0_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame2: anchor (32,94) alpha=163 != 0"
+        ]
+      },
+      {
+        "index": 3,
+        "source": "alice_walk_1_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame3: anchor (32,94) alpha=26 != 0"
+        ]
+      },
+      {
+        "index": 4,
+        "source": "alice_walk_2_raw.png",
+        "status": "ok",
+        "issues": []
+      },
+      {
+        "index": 5,
+        "source": "alice_walk_3_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame5: anchor (32,94) alpha=142 != 0"
+        ]
+      },
+      {
+        "index": 6,
+        "source": "alice_walk_4_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame6: anchor (32,94) alpha=255 != 0"
+        ]
+      },
+      {
+        "index": 7,
+        "source": "alice_walk_5_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame7: anchor (32,94) alpha=146 != 0"
+        ]
+      },
+      {
+        "index": 8,
+        "source": "alice_interact_0_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame8: anchor (32,94) alpha=253 != 0"
+        ]
+      },
+      {
+        "index": 9,
+        "source": "alice_interact_1_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame9: anchor (32,94) alpha=17 != 0"
+        ]
+      },
+      {
+        "index": 10,
+        "source": "alice_interact_2_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame10: anchor (32,94) alpha=77 != 0"
+        ]
+      },
+      {
+        "index": 11,
+        "source": "alice_interact_3_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame11: anchor (32,94) alpha=255 != 0"
+        ]
+      }
+    ],
+    "issues": [
+      "frame0: anchor (32,94) alpha=39 != 0",
+      "frame1: anchor (32,94) alpha=255 != 0",
+      "frame2: anchor (32,94) alpha=163 != 0",
+      "frame3: anchor (32,94) alpha=26 != 0",
+      "frame5: anchor (32,94) alpha=142 != 0",
+      "frame6: anchor (32,94) alpha=255 != 0",
+      "frame7: anchor (32,94) alpha=146 != 0",
+      "frame8: anchor (32,94) alpha=253 != 0",
+      "frame9: anchor (32,94) alpha=17 != 0",
+      "frame10: anchor (32,94) alpha=77 != 0",
+      "frame11: anchor (32,94) alpha=255 != 0"
+    ],
+    "color_mode": "RGBA",
+    "alpha": true,
+    "frame_count": 12,
+    "preview_desktop": "VIS-CHR-002_preview_desktop.png",
+    "preview_mobile": "VIS-CHR-002_preview_mobile.png"
+  },
+  "VIS-CHR-003": {
+    "request_id": "VIS-CHR-003",
+    "character": "eugeo",
+    "sheet_path": "VIS-CHR-003_sprite_sheet_down.png",
+    "sheet_size": [
+      768,
+      96
+    ],
+    "cell_size": [
+      64,
+      96
+    ],
+    "anchor": [
+      32,
+      94
+    ],
+    "frames": [
+      {
+        "index": 0,
+        "source": "eugeo_idle_0_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame0: anchor (32,94) alpha=252 != 0"
+        ]
+      },
+      {
+        "index": 1,
+        "source": "eugeo_idle_1_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame1: anchor (32,94) alpha=255 != 0"
+        ]
+      },
+      {
+        "index": 2,
+        "source": "eugeo_walk_0_raw.png",
+        "status": "ok",
+        "issues": []
+      },
+      {
+        "index": 3,
+        "source": "eugeo_walk_1_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame3: anchor (32,94) alpha=130 != 0"
+        ]
+      },
+      {
+        "index": 4,
+        "source": "eugeo_walk_2_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame4: anchor (32,94) alpha=19 != 0"
+        ]
+      },
+      {
+        "index": 5,
+        "source": "eugeo_walk_3_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame5: anchor (32,94) alpha=255 != 0"
+        ]
+      },
+      {
+        "index": 6,
+        "source": "eugeo_walk_4_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame6: anchor (32,94) alpha=65 != 0"
+        ]
+      },
+      {
+        "index": 7,
+        "source": "eugeo_walk_5_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame7: anchor (32,94) alpha=255 != 0"
+        ]
+      },
+      {
+        "index": 8,
+        "source": "eugeo_interact_0_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame8: anchor (32,94) alpha=240 != 0"
+        ]
+      },
+      {
+        "index": 9,
+        "source": "eugeo_interact_1_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame9: anchor (32,94) alpha=6 != 0"
+        ]
+      },
+      {
+        "index": 10,
+        "source": "eugeo_interact_2_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame10: anchor (32,94) alpha=255 != 0"
+        ]
+      },
+      {
+        "index": 11,
+        "source": "eugeo_interact_3_raw.png",
+        "status": "issues",
+        "issues": [
+          "frame11: anchor (32,94) alpha=124 != 0"
+        ]
+      }
+    ],
+    "issues": [
+      "frame0: anchor (32,94) alpha=252 != 0",
+      "frame1: anchor (32,94) alpha=255 != 0",
+      "frame3: anchor (32,94) alpha=130 != 0",
+      "frame4: anchor (32,94) alpha=19 != 0",
+      "frame5: anchor (32,94) alpha=255 != 0",
+      "frame6: anchor (32,94) alpha=65 != 0",
+      "frame7: anchor (32,94) alpha=255 != 0",
+      "frame8: anchor (32,94) alpha=240 != 0",
+      "frame9: anchor (32,94) alpha=6 != 0",
+      "frame10: anchor (32,94) alpha=255 != 0",
+      "frame11: anchor (32,94) alpha=124 != 0"
+    ],
+    "color_mode": "RGBA",
+    "alpha": true,
+    "frame_count": 12,
+    "preview_desktop": "VIS-CHR-003_preview_desktop.png",
+    "preview_mobile": "VIS-CHR-003_preview_mobile.png"
+  }
+}

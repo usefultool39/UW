@@ -1,6 +1,6 @@
 # Underworld AI Provider 适配器
 
-- **状态**：Current / 可离线回退
+- **状态**：已实现，可离线回退
 - **实现**：`backend/app/ai_provider.py`
 - **目标**：让阶跃星辰、商汤或其他 OpenAI-compatible API 可以逐个 NPC 灰度测试，同时不改变世界规则、存档和 scripted 主线。
 
@@ -70,8 +70,8 @@ NPC runtime
 Provider 适配器使用 fake HTTP client 测试，不向真实 API 发请求：
 
 ```bash
-cd /Users/lzm/Desktop/UW/backend
-../backend/.venv/bin/python -m pytest -q tests/test_ai_provider.py
+cd backend
+.venv/bin/python -m pytest -q tests/test_ai_provider.py
 ```
 
 完整游戏仍必须在以下环境可玩：

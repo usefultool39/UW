@@ -58,6 +58,17 @@
                                            "unlocked":  true
                                        },
                                        {
+                                           "id":  "west_fields",
+                                           "display":  "西侧田野",
+                                           "daily_activity_ids":  [
+                                                                      "west_fields_herb_gather",
+                                                                      "west_fields_tablet_fragment_1",
+                                                                      "west_fields_tablet_fragment_2",
+                                                                      "west_fields_tablet_fragment_3"
+                                                                  ],
+                                           "unlocked":  true
+                                       },
+                                       {
                                            "id":  "goblin_cave_stub",
                                            "display":  "北境洞窟（封锁）",
                                            "daily_activity_ids":  [

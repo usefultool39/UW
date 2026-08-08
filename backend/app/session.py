@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from .activity_engine import ActivityValidationError, plan_scene_activity
+from .item_engine import ItemValidationError, find_item, plan_item_use
 from .agent_budget import AgentBudget
 from .agent_registry import get_agent_profile
 from .dialogue_agent import dialogue_reply, fallback_dialogue_reply
@@ -324,6 +325,10 @@ class Session:
         flag_value: int | None = None,
         activity_id: str | None = None,
         activity_choice: str | None = None,
+        loadout: list[str] | None = None,
+        mini_game_result: dict[str, Any] | None = None,
+        item_id: str | None = None,
+        quantity: int | None = None,
         intent_id: str | None = None,
         response_id: str | None = None,
         tile_x: int | None = None,
@@ -333,13 +338,18 @@ class Session:
         daily_n: int | None = None,
     ) -> dict:
         with self._lock:
-            self.state = ensure_relationships(self.state)
-            self._refresh_runtime_views()
+            # Item validation is deliberately independent of runtime NPC-view
+            # refreshes. A rejected use_item must be a byte-for-byte no-op on
+            # the saved world state, not merely a no-op on inventory/resources.
             original_kind, kind = normalize_player_action_kind(kind, activity_id=activity_id)
+            if kind != "use_item":
+                self.state = ensure_relationships(self.state)
+                self._refresh_runtime_views()
             before_player = self.state.player
             action_events: list[dict[str, Any]] = []
             path_payload: list[dict[str, int]] | None = None
             activity_result: dict | None = None
+            item_result: dict | None = None
             intent_result: dict | None = None
             relationship_changes: list[dict] = []
             memory_written: list[dict] = []
@@ -606,6 +616,51 @@ class Session:
                 for _ in range(steps):
                     self.state = advance_tick(self.state)
                 action_events.append({"type": "rested", "location": "home", "ticks": steps})
+            elif kind == "use_item":
+                if not item_id:
+                    return fail("missing_item_id")
+                item = find_item(self.root, item_id)
+                try:
+                    plan = plan_item_use(
+                        item,
+                        item_id=item_id,
+                        quantity=quantity,
+                        state=self.state,
+                    )
+                except ItemValidationError as exc:
+                    return fail(exc.code, **exc.details)
+
+                # The plan has already validated every condition. Commit the
+                # complete snapshot in one model copy so rejection can never
+                # consume an item before a resource/condition check finishes.
+                self.state = self.state.model_copy(
+                    update={
+                        "player": plan.next_player,
+                        "inventory": plan.next_inventory,
+                        "flags": plan.next_flags,
+                    }
+                )
+                item_result = {
+                    "item": {
+                        "id": plan.item_id,
+                        "name": plan.item.get("name") or plan.item_id,
+                        "type": plan.item.get("type"),
+                    },
+                    "quantity": plan.quantity,
+                    "result_text": plan.result_text,
+                    "item_changes": plan.item_changes,
+                    "inventory": dict(self.state.inventory),
+                    "resource_changes": plan.resource_changes,
+                }
+                action_events.append(
+                    {
+                        "type": "item_used",
+                        "item_id": plan.item_id,
+                        "quantity": plan.quantity,
+                        "item_changes": plan.item_changes,
+                        "resource_changes": plan.resource_changes,
+                    }
+                )
             elif kind == "scene_activity":
                 if not activity_id:
                     return fail("missing_activity_id")
@@ -623,6 +678,11 @@ class Session:
                         day=self.state.day,
                         flags=self.state.flags,
                         player=self.state.player,
+                        inventory=self.state.inventory,
+                        weather=self.state.weather,
+                        loadout=loadout,
+                        mini_game_result=mini_game_result,
+                        project_root=self.root,
                     )
                 except ActivityValidationError as exc:
                     return fail(exc.code, **exc.details)
@@ -642,8 +702,11 @@ class Session:
                     self.state,
                     effects.get("relationship") if isinstance(effects.get("relationship"), dict) else {},
                 )
-                self.state = self.state.model_copy(update={"player": plan.next_player})
+                self.state = self.state.model_copy(
+                    update={"player": plan.next_player, "inventory": plan.next_inventory}
+                )
                 resource_changes = plan.resource_changes
+                item_changes = plan.item_changes
                 tree_damage = plan.tree_damage
                 time_cost = plan.time_cost
                 if tree_damage:
@@ -717,6 +780,11 @@ class Session:
                     "hp_cost": plan.hp_cost,
                     "mp_cost": plan.mp_cost,
                     "resource_changes": resource_changes,
+                    "item_changes": item_changes,
+                    "inventory": dict(self.state.inventory),
+                    "loadout": plan.loadout_result,
+                    "mini_game_result": mini_game_result,
+                    "collection_completions": plan.collection_completions,
                     "flag_deltas": effects.get("flag_deltas") if isinstance(effects.get("flag_deltas"), dict) else {},
                     "repeat": plan.repeat,
                     "relationship_changes": relationship_changes,
@@ -730,6 +798,8 @@ class Session:
                         "activity_id": activity_id,
                         "time_cost": time_cost,
                         "tree_damage": tree_damage,
+                        "item_changes": item_changes,
+                        "collection_completions": plan.collection_completions,
                     }
                 )
             elif kind == "rest_until_next_day":
@@ -761,6 +831,9 @@ class Session:
                     "flag_value": flag_value,
                     "activity_id": activity_id,
                     "activity_choice": activity_choice,
+                    "loadout": loadout,
+                    "item_id": item_id,
+                    "quantity": quantity,
                     "intent_id": intent_id,
                     "response_id": response_id,
                     "tile_x": tile_x,
@@ -769,6 +842,7 @@ class Session:
                     "daily_n": daily_n,
                 },
                 "activity_result": activity_result,
+                "item_result": item_result,
                 "intent_result": intent_result,
                 "events": action_events,
                 "tick": self.state.tick,
@@ -795,6 +869,13 @@ class Session:
                 out["activity_result"] = activity_result
                 out["relationship_changes"] = relationship_changes
                 out["memory_written"] = memory_written
+            if item_result is not None:
+                out["item_result"] = item_result
+                # Keep these fields at the action envelope level as well as in
+                # item_result for clients that consume player actions directly.
+                out["item_changes"] = item_result["item_changes"]
+                out["inventory"] = item_result["inventory"]
+                out["resource_changes"] = item_result["resource_changes"]
             if intent_result is not None:
                 out["intent_result"] = intent_result
                 out["relationship_changes"] = relationship_changes
@@ -813,6 +894,7 @@ class Session:
             return {
                 "ok": True,
                 "events": events,
+                "day_gate": day_gate_status(self.root, self.state),
                 "state": self.state.model_dump(mode="json"),
             }
 
@@ -877,6 +959,20 @@ class Session:
                 "available_events": available,
                 "state": self.state.model_dump(mode="json"),
             }
+
+    def codex(self) -> dict:
+        """Read-only memory codex assembled from the authoritative run state."""
+        with self._lock:
+            self.state = ensure_relationships(self.state)
+            self._refresh_runtime_views()
+            from .codex_service import build_codex
+
+            return build_codex(
+                state=self.state,
+                project_root=self.root,
+                events=list(self.events),
+                memory_store=self.memory_store,
+            )
 
     def npc_profile(self, npc_id: str) -> dict:
         with self._lock:

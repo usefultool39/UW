@@ -1,0 +1,28 @@
+{
+  "source": "Original_hand_painted_2D_game__2026-08-07T17-44-18.png",
+  "intermediate_cleaned": "_intermediate_cleaned_1280x720.png",
+  "master": {
+    "path": "VIS-MAP-001_master.png",
+    "size": [
+      3024,
+      1792
+    ],
+    "sha256": "4489e5ae3bf68e30fda2609bd5f5457d2fe3b4b56a961b9d52d773dd9aa89592"
+  },
+  "desktop_preview": {
+    "path": "VIS-MAP-001_preview_desktop.png",
+    "size": [
+      1440,
+      900
+    ],
+    "sha256": "2d0a008531c8ed9f979613cabeb111d346c1b0c1e50d924b05306c5d655330fc"
+  },
+  "mobile_preview": {
+    "path": "VIS-MAP-001_preview_mobile.png",
+    "size": [
+      390,
+      844
+    ],
+    "sha256": "9c29ce1769feb20c30ede2406c5e842d074ddceb9d73d5f8fdcb9bfb538245ad"
+  }
+}

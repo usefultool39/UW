@@ -4,7 +4,7 @@
       <header class="journal-header">
         <div>
           <p class="journal-kicker">线索手册</p>
-          <h3>今天留下的痕迹</h3>
+          <h3>{{ activeTab === 'codex' ? '已经被记住的事' : '今天留下的痕迹' }}</h3>
         </div>
         <button
           type="button"
@@ -16,7 +16,29 @@
         </button>
       </header>
 
-      <div class="journal-grid">
+      <nav class="journal-tabs" aria-label="手册分区">
+        <button
+          type="button"
+          class="journal-tab"
+          :class="{ active: activeTab === 'journal' }"
+          :aria-selected="activeTab === 'journal'"
+          @click="activeTab = 'journal'"
+        >
+          线索手册
+        </button>
+        <button
+          type="button"
+          class="journal-tab"
+          :class="{ active: activeTab === 'codex' }"
+          :aria-selected="activeTab === 'codex'"
+          @click="activeTab = 'codex'"
+        >
+          记忆图鉴
+          <span v-if="codexProgress.total" class="tab-count">{{ codexProgress.completed }}/{{ codexProgress.total }}</span>
+        </button>
+      </nav>
+
+      <div v-if="activeTab === 'journal'" class="journal-grid">
         <section class="journal-column">
           <h4>发现的线索</h4>
           <p v-if="!clueEntries.length" class="journal-empty">还没有写入明确线索。先去书库或巨树旁看看。</p>
@@ -71,7 +93,7 @@
           <p v-if="!monthWeeks.length" class="journal-empty">月度路线还在同步。完成当前关键事件后，这里会显示后续目标。</p>
           <template v-else>
             <div class="month-current">
-              <span>Day {{ monthCurrent.day || 1 }}</span>
+              <span>第 {{ monthCurrent.day || 1 }} 天</span>
               <strong>{{ monthCurrent.endingLabel }}</strong>
               <p>{{ monthCurrent.endingNote }}</p>
             </div>
@@ -102,12 +124,110 @@
           </template>
         </section>
       </div>
+
+      <div v-else class="codex-view">
+        <div v-if="!codexData" class="journal-empty codex-loading">记忆图鉴正在从村庄记录同步……</div>
+        <template v-else>
+          <section class="codex-summary" aria-label="记忆图鉴进度">
+            <div>
+              <span class="codex-kicker">记忆回廊 · 当前存档</span>
+              <strong>你已经留下 {{ codexProgress.completed }} / {{ codexProgress.total }} 条可追溯记录</strong>
+            </div>
+            <div class="codex-progress" aria-label="图鉴完成度">
+              <span :style="{ width: `${codexProgress.percent}%` }"></span>
+            </div>
+            <small>{{ codexProgress.percent }}% · 完成度来自服务器状态，不会写入浏览器</small>
+          </section>
+
+          <div class="codex-grid">
+            <section class="codex-column codex-wide">
+              <h4>主线节点</h4>
+              <p v-if="!codexMainline.length" class="journal-empty">还没有可展示的主线记录。</p>
+              <article
+                v-for="entry in codexMainline"
+                :key="entry.id"
+                class="codex-card"
+                :class="[`codex-${entry.status}`, { 'is-locked': entry.status === 'locked' }]"
+              >
+                <span class="entry-status">{{ codexStatusLabel(entry.status) }}</span>
+                <strong>{{ entry.status === 'locked' ? '未解锁记忆' : entry.title }}</strong>
+                <p v-if="entry.status !== 'locked'">{{ entry.description }}</p>
+                <p v-else class="codex-condition">解锁条件：{{ entry.condition }}</p>
+                <small v-if="entry.status !== 'locked'">{{ entry.day ? `第 ${entry.day} 天 · ` : '' }}{{ entry.completed ? '已写入主线' : entry.condition }}</small>
+              </article>
+            </section>
+
+            <section class="codex-column">
+              <h4>石碑碎片</h4>
+              <div class="fragment-grid">
+                <article
+                  v-for="entry in codexFragments"
+                  :key="entry.id"
+                  class="codex-card fragment-card"
+                  :class="{ collected: entry.collected, 'is-locked': !entry.collected }"
+                >
+                  <span class="fragment-silhouette" aria-hidden="true">{{ entry.collected ? '✦' : '？' }}</span>
+                  <div>
+                    <span class="entry-status">{{ entry.collected ? '已收集' : '未发现' }}</span>
+                    <strong>{{ entry.collected ? entry.title : '未知石碑碎片' }}</strong>
+                    <p>{{ entry.collected ? entry.description : entry.condition }}</p>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section class="codex-column">
+              <h4>活动记录</h4>
+              <article
+                v-for="entry in codexActivities"
+                :key="entry.id"
+                class="codex-card activity-card"
+                :class="{ 'is-locked': entry.status === 'locked' }"
+              >
+                <span class="entry-status">{{ entry.category }} · {{ codexStatusLabel(entry.status) }}</span>
+                <strong>{{ entry.status === 'locked' ? '未解锁活动记录' : entry.title }}</strong>
+                <p v-if="entry.completed">完成 {{ entry.count }} 次<span v-if="entry.choices.length"> · {{ entry.choices.join(' / ') }}</span></p>
+                <p v-else>解锁条件：{{ entry.condition }}</p>
+                <small v-if="entry.last_day">最近记录：第 {{ entry.last_day }} 天</small>
+              </article>
+            </section>
+
+            <section class="codex-column codex-wide">
+              <h4>NPC 记忆与关系里程碑</h4>
+              <p v-if="!codexNpcs.length" class="journal-empty">还没有可回看的 NPC 记忆。</p>
+              <div class="npc-codex-grid">
+                <article v-for="npc in codexNpcs" :key="npc.npc_id" class="codex-card npc-codex-card">
+                  <header>
+                    <strong>{{ npc.npc }}</strong>
+                    <small>好感 {{ npc.relationship.affinity }} · 信任 {{ npc.relationship.trust }} · 紧张 {{ npc.relationship.tension }}</small>
+                  </header>
+                  <div v-if="npc.memories.length" class="npc-memory-list">
+                    <p v-for="memory in npc.memories.slice(0, 3)" :key="`${npc.npc_id}:${memory.recorded_at || memory.summary}`">{{ memory.summary }}</p>
+                  </div>
+                  <p v-else class="codex-muted">关键记忆尚未形成。</p>
+                  <div class="milestone-chip-list">
+                    <span
+                      v-for="milestone in npc.milestones"
+                      :key="milestone.id"
+                      class="milestone-chip"
+                      :class="{ unlocked: milestone.unlocked }"
+                      :title="milestone.unlocked ? milestone.label : `解锁条件：${milestone.condition}`"
+                    >
+                      {{ milestone.unlocked ? milestone.label : '未解锁里程碑' }}
+                    </span>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </div>
+        </template>
+      </div>
     </section>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import {
   getAgentLabel,
   getSceneLabel,
@@ -118,6 +238,7 @@ import {
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   simState: { type: Object, default: null },
+  codex: { type: Object, default: null },
   storyEvents: { type: Array, default: () => [] },
   monthPlan: { type: Object, default: null },
   recentMemories: { type: Array, default: () => [] },
@@ -125,6 +246,18 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+const activeTab = ref('journal')
+
+const codexData = computed(() => props.codex || props.simState?.codex || null)
+const codexProgress = computed(() => codexData.value?.progress || { completed: 0, total: 0, percent: 0 })
+const codexMainline = computed(() => Array.isArray(codexData.value?.mainline) ? codexData.value.mainline : [])
+const codexFragments = computed(() => Array.isArray(codexData.value?.fragments) ? codexData.value.fragments : [])
+const codexActivities = computed(() => Array.isArray(codexData.value?.activities) ? codexData.value.activities : [])
+const codexNpcs = computed(() => Array.isArray(codexData.value?.npcs) ? codexData.value.npcs : [])
+
+function codexStatusLabel(status) {
+  return { completed: '已完成', available: '待记录', locked: '待解锁', hidden: '未发现' }[status] || '未记录'
+}
 
 const clueEntries = computed(() => {
   const out = []
@@ -581,6 +714,139 @@ function shortGoals(goals) {
   font-size: 0.68rem;
 }
 
+
+.journal-tabs {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.7rem;
+  padding: 0.22rem;
+  border-radius: 10px;
+  background: rgba(8, 16, 28, 0.68);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.journal-tab {
+  min-height: 2rem;
+  padding: 0.28rem 0.68rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #a9bdd0;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.journal-tab.active {
+  color: #332414;
+  background: linear-gradient(180deg, #ffe6a6, #d99545);
+  border-color: rgba(255, 247, 214, 0.72);
+}
+
+.tab-count {
+  margin-left: 0.25rem;
+  opacity: 0.78;
+  font-size: 0.68rem;
+}
+
+.codex-view {
+  margin-top: 0.78rem;
+}
+
+.codex-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 280px);
+  gap: 0.28rem 0.85rem;
+  align-items: center;
+  padding: 0.72rem 0.78rem;
+  border-radius: 11px;
+  background: linear-gradient(135deg, rgba(62, 49, 28, 0.72), rgba(12, 28, 38, 0.72));
+  border: 1px solid rgba(246, 211, 110, 0.24);
+}
+
+.codex-kicker {
+  display: block;
+  color: #f6d36e;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.codex-summary strong {
+  display: block;
+  margin-top: 0.16rem;
+  color: #fff7d6;
+  font-size: 0.9rem;
+}
+
+.codex-summary small {
+  grid-column: 1 / -1;
+  color: #a9bdd0;
+  font-size: 0.68rem;
+}
+
+.codex-progress {
+  height: 0.48rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.codex-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #67e8f9, #f6d36e);
+  transition: width 220ms ease;
+}
+
+.codex-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.72rem;
+  margin-top: 0.72rem;
+}
+
+.codex-column { min-width: 0; }
+.codex-column h4 { margin: 0 0 0.45rem; color: #bae6fd; font-size: 0.9rem; }
+.codex-wide { grid-column: span 2; }
+
+.codex-card {
+  min-width: 0;
+  margin-bottom: 0.48rem;
+  padding: 0.6rem 0.66rem;
+  border-radius: 10px;
+  background: rgba(8, 16, 28, 0.62);
+  border: 1px solid rgba(94, 207, 255, 0.18);
+}
+
+.codex-card.codex-completed { border-color: rgba(74, 222, 128, 0.28); }
+.codex-card.codex-available { border-color: rgba(253, 224, 71, 0.28); }
+.codex-card.is-locked { border-color: rgba(148, 163, 184, 0.14); background: rgba(15, 23, 42, 0.42); }
+.codex-card.is-locked strong { color: #64748b; letter-spacing: 0.08em; }
+.codex-card p { margin: 0.28rem 0 0; color: #dbeafe; font-size: 0.78rem; line-height: 1.48; }
+.codex-card small { display: block; margin-top: 0.34rem; color: #93c5fd; font-size: 0.68rem; line-height: 1.35; }
+.codex-condition { color: #a8b6c8 !important; }
+.codex-muted { color: #8ca0b5 !important; }
+
+.fragment-grid { display: grid; gap: 0.45rem; }
+.fragment-card { display: grid; grid-template-columns: 2.1rem minmax(0, 1fr); gap: 0.55rem; align-items: center; }
+.fragment-silhouette { display: grid; place-items: center; width: 1.85rem; height: 2.2rem; border-radius: 7px; color: #f6d36e; background: rgba(71, 85, 105, 0.48); font-size: 1.1rem; }
+.fragment-card.is-locked .fragment-silhouette { color: #64748b; filter: grayscale(1); }
+.fragment-card strong { font-size: 0.82rem; }
+
+.activity-card { min-height: 4.55rem; }
+.npc-codex-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.npc-codex-card header { display: flex; justify-content: space-between; gap: 0.55rem; align-items: baseline; }
+.npc-codex-card header strong { font-size: 0.92rem; }
+.npc-codex-card header small { margin: 0; white-space: nowrap; }
+.npc-memory-list { display: grid; gap: 0.24rem; margin-top: 0.42rem; }
+.npc-memory-list p { margin: 0; padding-left: 0.5rem; border-left: 2px solid rgba(94, 207, 255, 0.35); }
+.milestone-chip-list { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.52rem; }
+.milestone-chip { padding: 0.18rem 0.38rem; border-radius: 999px; color: #718096; background: rgba(51, 65, 85, 0.48); border: 1px solid rgba(148, 163, 184, 0.14); font-size: 0.65rem; }
+.milestone-chip.unlocked { color: #d9f99d; background: rgba(74, 116, 68, 0.3); border-color: rgba(134, 239, 172, 0.25); }
+
 @media (max-width: 900px) {
   .journal-panel {
     top: 3.2rem;
@@ -601,3 +867,14 @@ function shortGoals(goals) {
   }
 }
 </style>
+
+
+@media (max-width: 620px) {
+  .codex-summary { grid-template-columns: 1fr; }
+  .codex-summary small { grid-column: auto; }
+  .codex-grid { grid-template-columns: 1fr; }
+  .codex-wide { grid-column: auto; }
+  .npc-codex-grid { grid-template-columns: 1fr; }
+  .npc-codex-card header { display: block; }
+  .npc-codex-card header small { margin-top: 0.18rem; }
+}

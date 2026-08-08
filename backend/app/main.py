@@ -197,6 +197,14 @@ def get_npc_memory(npc_id: str, limit: int = Query(20, ge=1, le=500)):
     }
 
 
+@app.get("/api/codex")
+def get_codex():
+    """Read-only memory codex; completion always comes from the server state."""
+    with SESSION_LOCK:
+        sess = SESSION
+        return sess.codex()
+
+
 @app.get("/api/npc/{npc_id}/profile")
 def get_npc_profile(npc_id: str):
     with SESSION_LOCK:
@@ -271,6 +279,10 @@ def player_action(request: Request, body: PlayerActionBody):
             flag_value=body.flag_value,
             activity_id=body.activity_id,
             activity_choice=body.activity_choice,
+            loadout=body.loadout,
+            mini_game_result=body.mini_game_result,
+            item_id=body.item_id,
+            quantity=body.quantity,
             intent_id=body.intent_id,
             response_id=body.response_id,
             tile_x=body.tile_x,

@@ -1,0 +1,328 @@
+{
+  "sheet": "VIS-CHR-001_kirito_sprite_sheet_v009_down.png",
+  "sheet_size": [
+    768,
+    96
+  ],
+  "cell_size": [
+    64,
+    96
+  ],
+  "anchor_px": [
+    32,
+    94
+  ],
+  "hard_bbox_frac": [
+    0.18,
+    0.04,
+    0.82,
+    0.96
+  ],
+  "gray_soft_range": [
+    200,
+    540
+  ],
+  "gray_chroma_max": 18,
+  "frames": [
+    {
+      "frame_id": "down_idle_0",
+      "col": 0,
+      "src": "down_idle_0.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 50,
+      "scale": 0.043,
+      "new_size": [
+        23,
+        50
+      ],
+      "paste_xy": [
+        21,
+        45
+      ]
+    },
+    {
+      "frame_id": "down_idle_1",
+      "col": 1,
+      "src": "down_idle_1.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 50,
+      "scale": 0.043,
+      "new_size": [
+        23,
+        50
+      ],
+      "paste_xy": [
+        21,
+        45
+      ]
+    },
+    {
+      "frame_id": "down_walk_0",
+      "col": 2,
+      "src": "down_walk_0.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 48,
+      "scale": 0.0413,
+      "new_size": [
+        22,
+        48
+      ],
+      "paste_xy": [
+        21,
+        47
+      ]
+    },
+    {
+      "frame_id": "down_walk_1",
+      "col": 3,
+      "src": "down_walk_1.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 48,
+      "scale": 0.0413,
+      "new_size": [
+        22,
+        48
+      ],
+      "paste_xy": [
+        21,
+        47
+      ]
+    },
+    {
+      "frame_id": "down_walk_2",
+      "col": 4,
+      "src": "down_walk_2.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 48,
+      "scale": 0.0413,
+      "new_size": [
+        22,
+        48
+      ],
+      "paste_xy": [
+        21,
+        47
+      ]
+    },
+    {
+      "frame_id": "down_walk_3",
+      "col": 5,
+      "src": "down_walk_3.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 48,
+      "scale": 0.0413,
+      "new_size": [
+        22,
+        48
+      ],
+      "paste_xy": [
+        21,
+        47
+      ]
+    },
+    {
+      "frame_id": "down_walk_4",
+      "col": 6,
+      "src": "down_walk_4.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 48,
+      "scale": 0.0413,
+      "new_size": [
+        22,
+        48
+      ],
+      "paste_xy": [
+        21,
+        47
+      ]
+    },
+    {
+      "frame_id": "down_walk_5",
+      "col": 7,
+      "src": "down_walk_5.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 48,
+      "scale": 0.0413,
+      "new_size": [
+        22,
+        48
+      ],
+      "paste_xy": [
+        21,
+        47
+      ]
+    },
+    {
+      "frame_id": "down_interact_0",
+      "col": 8,
+      "src": "down_interact_0.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 50,
+      "scale": 0.043,
+      "new_size": [
+        23,
+        50
+      ],
+      "paste_xy": [
+        21,
+        45
+      ]
+    },
+    {
+      "frame_id": "down_interact_1",
+      "col": 9,
+      "src": "down_interact_1.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 50,
+      "scale": 0.043,
+      "new_size": [
+        23,
+        50
+      ],
+      "paste_xy": [
+        21,
+        45
+      ]
+    },
+    {
+      "frame_id": "down_interact_2",
+      "col": 10,
+      "src": "down_interact_2.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 50,
+      "scale": 0.043,
+      "new_size": [
+        23,
+        50
+      ],
+      "paste_xy": [
+        21,
+        45
+      ]
+    },
+    {
+      "frame_id": "down_interact_3",
+      "col": 11,
+      "src": "down_interact_3.png",
+      "src_size": [
+        848,
+        1264
+      ],
+      "hard_bbox": [
+        152,
+        50,
+        695,
+        1213
+      ],
+      "target_h": 50,
+      "scale": 0.043,
+      "new_size": [
+        23,
+        50
+      ],
+      "paste_xy": [
+        21,
+        45
+      ]
+    }
+  ]
+}

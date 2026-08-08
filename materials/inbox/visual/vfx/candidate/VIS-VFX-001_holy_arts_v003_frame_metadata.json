@@ -1,0 +1,113 @@
+{
+  "request_id": "VIS-VFX-001",
+  "asset_name": "holy_arts",
+  "version": "v003",
+  "status": "sample_candidate",
+  "created_at": "2026-08-08",
+  "creator": "Mavis image synthesis (image_synthesize, 4:1 aspect, 2K) + Pillow floodfill keying",
+  "license": "project-original",
+  "source_url": "none",
+  "intended_use": "神圣术 VFX 4 帧循环 sheet; 不直接接入 runtime",
+  "runtime": "prohibited",
+  "sheet": {
+    "path": "VIS-VFX-001_holy_arts_candidate_v003.png",
+    "dimensions": [
+      1024,
+      256
+    ],
+    "color_mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "3647f312932f1b175044077172be62a98c446cf426bc82d7f02b5bfaaef8575a"
+  },
+  "frame_contract": {
+    "cell_size": [
+      256,
+      256
+    ],
+    "layout": "4x1",
+    "loop_order": [
+      0,
+      1,
+      2,
+      3,
+      0
+    ],
+    "anchor": null
+  },
+  "frames": [
+    {
+      "index": 0,
+      "label": "holy_arts_0",
+      "semantics": "frame 0: small golden ink dot just beginning to bloom",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "corner_alpha_pass": true,
+      "y_top": 109,
+      "y_bottom": 147,
+      "non_transparent_px": 1962
+    },
+    {
+      "index": 1,
+      "label": "holy_arts_1",
+      "semantics": "frame 1: golden ink curl and tendril rising upward",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "corner_alpha_pass": true,
+      "y_top": 45,
+      "y_bottom": 158,
+      "non_transparent_px": 3948
+    },
+    {
+      "index": 2,
+      "label": "holy_arts_2",
+      "semantics": "frame 2: full bloom of golden brush strokes forming delicate divine motif with gold particles",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "corner_alpha_pass": true,
+      "y_top": 46,
+      "y_bottom": 184,
+      "non_transparent_px": 10454
+    },
+    {
+      "index": 3,
+      "label": "holy_arts_3",
+      "semantics": "frame 3: ink strokes dispersing softly into fading gold particles",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "corner_alpha_pass": true,
+      "y_top": 43,
+      "y_bottom": 178,
+      "non_transparent_px": 4825
+    }
+  ],
+  "post_processing": {
+    "keying": "floodfill from 4 corners with threshold=25 RGB max diff",
+    "low_alpha_cleanup": "alpha < 128 set to 0"
+  },
+  "alpha_check": {
+    "all_corner_alpha_zero": true,
+    "all_corner_pass_per_cell": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "background_removed_ratio": 0.919
+  }
+}

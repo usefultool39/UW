@@ -17,7 +17,7 @@
   4. 整合骑士仅在 N08 / N09 / N10 在村中出现；**不**在 N05 / N06 出现
   5. 三栏分类与 `NAR-CANON-001` v002 §0 对齐：A 官方明确 / B 原作·动画明确但当前官方网页摘要未覆盖 / C 项目原创补充
 - intended_use: 编剧 / Agent system prompt / 后续 memory 写入 共用的人物约束；本文件是 `NAR-VOICE-001` 的"可观察行为 + 内心动机"补充层
-- notes: v001 保留在 `materials/inbox/writing/character_depth/CHAR-DEPTH-001_character_depth_v001.md`，MANIFEST 状态 = `changes_requested`。每人分 9 段：宏观目标 / 恐惧 / 价值观 / 秘密 / 能力边界 / 关系边界 / 说话方式 / 会记住玩家什么 / A+B+C 三类划分。
+- notes: 上一轮被退回的修订已从工作树删除，可通过 Git 历史追溯。每人分 9 段：宏观目标 / 恐惧 / 价值观 / 秘密 / 能力边界 / 关系边界 / 说话方式 / 会记住玩家什么 / A+B+C 三类划分。
 
 ---
 
