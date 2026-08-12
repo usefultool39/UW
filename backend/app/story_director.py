@@ -84,7 +84,12 @@ def _matches_relationships(state: WorldState, required: dict[str, Any] | None) -
     return True
 
 
-def _matches_conditions(state: WorldState, conditions: dict[str, Any] | None) -> bool:
+def _matches_conditions(
+    state: WorldState,
+    conditions: dict[str, Any] | None,
+    *,
+    allow_time_slip: bool = False,
+) -> bool:
     if not conditions:
         return True
 
@@ -98,7 +103,12 @@ def _matches_conditions(state: WorldState, conditions: dict[str, Any] | None) ->
     time_bands = conditions.get("time_bands")
     if time_bands is None and conditions.get("time_band") is not None:
         time_bands = [conditions.get("time_band")]
-    if isinstance(time_bands, list) and time_bands and state.time_band not in time_bands:
+    if (
+        isinstance(time_bands, list)
+        and time_bands
+        and state.time_band not in time_bands
+        and not allow_time_slip
+    ):
         return False
 
     story_nodes = conditions.get("story_nodes")
@@ -134,7 +144,7 @@ def event_is_available(state: WorldState, event: dict[str, Any]) -> bool:
         return False
 
     trigger = event.get("trigger") if isinstance(event.get("trigger"), dict) else {}
-    if not _matches_conditions(state, trigger):
+    if not _matches_conditions(state, trigger, allow_time_slip=precapture_event):
         return False
 
     return True

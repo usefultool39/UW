@@ -43,7 +43,6 @@
       :fetch-regions="fetchRegions"
       :fetch-world-map="fetchWorldMap"
       :fetch-scene-activities="fetchSceneActivities"
-      :fetch-month-plan="fetchMonthPlan"
       :refresh="refresh"
     />
 
@@ -111,12 +110,13 @@
       @pick="onStoryChoicePick"
       @close="choiceModal.open = false"
     />
+    </div>
+
     <StoryEndingModal
       :open="endingModal.open"
       :ending-id="endingModal.id"
       @close="endingModal.open = false"
     />
-    </div>
   </div>
 </template>
 
@@ -167,8 +167,7 @@ const {
   importSave,
   fetchRegions,
   fetchWorldMap,
-  fetchSceneActivities,
-  fetchMonthPlan
+  fetchSceneActivities
 } = useGameApi()
 
 const appTab = ref('field')
@@ -230,6 +229,18 @@ watch(
     if (choiceModal.value.open) return
     tickFlash.value = true
     setTimeout(() => { tickFlash.value = false }, 150)
+  }
+)
+
+watch(
+  () => state.value.chapter_ending_id,
+  (endingId) => {
+    if (!endingId) return
+    if (narrative.value.endingShown) return
+    if (endingId === 'alice_captured' || endingId === 'chapter_ended') {
+      markEndingShown()
+      endingModal.value = { open: true, id: 'alice_captured' }
+    }
   }
 )
 

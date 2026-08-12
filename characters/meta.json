@@ -1,60 +1,60 @@
 {
-  "v": 2,
-  "agents": [
-    {
-      "id": "alice",
-      "display": "爱丽丝",
-      "role": "卢利特村 · 村长之女 / 神圣术见习",
-      "behavior_role": "logistics",
-      "initial_location": "home",
-      "enabled": true,
-      "color": "#f6d36e",
-      "img": "/characters/alice.svg",
-      "imgFallback": "/characters/alice.svg"
-    },
-    {
-      "id": "eugeo",
-      "display": "尤吉欧",
-      "role": "卢利特村 · 巨神树清场 / 日常劳作",
-      "behavior_role": "field",
-      "initial_location": "at_tree",
-      "enabled": true,
-      "color": "#7dd3fc",
-      "img": "/ugo.svg",
-      "imgFallback": "/ugo.svg"
-    },
-    {
-      "id": "selka",
-      "display": "赛尔卡",
-      "role": "卢利特村 · 见习疗愈者 / 书库帮手",
-      "behavior_role": "healer",
-      "initial_location": "home",
-      "enabled": true,
-      "color": "#f7b7c8",
-      "img": "/characters/selka.svg",
-      "imgFallback": "/characters/selka.svg"
-    },
-    {
-      "id": "garret",
-      "display": "加利塔",
-      "role": "卢利特村 · 北方村门巡守 / 边界见证者",
-      "behavior_role": "patrol",
-      "initial_location": "bench",
-      "enabled": true,
-      "color": "#b9d57a",
-      "img": "/characters/garret.svg",
-      "imgFallback": "/characters/garret.svg"
-    },
-    {
-      "id": "rulid_elder",
-      "display": "加斯夫特",
-      "role": "卢利特村 · 村务长 / 禁忌目录解释者",
-      "behavior_role": "elder",
-      "initial_location": "table",
-      "enabled": true,
-      "color": "#d8b889",
-      "img": "/characters/rulid_elder.svg",
-      "imgFallback": "/characters/rulid_elder.svg"
-    }
-  ]
+ "v": 2,
+ "agents": [
+  {
+   "id": "alice",
+   "display": "爱丽丝",
+   "role": "卢利特村 · 村长之女 / 神圣术见习",
+   "behavior_role": "logistics",
+   "initial_location": "home",
+   "enabled": true,
+   "color": "#f6d36e",
+   "img": "/characters/alice.svg",
+   "imgFallback": "/characters/alice.svg"
+  },
+  {
+   "id": "eugeo",
+   "display": "尤吉欧",
+   "role": "卢利特村 · 巨神树天职 / 日常劳作",
+   "behavior_role": "field",
+   "initial_location": "at_tree",
+   "enabled": true,
+   "color": "#7dd3fc",
+   "img": "/ugo.svg",
+   "imgFallback": "/ugo.svg"
+  },
+  {
+   "id": "selka",
+   "display": "赛尔卡",
+   "role": "卢利特村 · 见习疗愈者 / 书库帮手",
+   "behavior_role": "healer",
+   "initial_location": "home",
+   "enabled": true,
+   "color": "#f7b7c8",
+   "img": "/characters/selka.svg",
+   "imgFallback": "/characters/selka.svg"
+  },
+  {
+   "id": "garret",
+   "display": "加利塔",
+   "role": "卢利特村 · 北方村门巡守 / 边界见证者",
+   "behavior_role": "patrol",
+   "initial_location": "bench",
+   "enabled": true,
+   "color": "#b9d57a",
+   "img": "/characters/garret.svg",
+   "imgFallback": "/characters/garret.svg"
+  },
+  {
+   "id": "rulid_elder",
+   "display": "加斯夫特",
+   "role": "卢利特村 · 村务长 / 禁忌目录解释者",
+   "behavior_role": "elder",
+   "initial_location": "table",
+   "enabled": true,
+   "color": "#d8b889",
+   "img": "/characters/rulid_elder.svg",
+   "imgFallback": "/characters/rulid_elder.svg"
+  }
+ ]
 }

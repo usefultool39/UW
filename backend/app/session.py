@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
+from .config import TICK_PER_DAY
 from .activity_engine import ActivityValidationError, plan_scene_activity
 from .item_engine import ItemValidationError, find_item, plan_item_use
 from .agent_budget import AgentBudget
@@ -254,6 +255,22 @@ class Session:
                     )
                 )
 
+            if self.state.tick >= TICK_PER_DAY - 1:
+                status = day_gate_status(self.root, self.state)
+                if not status.get("ready"):
+                    # 剧情日闸未完成：停在当天最后一 tick，不自动跨日（防软锁）
+                    self._refresh_runtime_views()
+                    self._append_jsonl(
+                        {
+                            "kind": "tick_end",
+                            "tick": self.state.tick,
+                            "tree_hp": self.state.tree.hp,
+                            "tree_state": self.state.tree.state.value,
+                            "day_gate": "incomplete",
+                        }
+                    )
+                    self._flush_writes()
+                    return out
             self.state = advance_tick(self.state)
             self._refresh_runtime_views()
             self._append_jsonl(
@@ -270,6 +287,20 @@ class Session:
     def daily_tick(self, mode: Literal["heuristic", "llm"]) -> list[SimEvent]:
         """与 `step` 等价；预留日后在 tick 前后挂日历/开放事件等钩子。"""
         return self.step(mode=mode)
+
+    def _advance_ticks_guarded(self, steps: int) -> tuple[bool, dict[str, Any] | None]:
+        """推进若干 tick；跨越日界时强制检查剧情日闸，未完成则拒绝跨日。
+
+        修复：daily_tick / compound_sleep / step 自动跨日原先绕过
+        precapture_day_gates，玩家可把主线推进成永久软锁。
+        """
+        for _ in range(int(steps)):
+            if self.state.tick >= TICK_PER_DAY - 1:
+                status = day_gate_status(self.root, self.state)
+                if not status.get("ready"):
+                    return False, self._day_gate_error()
+            self.state = advance_tick(self.state)
+        return True, None
 
     def _resolve_day_transition(self, *, reason: str, trigger_event_id: str | None = None) -> dict[str, Any] | None:
         status = day_gate_status(self.root, self.state)
@@ -510,15 +541,6 @@ class Session:
                 flags[flag_key] = int(flag_value)
                 self.state = self.state.model_copy(update={"flags": flags})
                 action_events.append({"type": "flag_set", "key": flag_key, "value": int(flag_value)})
-            elif kind == "set_day":
-                if day is None:
-                    return fail("missing_day")
-                target_day = max(1, min(999, int(day)))
-                self.state = self.state.model_copy(
-                    update={"day": target_day, "tick": 0, "time_band": "morning"}
-                )
-                self.state = apply_npc_schedules(apply_environment(self.state), self.root)
-                action_events.append({"type": "day_set", "day": target_day, "time_band": self.state.time_band})
             elif kind == "respond_npc_intent":
                 if not intent_id or not response_id:
                     return fail("missing_npc_intent_response")
@@ -603,18 +625,20 @@ class Session:
                 )
             elif kind == "daily_tick":
                 steps = max(1, min(24, int(n or daily_n or 1)))
-                for _ in range(steps):
-                    self.state = advance_tick(self.state)
+                ok_advance, gate_error = self._advance_ticks_guarded(steps)
+                if not ok_advance:
+                    return fail("day_end_gate_incomplete", **gate_error)
                 action_events.append({"type": "time_advanced", "ticks": steps})
             elif kind == "compound_sleep":
                 pl = _player_at_location(self.state.player, Location.home)
+                steps = max(1, min(24, int(daily_n or n or 1)))
+                ok_advance, gate_error = self._advance_ticks_guarded(steps)
+                if not ok_advance:
+                    return fail("day_end_gate_incomplete", **gate_error)
                 player = pl.model_copy(
                     update={"stamina": pl.max_stamina, "hp": pl.max_hp, "mp": pl.max_mp}
                 )
                 self.state = self.state.model_copy(update={"player": player, "scene_id": pl.scene_id})
-                steps = max(1, min(24, int(daily_n or n or 1)))
-                for _ in range(steps):
-                    self.state = advance_tick(self.state)
                 action_events.append({"type": "rested", "location": "home", "ticks": steps})
             elif kind == "use_item":
                 if not item_id:

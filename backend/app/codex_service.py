@@ -18,7 +18,6 @@ from .story_director import load_story_events
 ACTIVITY_CATALOG: tuple[tuple[str, str, str], ...] = (
     ("church_read_sacred_arts", "推理", "书库三步推理"),
     ("home_hearth_cooking", "烹饪", "炉火备餐"),
-    ("south_lake_fishing", "钓鱼", "南湖垂钓"),
     ("village_square_bulletin_board", "公告柱", "村道公告柱"),
     ("west_fields_herb_gather", "采集", "西侧田野采药"),
     ("gigas_chop_rhythm", "训练", "古誓树节奏训练"),
@@ -46,8 +45,10 @@ FRAGMENT_CATALOG: tuple[tuple[str, str, str], ...] = (
 FLAG_LABELS = {
     "prologue_reading_done": "完成书库的第一轮阅读",
     "studied_sacred_arts": "读懂刻印术笔记",
-    "forest_anomaly_seen": "确认森林异常",
-    "month01_drill_done": "完成第一月演练",
+    "forest_anomaly_seen": "确认北门边境异常",
+    "d1_bond": "与爱丽丝、尤吉欧的日常羁绊",
+    "d3_talk_about_index": "三人谈及禁忌目录",
+    "d9_farewell_choice": "告别时的承诺",
     "west_fields.stone_tablet_complete": "集齐三块石碑碎片",
     "bulletin_pass_message_done": "完成公告柱传话",
     "bulletin_deliver_supplies_done": "完成公告柱补给",

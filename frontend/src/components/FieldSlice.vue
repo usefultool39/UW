@@ -86,7 +86,6 @@
         :sim-state="simState"
         :codex="simState?.codex"
         :story-events="storyEvents"
-        :month-plan="monthPlan"
         :recent-memories="recentJournalMemories"
         :npc-profiles="journalProfiles"
       />
@@ -285,7 +284,6 @@ const props = defineProps({
   fetchRegions: { type: Function, required: true },
   fetchWorldMap: { type: Function, required: true },
   fetchSceneActivities: { type: Function, required: true },
-  fetchMonthPlan: { type: Function, required: true },
   refresh: { type: Function, required: true }
 })
 
@@ -298,7 +296,6 @@ const regionsJson = ref('')
 const worldMapRef = ref(null)
 const sceneActivityIndex = ref({})
 const storyEvents = ref([])
-const monthPlan = ref(null)
 const selectedStoryEventId = ref('')
 const selectedNpcId = ref('')
 const openingCinematicDismissed = ref(false)
@@ -635,6 +632,12 @@ const anyModalOpen = computed(() =>
   journalOpen.value
 )
 
+watch(anyModalOpen, (open) => {
+  if (typeof window !== 'undefined') {
+    window.__uwModalOpen = open
+  }
+})
+
 // 新手信息只保留开场与右侧主线卡，避免三个引导层同时争夺注意力。
 const newcomerGuideVisible = computed(() =>
   shouldShowDayOneOpening.value &&
@@ -658,9 +661,6 @@ function buildIntentQuestGuide(intent) {
 }
 
 function buildEventQuestGuide(event) {
-  if (event?.id === 'ch1_d24_expedition_pack') {
-    return '远征准备：去小屋整理远征包。这个选择会决定第二月偏稳妥推进，还是扩大调查范围。'
-  }
   const title = compactGuideText(event?.title || '新的线索', 30)
   const scene = event?.location?.scene_id ? getSceneLabel(event.location.scene_id) : ''
   const placeHint = scene ? `去${scene}` : '靠近金色标记'
@@ -742,20 +742,6 @@ async function refreshStoryEvents() {
       label: '正在同步剧情闸',
       missing: [],
     }
-  }
-  await refreshMonthPlan()
-}
-
-function getActiveMonthPlanId() {
-  return 'month_01'
-}
-
-async function refreshMonthPlan() {
-  try {
-    const res = await props.fetchMonthPlan(getActiveMonthPlanId())
-    monthPlan.value = res?.ok === false ? null : res
-  } catch {
-    monthPlan.value = null
   }
 }
 
@@ -865,7 +851,6 @@ function enrichInteractAction(action) {
 
 function naturalStoryEventLabel(event) {
   const kind = String(event?.kind || '')
-  if (event?.id === 'ch1_d24_expedition_pack') return '整理远征包'
   if (kind === 'clue') return '调查边界记录'
   if (kind === 'training') return '开始巨树训练'
   if (kind === 'anomaly') return '确认森林异常'
@@ -1121,14 +1106,7 @@ async function onHotbarAction(actionId) {
       showToast('尤吉欧已经摆好训练节奏。先完成三次出手，再决定怎么回应他。')
       return
     }
-    const trainingIntent = nearbyNpcIntents.value.find((intent) => intent?.action?.event_id === 'ch1_d1_training_with_eugeo')
-    if (trainingIntent?.action?.event_id) {
-      selectedStoryEventId.value = trainingIntent.action.event_id
-      trainingGameOpen.value = true
-      showToast('尤吉欧向你示意：训练从现在开始。')
-      return
-    }
-    showToast('先走到巨神树伐木场，靠近尤吉欧后再开始训练。')
+    showToast('先走到巨神树旁，靠近尤吉欧后再开始训练。')
   } else if (actionId === 'rest') {
     if (!dayGateStatus.value.ready) {
       const missing = Array.isArray(dayGateStatus.value.missing) ? dayGateStatus.value.missing : []
@@ -1262,7 +1240,6 @@ async function openJournal() {
   } catch {
     // Keep the already-synced codex visible if a background refresh is unavailable.
   }
-  await refreshMonthPlan()
   const agents = Array.isArray(props.simState?.agents) ? props.simState.agents : []
   if (!agents.length) return
   const nextProfiles = { ...journalProfiles.value }
@@ -1355,7 +1332,7 @@ async function onExportSave() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `30town-save-day${props.simState?.day || 1}.json`
+    a.download = `uw-save-day${props.simState?.day || 1}.json`
     document.body.appendChild(a)
     a.click()
     a.remove()
@@ -1571,24 +1548,6 @@ async function doWithBusy(fn) {
     }
   } finally {
     busy.value = false
-  }
-}
-
-function buildDailySummaryResult(res, nextEvents = []) {
-  const events = Array.isArray(res?.events) ? res.events : []
-  const state = res?.state || props.simState || {}
-  const timeLabel = getTimeBandLabel(state.time_band || props.simState?.time_band || '')
-  const activeNames = events
-    .map((event) => event.actor_name || getAgentLabel(event.actor))
-    .filter(Boolean)
-  const actorText = [...new Set(activeNames)].slice(0, 3).join('、') || '村子'
-  return {
-    kind: 'daily_summary',
-    day: state.day,
-    time_band: timeLabel,
-    events,
-    next_events: nextEvents,
-    result_text: `${actorText}在这一刻继续行动。你推进的不只是时间，也是在让 NPC 的体力、饥饿、目标和日常选择继续变化。`
   }
 }
 

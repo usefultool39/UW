@@ -152,6 +152,8 @@ def public_scene_activities(project_root: Path) -> dict[str, Any]:
     for item in raw.get("activities") or []:
         if not isinstance(item, dict):
             continue
+        if item.get("deprecated"):
+            continue
         row = {
             key: item.get(key)
             for key in (

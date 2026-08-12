@@ -89,35 +89,27 @@
         </section>
 
         <section class="journal-column month-column">
-          <h4>{{ monthDisplayTitle(monthPlan) }}</h4>
-          <p v-if="!monthWeeks.length" class="journal-empty">月度路线还在同步。完成当前关键事件后，这里会显示后续目标。</p>
+          <h4>序章三幕</h4>
+          <p v-if="!storyActs.length" class="journal-empty">序章主线还在同步。完成当前关键事件后，这里会显示后续目标。</p>
           <template v-else>
-            <div class="month-current">
-              <span>第 {{ monthCurrent.day || 1 }} 天</span>
-              <strong>{{ monthCurrent.endingLabel }}</strong>
-              <p>{{ monthCurrent.endingNote }}</p>
-            </div>
             <article
-              v-for="week in monthWeeks"
-              :key="week.id"
+              v-for="act in storyActs"
+              :key="act.id"
               class="journal-entry month-plan-entry"
-              :class="`status-${week.status || 'upcoming'}`"
+              :class="`status-${act.status || 'upcoming'}`"
             >
-              <span class="entry-status">{{ week.status_label || statusLabel(week.status) }}</span>
-              <strong>{{ week.title }}</strong>
-              <p>{{ week.summary }}</p>
-              <div class="month-goals">
-                <span v-for="goal in shortGoals(week.goals)" :key="goal">{{ goal }}</span>
-              </div>
+              <span class="entry-status">{{ act.status_label }}</span>
+              <strong>{{ act.title }}</strong>
+              <p>{{ act.summary }}</p>
               <div class="milestone-list">
                 <div
-                  v-for="milestone in week.milestones || []"
+                  v-for="milestone in act.milestones"
                   :key="milestone.id"
                   class="milestone-row"
                 >
-                  <span class="status-dot" :class="`dot-${milestone.status || 'upcoming'}`"></span>
+                  <span class="status-dot" :class="`dot-${milestone.status}`"></span>
                   <span class="milestone-title">{{ milestone.title }}</span>
-                  <small>{{ milestone.day_label }} · {{ milestone.status_label || statusLabel(milestone.status) }}</small>
+                  <small>{{ milestone.day_label }} · {{ milestone.status_label }}</small>
                 </div>
               </div>
             </article>
@@ -240,7 +232,6 @@ const props = defineProps({
   simState: { type: Object, default: null },
   codex: { type: Object, default: null },
   storyEvents: { type: Array, default: () => [] },
-  monthPlan: { type: Object, default: null },
   recentMemories: { type: Array, default: () => [] },
   npcProfiles: { type: Object, default: () => ({}) }
 })
@@ -398,56 +389,64 @@ const commitmentEntries = computed(() => {
   return out.slice(0, 8)
 })
 
-function monthDisplayTitle(plan) {
-  const title = String(plan?.title || '').trim()
-  if (!title) return '月度路线'
-  // Preserve the familiar first-month label used by existing players while
-  // allowing later months to show their authored titles verbatim.
-  return title.startsWith('第一月') ? `第一月路线 · ${title}` : title
+const ACT_DEFS = [
+  {
+    id: 'act_0',
+    title: '第一幕 · 日常',
+    summary: '卢利特村的清晨、巨神树的天职，与禁忌目录的夜晚。',
+    day_label: '第 1 天',
+    events: ['ch1pc_n01_rulid_daily', 'ch1pc_n02_gigas_calling', 'ch1pc_n03_talk_index_end_mountains']
+  },
+  {
+    id: 'act_1',
+    title: '第二幕 · 越界',
+    summary: '出发前往尽头山脉，接触受伤者，爱丽丝跨过界线，三人返村。',
+    day_label: '第 2 天',
+    events: ['ch1pc_n04_travel_to_end_mountains', 'ch1pc_n05_encounter_dark_territory_injured', 'ch1pc_n06_alice_crosses_boundary', 'ch1pc_n07_return_to_rulid']
+  },
+  {
+    id: 'act_2',
+    title: '第三幕 · 宣判与告别',
+    summary: '整合骑士进村宣判，爱丽丝告别，最终被带走。',
+    day_label: '第 3 天',
+    events: ['ch1pc_n08_knights_arrive_village', 'ch1pc_n09_alice_farewell', 'ch1pc_n10_alice_captured']
+  }
+]
+
+function actStatusFor(act, doneIds) {
+  const done = act.events.filter((id) => doneIds.has(id)).length
+  const total = act.events.length
+  if (done >= total) return { status: 'completed', label: '已完成' }
+  if (done > 0) return { status: 'active', label: '推进中' }
+  return { status: 'upcoming', label: '未开始' }
 }
 
-const monthWeeks = computed(() =>
-  Array.isArray(props.monthPlan?.weeks) ? props.monthPlan.weeks : []
-)
-
-const monthCurrent = computed(() => {
-  const current = props.monthPlan?.current || {}
-  const labels = {
-    unresolved: '路线尚未收束',
-    order: '稳守路线',
-    expedition: '远征路线',
-    quiet: '静默路线',
-    formal_hearing: '正式边界听证',
-    guarded_warning: '分层警告',
-    source_pursuit: '三人源头追查',
-    accountable_probe: '密封副本托管',
-    public_network: '公开协作族',
-    frontier_probe: '源头追查族',
-    accountable_intel: '责任情报族',
-    cross: '越界路线',
-    hide: '隐秘路线'
-  }
-  const ending = String(current.ending_path || 'unresolved')
-  return {
-    day: current.day || props.simState?.day || 1,
-    endingLabel: labels[ending] || ending,
-    endingNote: current.ending_note || props.monthPlan?.summary || '继续推进当天事件，月度目标会随状态更新。'
-  }
+const storyActs = computed(() => {
+  const doneIds = new Set(
+    Array.isArray(props.simState?.completed_event_ids)
+      ? props.simState.completed_event_ids
+      : []
+  )
+  return ACT_DEFS.map((act) => {
+    const { status, label } = actStatusFor(act, doneIds)
+    return {
+      ...act,
+      status,
+      status_label: label,
+      milestones: act.events.map((eventId) => {
+        const isDone = doneIds.has(eventId)
+        return {
+          id: eventId,
+          title: eventId.replace('ch1pc_', ''),
+          day_label: act.day_label,
+          status: isDone ? 'completed' : 'upcoming',
+          status_label: isDone ? '已完成' : '未开始'
+        }
+      })
+    }
+  })
 })
 
-function statusLabel(status) {
-  return {
-    completed: '已完成',
-    active: '可推进',
-    upcoming: '未到日期',
-    locked: '待解锁',
-    overdue: '可补做'
-  }[status] || status || '未到日期'
-}
-
-function shortGoals(goals) {
-  return Array.isArray(goals) ? goals.slice(0, 2) : []
-}
 </script>
 
 <style scoped>

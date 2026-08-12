@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UW 完成度修复与剧情收束 · 交付说明</title>
+<style>
+  :root {
+    --bg: #0b1220; --panel: #111a2c; --panel2: #16223a; --ink: #e8ecf4;
+    --muted: #93a0b8; --gold: #c9a227; --green: #4ade80; --red: #f87171;
+    --blue: #5ecfff; --line: #24334d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; line-height: 1.7; padding: 32px 16px; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 28px; }
+  .kicker { color: var(--gold); font-size: 13px; letter-spacing: .2em; }
+  h1 { font-size: 26px; margin: 6px 0 8px; }
+  .sub { color: var(--muted); font-size: 14px; }
+  h2 { font-size: 19px; margin: 34px 0 14px; color: var(--gold); }
+  h3 { font-size: 15px; margin: 20px 0 10px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin: 12px 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 14px 0; }
+  .metric { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .metric .num { font-size: 24px; font-weight: 700; color: var(--green); }
+  .metric .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--gold); font-weight: 600; background: var(--panel2); }
+  .tag { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 20px; margin-right: 6px; vertical-align: 1px; }
+  .t-fatal { background: rgba(248,113,113,.15); color: var(--red); border: 1px solid rgba(248,113,113,.4); }
+  .t-high { background: rgba(245,158,11,.13); color: #fbbf24; border: 1px solid rgba(245,158,11,.4); }
+  .t-mid { background: rgba(94,207,255,.13); color: var(--blue); border: 1px solid rgba(94,207,255,.4); }
+  .t-low { background: rgba(147,160,184,.12); color: var(--muted); border: 1px solid rgba(147,160,184,.35); }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  code { background: #0d1526; border: 1px solid var(--line); border-radius: 5px; padding: 1px 7px; font-size: 13px; color: #a5d8ff; }
+  .muted { color: var(--muted); }
+  .ok { color: var(--green); font-weight: 600; }
+  .warn { color: #fbbf24; font-weight: 600; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">UNDERWORLD · 卢利特村序章</div>
+  <h1>UW 完成度修复与剧情收束 · 交付说明</h1>
+  <div class="sub">版本 0.6.1 · 2026-08-11 · 范围：桌面 ~/Desktop/UW</div>
+</header>
+
+<div class="card">
+  <strong>一句话结论：</strong>主线 N01–N10 原本就能跑通，但存在两个致命软锁（跨日绕过剧情闸、错过时段永久丢事件）和大量旧 Day/月度残留（通关后指引去不存在的"第一月路线"、没有结局画面）。本次修复把主线变成一条干净、防卡死的 3 天 10 节点体验，并清掉全部玩家可见的旧 Day 内容。
+</div>
+
+<div class="grid">
+  <div class="metric"><div class="num">275</div><div class="lbl">后端测试通过</div></div>
+  <div class="metric"><div class="num">45</div><div class="lbl">前端单测通过</div></div>
+  <div class="metric"><div class="num">4/4</div><div class="lbl">Playwright e2e 通过（含主线全流程）</div></div>
+  <div class="metric"><div class="num">✓</div><div class="lbl">生产构建通过</div></div>
+</div>
+
+<h2>一、审计发现的核心问题（三路并行审计）</h2>
+
+<table>
+  <tr><th>级别</th><th>问题</th><th>位置</th></tr>
+  <tr><td><span class="tag t-fatal">致命</span></td><td>日闸可被绕过：daily_tick / compound_sleep / set_day / 自动跨日都不检查剧情闸，玩家可把当天剧情跳过导致主线永久死锁</td><td>session.py:604-617、world.py:355</td></tr>
+  <tr><td><span class="tag t-fatal">致命</span></td><td>时间窗零容错：事件只在其时段出现，错过即永久丢失，无补救路径</td><td>story_director.py:98-101</td></tr>
+  <tr><td><span class="tag t-high">高</span></td><td>通关后无结局画面，任务栏指引"休息到第四天复盘第一月路线"——不存在的路线</td><td>App.vue:237-258、gameContentConfig.js:168</td></tr>
+  <tr><td><span class="tag t-high">高</span></td><td>24 个旧月度活动仍下发到玩家活动目录（全部永久锁定）；北门巡查 flag 无来源永远锁死；图鉴含不可达项（南湖垂钓），完成度永远 &lt;100%</td><td>scene_activities.json、codex_service.py</td></tr>
+  <tr><td><span class="tag t-high">高</span></td><td>旧 Day 内容侵入可见 UI：日志面板"月度路线"列、旧名"古誓树/北境边门"直接渲染、旧伐木目标</td><td>ClueJournalPanel、world_map.json、ChapterGoals</td></tr>
+  <tr><td><span class="tag t-mid">中</span></td><td>弹窗打开时键盘仍可移动角色；音频存储键为占位符 '***'；5 个角色立绘缺失裂图；意图按钮英文标签</td><td>createWorldFieldScene.js:1414、useAudio.js、meta.json</td></tr>
+</table>
+
+<h2>二、修复内容</h2>
+
+<h3>后端 · 稳定性（防软锁）</h3>
+<ul>
+  <li>新增 <code>_advance_ticks_guarded</code>：所有跨日路径（daily_tick、compound_sleep、step 自动跨日）先查剧情闸，未完成当天剧情则拒绝跨日并返回 <code>day_end_gate_incomplete</code>。</li>
+  <li>删除调试残留 <code>set_day</code>（可从任意日期跳到 999，绕过一切闸）。</li>
+  <li>主线事件增加时段容错：当天内错过时段仍可补做（跨天仍受 day_min/day_max 约束）。</li>
+  <li>内容校验器新增对真正生效的 <code>precapture_day_gates</code> 的校验（事件存在性、flag 可产生性、advance_to 合法性）。</li>
+</ul>
+
+<h3>后端 · 内容清理</h3>
+<ul>
+  <li>24 个旧月度活动标记 <code>deprecated</code>，不再下发；北门巡查解锁条件接入主线（N04 前往尽头山脉时写入 <code>forest_anomaly_seen</code>）。</li>
+  <li>图鉴移除当前不可达的南湖垂钓（chapter_03 再开放），完成度可达 100%。</li>
+  <li>意图回应按钮中文文案；角色称谓与地图术语下沉（卢利特村/尤吉欧/巨神树/北门）。</li>
+</ul>
+
+<h3>前端 · 剧情收束</h3>
+<ul>
+  <li>通关 N10 后弹出"序章收束 · 被带走"结局画面（全局渲染，field 模式可见）。</li>
+  <li>任务引导重写为 N01–N10 顺序指引，删除全部"第一月/第二月/Day 4-30"分支。</li>
+  <li>日志面板"月度路线"列改为"序章三幕"进度；总览页目标改为三幕主线目标。</li>
+  <li>重写角色结局与场景文案（删除旧名凛斗/尤里/艾琳、伐木结局、远征包等）。</li>
+  <li>修复弹窗键盘穿透（Phaser 感知 <code>window.__uwModalOpen</code>）；音频键名修复；立绘占位补齐；存档名改 uw-save。</li>
+</ul>
+
+<h2>三、验证结果</h2>
+
+<table>
+  <tr><th>检查</th><th>结果</th><th>说明</th></tr>
+  <tr><td>后端 pytest</td><td class="ok">275 passed</td><td>含新增/更新的日闸拒绝、deprecated 过滤、图鉴可达性断言</td></tr>
+  <tr><td>前端单测</td><td class="ok">45 passed</td><td>原有断言保持通过</td></tr>
+  <tr><td>Playwright e2e</td><td class="ok">4 passed</td><td>N01–N10 全流程、触控首互动、桌面/移动 UI</td></tr>
+  <tr><td>生产构建</td><td class="ok">通过</td><td>Phaser 主 chunk 约 1.48 MB（与改动前一致）</td></tr>
+  <tr><td>内容校验</td><td class="ok">0 errors</td><td>含新增的 precapture 闸校验</td></tr>
+</table>
+
+<h2>四、如何运行</h2>
+
+<div class="card">
+  <p><strong>macOS：</strong><code>./启动游戏.command</code>（或分别启动 backend 与 frontend）</p>
+  <p><strong>Windows：</strong><code>.\启动全部项目.bat</code></p>
+  <p class="muted" style="margin-top:8px">开发质量检查：<code>./scripts/quality.sh</code></p>
+</div>
+
+<h2>五、遗留事项（非代码范围）</h2>
+<ul>
+  <li>正式卢利特村地图、统一角色动画、抓捕终点美术仍需素材任务单 T01–T04 推进（美术类，不在本次代码修复范围）。</li>
+  <li>三名陌生玩家盲测（0/3）与 IP 权利评估未完成，属于发布前门禁。</li>
+  <li>前端单测仍以源码正则为主（历史遗留），本次未重构测试框架；e2e 已覆盖主线全流程。</li>
+</ul>
+
+<footer>
+  修改全部落在 ~/Desktop/UW 工作树（未提交 git）；git 分支 codex/docs-one-version。回滚方式：git checkout -- 对应文件 或 git stash。
+</footer>
+
+</div>
+</body>
+</html>

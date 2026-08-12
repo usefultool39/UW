@@ -13,6 +13,32 @@ def _done(state: WorldState, event_id: str) -> bool:
     return event_id in (state.completed_event_ids or [])
 
 
+_RESPONSE_LABELS: dict[str, str] = {
+    "warm_bond": "温和回应，加深羁绊",
+    "grasp_alice_arm": "握住爱丽丝的手臂",
+    "speak_one_sentence": "说一句简短的话",
+    "stay_close": "守在爱丽丝身边",
+    "back_her_up": "支持爱丽丝的决定",
+    "stay_silent": "沉默以对",
+    "offer_to_carry": "主动接过重物",
+    "share_water": "把水壶递过去",
+    "walk_beside": "并肩前行",
+    "step_forward": "上前一步",
+    "keep_record": "保持记录者的本分",
+    "tell_the_truth": "如实说出所见",
+    "hold_back": "拉住爱丽丝",
+    "trust_eugeo": "相信尤吉欧的判断",
+    "wait_at_gate": "在北门等候",
+    "follow_quietly": "安静跟上",
+    "promise_return": "承诺一定会回来",
+    "write_it_down": "把话写进记录",
+}
+
+
+def _response_label(response_id: str) -> str:
+    return _RESPONSE_LABELS.get(response_id, response_id.replace("_", " "))
+
+
 def _intent(
     *,
     state: WorldState,
@@ -44,7 +70,7 @@ def _intent(
         response_options=[
             {
                 "id": response_id,
-                "label": response_id.replace("_", " "),
+                "label": _response_label(response_id),
                 "hint": "",
                 "once": True,
                 "effects": {},

@@ -61,13 +61,12 @@ def test_codex_completion_comes_from_state_flags_inventory_events_and_memory(tmp
     mainline = next(item for item in body['mainline'] if item['id'] == 'ch1pc_n01_rulid_daily')
     fragment = next(item for item in body['fragments'] if item['id'].endswith('_1'))
     reading = next(item for item in body['activities'] if item['id'] == 'church_read_sacred_arts')
-    fishing = next(item for item in body['activities'] if item['id'] == 'south_lake_fishing')
     alice = next(item for item in body['npcs'] if item['npc_id'] == 'alice')
 
     assert mainline['completed'] is True
     assert fragment['collected'] is True
     assert reading['completed'] is True
-    assert fishing['completed'] is True
-    assert fishing['choices'] == ['收线：雾银鱼（稀有）']
+    # south_lake_fishing 属 chapter_03 内容，当前切片图鉴不含它（避免不可达进度）
+    assert not any(item['id'] == 'south_lake_fishing' for item in body['activities'])
     assert alice['memories'][0]['summary'] == '玩家把共同记录带回书库'
     assert body['source'] == 'server_authoritative'

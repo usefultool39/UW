@@ -42,16 +42,11 @@ def test_world_scene_activities_json():
     patrol = next(item for item in body["activities"] if item["id"] == "north_gate_boundary_patrol")
     assert patrol["preview"]["variable_resource_cost"] is True
     assert "effects" not in reading
-    third_month = next(
-        item for item in body["activities"]
-        if item["id"] == "village_third_month_support_allocation"
-    )
-    sacred_signal = next(
-        item for item in third_month["choices"]
-        if item["id"] == "commit_sacred_signal"
-    )
-    assert sacred_signal["preview"]["resource_costs"] == {"mp": 10, "stamina": 3}
-    assert "effects" not in sacred_signal
+    # 旧月度路线的废弃活动不再下发（deprecated），防止玩家 UI 出现死按钮
+    deprecated_ids = [item["id"] for item in body["activities"]]
+    assert "village_third_month_support_allocation" not in deprecated_ids
+    assert "church_month02_briefing" not in deprecated_ids
+    assert "home_fourth_month_recovery_plan" not in deprecated_ids
 
 
 def test_world_map_by_id_default():
@@ -134,16 +129,16 @@ def test_story_advance_ok_after_set_flag():
     assert body["state"]["story_node_id"] == "mq01_tree_arc"
 
 
-def test_player_action_set_day_refreshes_runtime_state():
+def test_player_action_set_day_is_removed():
+    # set_day 是旧 Day 体系的调试残留，跨日可绕过剧情日闸导致软锁，已从 PLAYER_ACTIONS 移除。
     client = TestClient(app)
     client.post("/api/reset")
     r = client.post("/api/player/action", json={"kind": "set_day", "day": 46})
     assert r.status_code == 200
     body = r.json()
-    assert body["ok"] is True
-    assert body["state"]["day"] == 46
-    assert body["state"]["time_band"] == "morning"
-    assert body["events"][0]["type"] == "day_set"
+    assert body["ok"] is False
+    assert body["error"] == "unknown_action_kind"
+    assert body["state"]["day"] == 1
 
 
 def test_player_move_scene_locked():

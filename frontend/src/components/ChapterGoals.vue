@@ -1,21 +1,21 @@
 <template>
   <div class="card chapter-goals">
-    <div class="card-title">第一章目标</div>
+    <div class="card-title">序章目标</div>
     <ul class="goal-list">
-      <li :class="{ done: treeWeakened }">
-        <span class="mark">{{ treeWeakened ? '✓' : '○' }}</span>
-        削弱巨树：HP 低于 50%（{{ treeHp }} / {{ treeMax }}）
+      <li :class="{ done: act0Done }">
+        <span class="mark">{{ act0Done ? '✓' : '○' }}</span>
+        第一幕 · 日常：村庄会合、巨神树天职、禁忌目录之夜
       </li>
-      <li :class="{ done: flags.c1Done }">
-        <span class="mark">{{ flags.c1Done ? '✓' : '○' }}</span>
-        在伐木节奏点做出抉择（约 Tick 10–29 触发）
+      <li :class="{ done: act1Done }">
+        <span class="mark">{{ act1Done ? '✓' : '○' }}</span>
+        第二幕 · 越界：出发尽头山脉、受伤者、爱丽丝越界、返村
       </li>
-      <li :class="{ done: flags.c2Done }">
-        <span class="mark">{{ flags.c2Done ? '✓' : '○' }}</span>
-        在食桌时段完成膳食抉择（Tick ≥ 30）
+      <li :class="{ done: act2Done }">
+        <span class="mark">{{ act2Done ? '✓' : '○' }}</span>
+        第三幕 · 宣判与告别：骑士进村、告别、被带走
       </li>
     </ul>
-    <p class="goal-hint">击倒巨树后将依羁绊倾向展示第一章收束。</p>
+    <p class="goal-hint">主线以爱丽丝被带走收束；过程中的选择会写入关系、记忆与回响。</p>
   </div>
 </template>
 
@@ -27,13 +27,19 @@ const props = defineProps({
   flags: { type: Object, required: true }
 })
 
-const treeHp = computed(() => props.state?.tree?.hp ?? 0)
-const treeMax = computed(() => props.state?.tree?.hp_max ?? 1)
+const doneIds = computed(
+  () => new Set(Array.isArray(props.state?.completed_event_ids) ? props.state.completed_event_ids : [])
+)
 
-const treeWeakened = computed(() => {
-  const max = treeMax.value || 1
-  return treeHp.value <= max * 0.5
-})
+const ACTS = [
+  ['ch1pc_n01_rulid_daily', 'ch1pc_n02_gigas_calling', 'ch1pc_n03_talk_index_end_mountains'],
+  ['ch1pc_n04_travel_to_end_mountains', 'ch1pc_n05_encounter_dark_territory_injured', 'ch1pc_n06_alice_crosses_boundary', 'ch1pc_n07_return_to_rulid'],
+  ['ch1pc_n08_knights_arrive_village', 'ch1pc_n09_alice_farewell', 'ch1pc_n10_alice_captured']
+]
+
+const act0Done = computed(() => ACTS[0].every((id) => doneIds.value.has(id)))
+const act1Done = computed(() => ACTS[1].every((id) => doneIds.value.has(id)))
+const act2Done = computed(() => ACTS[2].every((id) => doneIds.value.has(id)))
 </script>
 
 <style scoped>

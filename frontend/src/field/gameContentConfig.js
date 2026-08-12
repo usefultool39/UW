@@ -102,34 +102,33 @@ export function shouldLoadAgentSpriteAsset(cfg) {
 export const TIME_BAND_LABELS = { morning: '清晨', afternoon: '白昼', evening: '傍晚', night: '深夜' }
 
 export const STORY_EVENT_HINTS = {
-  ch1_d1_reading_clue: { title: '书库里的边界记录', clue: '旧记录写到北方边界会突然失去鸟声，像规则被按住。', scene_id: 'church_library', day: 1 },
-  ch1_d1_training_with_eugeo: { title: '巨神树旁的训练', clue: '尤吉欧把训练看成确认世界仍按规则运转的方式。', scene_id: 'gigas_clearing', day: 1 },
-  ch1_d2_forest_anomaly: { title: '森林忽然安静', clue: '巨神树伐木场附近的风声断了一瞬。', scene_id: 'gigas_clearing', day: 2 },
-  ch1_d2_npc_disagreement: { title: '晚餐桌边的分歧', clue: '异常变成了餐桌边没说出口的话。', scene_id: 'home_hearth', day: 2 },
-  ch1_d3_boundary_choice: { title: '第三天：边界线前', clue: '你们终于站到那条看不见的边界前。', scene_id: 'north_gate', day: 3 },
-  ch1_d4_after_boundary_debrief: { title: '第四天：书库复盘', clue: '边界事件被写成会影响后续一个月的记录。', scene_id: 'church_library', day: 4 },
-  ch1_d7_first_boundary_drill: { title: '北门巡查演练', clue: '你们把安全距离、信号和撤退路线变成三人流程。', scene_id: 'north_gate', day: 7 },
-  ch1_d12_village_trust: { title: '把巡查变成村务', clue: '北门巡查开始影响村里对你们的信任。', scene_id: 'village_square', day: 12 },
-  ch1_d18_silent_line_rehearsal: { title: '静默线演练', clue: '你们用记录、刻印和同伴分工复核静默线。', scene_id: 'north_gate', day: 18 },
-  ch1_d24_expedition_pack: { title: '第二十四天：远征包', clue: '静默线演练结束，第一次正式远征已经近在眼前。小屋里的补给选择会决定第二月是稳妥推进，还是深入调查。', scene_id: 'home_hearth', day: 24 },
-  ch1_d30_first_month_gate: { title: '北门前夜', clue: '第一月的结尾会把第二月路线定下来。', scene_id: 'north_gate', day: 30 }
+  ch1pc_n01_rulid_daily: { title: '卢利特村的清晨', clue: '雨后的村子还安静着。去北门附近与爱丽丝、尤吉欧会合，开始今天的三人之约。', scene_id: 'north_gate', day: 1 },
+  ch1pc_n02_gigas_calling: { title: '巨神树的天职', clue: '尤吉欧说起巨神树的天职。砍树之外，他真正想问的是：世界是否只允许我们这样活着。', scene_id: 'gigas_clearing', day: 1 },
+  ch1pc_n03_talk_index_end_mountains: { title: '禁忌目录与尽头山脉', clue: '夜里三人说起禁忌目录。目录禁止越界，可尽头山脉另一侧的事，已经让爱丽丝放不下心。', scene_id: 'home_hearth', day: 1 },
+  ch1pc_n04_travel_to_end_mountains: { title: '前往尽头山脉', clue: '第二天清晨，从北门出发前往尽头山脉洞窟。出发前决定带走什么——食物、工具，还是记录。', scene_id: 'north_gate', day: 2 },
+  ch1pc_n05_encounter_dark_territory_injured: { title: '暗黑界一侧的受伤者', clue: '洞窟外躺着一名受伤者。爱丽丝想救人，而规则说：跨过那条线，就是触犯禁忌。', scene_id: 'north_boundary', day: 2 },
+  ch1pc_n06_alice_crosses_boundary: { title: '越界', clue: '爱丽丝跨过了界线。桐人的反应、尤吉欧的沉默，都会写进三个人此后的记忆。', scene_id: 'north_boundary', day: 2 },
+  ch1pc_n07_return_to_rulid: { title: '返村', clue: '三人带着无法抹去的秘密回到卢利特村。夜里的村子灯火如常，但有些东西已经变了。', scene_id: 'village_square', day: 2 },
+  ch1pc_n08_knights_arrive_village: { title: '整合骑士进村', clue: '第三天清晨，整合骑士进村宣判。广场上围满村民，爱丽丝站在你身边。', scene_id: 'village_square', day: 3 },
+  ch1pc_n09_alice_farewell: { title: '告别', clue: '宣判之后，爱丽丝与你们告别。她问的不是能不能留下，而是你会不会记得。', scene_id: 'home_hearth', day: 3 },
+  ch1pc_n10_alice_captured: { title: '被带走', clue: '整合骑士带走了爱丽丝。卢利特村的清晨还在，只是少了一个人。', scene_id: 'village_square', day: 3 }
 }
 
 export const FLAG_CLUE_HINTS = {
-  clue_boundary_record: { title: '北境异常记录', body: '你读到了北方边界的异常记录：鸟声会突然消失，安静得不自然。', meta: '来自书库调查' },
-  alice_warned_boundary: { title: '爱丽丝知道了边界记录', body: '你把书页内容告诉了爱丽丝，她开始担心北边今天太安静。', meta: '爱丽丝会记住' },
-  kept_boundary_note: { title: '暂时隐瞒的书页线索', body: '你把边界记录先记在心里，决定观察村子和森林的变化。', meta: '关系里可能留下暗线' },
-  trained_with_eugeo: { title: '巨神树训练完成', body: '你在巨神树旁完成了第一天训练，尤吉欧会根据你的做法重新看你。', meta: '来自巨神树伐木场' },
-  eugeo_heard_boundary_question: { title: '训练时追问边界', body: '你把巨神树训练和北方异常连了起来，尤吉欧开始认真看待这件事。', meta: '尤吉欧会记住' },
-  forest_anomaly_seen: { title: '森林异常被确认', body: '你们看见巨神树伐木场附近的风声突然断掉，异常不再只是书页传闻。', meta: 'Day 2 线索' },
-  promise_investigate_with_eugeo: { title: '继续调查的约定', body: '你答应和尤吉欧继续确认北方边界的异常。', meta: '承诺' },
-  boundary_risk_taken: { title: '独自靠近异常', body: '你曾独自往异常方向多走了几步，这会让同伴担心。', meta: '紧张点' },
-  month01_debrief_done: { title: '第一月复盘完成', body: '你们把边界事件整理成后续一个月可以执行的路线。', meta: 'Day 4-6' },
-  month01_drill_done: { title: '北门巡查流程', body: '北门安全距离、信号和撤退路线已经被三人演练过。', meta: 'Day 7-10' },
-  month01_village_trust: { title: '村内信任推进', body: '北门巡查不再只是三人的秘密，村子开始被卷入后续准备。', meta: 'Day 12-16' },
-  month01_silent_line_rehearsed: { title: '静默线演练完成', body: '你们用记录、刻印和同伴复核确认了静默线仍在变化。', meta: 'Day 18-22' },
-  month01_expedition_ready: { title: '远征包备好', body: '第一次正式边境行动需要的补给和退路已经准备好。', meta: 'Day 24-27' },
-  month01_gate_resolved: { title: '第一月路线收束', body: '北门前夜的选择已经决定第二月会从哪条路线展开。', meta: 'Day 28-30' }
+  d1_bond: { title: '三人日常', body: '第一天清晨的会合，让爱丽丝、尤吉欧与桐人的羁绊有了起点。', meta: 'Day 1 线索' },
+  d2_calling_pace: { title: '巨神树的天职', body: '尤吉欧谈起天职时的语气，让桐人第一次认真去想规则之外的事。', meta: 'Day 1 线索' },
+  d3_talk_about_index: { title: '禁忌目录的夜晚', body: '三人夜里谈起禁忌目录与尽头山脉。越界的念头，从这里开始发芽。', meta: 'Day 1 线索' },
+  d4_pack_food: { title: '出发前的准备', body: '出发前带上的食物与记录，决定了三个人能走多远、记得多清。', meta: 'Day 2 线索' },
+  d4_pack_tool: { title: '出发前的工具', body: '麻绳与备用工具被系紧在背包外侧。准备充分，不等于可以越过规则。', meta: 'Day 2 线索' },
+  d4_pack_record: { title: '记录本放在最上层', body: '记录本放在背包最上层。没人知道它会写下什么，但三个人都同意不凭记忆改写事实。', meta: 'Day 2 线索' },
+  d5_approach: { title: '受伤者面前的选择', body: '暗黑界一侧的受伤者面前，你们选择了如何靠近。这个选择写进了爱丽丝的救人之心。', meta: 'Day 2 线索' },
+  d6_alice_crossed_instant: { title: '越界的一瞬', body: '爱丽丝跨过界线的那一瞬，桐人的反应被永远记住了。', meta: 'Day 2 线索' },
+  d7_return_disclosure: { title: '返村后的坦白', body: '回到卢利特村后，你们选择如何面对自己做过的事。', meta: 'Day 2 线索' },
+  d8_knight_arrival_posture: { title: '骑士面前的姿态', body: '整合骑士进村宣判时，桐人选择站在爱丽丝身边的方式。', meta: 'Day 3 线索' },
+  d9_farewell_choice: { title: '告别时的承诺', body: '告别时说的话，会成为爱丽丝被带走后你们各自记住的东西。', meta: 'Day 3 线索' },
+  final_log: { title: '序章终章', body: '爱丽丝被整合骑士带走。卢利特村的序章到此收束。', meta: '终章' },
+  forest_anomaly_seen: { title: '北门边境异常', body: '你们在北门外确认了边境另一侧的异常。这不是传闻，是亲眼所见。', meta: 'Day 2 线索' },
+  precapture_mode: { title: '序章主线', body: '故事进入卢利特村序章主线：日常、越界、宣判与告别。', meta: '主线' }
 }
 
 export const LANDMARK_ART_CONFIGS = [
@@ -157,38 +156,27 @@ export function getQuestGuide(simState) {
   const ending = simState.chapter_ending_id
   const flags = simState.flags || {}
   const sceneId = simState.player?.scene_id || simState.scene_id || ''
-  const day = Number(simState.day || 1)
   const sceneHint = sceneId ? `你现在在${getSceneLabel(sceneId)}。` : ''
-  if (
-    Number(flags.month02_anomaly_convergence_done || 0) > 0 ||
-    Number(flags.month02_anomaly_source_documented || 0) > 0
-  ) {
-    return '第二月后段：三条路线已经指向同一个北门外源头。先回北门复核撤退口令与安全边距，为第二月末选择做准备。'
+
+  if (ending === 'alice_captured') {
+    return '序章的故事已经收束：爱丽丝被整合骑士带走了。你可以在村子里走走，或打开菜单查看记忆图鉴与这段日子的记录。'
   }
-  if (ending && !flags.month01_debrief_done) return '第一章已经收束。休息到第四天后，在书库把边界事件复盘成第一月路线。'
-  if (flags.month01_debrief_done && !flags.month01_drill_done) return '第一月推进中：休息到第七天后去北门，把安全距离和撤退信号演练成流程。'
-  if (flags.month01_drill_done && !flags.month01_village_trust) return '第一月推进中：第十二天起到村广场处理巡查公开度和补给问题。'
-  if (flags.month01_village_trust && !flags.month01_silent_line_rehearsed) return '第一月推进中：第十八天起回到北门，复核静默线和同伴分工。'
-  if (flags.month01_silent_line_rehearsed && !flags.month01_expedition_ready) return '远征准备：静默线演练已经结束。第二十四天起回小屋整理远征包，先确认同伴担心，再决定第二月走稳妥路线还是深入调查。'
-  if (flags.month01_expedition_ready && !flags.month01_gate_resolved) return '第一月末：第二十八天后去北门前夜。先回应同伴的最后复核，再把第二月路线定下来。'
-  if (flags.month01_gate_resolved) {
-    if (flags.month01_route_order) return '第一月已经收束：第二月从稳守北门和村务协同展开。先确认巡查公开度、补给线和同伴分工。'
-    if (flags.month01_route_expedition) return '第一月已经收束：第二月从边境远征展开。先确认远征包、撤退路线和静默线复核。'
-    if (flags.month01_route_quiet) return '第一月已经收束：第二月从静默观察展开。先整理记录、标注异常频率，再决定是否越过北门。'
-    return '第一月已经收束：第二月边境远征入口已经埋好。'
-  }
-  const active = simState.active_event_ids || []
-  if (active.length) return `${sceneHint}村子里有新的抉择在等你：靠近金色标记，或先回应附近同伴的主动邀约。`.trim()
-  const intents = Array.isArray(simState.npc_intents) ? simState.npc_intents : []
-  if (intents.length) {
-    const intent = intents[0]
-    return `${sceneHint}${getAgentLabel(intent.npc_id)}正在等你的回应：${intent.title}。走近同伴，先把这一步说清楚。`.trim()
-  }
-  const node = simState.story_node_id || ''
-  const doneRead = flags.prologue_reading_done === 1
-  if (node === 'mq00_tutorial' && !doneRead) return '细雨刚停。先去村西书库看看旧记录，或沿主路去巨神树伐木场找尤吉欧。'
-  if (node === 'mq00_tutorial' && doneRead) return '书页里的边界记录让人不安。把这件事告诉谁，会改变今天的气氛。'
-  if (node === 'mq01_tree_arc' || String(node).startsWith('mq01')) return '到巨神树旁找尤吉欧。训练只是表面，真正的问题是北边为什么突然安静下来。'
-  if (day <= 3) return `${sceneHint}沿主路在书库、巨神树和家中之间走一圈；若没有新线索，就休息推进到下一个时段。`.trim()
-  return `${sceneHint}查看日志里的第一月路线，去北门、村广场或小屋寻找下一处金色标记；没有新事时先休息推进时间。`.trim()
+  if (ending) return '这一章已经结束。你仍可以在村子里走动，但故事不会再往前推进。'
+
+  const done = new Set(simState.completed_event_ids || [])
+  const has = (id) => done.has(id) || Number(flags[id.replace('ch1pc_', '')] || 0) > 0
+
+  if (!has('ch1pc_n01_rulid_daily')) return `${sceneHint}去北门附近找爱丽丝和尤吉欧会合——新的一天从三人的约定开始。`.trim()
+  if (!has('ch1pc_n02_gigas_calling')) return `${sceneHint}跟尤吉欧一起去巨神树。他今天想谈的不是砍树，而是天职。`.trim()
+  if (!has('ch1pc_n03_talk_index_end_mountains')) return `${sceneHint}入夜后回家里炉火边，三人会说起禁忌目录与尽头山脉。`.trim()
+  if (!has('ch1pc_n04_travel_to_end_mountains')) return `${sceneHint}第二天清晨，去北门准备出发。决定出发前带走什么。`.trim()
+  if (!has('ch1pc_n05_encounter_dark_territory_injured')) return `${sceneHint}沿北门外侧前进，洞窟附近有一名受伤者。`.trim()
+  if (!has('ch1pc_n06_alice_crosses_boundary')) return `${sceneHint}爱丽丝走向了界线。跟着她，还是拉住她——这一瞬很重要。`.trim()
+  if (!has('ch1pc_n07_return_to_rulid')) return `${sceneHint}带着无法抹去的秘密，三人踏上返村的路。`.trim()
+  if (!has('ch1pc_n08_knights_arrive_village')) return `${sceneHint}第三天清晨，整合骑士进村。去村道广场，站在爱丽丝身边。`.trim()
+  if (!has('ch1pc_n09_alice_farewell')) return `${sceneHint}宣判之后，爱丽丝在等你。把该说的话说出口。`.trim()
+  if (!has('ch1pc_n10_alice_captured')) return `${sceneHint}整合骑士要带爱丽丝走了。去广场，见证这个清晨。`.trim()
+
+  return `${sceneHint}序章的故事已经收束。打开菜单可以查看记忆图鉴；也可以继续在村子里走一走。`.trim()
 }
+

@@ -472,6 +472,39 @@ def _collect_agents(project_root: Path, errors: list[Issue]) -> set[str]:
     return set(load_agent_profiles(project_root).keys())
 
 
+def _validate_gate_shape(
+    gate: Any,
+    gate_path: str,
+    raw_day: Any,
+    nodes: dict[str, Any],
+    errors: list[Issue],
+) -> None:
+    day = _as_int(raw_day)
+    if day is None or day < 1:
+        _add_issue(errors, code="invalid_day_gate", path=gate_path, message="Day gate key must be a positive integer.")
+    if not isinstance(gate, dict):
+        _add_issue(errors, code="invalid_shape", path=gate_path, message="Expected object.")
+        return
+    target = _as_int(gate.get("advance_to"))
+    if target is not None and target <= (day or 0):
+        _add_issue(errors, code="invalid_day_transition", path=f"{gate_path}.advance_to", message="advance_to must be greater than the source day.")
+    next_node = gate.get("next_story_node_id")
+    if next_node and str(next_node) not in {str(key) for key in nodes}:
+        _add_issue(errors, code="unknown_story_node", path=f"{gate_path}.next_story_node_id", message=f"Unknown story node '{next_node}'.")
+    required_flags = gate.get("required_flags")
+    _validate_int_map(required_flags, f"{gate_path}.required_flags", errors)
+    required_events = gate.get("required_events")
+    if required_events is not None and not isinstance(required_events, list):
+        _add_issue(errors, code="invalid_required_events", path=f"{gate_path}.required_events", message="Expected list.")
+    any_flags = gate.get("required_any_flags")
+    if any_flags is not None:
+        if not isinstance(any_flags, list):
+            _add_issue(errors, code="invalid_shape", path=f"{gate_path}.required_any_flags", message="Expected list of objects.")
+        else:
+            for idx, group in enumerate(any_flags):
+                _validate_int_map(group, f"{gate_path}.required_any_flags[{idx}]", errors)
+
+
 def _collect_story_nodes(project_root: Path, errors: list[Issue]) -> set[str]:
     path = project_root / "data" / "story" / "main_nodes.json"
     raw = _load_json_file(path, errors)
@@ -489,30 +522,15 @@ def _collect_story_nodes(project_root: Path, errors: list[Issue]) -> set[str]:
         else:
             for raw_day, gate in gates.items():
                 gate_path = f"data/story/main_nodes.json.day_gates.{raw_day}"
-                day = _as_int(raw_day)
-                if day is None or day < 1:
-                    _add_issue(errors, code="invalid_day_gate", path=gate_path, message="Day gate key must be a positive integer.")
-                if not isinstance(gate, dict):
-                    _add_issue(errors, code="invalid_shape", path=gate_path, message="Expected object.")
-                    continue
-                target = _as_int(gate.get("advance_to"))
-                if target is not None and target <= (day or 0):
-                    _add_issue(errors, code="invalid_day_transition", path=f"{gate_path}.advance_to", message="advance_to must be greater than the source day.")
-                next_node = gate.get("next_story_node_id")
-                if next_node and str(next_node) not in {str(key) for key in nodes}:
-                    _add_issue(errors, code="unknown_story_node", path=f"{gate_path}.next_story_node_id", message=f"Unknown story node '{next_node}'.")
-                required_flags = gate.get("required_flags")
-                _validate_int_map(required_flags, f"{gate_path}.required_flags", errors)
-                required_events = gate.get("required_events")
-                if required_events is not None and not isinstance(required_events, list):
-                    _add_issue(errors, code="invalid_required_events", path=f"{gate_path}.required_events", message="Expected list.")
-                any_flags = gate.get("required_any_flags")
-                if any_flags is not None:
-                    if not isinstance(any_flags, list):
-                        _add_issue(errors, code="invalid_shape", path=f"{gate_path}.required_any_flags", message="Expected list of objects.")
-                    else:
-                        for idx, group in enumerate(any_flags):
-                            _validate_int_map(group, f"{gate_path}.required_any_flags[{idx}]", errors)
+                _validate_gate_shape(gate, gate_path, raw_day, nodes, errors)
+    precapture_gates = raw.get("precapture_day_gates") if isinstance(raw, dict) else None
+    if precapture_gates is not None:
+        if not isinstance(precapture_gates, dict):
+            _add_issue(errors, code="invalid_shape", path="data/story/main_nodes.json.precapture_day_gates", message="Expected object.")
+        else:
+            for raw_day, gate in precapture_gates.items():
+                gate_path = f"data/story/main_nodes.json.precapture_day_gates.{raw_day}"
+                _validate_gate_shape(gate, gate_path, raw_day, nodes, errors)
     return {str(key) for key in nodes}
 
 
@@ -1223,13 +1241,20 @@ def _validate_day_gate_producers(
     path = project_root / "data" / "story" / "main_nodes.json"
     raw = _load_json_file(path, errors)
     gates = raw.get("day_gates") if isinstance(raw, dict) else {}
+    precapture_gates = raw.get("precapture_day_gates") if isinstance(raw, dict) else {}
     if not isinstance(gates, dict):
-        return
+        gates = {}
+    if not isinstance(precapture_gates, dict):
+        precapture_gates = {}
     written_flags = _collect_written_flags(project_root)
-    for raw_day, gate in gates.items():
+    for raw_day, gate in {**gates, **precapture_gates}.items():
         if not isinstance(gate, dict):
             continue
-        gate_path = f"data/story/main_nodes.json.day_gates.{raw_day}"
+        gate_path = (
+            f"data/story/main_nodes.json.precapture_day_gates.{raw_day}"
+            if raw_day in precapture_gates
+            else f"data/story/main_nodes.json.day_gates.{raw_day}"
+        )
         for key in (gate.get("required_flags") or {}):
             if str(key) not in written_flags:
                 _add_issue(

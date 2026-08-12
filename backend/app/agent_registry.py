@@ -23,14 +23,14 @@ DEFAULT_AGENT_PROFILES: dict[str, AgentProfile] = {
     "alice": AgentProfile(
         id="alice",
         display="爱丽丝",
-        role="露茵村 · 家务与照料",
+        role="卢利特村 · 家务与照料",
         behavior_role="logistics",
         initial_location=Location.home,
     ),
     "eugeo": AgentProfile(
         id="eugeo",
-        display="悠吉欧",
-        role="露茵村 · 古誓树清场与节奏",
+        display="尤吉欧",
+        role="卢利特村 · 巨神树天职与节奏",
         behavior_role="field",
         initial_location=Location.at_tree,
     ),

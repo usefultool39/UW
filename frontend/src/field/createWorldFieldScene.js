@@ -1413,6 +1413,7 @@ export function createWorldFieldSceneClass(Phaser, deps) {
       }
       this.input.keyboard?.on('keydown', (event) => {
         if (event.__uwHandled) return
+        if (typeof window !== 'undefined' && window.__uwModalOpen) return
         const tag = event.target?.tagName?.toLowerCase?.()
         if (tag === 'input' || tag === 'textarea' || tag === 'select') return
         const key = event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight'
