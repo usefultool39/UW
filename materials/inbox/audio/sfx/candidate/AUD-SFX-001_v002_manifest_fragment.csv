@@ -1,0 +1,11 @@
+request_id,version,stem,format,size_bytes,sha256,path,status,sample_rate_hz,bit_depth,channels,duration_sec,peak_dbfs
+AUD-SFX-001,v002,confirm,wav,32502,1661D6D429EF69CF6B562099341F2E11E2BCF38E2AFCD6FBB3556D340A4510EB,materials/inbox/audio/sfx/candidate/AUD-SFX-001_confirm_v002.wav,sample_candidate,48000,24,1,0.225,-1.0
+AUD-SFX-001,v002,confirm,ogg,4934,7E89BF0CC31083D6EBEB8B3DC13B8E8D98E3C0243D02933E3A54955FE6BB6478,materials/inbox/audio/sfx/candidate/AUD-SFX-001_confirm_v002.ogg,sample_candidate,48000,,,,,
+AUD-SFX-001,v002,cancel,wav,29622,95A240DF879B13F1253092FC9562A6AB46B0C5EB641CD820B4DED29376D59AAD,materials/inbox/audio/sfx/candidate/AUD-SFX-001_cancel_v002.wav,sample_candidate,48000,24,1,0.205,-1.0
+AUD-SFX-001,v002,cancel,ogg,4803,CD518A44318D83496B932375440641DAD72619CACB23050A88EA95580E0BA473,materials/inbox/audio/sfx/candidate/AUD-SFX-001_cancel_v002.ogg,sample_candidate,48000,,,,,
+AUD-SFX-001,v002,fail,wav,36102,79A3441289781347BD1965A13BB6A17EAA142B1EAD2E20B8CB0DC79659877B1B,materials/inbox/audio/sfx/candidate/AUD-SFX-001_fail_v002.wav,sample_candidate,48000,24,1,0.250,-1.0
+AUD-SFX-001,v002,fail,ogg,5100,F6B277D784FF75D732F5841DEE0EDD616ECA02D4DCABDE238F22E344C4C6224D,materials/inbox/audio/sfx/candidate/AUD-SFX-001_fail_v002.ogg,sample_candidate,48000,,,,,
+AUD-SFX-001,v002,clue,wav,73542,651ADD1E6249F0DD9DF8F3CD7CCEA8BD4AE738ABA77F939200FB508328807174,materials/inbox/audio/sfx/candidate/AUD-SFX-001_clue_v002.wav,sample_candidate,48000,24,1,0.510,-18.6
+AUD-SFX-001,v002,clue,ogg,6256,5319B9AD147CF11E21B5A63E40DDFDC5B3BE180928420C6BD06F9A3F8685146C,materials/inbox/audio/sfx/candidate/AUD-SFX-001_clue_v002.ogg,sample_candidate,48000,,,,,
+AUD-SFX-001,v002,relation,wav,56982,343B29FBEE532312189E7B9BC0982FB24136969FC40043BEE11F55E03A0997C1,materials/inbox/audio/sfx/candidate/AUD-SFX-001_relation_v002.wav,sample_candidate,48000,24,1,0.395,-1.0
+AUD-SFX-001,v002,relation,ogg,5285,B7F088A5CB7438BFDBE1FD37F3FE4F52A4BE8B4DFBBC60EAC3251518A264A18B,materials/inbox/audio/sfx/candidate/AUD-SFX-001_relation_v002.ogg,sample_candidate,48000,,,,,

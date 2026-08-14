@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.5"
+     stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="石碑">
+  <title>stele / 石碑</title>
+  <path d="M7 4 L17 4 L17 21 L7 21 z"/>
+        <path d="M10 8 L14 12 L11 15 L13 19"/>
+        <path d="M9 4 L9 21"/>
+        <path d="M15 4 L15 21"/>
+</svg>

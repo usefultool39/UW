@@ -5,7 +5,7 @@ VIS-POR-001,P0,received,visual,三核心人物肖像样张,3人×2表情,materia
 VIS-UI-001,P0,received,visual,12枚核心UI图标样张,12,materials/inbox/visual/ui_icons,REF-STYLE-001,0.5.0,user,24px可读
 AUD-BGM-001,P0,received,audio,村庄清晨主循环,2版,materials/inbox/audio/bgm,,0.5.0,user,75至120秒无缝循环
 AUD-AMB-001,P0,received,audio,细雨村庄环境声,2版,materials/inbox/audio/ambience,,0.5.0,user,90至180秒无缝循环
-QA-PLAY-001,P0,requested,research,三名陌生玩家完整序章盲测证据,3人,materials/inbox/research/playtest,,0.5.0,user,每人从新游戏完成N01-N10到alice_captured并验证抓捕后不可推进
+QA-PLAY-001,P0,blank_template_pending,research,三名陌生玩家完整序章盲测证据,3人,materials/inbox/research/playtest,,0.5.0,user,三人模板已就位但 player01/02/03 全部 pending-human-run; 2026-08-10 状态同步; 需要真人玩家完成试玩并由主持人回填
 NAR-VOICE-001,P0,received,writing,三核心人物声音圣经,1套,materials/inbox/writing/character_voice,,0.5.0,user,scripted与agent共用
 VIS-MAP-001,P1,changes_requested,visual,卢利特村主地图重绘,1主图加分层源,materials/inbox/visual/world,REF-STYLE-001;VIS-KA-001,0.5.0,user,current 样张已收到；无明显网格且五个地标可辨；需修复水印残留、住宅相似、山体层级并补正式图层和通行数据
 VIS-POR-002,P1,deferred,visual,全角色肖像包,6人×5表情,materials/inbox/visual/portraits,VIS-POR-001,0.5.0,user,样张批准后
@@ -16,16 +16,16 @@ VIS-CHR-004,P1,deferred,visual,支持NPC地图sprite,3人,materials/inbox/visual
 VIS-ENV-001,P1,changes_requested,visual,六场景活动背景,6场,materials/inbox/visual/environments,REF-STYLE-001;VIS-MAP-001,0.5.0,user,当前场景仍有几何占位和 schema 问题；等待地图方向稳定后重做
 VIS-UI-002,P1,deferred,visual,完整32枚UI图标,32,materials/inbox/visual/ui_icons,VIS-UI-001,0.5.0,user,样张批准后
 VIS-VFX-001,P1,changes_requested,visual,神圣术与静默线VFX,1图集,materials/inbox/visual/vfx,VIS-UI-001,0.5.0,user,current 样张已收到；神圣术可审；静默线语义偏离；alpha、背景和播放节奏待修
-AUD-BGM-002,P1,changes_requested,audio,边界调查悬念循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.5.0,user,技术规格接近目标；待统一sidecar和metadata并完成人耳QA
-AUD-BGM-003,P1,changes_requested,audio,关系日程温暖循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.5.0,user,技术规格接近目标；待统一sidecar和metadata并完成人耳QA
-AUD-AMB-002,P1,changes_requested,audio,森林静默线环境声,2版,materials/inbox/audio/ambience,AUD-AMB-001,0.5.0,user,等长切换和测量接近目标；待统一sidecar和metadata并完成人耳QA
-AUD-SFX-001,P1,received,audio,UI与奖励反馈音包,5条首批样张,materials/inbox/audio/sfx,AUD-BGM-001,0.5.0,user,current 样张已收到；测量齐全；待人耳试听、游戏内混音和移动端验证
+AUD-BGM-002,P1,received,audio,边界调查悬念循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.5.0,user,v004 已交: 91s/84s 满足 75-110s 目标; LUFS -18.7/-18.3 真实值; seam dB -240; 2026-08-10 状态从 changes_requested 提升
+AUD-BGM-003,P1,received,audio,关系日程温暖循环,2版,materials/inbox/audio/bgm,AUD-BGM-001,0.5.0,user,v004 已交: 76s/66s 满足 60-100s 目标; LUFS -18.7/-18.8; seam dB -240; 2026-08-10 状态提升
+AUD-AMB-002,P1,received,audio,森林静默线环境声,2版,materials/inbox/audio/ambience,AUD-AMB-001,0.5.0,user,v004 已交: 76s/76s 等长 (从 v003 的 16s/34s 不等长修复); LUFS -23.0/-22.9; seam dB -240; 2026-08-10 状态提升
+AUD-SFX-001,P1,received,audio,UI与奖励反馈音包,5条首批样张,materials/inbox/audio/sfx,AUD-BGM-001,0.5.0,user,current v001 5 条 0.6667s 硬填充 (ASSET_REVIEW 标红: 96KB 同尺寸); v002 candidate 已重做: 5 条差异化时长 205-510ms, 大小 29-73KB, peak -1.0 dBFS, 2026-08-10 待人工验收替换 current
 AUD-SFX-002,P1,deferred,audio,移动活动边界音包,16至24,materials/inbox/audio/sfx,AUD-AMB-001,0.5.0,user,脚步多变体
 NAR-LORE-001,P1,received,writing,书库北境记录碎片,24条,materials/inbox/writing/lore,,0.5.0,user,当前内容已收到
 NAR-BARK-001,P1,received,writing,村庄环境短句,120条,materials/inbox/writing/ambient_barks,,0.5.0,user,按地点时段剧情阶段
 AI-CORPUS-001,P1,deferred,writing,NPC对话测试集,150场景,materials/inbox/writing/agent_corpus,NAR-VOICE-001,0.5.0,user,包含越权与fallback
 REF-FONT-001,P1,received,research,可商用中文字体候选,3至5套,materials/inbox/research/font_licenses,,0.5.0,user,必须有许可证据
-REF-MOOD-001,P1,requested,research,可追溯参考包,30至60项,materials/inbox/research/moodboards,,0.5.0,user,等待补充可追溯的开放参考来源
+REF-MOOD-001,P1,paused,research,可追溯参考包,30至60项,materials/inbox/research/moodboards,,0.5.0,user,2026-08-04 23:27 PAUSED, Wikimedia 握手失败, 已确定改用 Met Open Access API (CC0/public domain); 待用户续跑 RESUME_NEXT.md
 VIS-MARKETING-001,P2,deferred,visual,商店页封面横幅,5比例,materials/inbox/visual/keyart,QA-PLAY-001;VIS-KA-001,0.5.0,user,玩法盲测后
 AUD-VOICE-001,P2,deferred,audio,临时角色语音小样,1套,materials/inbox/audio/sfx,NAR-VOICE-001,0.5.0,user,当前不启动
 NAR-CANON-001,P0,received,research,Underworld正典事实与时间线基线,1套,materials/inbox/research/canon_baseline,,0.5.0,user,当前正典基线已收到
@@ -39,3 +39,14 @@ VIS-KA-002,P1,received,visual,爱丽丝被带走终点关键图,桌面与移动�
 VIS-CHR-005,P1,deferred,visual,整合骑士到场角色素材,2角色加到场姿态,materials/inbox/visual/characters,VIS-CHR-001;VIS-CHR-002;VIS-CHR-003;QA-CANON-001,0.5.0,user,2026-08-07登记；先做叙事到场与押送姿态；当前不制作战斗动作
 VIS-ANIM-001,P1,deferred,visual,三核心人物互动动作包,6类互动动作,materials/inbox/visual/characters,VIS-CHR-001;VIS-CHR-002;VIS-CHR-003,0.5.0,user,2026-08-07登记；当前版本内延后；阅读书写递物边界查看担忧与告别；统一帧率和脚底锚点
 VIS-TILE-001,P1,deferred,visual,地图贴图道具与分层生产包,1套,materials/inbox/visual/world,VIS-MAP-001,0.5.0,user,2026-08-07登记；当前版本内延后；tile atlas道具表遮挡层碰撞与可走区清单；不以单张插画替代
+VIS-UI-003,P0,requested,visual,草药采集点图标,4方向4态共16枚,materials/inbox/visual/ui_icons,VIS-MAP-001;VIS-ENV-001,0.6.0,user,2026-08-10 登记; 西侧田野采药活动入口; 0.6.0 P0 玩法优化
+VIS-UI-004,P0,requested,visual,关系雷达图 UI 素材,1套5角色轴,materials/inbox/visual/ui_icons,VIS-POR-001,0.6.0,user,2026-08-10 登记; 关系系统可视化; 0.6.0 P0 玩法优化
+VIS-UI-005,P1,requested,visual,物品栏图标集,32枚48px,materials/inbox/visual/ui_icons,VIS-UI-001,0.6.0,user,2026-08-10 登记; 物品栏系统
+VIS-UI-006,P1,requested,visual,烹饪界面素材,1套含锅灶食材火苗,materials/inbox/visual/ui_icons,VIS-UI-001,0.6.0,user,2026-08-10 登记; 烹饪小游戏
+VIS-UI-007,P1,requested,visual,钓鱼界面素材,1套含水波鱼线浮标,materials/inbox/visual/ui_icons,VIS-UI-001,0.6.0,user,2026-08-10 登记; 钓鱼小游戏
+VIS-ITEM-001,P1,requested,visual,石碑碎片图,1套3枚,materials/inbox/visual/keyart,NAR-LORE-001,0.6.0,user,2026-08-10 登记; 隐藏收集内容
+VIS-ENV-002,P1,requested,visual,公告柱图,1张含贴纸层,materials/inbox/visual/environments,VIS-ENV-001,0.6.0,user,2026-08-10 登记; 村道广场每日任务
+VIS-UI-008,P1,requested,visual,记忆图鉴面板 UI 素材,1套含图鉴卡背板条目,materials/inbox/visual/ui_icons,VIS-POR-001,0.6.0,user,2026-08-10 登记; 通关后成就系统
+AUD-SFX-003,P1,requested,audio,采集活动 SFX,8至12条,materials/inbox/audio/sfx,VIS-ENV-002,0.6.0,user,2026-08-10 登记; 采摘/上钩/烹饪完成
+VIS-ENV-003,P1,requested,visual,西侧田野场景图,1张,materials/inbox/visual/environments,VIS-ENV-001,0.6.0,user,2026-08-10 登记; 新区域场景表现
+VIS-ENV-004,P1,requested,visual,南湖旧渡场景图,1张,materials/inbox/visual/environments,VIS-ENV-001,0.6.0,user,2026-08-10 登记; 新区域场景表现

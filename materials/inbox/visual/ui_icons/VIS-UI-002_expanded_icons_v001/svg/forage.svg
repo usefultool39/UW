@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.5"
+     stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="觅食">
+  <title>forage / 觅食</title>
+  <path d="M5 9 L19 9 L17 21 L7 21 z"/>
+        <path d="M9 9 c 0 -3 1 -5 3 -5 c 2 0 3 2 3 5"/>
+        <path d="M5 13 L19 13"/>
+</svg>

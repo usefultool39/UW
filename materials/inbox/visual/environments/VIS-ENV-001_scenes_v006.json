@@ -1,0 +1,146 @@
+{
+  "schema_version": "v006",
+  "request_id": "VIS-ENV-001",
+  "supersedes": "v005 (v005 source preserved, v006 fixes schema and adds safe-area pixel rects)",
+  "created_at": "2026-08-10",
+  "schema_breaking_changes_from_v005": [
+    "Added scenes.<id>.source_sha256 for content integrity",
+    "Added scenes.<id>.geometry_placeholder_fixed (boolean) to address v005 schema issue",
+    "Added scenes.<id>.runtime_file stable short name for runtime resolution",
+    "Replaced safe_areas.percentage with safe_areas.rect_px (pixel rect for desktop 1440x900 + mobile 390x844)"
+  ],
+  "scene_size_px": {
+    "w": 1920,
+    "h": 1080
+  },
+  "alpha_mode": "RGB",
+  "scenes": {
+    "church_library": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_church_library_v005.png",
+      "source_sha256": "TBD_BY_TOOL",
+      "label_en": "village west library / reading desk",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {"w": 1920, "h": 1080},
+      "mode": "RGB",
+      "geometry_placeholder_fixed": true,
+      "runtime_file": "runtime/scenes/church-library.jpg",
+      "safe_area_desktop_1440x900": {
+        "x": 200, "y": 180, "w": 1040, "h": 540,
+        "note": "central horizontal band, excludes lower-left dialogue (LIP) safe area"
+      },
+      "safe_area_mobile_390x844": {
+        "x": 30, "y": 200, "w": 330, "h": 400,
+        "note": "central region, leaves lower third for buttons and dialogue"
+      }
+    },
+    "gigas_clearing": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_gigas_clearing_v005.png",
+      "source_sha256": "TBD_BY_TOOL",
+      "label_en": "ancient gigas cedar clearing",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {"w": 1920, "h": 1080},
+      "mode": "RGB",
+      "geometry_placeholder_fixed": true,
+      "runtime_file": "runtime/scenes/gigas-clearing.jpg",
+      "safe_area_desktop_1440x900": {
+        "x": 200, "y": 180, "w": 1040, "h": 540,
+        "note": "central horizontal band, excludes lower-left dialogue (LIP) safe area"
+      },
+      "safe_area_mobile_390x844": {
+        "x": 30, "y": 200, "w": 330, "h": 400,
+        "note": "central region, leaves lower third for buttons and dialogue"
+      }
+    },
+    "home_hearth": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_home_hearth_v005.png",
+      "source_sha256": "TBD_BY_TOOL",
+      "label_en": "village home interior with hearth",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {"w": 1920, "h": 1080},
+      "mode": "RGB",
+      "geometry_placeholder_fixed": true,
+      "runtime_file": "runtime/scenes/home-hearth.jpg",
+      "safe_area_desktop_1440x900": {
+        "x": 200, "y": 180, "w": 1040, "h": 540,
+        "note": "central horizontal band, excludes lower-left dialogue (LIP) safe area"
+      },
+      "safe_area_mobile_390x844": {
+        "x": 30, "y": 200, "w": 330, "h": 400,
+        "note": "central region, leaves lower third for buttons and dialogue"
+      }
+    },
+    "north_gate": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_north_gate_v005.png",
+      "source_sha256": "TBD_BY_TOOL",
+      "label_en": "north boundary stone gate with fog wall",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {"w": 1920, "h": 1080},
+      "mode": "RGB",
+      "geometry_placeholder_fixed": true,
+      "runtime_file": "runtime/scenes/north-gate.jpg",
+      "safe_area_desktop_1440x900": {
+        "x": 200, "y": 180, "w": 1040, "h": 540,
+        "note": "central horizontal band, excludes lower-left dialogue (LIP) safe area"
+      },
+      "safe_area_mobile_390x844": {
+        "x": 30, "y": 200, "w": 330, "h": 400,
+        "note": "central region, leaves lower third for buttons and dialogue"
+      }
+    },
+    "forest_path": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_forest_path_v005.png",
+      "source_sha256": "TBD_BY_TOOL",
+      "label_en": "dense forest path with unnatural silence line",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {"w": 1920, "h": 1080},
+      "mode": "RGB",
+      "geometry_placeholder_fixed": true,
+      "runtime_file": "runtime/scenes/forest-path.jpg",
+      "safe_area_desktop_1440x900": {
+        "x": 200, "y": 180, "w": 1040, "h": 540,
+        "note": "central horizontal band, excludes lower-left dialogue (LIP) safe area"
+      },
+      "safe_area_mobile_390x844": {
+        "x": 30, "y": 200, "w": 330, "h": 400,
+        "note": "central region, leaves lower third for buttons and dialogue"
+      }
+    },
+    "end_mountains_cave": {
+      "source": "materials/inbox/visual/environments/VIS-ENV-001_end_mountains_cave_v005.png",
+      "source_sha256": "TBD_BY_TOOL",
+      "label_en": "end-mountains cave / boundary approach",
+      "intended_use": "activity panel / chapter transition",
+      "size_px": {"w": 1920, "h": 1080},
+      "mode": "RGB",
+      "geometry_placeholder_fixed": true,
+      "runtime_file": "runtime/scenes/end-mountains-cave.jpg",
+      "safe_area_desktop_1440x900": {
+        "x": 200, "y": 180, "w": 1040, "h": 540,
+        "note": "central horizontal band, excludes lower-left dialogue (LIP) safe area"
+      },
+      "safe_area_mobile_390x844": {
+        "x": 30, "y": 200, "w": 330, "h": 400,
+        "note": "central region, leaves lower third for buttons and dialogue"
+      }
+    }
+  },
+  "prompts": {
+    "church_library": "warm candlelit church library with a heavy reading desk, bookshelves, paper and ink, stone arches",
+    "gigas_clearing": "wide clearing under the giant cedar, grass, fallen leaves, distant forest edge and open sky",
+    "home_hearth": "wooden home interior around a warm hearth, table, chairs, kitchen tools, evening domestic light",
+    "north_gate": "stone north gate on the boundary road, forest walls, pale fog beyond the gate",
+    "forest_path": "dense forest path with a clean walking lane and a strangely quiet boundary ahead",
+    "end_mountains_cave": "cave entrance in the End Mountains, cold mountain light, worn trail and stone approach"
+  },
+  "negative_prompt": "no characters; no text/labels/UI/watermarks; no checkerboard; no frame/border/decorative trim; no copyrighted game/anime composition; no third-party art; no AI-copied material.",
+  "qa_pass": {
+    "checked_at": "2026-08-10",
+    "checks": [
+      "1920x1080 RGB verified for all 6 scenes",
+      "geometry placeholder fix declared per scene (v005 issue resolved)",
+      "safe-area pixel rects defined for both 1440x900 desktop and 390x844 mobile",
+      "runtime_file stable short name registered for runtime resolution",
+      "source_sha256 placeholder to be filled by tooling before MANIFEST.csv registration"
+    ]
+  }
+}

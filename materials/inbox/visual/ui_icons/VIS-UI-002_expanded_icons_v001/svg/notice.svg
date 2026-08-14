@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.5"
+     stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="公告">
+  <title>notice / 公告</title>
+  <path d="M4 6 L20 6 L20 19 L4 19 z"/>
+        <path d="M4 6 L12 11 L20 6"/>
+        <path d="M3 4 L7 4"/>
+        <path d="M17 4 L21 4"/>
+</svg>

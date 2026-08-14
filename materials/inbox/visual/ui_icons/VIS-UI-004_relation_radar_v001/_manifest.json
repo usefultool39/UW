@@ -1,0 +1,50 @@
+{
+  "request_id": "VIS-UI-004",
+  "title": "关系雷达图 UI 素材",
+  "version": "v001",
+  "axes": [
+    "桐人",
+    "尤吉欧",
+    "爱丽丝",
+    "赛尔卡",
+    "加斯夫特"
+  ],
+  "items": [
+    {
+      "file": "radar_template_empty.png",
+      "bytes": 33133,
+      "role": "template",
+      "character": null
+    },
+    {
+      "file": "radar_kirito_example.png",
+      "bytes": 30212,
+      "role": "example",
+      "character": "kirito"
+    },
+    {
+      "file": "radar_eugeo_example.png",
+      "bytes": 30767,
+      "role": "example",
+      "character": "eugeo"
+    },
+    {
+      "file": "radar_alice_example.png",
+      "bytes": 30833,
+      "role": "example",
+      "character": "alice"
+    },
+    {
+      "file": "radar_selka_example.png",
+      "bytes": 30742,
+      "role": "example",
+      "character": "selka"
+    },
+    {
+      "file": "radar_garret_example.png",
+      "bytes": 31271,
+      "role": "example",
+      "character": "garret"
+    }
+  ]
+}

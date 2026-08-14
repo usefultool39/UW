@@ -1,0 +1,79 @@
+{
+  "request_id": "VIS-UI-003",
+  "title": "草药采集点图标 4 态",
+  "version": "v001",
+  "items": [
+    {
+      "file": "herb_point_idle.png",
+      "size": 24,
+      "bytes": 265,
+      "state": "idle"
+    },
+    {
+      "file": "herb_point_idle.png",
+      "size": 48,
+      "bytes": 423,
+      "state": "idle"
+    },
+    {
+      "file": "herb_point_idle.png",
+      "size": 96,
+      "bytes": 808,
+      "state": "idle"
+    },
+    {
+      "file": "herb_point_hover.png",
+      "size": 24,
+      "bytes": 265,
+      "state": "hover"
+    },
+    {
+      "file": "herb_point_hover.png",
+      "size": 48,
+      "bytes": 423,
+      "state": "hover"
+    },
+    {
+      "file": "herb_point_hover.png",
+      "size": 96,
+      "bytes": 808,
+      "state": "hover"
+    },
+    {
+      "file": "herb_point_active.png",
+      "size": 24,
+      "bytes": 286,
+      "state": "active"
+    },
+    {
+      "file": "herb_point_active.png",
+      "size": 48,
+      "bytes": 460,
+      "state": "active"
+    },
+    {
+      "file": "herb_point_active.png",
+      "size": 96,
+      "bytes": 850,
+      "state": "active"
+    },
+    {
+      "file": "herb_point_disabled.png",
+      "size": 24,
+      "bytes": 289,
+      "state": "disabled"
+    },
+    {
+      "file": "herb_point_disabled.png",
+      "size": 48,
+      "bytes": 529,
+      "state": "disabled"
+    },
+    {
+      "file": "herb_point_disabled.png",
+      "size": 96,
+      "bytes": 976,
+      "state": "disabled"
+    }
+  ]
+}

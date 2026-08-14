@@ -1,0 +1,290 @@
+{
+  "clue": {
+    "cn": "线索",
+    "color": "cyan-400",
+    "hex": "#7DD3FC",
+    "sem": "调查线索 / 可追查信息",
+    "sil": "圆形镜片 + 右下斜柄",
+    "version": "v001",
+    "category": "core"
+  },
+  "record": {
+    "cn": "记录",
+    "color": "paper-300",
+    "hex": "#D9E3E8",
+    "sem": "书库记录 / 日志条目",
+    "sil": "竖长方形，右上折角",
+    "version": "v001",
+    "category": "core"
+  },
+  "time": {
+    "cn": "时间",
+    "color": "paper-300",
+    "hex": "#D9E3E8",
+    "sem": "时段推进 / 行动耗时",
+    "sil": "上下横杠 + 中间收腰沙漏",
+    "version": "v001",
+    "category": "core"
+  },
+  "stamina": {
+    "cn": "体力",
+    "color": "gold-400",
+    "hex": "#F6D36E",
+    "sem": "行动力余量",
+    "sil": "尖顶水滴火焰",
+    "version": "v001",
+    "category": "core"
+  },
+  "relationship": {
+    "cn": "关系",
+    "color": "green-400",
+    "hex": "#86EFAC",
+    "sem": "人物关系度 / 信任",
+    "sil": "左上右下两圆 + 斜连线",
+    "version": "v001",
+    "category": "core"
+  },
+  "tension": {
+    "cn": "紧张",
+    "color": "amber-500",
+    "hex": "#F59E0B",
+    "sem": "紧张度 / 风险累积",
+    "sil": "左右立柱 + 中间下坠的绷弦",
+    "version": "v001",
+    "category": "core"
+  },
+  "memory": {
+    "cn": "记忆",
+    "color": "paper-300",
+    "hex": "#D9E3E8",
+    "sem": "已获记忆 / 可回溯片段",
+    "sil": "单条向内收束螺旋",
+    "version": "v001",
+    "category": "core"
+  },
+  "anomaly": {
+    "cn": "异常",
+    "color": "violet-500",
+    "hex": "#8B5CF6",
+    "sem": "北境异常 / 静默线征兆",
+    "sil": "正菱形 + 内部折线裂缝",
+    "version": "v001",
+    "category": "core"
+  },
+  "locked": {
+    "cn": "锁定",
+    "color": "rose-500",
+    "hex": "#F43F5E",
+    "sem": "条件未满足 / 不可交互",
+    "sil": "矩形锁体 + U 形锁梁",
+    "version": "v001",
+    "category": "core"
+  },
+  "recover": {
+    "cn": "恢复",
+    "color": "green-400",
+    "hex": "#86EFAC",
+    "sem": "体力/状态回复",
+    "sil": "右上缺口的圆环 + 箭头",
+    "version": "v001",
+    "category": "core"
+  },
+  "location": {
+    "cn": "地点",
+    "color": "cyan-400",
+    "hex": "#7DD3FC",
+    "sem": "可前往地点 / 当前位置",
+    "sil": "倒水滴地图针",
+    "version": "v001",
+    "category": "core"
+  },
+  "schedule": {
+    "cn": "日程",
+    "color": "paper-300",
+    "hex": "#D9E3E8",
+    "sem": "每日安排 / 活动排程",
+    "sil": "横矩形 + 顶部双挂耳 + 实心标记格",
+    "version": "v001",
+    "category": "core"
+  },
+  "herb": {
+    "cn": "草药",
+    "color": "green-400",
+    "hex": "#86EFAC",
+    "sem": "西侧田野可采草药",
+    "sil": "三叶草顶部一束花蕾",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "wood": {
+    "cn": "木材",
+    "color": "amber-700",
+    "hex": "#B45309",
+    "sem": "伐木采集木材",
+    "sil": "圆木横切年轮",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "fish": {
+    "cn": "鱼",
+    "color": "cyan-400",
+    "hex": "#7DD3FC",
+    "sem": "钓鱼获取",
+    "sil": "侧视鱼形带尾鳍",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "meal": {
+    "cn": "餐食",
+    "color": "gold-400",
+    "hex": "#F6D36E",
+    "sem": "烹饪完成餐食",
+    "sil": "碗+蒸汽",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "water": {
+    "cn": "水",
+    "color": "cyan-400",
+    "hex": "#7DD3FC",
+    "sem": "饮水/取水",
+    "sil": "水滴",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "cook": {
+    "cn": "烹饪",
+    "color": "amber-500",
+    "hex": "#F59E0B",
+    "sem": "烹饪小游戏入口",
+    "sil": "锅+蒸汽三股",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "fish_action": {
+    "cn": "钓鱼",
+    "color": "cyan-400",
+    "hex": "#7DD3FC",
+    "sem": "钓鱼小游戏入口",
+    "sil": "竿+线+浮标",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "gather": {
+    "cn": "采集",
+    "color": "green-400",
+    "hex": "#86EFAC",
+    "sem": "西侧田野采集活动",
+    "sil": "手+叶",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "forage": {
+    "cn": "觅食",
+    "color": "amber-700",
+    "hex": "#B45309",
+    "sem": "采集篮/林地觅食",
+    "sil": "篮子+把手",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "bond": {
+    "cn": "羁绊",
+    "color": "rose-500",
+    "hex": "#F43F5E",
+    "sem": "关系度变化/羁绊加深",
+    "sil": "心+环",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "farewell": {
+    "cn": "告别",
+    "color": "paper-300",
+    "hex": "#D9E3E8",
+    "sem": "爱丽丝告别/抓捕后",
+    "sil": "挥手+方向线",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "capture": {
+    "cn": "抓捕",
+    "color": "violet-500",
+    "hex": "#8B5CF6",
+    "sem": "整合骑士抓捕事件",
+    "sil": "锁链+环",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "prayer": {
+    "cn": "祈祷",
+    "color": "gold-400",
+    "hex": "#F6D36E",
+    "sem": "桐人祈祷/教堂场景",
+    "sil": "双手合十",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "stele": {
+    "cn": "石碑",
+    "color": "paper-300",
+    "hex": "#D9E3E8",
+    "sem": "隐藏收集石碑碎片",
+    "sil": "立石+裂缝",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "notice": {
+    "cn": "公告",
+    "color": "amber-500",
+    "hex": "#F59E0B",
+    "sem": "村道公告柱",
+    "sil": "板上钉纸",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "codex": {
+    "cn": "图鉴",
+    "color": "violet-500",
+    "hex": "#8B5CF6",
+    "sem": "通关后记忆图鉴",
+    "sil": "翻书+星",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "save": {
+    "cn": "存档",
+    "color": "green-400",
+    "hex": "#86EFAC",
+    "sem": "游戏存档",
+    "sil": "方块+三角",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "quest": {
+    "cn": "任务",
+    "color": "amber-500",
+    "hex": "#F59E0B",
+    "sem": "可接取任务",
+    "sil": "卷轴",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "map_icon": {
+    "cn": "地图",
+    "color": "cyan-400",
+    "hex": "#7DD3FC",
+    "sem": "可展开地图",
+    "sil": "折叠地图+路径",
+    "version": "v002",
+    "category": "expanded"
+  },
+  "altar": {
+    "cn": "祭坛",
+    "color": "violet-500",
+    "hex": "#8B5CF6",
+    "sem": "神圣术/教堂祭坛",
+    "sil": "台+焰",
+    "version": "v002",
+    "category": "expanded"
+  }
+}
